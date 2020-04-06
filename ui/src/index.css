@@ -1,0 +1,22 @@
+html, body, .serio-background {
+  height: 100%;
+  margin: 0;
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.serio-text-font {
+  font-family: Roboto, sans-serif;
+}
+
+.serio-background-color-primary {
+  background-color: #FB8C00;
+}
+
+.serio-text-color-primary {
+  color: #FB8C00;
+}
+
+.serio-text-color-complementary {
+  color: #000000;
+}
