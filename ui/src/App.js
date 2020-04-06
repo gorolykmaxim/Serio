@@ -4,6 +4,6 @@ import Button from "./components/Button";
 
 export default function App() {
   return (
-    <Button text={"learn more"}/>
+    <Button text={"learn more"} onClick={() => alert('kekw')}/>
   );
 }
