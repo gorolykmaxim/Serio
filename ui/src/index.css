@@ -3,6 +3,7 @@ html, body, .serio-background {
   margin: 0;
   background-color: #000000;
   color: #FFFFFF;
+  user-select: none;
 }
 
 .serio-text-font {
