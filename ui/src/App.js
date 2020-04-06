@@ -9,7 +9,7 @@ export default function App() {
       <div>
         <Button text={"learn more"} onClick={() => alert('kekw')}/>
         <br/>
-        <TextEdit name={'kekw'} placeholder={'KekW'}/>
+        <TextEdit name={'kekw'} placeholder={'KekW'} disabled defaultValue={"OmegaLULi"}/>
         <br/>
         <TextArea name={'pepega'} placeholder={"Kekw\nMonkaOmega"}/>
       </div>
