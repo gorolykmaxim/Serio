@@ -1,0 +1,10 @@
+.serio-all-shows {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 16px);
+}
+
+.serio-all-shows-growable {
+    flex-grow: 1;
+}
