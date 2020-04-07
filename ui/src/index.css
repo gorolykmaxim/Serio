@@ -21,3 +21,11 @@ html, body, .serio-background {
 .serio-text-color-complementary {
   color: #000000;
 }
+
+.serio-padding {
+  padding: 8px;
+}
+
+.serio-margin-before {
+  margin-left: 8px;
+}
