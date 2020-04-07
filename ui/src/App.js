@@ -5,11 +5,16 @@ import TextEdit from "./components/TextEdit";
 import TextArea from "./components/TextArea";
 import {BODY_1, Text} from "./components/Text";
 import ListTile from "./components/ListTile";
+import IconButton from "./components/IconButton";
 
 export default function App() {
   return (
       <div>
-          <Button autoFocus={true} text={"learn more"} onClick={() => alert('kekw')}/>
+          <Button text={"learn more"} onClick={() => alert('kekw')}/>
+          <br/>
+          <IconButton autoFocus={true} large icon={'play_arrow'} onClick={() => alert('pepe the frog')}/>
+          <br/>
+          <IconButton icon={'keyboard_backspace'} onClick={() => alert('pepe the frog')}/>
           <br/>
           <TextEdit name={'kekw'} placeholder={'KekW'} disabled defaultValue={"OmegaLULi"}/>
           <br/>

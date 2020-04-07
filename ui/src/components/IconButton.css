@@ -1,0 +1,24 @@
+.serio-icon-button {
+    border: 0;
+    border-radius: 50%;
+    background-color: transparent;
+    font-size: 0;
+    color: #FB8C00;
+    padding: 0;
+    margin: 0;
+}
+
+.serio-icon-button-normal-size {
+    font-size: 56px;
+}
+
+.serio-icon-button-large-size {
+    font-size: 112px;
+}
+
+.serio-icon-button:hover, .serio-icon-button:focus {
+    background-color: #FB8C00;
+    color: #000000;
+    cursor: pointer;
+    outline-style: none;
+}
