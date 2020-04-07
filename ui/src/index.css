@@ -18,6 +18,10 @@ html, body, .serio-background {
   color: #FB8C00;
 }
 
+.serio-text-color {
+  color: #FFFFFF;
+}
+
 .serio-text-color-complementary {
   color: #000000;
 }

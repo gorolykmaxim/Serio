@@ -17,8 +17,6 @@ export function Text(props) {
     if (props.className) {
         className.push(props.className);
     }
-    if (props.primary) {
-        className.push('serio-text-color-primary');
-    }
+    className.push(props.primary ? 'serio-text-color-primary' : 'serio-text-color');
     return <span className={className.join(' ')}>{props.children}</span>;
 }
