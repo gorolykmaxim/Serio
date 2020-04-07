@@ -14,6 +14,9 @@ export const BODY_2 = 'body-2';
 
 export function Text(props) {
     const className = ['serio-text-font', `serio-text-${props.type || BODY_1}`];
+    if (props.className) {
+        className.push(props.className);
+    }
     if (props.primary) {
         className.push('serio-text-color-primary');
     }

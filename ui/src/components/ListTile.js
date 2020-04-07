@@ -10,7 +10,7 @@ export default function ListTile(props) {
         icon = <span className="serio-list-tile-icon-placeholder"/>;
     }
     return (
-        <div className='serio-list-tile serio-padding' tabIndex={0} onClick={props.onClick}>
+        <div className={`serio-list-tile serio-padding ${props.className || ''}`} tabIndex={0} onClick={props.onClick}>
             {icon}
             <div className='serio-list-tile-content serio-margin-before'>
                 <Text type={BODY_1}>{props.primaryText}</Text>

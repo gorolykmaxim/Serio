@@ -4,6 +4,9 @@ import './Button.css';
 export default function Button(props) {
     const isDisabled = props.disabled || false;
     const className = ['serio-button', 'serio-text-font'];
+    if (props.className) {
+        className.push(props.className);
+    }
     if (isDisabled) {
         className.push('serio-button-disabled');
     } else {
