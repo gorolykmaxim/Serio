@@ -7,5 +7,6 @@ export default function TextEdit(props) {
                   name={props.name}
                   defaultValue={props.defaultValue}
                   disabled={props.disabled || false}
-                  placeholder={props.placeholder}/>;
+                  placeholder={props.placeholder}
+                  autoFocus={props.autoFocus}/>;
 }

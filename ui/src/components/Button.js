@@ -9,5 +9,12 @@ export default function Button(props) {
     } else {
         className.push("serio-button-enabled");
     }
-    return <button className={className.join(' ')} onClick={props.onClick} disabled={isDisabled}>{props.text}</button>
+    return (
+        <button className={className.join(' ')}
+                onClick={props.onClick}
+                disabled={isDisabled}
+                autoFocus={props.autoFocus}>
+            {props.text}
+        </button>
+    );
 }

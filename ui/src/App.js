@@ -8,7 +8,7 @@ import {BODY_1, Text} from "./components/Text";
 export default function App() {
   return (
       <div>
-          <Button text={"learn more"} onClick={() => alert('kekw')}/>
+          <Button autoFocus={true} text={"learn more"} onClick={() => alert('kekw')}/>
           <br/>
           <TextEdit name={'kekw'} placeholder={'KekW'} disabled defaultValue={"OmegaLULi"}/>
           <br/>
