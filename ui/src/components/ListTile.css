@@ -1,0 +1,25 @@
+.serio-list-tile {
+    padding: 8px;
+    color: #FB8C00;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.serio-list-tile:hover, .serio-list-tile:focus {
+    outline-style: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.serio-list-tile-icon-placeholder {
+    width: 24px;
+    height: 24px;
+}
+
+.serio-list-tile-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: 8px;
+}
