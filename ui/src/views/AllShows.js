@@ -21,12 +21,12 @@ export default function AllShows(props) {
             shows.push(
                 <ShowCard show={lastWatchedShows[i]}
                           autoFocus={i === 0}
-                          className='serio-margin-before'
+                          className='serio-margin-after'
                           onClick={onShowSelect}/>
             );
         }
         content.push(
-            <div className='serio-all-shows-growable serio-horizontal-container'>{shows}</div>
+            <div className='serio-all-shows-growable serio-horizontal-container serio-margin'>{shows}</div>
         );
     }
     content.push(
@@ -36,10 +36,10 @@ export default function AllShows(props) {
         </div>
     );
     content.push(
-        <div className='serio-all-shows-growable serio-horizontal-container'>
+        <div className='serio-all-shows-growable serio-horizontal-container serio-margin'>
             {allShows.map(s => (
                 <ShowCard show={s}
-                          className='serio-margin-before'
+                          className='serio-margin-after'
                           onClick={onShowSelect}/>
             ))}
         </div>
