@@ -8,6 +8,8 @@ export default function AllShows(props) {
     const lastWatchedShows = props.showInfo.lastWatchedShows || [];
     const allShows = props.showInfo.allShows || [];
     const onShowSelect = props.onShowSelect || (() => {});
+    const onAddShow = props.onAddShow || (() => {});
+    const onImportShowFromJson = props.onImportShowFromJson || (() => {});
     const content = [];
     const hasWatchedShows = lastWatchedShows.length > 0;
     if (hasWatchedShows) {
@@ -31,8 +33,8 @@ export default function AllShows(props) {
     }
     content.push(
         <div className='serio-padding'>
-            <Button text='add show' autoFocus={!hasWatchedShows}/>
-            <Button className='serio-margin-before' text='import show from json'/>
+            <Button text='add show' autoFocus={!hasWatchedShows} onClick={onAddShow}/>
+            <Button className='serio-margin-before' text='import show from json' onClick={onImportShowFromJson}/>
         </div>
     );
     content.push(
