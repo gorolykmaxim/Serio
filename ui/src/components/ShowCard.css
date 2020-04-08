@@ -8,6 +8,7 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    text-align: start;
 }
 
 .serio-show-card:focus, .serio-show-card:hover {
@@ -29,5 +30,7 @@
     opacity: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: flex-end;
+    align-items: stretch;
+    padding: 8px;
 }
