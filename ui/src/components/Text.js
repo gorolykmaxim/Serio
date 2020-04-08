@@ -13,7 +13,7 @@ export const BODY_1 = 'body-1';
 export const BODY_2 = 'body-2';
 
 export function Text(props) {
-    const className = ['serio-text-font', `serio-text-${props.type || BODY_1}`];
+    const className = ['serio-text-font', 'serio-text-overflow', `serio-text-${props.type || BODY_1}`];
     if (props.className) {
         className.push(props.className);
     }

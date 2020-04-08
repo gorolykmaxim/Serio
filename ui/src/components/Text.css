@@ -57,3 +57,9 @@
     line-height: 1.25rem;
     font-weight: 400;
 }
+
+.serio-text-overflow {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
