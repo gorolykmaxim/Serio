@@ -1,0 +1,53 @@
+import React from "react";
+import './EditShowCrawler.css';
+import TextEdit from "../components/TextEdit";
+import Button from "../components/Button";
+import {HEADLINE_5, Text} from "../components/Text";
+import {getFunction} from "../common";
+
+export default function EditShowCrawler(props) {
+    const isShowCrawlerSpecified = props.showCrawler;
+    const showCrawler = props.showCrawler || {};
+    const onEditThumbnailCrawler = getFunction(props.onEditThumbnailCrawler);
+    const onEditEpisodeVideoCrawler = getFunction(props.onEditEpisodeVideoCrawler);
+    const onEditEpisodeNameCrawler = getFunction(props.onEditEpisodeNameCrawler);
+    const onCancel = getFunction(props.onCancel);
+    const onSave = getFunction(props.onSave);
+    return (
+        <div className='serio-edit-show-crawler'>
+            <form className='serio-edit-show-crawler-container' onSubmit={createOnSubmit(showCrawler, onSave)}>
+                <div>
+                    <Text type={HEADLINE_5} primary={true}>Configure show crawler</Text>
+                </div>
+                <TextEdit name={'name'}
+                          required={true}
+                          placeholder={'TV Show name'}
+                          defaultValue={showCrawler.name}
+                          autoFocus={!isShowCrawlerSpecified}
+                          className='serio-edit-show-crawler-edit-line'/>
+                <Button text='Configure thumbnail crawler'
+                        className='serio-edit-show-crawler-edit-line'
+                        onClick={onEditThumbnailCrawler}/>
+                <Button text='Configure episode video crawler'
+                        className='serio-edit-show-crawler-edit-line'
+                        onClick={onEditEpisodeVideoCrawler}/>
+                <Button text='Configure episode name crawler'
+                        className='serio-edit-show-crawler-edit-line'
+                        onClick={onEditEpisodeNameCrawler}/>
+                <div className='serio-edit-show-crawler-edit-line serio-edit-show-crawler-actions'>
+                    <Button text={'cancel'} autoFocus={isShowCrawlerSpecified} onClick={onCancel}/>
+                    <Button submit={true} text={'save'} className='serio-margin-before'/>
+                </div>
+            </form>
+        </div>
+    );
+}
+
+function createOnSubmit(showCrawler, callback) {
+    return (event) => {
+        event.preventDefault();
+        const form = event.target;
+        showCrawler.name = form.elements.name.value;
+        callback(showCrawler);
+    };
+}
