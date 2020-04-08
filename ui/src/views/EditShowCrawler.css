@@ -3,7 +3,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
 }
 
 .serio-edit-show-crawler-container {
@@ -12,11 +11,5 @@
 }
 
 .serio-edit-show-crawler-edit-line {
-    flex-grow: 1;
     margin: 8px 0;
-}
-
-.serio-edit-show-crawler-actions {
-    display: flex;
-    justify-content: flex-end;
 }

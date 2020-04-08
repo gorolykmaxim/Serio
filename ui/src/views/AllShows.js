@@ -33,7 +33,7 @@ export default function AllShows(props) {
             );
         }
         content.push(
-            <div className='serio-all-shows-growable serio-horizontal-container serio-margin'>{shows}</div>
+            <div className='serio-growable serio-horizontal-container serio-margin'>{shows}</div>
         );
     }
     content.push(
@@ -43,7 +43,7 @@ export default function AllShows(props) {
         </div>
     );
     content.push(
-        <div className='serio-all-shows-growable serio-horizontal-container serio-margin'>
+        <div className='serio-growable serio-horizontal-container serio-margin'>
             {allShows.map(s => (
                 <ShowCard show={s}
                           className='serio-margin-after'
@@ -53,5 +53,5 @@ export default function AllShows(props) {
             ))}
         </div>
     );
-    return <div className='serio-all-shows'>{content}</div>;
+    return <div className='serio-all-shows serio-full-height'>{content}</div>;
 }

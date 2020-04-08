@@ -6,6 +6,10 @@ html, body, .serio-background {
   user-select: none;
 }
 
+.serio-full-height {
+  height: 100%;
+}
+
 .serio-text-font {
   font-family: Roboto, sans-serif;
 }
@@ -46,6 +50,15 @@ html, body, .serio-background {
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
+}
+
+.serio-growable {
+  flex-grow: 1;
+}
+
+.serio-form-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 ::-webkit-scrollbar {

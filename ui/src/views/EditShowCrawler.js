@@ -14,7 +14,7 @@ export default function EditShowCrawler(props) {
     const onCancel = getFunction(props.onCancel);
     const onSave = getFunction(props.onSave);
     return (
-        <div className='serio-edit-show-crawler'>
+        <div className='serio-edit-show-crawler serio-full-height'>
             <form className='serio-edit-show-crawler-container' onSubmit={createOnSubmit(showCrawler, onSave)}>
                 <div>
                     <Text type={HEADLINE_5} primary={true}>Configure show crawler</Text>
@@ -24,17 +24,17 @@ export default function EditShowCrawler(props) {
                           placeholder={'TV Show name'}
                           defaultValue={showCrawler.name}
                           autoFocus={!isShowCrawlerSpecified}
-                          className='serio-edit-show-crawler-edit-line'/>
+                          className='serio-edit-show-crawler-edit-line serio-growable'/>
                 <Button text='Configure thumbnail crawler'
-                        className='serio-edit-show-crawler-edit-line'
+                        className='serio-edit-show-crawler-edit-line serio-growable'
                         onClick={onEditThumbnailCrawler}/>
                 <Button text='Configure episode video crawler'
-                        className='serio-edit-show-crawler-edit-line'
+                        className='serio-edit-show-crawler-edit-line serio-growable'
                         onClick={onEditEpisodeVideoCrawler}/>
                 <Button text='Configure episode name crawler'
-                        className='serio-edit-show-crawler-edit-line'
+                        className='serio-edit-show-crawler-edit-line serio-growable'
                         onClick={onEditEpisodeNameCrawler}/>
-                <div className='serio-edit-show-crawler-edit-line serio-edit-show-crawler-actions'>
+                <div className='serio-edit-show-crawler-edit-line serio-growable serio-form-actions'>
                     <Button text={'cancel'} autoFocus={isShowCrawlerSpecified} onClick={onCancel}/>
                     <Button submit={true} text={'save'} className='serio-margin-before'/>
                 </div>
