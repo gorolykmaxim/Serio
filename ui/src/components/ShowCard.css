@@ -16,7 +16,11 @@
     outline-style: none;
 }
 
-.serio-show-card:focus .serio-show-card-inside-container, .serio-show-card:hover .serio-show-card-inside-container {
+.serio-show-card:focus .serio-show-card-inside-container {
+    opacity: 1;
+}
+
+.serio-show-card-hoverable:hover .serio-show-card-inside-container {
     opacity: 1;
 }
 
