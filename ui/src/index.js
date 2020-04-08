@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AllShows from "./views/AllShows";
 import EditShowCrawler from "./views/EditShowCrawler";
+import ImportShowCrawler from "./views/ImportShowCrawler";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -87,11 +88,12 @@ ReactDOM.render(
     {/*          onAddShow={() => alert('Add show')}*/}
     {/*          onImportShowFromJson={() => alert('Import show from JSON')}*/}
     {/*          onShowSelect={(show) => alert(JSON.stringify(show))}/>*/}
-    <EditShowCrawler onEditThumbnailCrawler={() => alert('Edit thumbnail crawler')}
-                     onEditEpisodeVideoCrawler={() => alert('Edit episode video crawler')}
-                     onEditEpisodeNameCrawler={() => alert('Edit episode name crawler')}
-                     onCancel={() => alert('Cancel')}
-                     onSave={(sc) => alert(JSON.stringify(sc))}/>
+    {/*<EditShowCrawler onEditThumbnailCrawler={() => alert('Edit thumbnail crawler')}*/}
+    {/*                 onEditEpisodeVideoCrawler={() => alert('Edit episode video crawler')}*/}
+    {/*                 onEditEpisodeNameCrawler={() => alert('Edit episode name crawler')}*/}
+    {/*                 onCancel={() => alert('Cancel')}*/}
+    {/*                 onSave={(sc) => alert(JSON.stringify(sc))}/>*/}
+    <ImportShowCrawler onImport={rawShowCrawler => alert(rawShowCrawler)} onCancel={() => alert('Cancel')}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

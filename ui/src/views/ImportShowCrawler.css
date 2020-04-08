@@ -1,0 +1,15 @@
+.serio-import-show-crawler {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+}
+
+.serio-import-show-crawler-text-area {
+    flex-grow: 1;
+}
+
+.serio-import-show-crawler-actions {
+    display: flex;
+    justify-content: flex-end;
+}
