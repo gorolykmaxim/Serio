@@ -3,6 +3,7 @@ import './AllShows.css';
 import Button from "../components/Button";
 import ShowCard from "../components/ShowCard";
 import {HEADLINE_5, Text} from "../components/Text";
+import {scrollIntoTarget} from "../common";
 
 export default function AllShows(props) {
     const lastWatchedShows = props.showInfo.lastWatchedShows || [];
@@ -10,6 +11,8 @@ export default function AllShows(props) {
     const onShowSelect = props.onShowSelect || (() => {});
     const onAddShow = props.onAddShow || (() => {});
     const onImportShowFromJson = props.onImportShowFromJson || (() => {});
+    const hoverableShowCards = props.hoverableShowCards || false;
+    const onFocusCapture = props.scrollOnFocus ? scrollIntoTarget : null;
     const content = [];
     const hasWatchedShows = lastWatchedShows.length > 0;
     if (hasWatchedShows) {
@@ -23,6 +26,8 @@ export default function AllShows(props) {
             shows.push(
                 <ShowCard show={lastWatchedShows[i]}
                           autoFocus={i === 0}
+                          hoverable={hoverableShowCards}
+                          onFocusCapture={onFocusCapture}
                           className='serio-margin-after'
                           onClick={onShowSelect}/>
             );
@@ -42,6 +47,8 @@ export default function AllShows(props) {
             {allShows.map(s => (
                 <ShowCard show={s}
                           className='serio-margin-after'
+                          hoverable={hoverableShowCards}
+                          onFocusCapture={onFocusCapture}
                           onClick={onShowSelect}/>
             ))}
         </div>

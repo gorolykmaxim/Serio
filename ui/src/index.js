@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AllShows from "./views/AllShows";
 
+const DESKTOP_PLATFORM = 0;
+const MOBILE_PLATFORM = 1;
+const TV_PLATFORM = 2;
+
+const hash = window.location.hash;
+window.platform = parseInt(hash ? hash.substr(1, hash.length - 1) : "0");
+
 const shows = [
     {
         name: 'Boruto',
@@ -74,6 +81,8 @@ const showInfo = {
 ReactDOM.render(
   <React.StrictMode>
     <AllShows showInfo={showInfo}
+              hoverableShowCards={window.platform !== TV_PLATFORM}
+              scrollOnFocus={window.platform === TV_PLATFORM}
               onAddShow={() => alert('Add show')}
               onImportShowFromJson={() => alert('Import show from JSON')}
               onShowSelect={(show) => alert(JSON.stringify(show))}/>
