@@ -4,6 +4,7 @@ import './index.css';
 import AllShows from "./views/AllShows";
 import EditShowCrawler from "./views/EditShowCrawler";
 import ImportShowCrawler from "./views/ImportShowCrawler";
+import EditCrawler from "./views/EditCrawler";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -93,7 +94,11 @@ ReactDOM.render(
     {/*                 onEditEpisodeNameCrawler={() => alert('Edit episode name crawler')}*/}
     {/*                 onCancel={() => alert('Cancel')}*/}
     {/*                 onSave={(sc) => alert(JSON.stringify(sc))}/>*/}
-    <ImportShowCrawler onImport={rawShowCrawler => alert(rawShowCrawler)} onCancel={() => alert('Cancel')}/>
+    {/*<ImportShowCrawler onImport={rawShowCrawler => alert(rawShowCrawler)} onCancel={() => alert('Cancel')}/>*/}
+    <EditCrawler crawlerType={'thumbnail'}
+                 onCancel={() => alert('Cancel')}
+                 onPreview={(c) => alert(`Preview ${c}`)}
+                 onSave={(c) => alert(`Save ${c}`)}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
