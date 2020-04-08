@@ -3,14 +3,14 @@ import './AllShows.css';
 import Button from "../components/Button";
 import ShowCard from "../components/ShowCard";
 import {HEADLINE_5, Text} from "../components/Text";
-import {scrollIntoTarget} from "../common";
+import {getFunction, scrollIntoTarget} from "../common";
 
 export default function AllShows(props) {
     const lastWatchedShows = props.showInfo.lastWatchedShows || [];
     const allShows = props.showInfo.allShows || [];
-    const onShowSelect = props.onShowSelect || (() => {});
-    const onAddShow = props.onAddShow || (() => {});
-    const onImportShowFromJson = props.onImportShowFromJson || (() => {});
+    const onShowSelect = getFunction(props.onShowSelect);
+    const onAddShow = getFunction(props.onAddShow);
+    const onImportShowFromJson = getFunction(props.onImportShowFromJson);
     const hoverableShowCards = props.hoverableShowCards || false;
     const onFocusCapture = props.scrollOnFocus ? scrollIntoTarget : null;
     const content = [];

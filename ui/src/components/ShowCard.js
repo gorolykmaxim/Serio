@@ -1,11 +1,12 @@
 import React from "react";
 import './ShowCard.css';
 import {HEADLINE_5, SUBTITLE_1, Text} from "./Text";
+import {getFunction} from "../common";
 
 export default function ShowCard(props) {
     const {name, thumbnail, lastWatched} = props.show;
     const backgroundStyle = {backgroundImage: `url(${thumbnail})`};
-    const onClick = props.onClick || (() => {});
+    const onClick = getFunction(props.onClick);
     const className = ['serio-show-card'];
     if (props.hoverable) {
         className.push('serio-show-card-hoverable');

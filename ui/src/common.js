@@ -4,3 +4,8 @@ export function scrollIntoTarget(event) {
         left: target.offsetLeft - window.innerWidth / 2 + target.offsetWidth / 2
     });
 }
+
+
+export function getFunction(f) {
+    return f || (() => {});
+}
