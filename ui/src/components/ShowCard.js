@@ -16,6 +16,7 @@ export default function ShowCard(props) {
     return (
         <button className={className.join(' ')}
                 style={backgroundStyle}
+                onFocusCapture={props.onFocusCapture}
                 autoFocus={props.autoFocus}
                 onClick={() => onClick(props.show)}>
             <div className='serio-show-card-inside-container'>
