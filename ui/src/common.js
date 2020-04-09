@@ -1,10 +1,10 @@
-export function scrollIntoTarget(event) {
-    const target = event.target;
-    target.parentElement.scroll({
-        left: target.offsetLeft - window.innerWidth / 2 + target.offsetWidth / 2
-    });
+export function createScrollIntoTarget(isHorizontalScroll) {
+    if (isHorizontalScroll) {
+        return e => e.target.parentElement.scroll({left: e.target.offsetLeft - window.innerWidth / 2 + e.target.offsetWidth / 2});
+    } else {
+        return e => e.target.parentElement.scroll({top: e.target.offsetTop - window.innerHeight / 2 + e.target.offsetHeight / 2});
+    }
 }
-
 
 export function getFunction(f) {
     return f || (() => {});

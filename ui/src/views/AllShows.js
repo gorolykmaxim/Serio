@@ -3,7 +3,7 @@ import './AllShows.css';
 import Button from "../components/Button";
 import ShowCard from "../components/ShowCard";
 import {HEADLINE_5, Text} from "../components/Text";
-import {getFunction, scrollIntoTarget} from "../common";
+import {createScrollIntoTarget, getFunction} from "../common";
 
 export default function AllShows(props) {
     const lastWatchedShows = props.showInfo.lastWatchedShows || [];
@@ -12,7 +12,7 @@ export default function AllShows(props) {
     const onAddShow = getFunction(props.onAddShow);
     const onImportShowFromJson = getFunction(props.onImportShowFromJson);
     const hoverableShowCards = props.hoverableShowCards || false;
-    const onFocusCapture = props.scrollOnFocus ? scrollIntoTarget : null;
+    const onFocusCapture = props.scrollOnFocus ? createScrollIntoTarget(true) : null;
     const content = [];
     const hasWatchedShows = lastWatchedShows.length > 0;
     if (hasWatchedShows) {
