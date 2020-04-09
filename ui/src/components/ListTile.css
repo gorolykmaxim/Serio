@@ -5,7 +5,13 @@
     align-items: center;
 }
 
-.serio-list-tile:hover, .serio-list-tile:focus {
+.serio-list-tile:focus {
+    outline-style: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.serio-list-tile-hoverable:hover {
     outline-style: none;
     background-color: rgba(255, 255, 255, 0.2);
     cursor: pointer;

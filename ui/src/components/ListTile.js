@@ -9,8 +9,15 @@ export default function ListTile(props) {
     } else {
         icon = <span className="serio-list-tile-icon-placeholder"/>;
     }
+    const className = ['serio-list-tile', 'serio-padding'];
+    if (props.hoverable) {
+        className.push('serio-list-tile-hoverable');
+    }
+    if (props.className) {
+        className.push(props.className);
+    }
     return (
-        <div className={`serio-list-tile serio-padding ${props.className || ''}`} tabIndex={0} onClick={props.onClick}>
+        <div className={className.join(' ')} tabIndex={0} onClick={props.onClick} onFocusCapture={props.onFocusCapture}>
             {icon}
             <div className='serio-list-tile-content serio-margin-before'>
                 <Text type={BODY_1}>{props.primaryText}</Text>
