@@ -18,12 +18,12 @@
 }
 
 .serio-list-tile-icon-placeholder {
-    width: 24px;
-    height: 24px;
+    color: transparent;
 }
 
 .serio-list-tile-content {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    min-width: 0;
 }
