@@ -5,6 +5,7 @@ import AllShows from "./views/AllShows";
 import EditShowCrawler from "./views/EditShowCrawler";
 import ImportShowCrawler from "./views/ImportShowCrawler";
 import EditCrawler from "./views/EditCrawler";
+import CrawlPreview from "./views/CrawlPreview";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -81,6 +82,13 @@ const showInfo = {
     allShows: shows
 };
 
+const crawlItems = [
+    'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
+    'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
+    'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
+    'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6'
+];
+
 ReactDOM.render(
   <React.StrictMode>
     {/*<AllShows showInfo={showInfo}*/}
@@ -95,10 +103,16 @@ ReactDOM.render(
     {/*                 onCancel={() => alert('Cancel')}*/}
     {/*                 onSave={(sc) => alert(JSON.stringify(sc))}/>*/}
     {/*<ImportShowCrawler onImport={rawShowCrawler => alert(rawShowCrawler)} onCancel={() => alert('Cancel')}/>*/}
-    <EditCrawler crawlerType={'thumbnail'}
-                 onCancel={() => alert('Cancel')}
-                 onPreview={(c) => alert(`Preview ${c}`)}
-                 onSave={(c) => alert(`Save ${c}`)}/>
+    {/*<EditCrawler crawlerType={'thumbnail'}*/}
+    {/*             onCancel={() => alert('Cancel')}*/}
+    {/*             onPreview={(c) => alert(`Preview ${c}`)}*/}
+    {/*             onSave={(c) => alert(`Save ${c}`)}/>*/}
+    <CrawlPreview crawlerType='Thumbnail'
+                  crawlItems={crawlItems}
+                  onBack={() => alert('Back')}
+                  onViewLog={() => alert('View Log')}
+                  hoverableCrawlItems={window.platform !== TV_PLATFORM}
+                  scrollOnFocus={window.platform === TV_PLATFORM}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

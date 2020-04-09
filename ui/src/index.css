@@ -52,8 +52,17 @@ html, body, .serio-background {
   white-space: nowrap;
 }
 
+.serio-vertical-container {
+  overflow-y: auto;
+}
+
 .serio-growable {
   flex-grow: 1;
+}
+
+.serio-actions {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .serio-form-actions {
