@@ -94,67 +94,67 @@ const crawlItems = [
 const crawLog = [
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
     {
         name: 'Execute step 1',
-        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+        description: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
     },
 ];
 
