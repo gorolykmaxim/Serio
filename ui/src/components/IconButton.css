@@ -9,11 +9,11 @@
 }
 
 .serio-icon-button-normal-size {
-    font-size: 56px;
+    font-size: 2rem;
 }
 
 .serio-icon-button-large-size {
-    font-size: 112px;
+    font-size: 6rem;
 }
 
 .serio-icon-button:hover, .serio-icon-button:focus {
