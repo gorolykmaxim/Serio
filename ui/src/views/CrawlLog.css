@@ -1,0 +1,9 @@
+.serio-crawl-log {
+    display: flex;
+    flex-direction: column;
+}
+
+.serio-crawl-log-title {
+    display: flex;
+    align-items: center;
+}

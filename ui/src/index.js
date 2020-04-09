@@ -6,6 +6,7 @@ import EditShowCrawler from "./views/EditShowCrawler";
 import ImportShowCrawler from "./views/ImportShowCrawler";
 import EditCrawler from "./views/EditCrawler";
 import CrawlPreview from "./views/CrawlPreview";
+import CrawlLog from "./views/CrawlLog";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -86,7 +87,75 @@ const crawlItems = [
     'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
     'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
     'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
-    'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6'
+    'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6', 'abc 1', 'abc 2', 'abc 3', 'abc 4', 'abc 5', 'abc 6',
+    'abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6abc 6'
+];
+
+const crawLog = [
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
+    {
+        name: 'Execute step 1',
+        shortDescription: 'Parameters: a, b, c. Input arguments: a, b, c, d, e, f. Output arguments: g, h, i, j, k, l'
+    },
 ];
 
 ReactDOM.render(
@@ -107,12 +176,17 @@ ReactDOM.render(
     {/*             onCancel={() => alert('Cancel')}*/}
     {/*             onPreview={(c) => alert(`Preview ${c}`)}*/}
     {/*             onSave={(c) => alert(`Save ${c}`)}/>*/}
-    <CrawlPreview crawlerType='Thumbnail'
-                  crawlItems={crawlItems}
-                  onBack={() => alert('Back')}
-                  onViewLog={() => alert('View Log')}
-                  hoverableCrawlItems={window.platform !== TV_PLATFORM}
-                  scrollOnFocus={window.platform === TV_PLATFORM}/>
+    {/*<CrawlPreview crawlerType='Thumbnail'*/}
+    {/*              crawlItems={crawlItems}*/}
+    {/*              onBack={() => alert('Back')}*/}
+    {/*              onViewLog={() => alert('View Log')}*/}
+    {/*              hoverableCrawlItems={window.platform !== TV_PLATFORM}*/}
+    {/*              scrollOnFocus={window.platform === TV_PLATFORM}/>*/}
+    <CrawlLog logEntries={crawLog}
+              onBack={() => alert('Back')}
+              onLogEntry={(e) => alert(JSON.stringify(e))}
+              scrollOnFocus={window.platform === TV_PLATFORM}
+              hoverableLogEntries={window.platform !== TV_PLATFORM}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
