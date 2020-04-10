@@ -11,7 +11,7 @@ export default function CrawlPreview(props) {
     const onBack = getFunction(props.onBack);
     const onViewLog = getFunction(props.onViewLog);
     const onFocusCapture = props.scrollOnFocus ? createScrollIntoTarget(false): null;
-    const crawlItems = props.crawlItems.map(i => <ListTile primaryText={i} hoverable={props.hoverableCrawlItems} onFocusCapture={onFocusCapture}/>);
+    const crawlItems = props.crawlItems.map(i => <ListTile icon={null} primaryText={i} hoverable={props.hoverableCrawlItems} onFocusCapture={onFocusCapture}/>);
     return (
         <div className='serio-crawl-preview serio-full-height'>
             <div className='serio-padding'>
