@@ -1,0 +1,21 @@
+.serio-show-details {
+    background-size: cover;
+    background-position: center;
+}
+
+.serio-show-details-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.serio-show-details-container {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.serio-show-details-no-episodes-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
