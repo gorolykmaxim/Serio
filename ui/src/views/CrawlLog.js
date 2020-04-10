@@ -1,9 +1,9 @@
 import React from "react";
 import './CrawlLog.css';
-import IconButton from "../components/IconButton";
 import {createScrollIntoTarget, getFunction} from "../common";
 import {HEADLINE_5, Text} from "../components/Text";
 import ListTile from "../components/ListTile";
+import Button from "../components/Button";
 
 export default function CrawlLog(props) {
     console.assert(props.logEntries);
@@ -19,9 +19,11 @@ export default function CrawlLog(props) {
     );
     return (
         <div className='serio-crawl-log serio-full-height'>
-            <div className='serio-crawl-log-title serio-padding'>
-                <IconButton icon='arrow_back' autoFocus={true} onClick={onBack}/>
-                <Text type={HEADLINE_5} primary className='serio-margin-before'>{props.crawlType ? `${props.crawlType} crawl log` : 'Crawl log'}</Text>
+            <div className='serio-padding'>
+                <Text type={HEADLINE_5} primary>{props.crawlType ? `${props.crawlType} crawl log` : 'Crawl log'}</Text>
+            </div>
+            <div className='serio-padding'>
+                <Button text='back' onClick={onBack} autoFocus={true}/>
             </div>
             <div className='serio-growable serio-vertical-container'>
                 {logEntries}
