@@ -11,8 +11,7 @@ export default function CrawlLog(props) {
     const onLogEntry = getFunction(props.onLogEntry);
     const onFocusCapture = props.scrollOnFocus ? createScrollIntoTarget(false) : null;
     const logEntries = props.logEntries.map(e =>
-        <ListTile primaryText={e.name}
-                  secondaryText={e.description}
+        <ListTile primaryText={e.description}
                   hoverable={props.hoverableLogEntries}
                   onClick={() => onLogEntry(e)}
                   onFocusCapture={onFocusCapture}/>
