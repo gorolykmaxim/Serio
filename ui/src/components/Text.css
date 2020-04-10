@@ -61,5 +61,12 @@
 .serio-text-overflow {
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.serio-text-nowrap {
     white-space: nowrap;
+}
+
+.serio-text-wrap {
+    word-break: break-all;
 }
