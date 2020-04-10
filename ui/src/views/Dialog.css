@@ -1,0 +1,12 @@
+.serio-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.serio-dialog-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 400px;
+}
