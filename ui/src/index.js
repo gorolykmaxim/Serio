@@ -7,6 +7,7 @@ import ImportShowCrawler from "./views/ImportShowCrawler";
 import EditCrawler from "./views/EditCrawler";
 import CrawlPreview from "./views/CrawlPreview";
 import CrawlLog from "./views/CrawlLog";
+import CrawlLogEntryDetails from "./views/CrawlLogEntryDetails";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -93,53 +94,84 @@ const crawlItems = [
 
 const crawLog = [
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        name: 'Execute step 1',
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
-        description: 'Execute step 1: Parameters: a, b, c.'
+        description: 'Execute step 1: Parameters: a, b, c.',
+        input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
+        output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
 ];
 
@@ -167,11 +199,12 @@ ReactDOM.render(
     {/*              onViewLog={() => alert('View Log')}*/}
     {/*              hoverableCrawlItems={window.platform !== TV_PLATFORM}*/}
     {/*              scrollOnFocus={window.platform === TV_PLATFORM}/>*/}
-    <CrawlLog logEntries={crawLog}
-              onBack={() => alert('Back')}
-              onLogEntry={(e) => alert(JSON.stringify(e))}
-              scrollOnFocus={window.platform === TV_PLATFORM}
-              hoverableLogEntries={window.platform !== TV_PLATFORM}/>
+    {/*<CrawlLog logEntries={crawLog}*/}
+    {/*          onBack={() => alert('Back')}*/}
+    {/*          onLogEntry={(e) => alert(JSON.stringify(e))}*/}
+    {/*          scrollOnFocus={window.platform === TV_PLATFORM}*/}
+    {/*          hoverableLogEntries={window.platform !== TV_PLATFORM}/>*/}
+    <CrawlLogEntryDetails logEntry={crawLog[0]} onBack={() => alert('Back')}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

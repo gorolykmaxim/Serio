@@ -1,0 +1,9 @@
+.serio-crawl-log-entry-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.serio-crawl-log-entry-details-multiline-text {
+    min-height: 0;
+    overflow: hidden;
+}
