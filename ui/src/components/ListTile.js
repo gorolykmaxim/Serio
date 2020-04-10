@@ -6,7 +6,7 @@ export default function ListTile(props) {
     let icon;
     if (props.icon) {
         icon = <span className="material-icons">{props.icon}</span>;
-    } else {
+    } else if (props.icon !== null) {
         icon = <span className="material-icons serio-list-tile-icon-placeholder">bug_report</span>;
     }
     const className = ['serio-list-tile', 'serio-padding'];
