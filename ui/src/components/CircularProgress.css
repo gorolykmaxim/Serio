@@ -1,0 +1,8 @@
+.serio-circular-progress {
+    width: 10rem;
+    height: 10rem;
+}
+
+.serio-circular-progress .mdl-spinner__circle {
+    border-width: .75rem;
+}
