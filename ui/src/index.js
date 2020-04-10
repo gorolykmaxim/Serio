@@ -8,6 +8,9 @@ import EditCrawler from "./views/EditCrawler";
 import CrawlPreview from "./views/CrawlPreview";
 import CrawlLog from "./views/CrawlLog";
 import CrawlLogEntryDetails from "./views/CrawlLogEntryDetails";
+import CircularProgress from "./components/CircularProgress";
+import IconButton from "./components/IconButton";
+import CrawlingInProgress from "./views/CrawlingInProgress";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -204,7 +207,8 @@ ReactDOM.render(
     {/*          onLogEntry={(e) => alert(JSON.stringify(e))}*/}
     {/*          scrollOnFocus={window.platform === TV_PLATFORM}*/}
     {/*          hoverableLogEntries={window.platform !== TV_PLATFORM}/>*/}
-    <CrawlLogEntryDetails logEntry={crawLog[0]} onBack={() => alert('Back')}/>
+    {/*<CrawlLogEntryDetails logEntry={crawLog[0]} onBack={() => alert('Back')}/>*/}
+    <CrawlingInProgress/>
   </React.StrictMode>,
   document.getElementById('root')
 );
