@@ -234,27 +234,27 @@ ReactDOM.render(
     {/*          hoverableLogEntries={window.platform !== TV_PLATFORM}/>*/}
     {/*<CrawlLogEntryDetails logEntry={crawLog[0]} onBack={() => alert('Back')}/>*/}
     {/*<CrawlingInProgress/>*/}
-    <ShowDetails show={shows[0]}
-                 hoverableEpisodes={window.platform !== TV_PLATFORM}
-                 scrollOnFocus={window.platform === TV_PLATFORM}
-                 onPlay={(show) => alert(`Play ${JSON.stringify(show)}`)}
-                 onPlayEpisode={(episode, show) => alert(`Play ${JSON.stringify(episode)} ${JSON.stringify(show)}`)}
-                 onBack={() => alert('Back')}
-                 onEdit={(show) => alert(`Edit ${JSON.stringify(show)}`)}
-                 onShareCrawler={(show) => alert(`Share crawler ${JSON.stringify(show)}`)}
-                 onCrawl={(show) => alert(`Crawl ${JSON.stringify(show)}`)}
-                 onViewCrawlLog={(show) => alert(`View last crawl log ${JSON.stringify(show)}`)}
-                 onClearWatchHistory={(show) => alert(`Clear watch history ${JSON.stringify(show)}`)}
-                 onDelete={(show) => alert(`Delete ${JSON.stringify(show)}`)}/>
+    {/*<ShowDetails show={shows[0]}*/}
+    {/*             hoverableEpisodes={window.platform !== TV_PLATFORM}*/}
+    {/*             scrollOnFocus={window.platform === TV_PLATFORM}*/}
+    {/*             onPlay={(show) => alert(`Play ${JSON.stringify(show)}`)}*/}
+    {/*             onPlayEpisode={(episode, show) => alert(`Play ${JSON.stringify(episode)} ${JSON.stringify(show)}`)}*/}
+    {/*             onBack={() => alert('Back')}*/}
+    {/*             onEdit={(show) => alert(`Edit ${JSON.stringify(show)}`)}*/}
+    {/*             onShareCrawler={(show) => alert(`Share crawler ${JSON.stringify(show)}`)}*/}
+    {/*             onCrawl={(show) => alert(`Crawl ${JSON.stringify(show)}`)}*/}
+    {/*             onViewCrawlLog={(show) => alert(`View last crawl log ${JSON.stringify(show)}`)}*/}
+    {/*             onClearWatchHistory={(show) => alert(`Clear watch history ${JSON.stringify(show)}`)}*/}
+    {/*             onDelete={(show) => alert(`Delete ${JSON.stringify(show)}`)}/>*/}
     {/*<Dialog title='Show removal confirmation' text='You are about to delete that show you have watched for only God knows how long. Are you sure about that?' actions={dialogActions}/>*/}
-    {/*<ShowPlayer info={playerInfo}*/}
-    {/*            startTime={23}*/}
-    {/*            progressInterval={15}*/}
-    {/*            onProgressChange={console.log}*/}
-    {/*            onBack={() => alert('Back')}*/}
-    {/*            onEnd={() => alert('End')}*/}
-    {/*            onPreviousEpisode={() => alert('Previous Episode')}*/}
-    {/*            onNextEpisode={() => alert('Next Episode')}/>*/}
+    <ShowPlayer info={playerInfo}
+                startTime={23}
+                progressInterval={15}
+                onProgressChange={console.log}
+                onBack={() => alert('Back')}
+                onEnd={() => alert('End')}
+                onPreviousEpisode={() => alert('Previous Episode')}
+                onNextEpisode={() => alert('Next Episode')}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
