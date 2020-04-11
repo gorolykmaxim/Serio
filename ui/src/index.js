@@ -13,6 +13,7 @@ import IconButton from "./components/IconButton";
 import CrawlingInProgress from "./views/CrawlingInProgress";
 import ShowDetails from "./views/ShowDetails";
 import Dialog from "./views/Dialog";
+import ShowPlayer from "./views/ShowPlayer";
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
@@ -196,6 +197,14 @@ const dialogActions = [
     }
 ];
 
+const playerInfo = {
+    videoUrl: 'https://iridium.get.kodik-cdn.com/animetvseries/226ae6d055624420f0b51ad24a49e187310d659b/a9b100545e3845ba7fca0737d5ac6762:2020041204/360.mp4',
+    showName: 'Some movie',
+    episodeName: 'Episode 15',
+    hasPreviousEpisode: true,
+    hasNextEpisode: true
+};
+
 ReactDOM.render(
   <React.StrictMode>
     {/*<AllShows showInfo={showInfo}*/}
@@ -238,7 +247,15 @@ ReactDOM.render(
     {/*             onViewCrawlLog={(show) => alert(`View last crawl log ${JSON.stringify(show)}`)}*/}
     {/*             onClearWatchHistory={(show) => alert(`Clear watch history ${JSON.stringify(show)}`)}*/}
     {/*             onDelete={(show) => alert(`Delete ${JSON.stringify(show)}`)}/>*/}
-    <Dialog title='Show removal confirmation' text='You are about to delete that show you have watched for only God knows how long. Are you sure about that?' actions={dialogActions}/>
+    {/*<Dialog title='Show removal confirmation' text='You are about to delete that show you have watched for only God knows how long. Are you sure about that?' actions={dialogActions}/>*/}
+    <ShowPlayer info={playerInfo}
+                startTime={23}
+                progressInterval={15}
+                onProgressChange={console.log}
+                onBack={() => alert('Back')}
+                onEnd={() => alert('End')}
+                onPreviousEpisode={() => alert('Previous Episode')}
+                onNextEpisode={() => alert('Next Episode')}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
