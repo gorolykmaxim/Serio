@@ -12,6 +12,7 @@ export default function ShowDetails(props) {
     const onPlayEpisode = getFunction(props.onPlayEpisode)
     const onBack = getFunction(props.onBack);
     const onEdit = getFunction(props.onEdit);
+    const onShareCrawler = getFunction(props.onShareCrawler);
     const onCrawl = getFunction(props.onCrawl);
     const onViewCrawlLog = getFunction(props.onViewCrawlLog);
     const onClearWatchHistory = getFunction(props.onClearWatchHistory);
@@ -42,13 +43,10 @@ export default function ShowDetails(props) {
                     <Text type={SUBTITLE_1}>Last watched {show.lastWatched}</Text>
                 </div>
                 <div>
-                    <Button text={show.hasBeenWatched ? 'continue watching' : 'play'}
-                            autoFocus={hasEpisodes}
-                            className='serio-margin'
-                            onClick={() => onPlay(show)}
-                            disabled={!hasEpisodes}/>
+                    <Button text='play' autoFocus={hasEpisodes} className='serio-margin' onClick={() => onPlay(show)} disabled={!hasEpisodes}/>
                     <Button text='back' className='serio-margin' onClick={onBack}/>
                     <Button text='edit' className='serio-margin' onClick={() => onEdit(show)} autoFocus={!hasEpisodes}/>
+                    <Button text='share crawler' className='serio-margin' onClick={() => onShareCrawler(show)}/>
                     <Button text='crawl' className='serio-margin' onClick={() => onCrawl(show)}/>
                     <Button text='view crawl log' className='serio-margin' onClick={() => onViewCrawlLog(show)}/>
                     <Button text='clear watch history' className='serio-margin' onClick={() => onClearWatchHistory(show)}/>
