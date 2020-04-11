@@ -1,6 +1,6 @@
 import React from "react";
-import './CircularProgress.css';
+import {CircularProgress as Progress} from "@material-ui/core";
 
 export default function CircularProgress(props) {
-    return <div className="serio-circular-progress mdl-spinner mdl-js-spinner is-active"/>;
+    return <Progress size={140}/>;
 }
