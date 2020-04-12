@@ -38,6 +38,9 @@ export default class ShowPlayer extends React.Component {
     componentDidMount() {
         this.handleUserActivity();
     }
+    componentWillUnmount() {
+        clearTimeout(this.inactivityTimeout);
+    }
     togglePlay() {
         this.setState({isPlaying: !this.state.isPlaying});
     }
