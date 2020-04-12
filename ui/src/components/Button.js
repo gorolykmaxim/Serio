@@ -1,25 +1,28 @@
 import React from 'react';
 import './Button.css';
+import AutoFocusable from "./AutoFocusable";
 
-export default function Button(props) {
-    const isSubmit = props.submit || false;
-    const isDisabled = props.disabled || false;
-    const className = ['serio-button', 'serio-text-font'];
-    if (props.className) {
-        className.push(props.className);
+export default class Button extends AutoFocusable {
+    render() {
+        const isSubmit = this.props.submit || false;
+        const isDisabled = this.props.disabled || false;
+        const className = ['serio-button', 'serio-text-font'];
+        if (this.props.className) {
+            className.push(this.props.className);
+        }
+        if (isDisabled) {
+            className.push('serio-button-disabled');
+        } else {
+            className.push("serio-button-enabled");
+        }
+        return (
+            <button className={className.join(' ')}
+                    ref={root => {this.focusable = root}}
+                    onClick={this.props.onClick}
+                    disabled={isDisabled}
+                    type={isSubmit ? 'submit' : 'button'}>
+                {this.props.text}
+            </button>
+        );
     }
-    if (isDisabled) {
-        className.push('serio-button-disabled');
-    } else {
-        className.push("serio-button-enabled");
-    }
-    return (
-        <button className={className.join(' ')}
-                onClick={props.onClick}
-                disabled={isDisabled}
-                type={isSubmit ? 'submit' : 'button'}
-                autoFocus={props.autoFocus}>
-            {props.text}
-        </button>
-    );
 }
