@@ -6,9 +6,8 @@ export default function TextArea(props) {
         <textarea className={`serio-text-area ${props.className || ''}`}
                   required={props.required}
                   name={props.name}
+                  defaultValue={props.defaultValue}
                   placeholder={props.placeholder}
-                  autoFocus={props.autoFocus}>
-            {props.defaultValue}
-        </textarea>
+                  autoFocus={props.autoFocus}/>
     );
 }
