@@ -14,7 +14,7 @@ import Dialog from "./views/Dialog";
 
 const EVENT_TYPE = 'serio-event';
 
-export function dispatchApplicationEvent(data) {
+window.dispatchApplicationEvent = function(data) {
     window.dispatchEvent(new CustomEvent(EVENT_TYPE, {detail: data}));
 }
 

@@ -4,7 +4,6 @@ import {
     CRAWL_LOG_ENTRY_DETAILS,
     CRAWL_PREVIEW,
     CRAWLING_IN_PROGRESS,
-    dispatchApplicationEvent,
     EDIT_CRAWLER,
     EDIT_SHOW_CRAWLER,
     IMPORT_SHOW_CRAWLER,
@@ -215,20 +214,20 @@ export default function enableDevelopmentApi() {
     registerFunction('allShowsNoWatched', () => allShows(true));
     registerFunction('addShowCrawler', () => editShowCrawler());
     registerFunction('editShowCrawler', () => editShowCrawler(true));
-    registerFunction('importShowCrawler', () => dispatchApplicationEvent({dataType: IMPORT_SHOW_CRAWLER}));
-    registerFunction('editCrawler', () => dispatchApplicationEvent({dataType: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([]), showCrawlerId: showCrawlerId}));
-    registerFunction('crawlPreview', () => dispatchApplicationEvent({dataType: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems, showCrawlerId: showCrawlerId}));
-    registerFunction('crawlLog', () => dispatchApplicationEvent({dataType: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog, showCrawlerId: showCrawlerId}));
-    registerFunction('crawlLogEntryDetails', () => dispatchApplicationEvent({dataType: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
-    registerFunction('crawlingInProgress', () => dispatchApplicationEvent({dataType: CRAWLING_IN_PROGRESS}));
+    registerFunction('importShowCrawler', () => window.dispatchApplicationEvent({dataType: IMPORT_SHOW_CRAWLER}));
+    registerFunction('editCrawler', () => window.dispatchApplicationEvent({dataType: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([]), showCrawlerId: showCrawlerId}));
+    registerFunction('crawlPreview', () => window.dispatchApplicationEvent({dataType: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems, showCrawlerId: showCrawlerId}));
+    registerFunction('crawlLog', () => window.dispatchApplicationEvent({dataType: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog, showCrawlerId: showCrawlerId}));
+    registerFunction('crawlLogEntryDetails', () => window.dispatchApplicationEvent({dataType: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
+    registerFunction('crawlingInProgress', () => window.dispatchApplicationEvent({dataType: CRAWLING_IN_PROGRESS}));
     registerFunction('showDetails', () => showDetails());
     registerFunction('showDetailsNoEpisodes', () => showDetails(true));
     registerFunction('showPlayer', () => showPlayer());
     registerFunction('showPlayerSeek', () => showPlayer(true));
-    registerFunction('clearWatchHistoryDialog', () => dispatchApplicationEvent({dataType: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('deleteShowDialog', () => dispatchApplicationEvent({dataType: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('watchIsOverDialog', () => dispatchApplicationEvent({dataType: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('errorDialog', () => dispatchApplicationEvent({dataType: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
+    registerFunction('clearWatchHistoryDialog', () => window.dispatchApplicationEvent({dataType: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('deleteShowDialog', () => window.dispatchApplicationEvent({dataType: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('watchIsOverDialog', () => window.dispatchApplicationEvent({dataType: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('errorDialog', () => window.dispatchApplicationEvent({dataType: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
 }
 
 function registerFunction(name, f) {
@@ -237,28 +236,28 @@ function registerFunction(name, f) {
 }
 
 function allShows(noWatchedShows) {
-    dispatchApplicationEvent({
+    window.dispatchApplicationEvent({
         dataType: ALL_SHOWS,
         showInfo: {lastWatchedShows: shows.slice(0, noWatchedShows ? 0 : 2), allShows: shows}
     });
 }
 
 function editShowCrawler(edit) {
-    dispatchApplicationEvent({
+    window.dispatchApplicationEvent({
         dataType: EDIT_SHOW_CRAWLER,
         showCrawler: {id: showCrawlerId, name: edit ? 'Boruto' : null}
     });
 }
 
 function showDetails(noEpisodes) {
-    dispatchApplicationEvent({
+    window.dispatchApplicationEvent({
         dataType: SHOW_DETAILS,
         show: shows[noEpisodes ? 1 : 0]
     });
 }
 
 function showPlayer(seek) {
-    dispatchApplicationEvent({
+    window.dispatchApplicationEvent({
         dataType: SHOW_PLAYER,
         info: playerInfo,
         startTime: seek ? 25 : null,
