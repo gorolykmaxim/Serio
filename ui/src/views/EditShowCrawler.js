@@ -6,7 +6,6 @@ import {HEADLINE_5, Text} from "../components/Text";
 import {getFunction} from "../common";
 
 export default function EditShowCrawler(props) {
-    const isShowCrawlerSpecified = props.showCrawler;
     const showCrawler = props.showCrawler || {};
     const onEditThumbnailCrawler = getFunction(props.onEditThumbnailCrawler);
     const onEditEpisodeVideoCrawler = getFunction(props.onEditEpisodeVideoCrawler);
@@ -23,7 +22,7 @@ export default function EditShowCrawler(props) {
                           required={true}
                           placeholder={'TV Show name'}
                           defaultValue={showCrawler.name}
-                          autoFocus={!isShowCrawlerSpecified}
+                          autoFocus={true}
                           className='serio-edit-show-crawler-edit-line serio-growable'/>
                 <Button text='Configure thumbnail crawler'
                         className='serio-edit-show-crawler-edit-line serio-growable'
@@ -35,7 +34,7 @@ export default function EditShowCrawler(props) {
                         className='serio-edit-show-crawler-edit-line serio-growable'
                         onClick={onEditEpisodeNameCrawler}/>
                 <div className='serio-edit-show-crawler-edit-line serio-growable serio-form-actions'>
-                    <Button text={'cancel'} autoFocus={isShowCrawlerSpecified} onClick={onCancel}/>
+                    <Button text={'cancel'} onClick={onCancel}/>
                     <Button submit={true} text={'save'} className='serio-margin-before'/>
                 </div>
             </form>
