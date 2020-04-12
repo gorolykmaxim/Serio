@@ -200,7 +200,7 @@ const crawLog = [
 ];
 
 const playerInfo = {
-    videoUrl: 'https://iridium.get.kodik-cdn.com/animetvseries/226ae6d055624420f0b51ad24a49e187310d659b/a9b100545e3845ba7fca0737d5ac6762:2020041204/360.mp4',
+    videoUrl: 'https://scandium.get.kodik-cdn.com/animetvseries/a0d36842d5dc52b6139003dee817c3b7230f2605/548462b269cc0a9e743723209aa9f230:2020041306/360.mp4',
     showName: 'Some movie',
     episodeName: 'Episode 15',
     hasPreviousEpisode: true,
@@ -261,6 +261,7 @@ function showPlayer(seek) {
     dispatchApplicationEvent({
         dataType: SHOW_PLAYER,
         info: playerInfo,
-        startTime: seek ? 25 : null
+        startTime: seek ? 25 : null,
+        showId: showCrawlerId
     });
 }
