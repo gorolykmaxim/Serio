@@ -21,7 +21,7 @@ const shows = [
         name: 'Boruto',
         thumbnail: 'https://dw9to29mmj727.cloudfront.net/properties/2016/1363-SeriesThumbnail_BorutoAnime_400x320_v2.jpg',
         lastWatched: 'Today',
-        episodes: Array.from(Array(100).keys()).map(i => {return {name: `Episode ${i}`, videoUrl: `https://www.tv-shows.com/series/episode/fasiodnfbas09dfhas0f9sdaf03b80f4/${i}.mp4`, watched: i < 20};}),
+        episodes: Array.from(Array(100).keys()).map(i => {return {id: i, name: `Episode ${i}`, videoUrl: `https://www.tv-shows.com/series/episode/fasiodnfbas09dfhas0f9sdaf03b80f4/${i}.mp4`, watched: i < 20};}),
     },
     {
         id: '2',
