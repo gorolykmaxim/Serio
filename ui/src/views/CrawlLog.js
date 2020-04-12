@@ -20,7 +20,7 @@ export default function CrawlLog(props) {
     return (
         <div className='serio-crawl-log serio-full-height'>
             <div className='serio-padding'>
-                <Text type={HEADLINE_5} primary>{props.crawlType ? `${props.crawlType} crawl log` : 'Crawl log'}</Text>
+                <Text type={HEADLINE_5} primary>{props.crawlerType ? `${props.crawlerType} crawl log` : 'Crawl log'}</Text>
             </div>
             <div className='serio-padding'>
                 <Button text='back' onClick={onBack} autoFocus={true}/>
