@@ -14,8 +14,8 @@ const PRODUCTION_RUNTIME = 0;
 const DEVELOPMENT_RUNTIME = 1;
 
 const hash = parse(window.location.hash);
-window.platform = parseInt(hash.platform || 0);
-window.runtimeType = parseInt(hash.runtimeType || 1);
+window.platform = parseInt(hash.platform || DESKTOP_PLATFORM);
+window.runtimeType = parseInt(hash.runtimeType || DEVELOPMENT_RUNTIME);
 
 if (window.runtimeType === DEVELOPMENT_RUNTIME) {
     window.serioController = new SerioController();
