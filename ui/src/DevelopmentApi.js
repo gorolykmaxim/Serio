@@ -200,7 +200,7 @@ const crawLog = [
 ];
 
 const playerInfo = {
-    videoUrl: 'https://scandium.get.kodik-cdn.com/animetvseries/a0d36842d5dc52b6139003dee817c3b7230f2605/548462b269cc0a9e743723209aa9f230:2020041306/360.mp4',
+    videoUrl: 'https://media.w3.org/2010/05/sintel/trailer_hd.mp4',
     showName: 'Some movie',
     episodeName: 'Episode 15',
     hasPreviousEpisode: true,
