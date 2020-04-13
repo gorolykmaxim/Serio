@@ -13,6 +13,7 @@ import {
     SHOW_PLAYER,
     SHOW_WATCH_IS_OVER_DIALOG
 } from "./SerioApplication";
+import {parse} from "query-string";
 
 const shows = [
     {
@@ -209,30 +210,40 @@ const playerInfo = {
 const showCrawlerId = '1';
 
 export default function enableDevelopmentApi() {
+    const viewNameToTrigger = changeViewOnHashChange();
     console.info('Development API:');
-    registerFunction('allShows', () => allShows());
-    registerFunction('allShowsNoWatched', () => allShows(true));
-    registerFunction('addShowCrawler', () => editShowCrawler());
-    registerFunction('editShowCrawler', () => editShowCrawler(true));
-    registerFunction('importShowCrawler', () => window.dispatchApplicationEvent({dataType: IMPORT_SHOW_CRAWLER}));
-    registerFunction('editCrawler', () => window.dispatchApplicationEvent({dataType: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([]), showCrawlerId: showCrawlerId}));
-    registerFunction('crawlPreview', () => window.dispatchApplicationEvent({dataType: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems, showCrawlerId: showCrawlerId}));
-    registerFunction('crawlLog', () => window.dispatchApplicationEvent({dataType: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog, showCrawlerId: showCrawlerId}));
-    registerFunction('crawlLogEntryDetails', () => window.dispatchApplicationEvent({dataType: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
-    registerFunction('crawlingInProgress', () => window.dispatchApplicationEvent({dataType: CRAWLING_IN_PROGRESS}));
-    registerFunction('showDetails', () => showDetails());
-    registerFunction('showDetailsNoEpisodes', () => showDetails(true));
-    registerFunction('showPlayer', () => showPlayer());
-    registerFunction('showPlayerSeek', () => showPlayer(true));
-    registerFunction('clearWatchHistoryDialog', () => window.dispatchApplicationEvent({dataType: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('deleteShowDialog', () => window.dispatchApplicationEvent({dataType: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('watchIsOverDialog', () => window.dispatchApplicationEvent({dataType: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('errorDialog', () => window.dispatchApplicationEvent({dataType: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
+    registerFunction('allShows', viewNameToTrigger, () => allShows());
+    registerFunction('allShowsNoWatched', viewNameToTrigger, () => allShows(true));
+    registerFunction('addShowCrawler', viewNameToTrigger, () => editShowCrawler());
+    registerFunction('editShowCrawler', viewNameToTrigger, () => editShowCrawler(true));
+    registerFunction('importShowCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: IMPORT_SHOW_CRAWLER}));
+    registerFunction('editCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([]), showCrawlerId: showCrawlerId}));
+    registerFunction('crawlPreview', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems, showCrawlerId: showCrawlerId}));
+    registerFunction('crawlLog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog, showCrawlerId: showCrawlerId}));
+    registerFunction('crawlLogEntryDetails', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
+    registerFunction('crawlingInProgress', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWLING_IN_PROGRESS}));
+    registerFunction('showDetails', viewNameToTrigger, () => showDetails());
+    registerFunction('showDetailsNoEpisodes', viewNameToTrigger, () => showDetails(true));
+    registerFunction('showPlayer', viewNameToTrigger, () => showPlayer());
+    registerFunction('showPlayerSeek', viewNameToTrigger, () => showPlayer(true));
+    registerFunction('clearWatchHistoryDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
 }
 
-function registerFunction(name, f) {
+function changeViewOnHashChange() {
+    const viewNameToTrigger = {};
+    const showViewFromHash = () => viewNameToTrigger[parse(window.location.hash).view]();
+    window.addEventListener('hashchange', showViewFromHash);
+    setTimeout(showViewFromHash, 10);
+    return viewNameToTrigger;
+}
+
+function registerFunction(name, listeners, f) {
     console.log(`${name}()`);
     window[name] = f;
+    listeners[name] = f;
 }
 
 function allShows(noWatchedShows) {
