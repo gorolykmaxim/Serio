@@ -1,0 +1,25 @@
+@startuml
+interface ShowStorage
+interface WatchHistory
+interface ShowCrawlerStorage
+interface HttpClient
+interface ApplicationController
+[AndroidStorage] --|> WatchHistory
+[AndroidStorage] --|> ShowStorage
+[AndroidStorage] --|> ShowCrawlerStorage
+[DesktopStorage] --|> WatchHistory
+[DesktopStorage] --|> ShowStorage
+[DesktopStorage] --|> ShowCrawlerStorage
+[AndroidHttpClient] --|> HttpClient
+[DesktopHttpClient] --|> HttpClient
+[AndroidApplicationController] --|> ApplicationController
+[DesktopApplicationController] --|> ApplicationController
+[Shows] --> WatchHistory
+[Shows] --> ShowStorage
+[ShowsCrawler] --> ShowCrawlerStorage
+[ShowsCrawler] --> HttpClient
+[ShowPlayer] --> [Shows]
+ApplicationController --> [Shows]
+ApplicationController --> [ShowPlayer]
+ApplicationController --> [ShowsCrawler]
+@enduml
