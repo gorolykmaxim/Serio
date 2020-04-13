@@ -230,14 +230,23 @@ export default function enableDevelopmentApi() {
     registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
     registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
     registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
+    console.info(`You can also use those function names as a window.location.hash attribute "view" like "#view=${Object.keys(viewNameToTrigger)[0]}".`);
 }
 
 function changeViewOnHashChange() {
     const viewNameToTrigger = {};
-    const showViewFromHash = () => viewNameToTrigger[parse(window.location.hash).view]();
+    const showViewFromHash = () => triggerViewRenderFromHash(viewNameToTrigger);
     window.addEventListener('hashchange', showViewFromHash);
-    setTimeout(showViewFromHash, 10);
+    setTimeout(showViewFromHash);
     return viewNameToTrigger;
+}
+
+function triggerViewRenderFromHash(viewNameToTrigger) {
+    const view = parse(window.location.hash).view;
+    const trigger = viewNameToTrigger[view];
+    if (trigger) {
+        trigger();
+    }
 }
 
 function registerFunction(name, listeners, f) {
