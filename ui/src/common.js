@@ -6,6 +6,8 @@ export function createScrollIntoTarget(isHorizontalScroll) {
     }
 }
 
+const noopFunction = () => {};
+
 export function getFunction(f) {
-    return f || (() => {});
+    return f || noopFunction;
 }

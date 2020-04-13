@@ -15,15 +15,7 @@ const INACTIVITY_TIMEOUT = 5000;
 export default class ShowPlayer extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.info = this.props.info;
-        this.progressInterval = this.props.progressInterval || PROGRESS_INTERVAL;
-        this.startTime = this.props.startTime;
         console.assert(this.info);
-        this.onBack = getFunction(this.props.onBack);
-        this.onPreviousEpisode = getFunction(this.props.onPreviousEpisode);
-        this.onNextEpisode = getFunction(this.props.onNextEpisode);
-        this.onProgressChange = getFunction(this.props.onProgressChange);
-        this.onEnd = getFunction(this.props.onEnd);
         this.inactivityTimeout = null;
         this.player = null;
         this.state = {
@@ -34,6 +26,30 @@ export default class ShowPlayer extends React.Component {
             isBuffering: true,
             displayControls: true
         };
+    }
+    get info() {
+        return this.props.info;
+    }
+    get progressInterval() {
+        return this.props.progressInterval || PROGRESS_INTERVAL;
+    }
+    get startTime() {
+        return this.props.startTime;
+    }
+    get onBack() {
+        return getFunction(this.props.onBack);
+    }
+    get onPreviousEpisode() {
+        return getFunction(this.props.onPreviousEpisode);
+    }
+    get onNextEpisode() {
+        return getFunction(this.props.onNextEpisode);
+    }
+    get onProgressChange() {
+        return getFunction(this.props.onProgressChange);
+    }
+    get onEnd() {
+        return getFunction(this.props.onEnd);
     }
     componentDidMount() {
         this.handleUserActivity();
