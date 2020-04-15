@@ -2,7 +2,7 @@ import React from "react";
 import './EditShowCrawler.css';
 import TextEdit from "../components/TextEdit";
 import Button from "../components/Button";
-import {HEADLINE_5, Text} from "../components/Text";
+import {HEADLINE_5, SUBTITLE_2, Text} from "../components/Text";
 import {getFunction} from "../common";
 
 export default function EditShowCrawler(props) {
@@ -24,12 +24,13 @@ export default function EditShowCrawler(props) {
                           defaultValue={showCrawler.name}
                           autoFocus={true}
                           className='serio-edit-show-crawler-edit-line serio-growable'/>
-                <Button text='Configure thumbnail crawler'
-                        className='serio-edit-show-crawler-edit-line serio-growable'
-                        onClick={onEditThumbnailCrawler}/>
                 <Button text='Configure episode video crawler'
                         className='serio-edit-show-crawler-edit-line serio-growable'
                         onClick={onEditEpisodeVideoCrawler}/>
+                <Text type={SUBTITLE_2} primary>Optional:</Text>
+                <Button text='Configure thumbnail crawler'
+                        className='serio-edit-show-crawler-edit-line serio-growable'
+                        onClick={onEditThumbnailCrawler}/>
                 <Button text='Configure episode name crawler'
                         className='serio-edit-show-crawler-edit-line serio-growable'
                         onClick={onEditEpisodeNameCrawler}/>
