@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface ShowStorage {
     Show findById(UUID id);
-    List<Show> findAll();
+    List<ShowMetaData> findAll();
     void save(Show show);
     void deleteById(UUID id);
 }

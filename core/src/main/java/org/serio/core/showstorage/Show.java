@@ -1,13 +1,9 @@
 package org.serio.core.showstorage;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.*;
 
 public class Show {
-    private final UUID id;
-    private final String name;
-    private final String thumbnailUrl;
+    private final ShowMetaData metaData;
     private final List<Episode> episodes;
 
     public static Show createNew(String name, List<Episode> episodes) {
@@ -15,29 +11,24 @@ public class Show {
     }
 
     public static Show createNew(String name, String thumbnailUri, List<Episode> episodes) {
-        return new Show(null, name, thumbnailUri, episodes);
+        return new Show(new ShowMetaData(null, name, thumbnailUri), episodes);
     }
 
-    public Show(UUID id, String name, String thumbnailUrl, List<Episode> episodes) {
-        if (StringUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("Name of the show is not specified or empty");
-        }
-        this.id = id != null ? id : UUID.nameUUIDFromBytes(name.getBytes());
-        this.name = name;
-        this.thumbnailUrl = thumbnailUrl != null ? thumbnailUrl : "";
+    public Show(ShowMetaData metaData, List<Episode> episodes) {
+        this.metaData = metaData;
         this.episodes = new ArrayList<>(episodes);
     }
 
     public UUID getId() {
-        return id;
+        return metaData.getId();
     }
 
     public String getName() {
-        return name;
+        return metaData.getName();
     }
 
     public String getThumbnailUrl() {
-        return thumbnailUrl;
+        return metaData.getThumbnailUrl();
     }
 
     public List<Episode> getEpisodes() {
@@ -49,23 +40,19 @@ public class Show {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Show show = (Show) o;
-        return Objects.equals(id, show.id) &&
-                Objects.equals(name, show.name) &&
-                Objects.equals(thumbnailUrl, show.thumbnailUrl) &&
+        return Objects.equals(metaData, show.metaData) &&
                 Objects.equals(episodes, show.episodes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, thumbnailUrl, episodes);
+        return Objects.hash(metaData, episodes);
     }
 
     @Override
     public String toString() {
         return "Show{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", thumbnailUri='" + thumbnailUrl + '\'' +
+                "metaData=" + metaData +
                 ", episodes=" + episodes +
                 '}';
     }

@@ -64,14 +64,12 @@ public class ShowTest {
     @Test
     public void shouldBeEqualAndHaveTheSameHash() {
         // given
-        Show show1 = new Show(
-                showId,
+        Show show1 = Show.createNew(
                 showName,
                 thumbnailUrl,
                 Collections.singletonList(new Episode(episodeId, videoUrl))
         );
-        Show show2 = new Show(
-                showId,
+        Show show2 = Show.createNew(
                 showName,
                 thumbnailUrl,
                 Collections.singletonList(new Episode(episodeId, videoUrl))
@@ -82,10 +80,10 @@ public class ShowTest {
     }
 
     @Test
-    public void shouldNotBeEqualSinceAttributesAreDifferent() {
+    public void shouldNotBeEqualSinceMetaDataIsDifferent() {
         // given
-        Show show1 = new Show(showId, showName, thumbnailUrl, Collections.emptyList());
-        Show show2 = new Show(showId, showName + "suffix", thumbnailUrl + "suffix", Collections.emptyList());
+        Show show1 = Show.createNew(showName, thumbnailUrl, Collections.emptyList());
+        Show show2 = Show.createNew(showName + "suffix", thumbnailUrl + "suffix", Collections.emptyList());
         // then
         assertNotEquals(show1, show2);
         assertNotEquals(show1.hashCode(), show2.hashCode());
@@ -94,14 +92,12 @@ public class ShowTest {
     @Test
     public void shouldNotBeEqualSinceEpisodesAreDifferent() {
         // given
-        Show show1 = new Show(
-                showId,
+        Show show1 = Show.createNew(
                 showName,
                 thumbnailUrl,
                 Collections.singletonList(new Episode(episodeId, videoUrl))
         );
-        Show show2 = new Show(
-                showId,
+        Show show2 = Show.createNew(
                 showName,
                 thumbnailUrl,
                 Arrays.asList(
