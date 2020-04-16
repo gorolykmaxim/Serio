@@ -31,6 +31,10 @@ public class Show {
         return metaData.getThumbnailUrl();
     }
 
+    public ShowMetaData getMetaData() {
+        return metaData;
+    }
+
     public List<Episode> getEpisodes() {
         return episodes;
     }
