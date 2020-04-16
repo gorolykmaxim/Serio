@@ -16,7 +16,7 @@ public class Show {
 
     public Show(ShowMetaData metaData, List<Episode> episodes) {
         this.metaData = metaData;
-        this.episodes = new ArrayList<>(episodes);
+        this.episodes = Collections.unmodifiableList(new ArrayList<>(episodes));
     }
 
     public UUID getId() {
@@ -32,7 +32,7 @@ public class Show {
     }
 
     public List<Episode> getEpisodes() {
-        return Collections.unmodifiableList(episodes);
+        return episodes;
     }
 
     @Override
