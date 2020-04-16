@@ -15,17 +15,14 @@ public class Show {
     }
 
     public static Show createNew(String name, String thumbnailUri, List<Episode> episodes) {
-        return new Show(UUID.randomUUID(), name, thumbnailUri, episodes);
+        return new Show(null, name, thumbnailUri, episodes);
     }
 
     public Show(UUID id, String name, String thumbnailUrl, List<Episode> episodes) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID of the show is not specified");
-        }
         if (StringUtils.isEmpty(name)) {
             throw new IllegalArgumentException("Name of the show is not specified or empty");
         }
-        this.id = id;
+        this.id = id != null ? id : UUID.nameUUIDFromBytes(name.getBytes());
         this.name = name;
         this.thumbnailUrl = thumbnailUrl != null ? thumbnailUrl : "";
         this.episodes = new ArrayList<>(episodes);

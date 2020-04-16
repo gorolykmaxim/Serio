@@ -23,10 +23,14 @@ public class ShowTest {
         videoUrl = "http://localhost:3000/video.mp4";
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotHaveIdSetToNull() {
+    @Test
+    public void shouldHaveIdGeneratedFromTheNameWhileBeingCreatedForTheFirstTime() {
+        // given
+        UUID expectedId = UUID.nameUUIDFromBytes(showName.getBytes());
         // when
-        new Show(null, showName, thumbnailUrl, Collections.emptyList());
+        Show show = Show.createNew(showName, Collections.emptyList());
+        // then
+        assertEquals(expectedId, show.getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
