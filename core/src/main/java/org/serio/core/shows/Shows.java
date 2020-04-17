@@ -33,8 +33,7 @@ public class Shows {
     public WatchableShow findShowById(UUID id) {
         try {
             Show show = showStorage.findById(id);
-            String showId = id.toString();
-            List<EpisodeView> episodeViews = watchHistory.getEpisodeWatchHistoryOfShow(showId);
+            List<EpisodeView> episodeViews = watchHistory.getEpisodeWatchHistoryOfShow(id.toString());
             return WatchableShow.from(show, episodeViews);
         } catch (Exception e) {
             throw new ShowLookupException(id, e);
