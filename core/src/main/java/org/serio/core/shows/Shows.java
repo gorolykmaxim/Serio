@@ -8,8 +8,9 @@ import org.serio.core.watchhistory.ShowView;
 import org.serio.core.watchhistory.WatchHistory;
 
 import java.time.Duration;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class Shows {
     private final ShowStorage showStorage;
@@ -24,13 +25,7 @@ public class Shows {
         try {
             List<ShowMetaData> allShows = showStorage.findAll();
             List<ShowView> showWatchHistory = watchHistory.getShowWatchHistory();
-            Map<String, ShowView> showIdToView = new HashMap<>();
-            showWatchHistory.forEach(showView -> showIdToView.put(showView.getShowId(), showView));
-            List<WatchableShowMetaData> allWatchableShows = allShows
-                    .stream()
-                    .map(showMetaData -> new WatchableShowMetaData(showMetaData, showIdToView.get(showMetaData.getId().toString())))
-                    .collect(Collectors.toList());
-            return new WatchableShowList(allWatchableShows);
+            return WatchableShowList.from(allShows, showWatchHistory);
         } catch (Exception e) {
             throw new AllShowsLookupException(e);
         }
