@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -55,7 +54,6 @@ public class ShowsTest {
         when(showStorage.findById(notWatchedShow.getId())).thenReturn(notWatchedShow);
         when(showStorage.findAll()).thenReturn(Stream.of(show, notWatchedShow, anotherShow, anotherNotWatchedShow).map(Show::getMetaData).collect(Collectors.toList()));
         when(watchHistory.getShowWatchHistory()).thenReturn(Arrays.asList(showView, anotherShowView));
-        when(watchHistory.getShowViewById(showId)).thenReturn(Optional.of(showView));
         when(watchHistory.getEpisodeWatchHistoryOfShow(showId)).thenReturn(episodeViews);
         shows = new Shows(showStorage, watchHistory);
     }

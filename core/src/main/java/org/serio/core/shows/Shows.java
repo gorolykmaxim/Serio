@@ -9,7 +9,6 @@ import org.serio.core.watchhistory.WatchHistory;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class Shows {
@@ -35,9 +34,8 @@ public class Shows {
         try {
             Show show = showStorage.findById(id);
             String showId = id.toString();
-            Optional<ShowView> possibleShowView = watchHistory.getShowViewById(showId);
             List<EpisodeView> episodeViews = watchHistory.getEpisodeWatchHistoryOfShow(showId);
-            return WatchableShow.from(show, possibleShowView.orElse(null), episodeViews);
+            return WatchableShow.from(show, episodeViews);
         } catch (Exception e) {
             throw new ShowLookupException(id, e);
         }

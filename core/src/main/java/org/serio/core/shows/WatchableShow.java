@@ -12,8 +12,7 @@ public class WatchableShow {
     private final WatchableShowMetaData metaData;
     private final List<WatchableEpisode> episodes;
 
-    static WatchableShow from(Show show, ShowView showView, List<EpisodeView> episodeViews) {
-        WatchableShowMetaData metaData = new WatchableShowMetaData(show.getMetaData(), showView);
+    static WatchableShow from(Show show, List<EpisodeView> episodeViews) {
         Map<String, EpisodeView> episodeIdToView = new HashMap<>();
         episodeViews.forEach(episodeView -> episodeIdToView.put(episodeView.getEpisodeId(), episodeView));
         List<WatchableEpisode> episodes = show
@@ -21,6 +20,14 @@ public class WatchableShow {
                 .stream()
                 .map(episode -> new WatchableEpisode(episode, episodeIdToView.get(Long.toString(episode.getId()))))
                 .collect(Collectors.toList());
+        Optional<LocalDate> possibleLastWatchDate = episodeViews
+                .stream()
+                .map(EpisodeView::getLastWatchDate)
+                .max(LocalDate::compareTo);
+        WatchableShowMetaData metaData;
+        metaData = possibleLastWatchDate
+                .map(localDate -> new WatchableShowMetaData(show.getMetaData(), new ShowView(show.getId().toString(), localDate)))
+                .orElseGet(() -> new WatchableShowMetaData(show.getMetaData(), null));
         return new WatchableShow(metaData, episodes);
     }
 
