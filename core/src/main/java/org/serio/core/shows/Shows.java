@@ -10,6 +10,7 @@ import org.serio.core.watchhistory.WatchHistory;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 public class Shows {
     private final ShowStorage showStorage;
@@ -22,9 +23,9 @@ public class Shows {
 
     public WatchableShowList findAllShows() {
         try {
-            List<ShowMetaData> allShows = showStorage.findAll();
-            List<ShowView> showWatchHistory = watchHistory.getShowWatchHistory();
-            return WatchableShowList.from(allShows, showWatchHistory);
+            Future<List<ShowMetaData>> allShowsFuture = showStorage.findAll();
+            Future<List<ShowView>> showWatchHistoryFuture = watchHistory.getShowWatchHistory();
+            return WatchableShowList.from(allShowsFuture.get(), showWatchHistoryFuture.get());
         } catch (Exception e) {
             throw new AllShowsLookupException(e);
         }
@@ -32,9 +33,9 @@ public class Shows {
 
     public WatchableShow findShowById(UUID id) {
         try {
-            Show show = showStorage.findById(id);
-            List<EpisodeView> episodeViews = watchHistory.getEpisodeWatchHistoryOfShow(id.toString());
-            return WatchableShow.from(show, episodeViews);
+            Future<Show> showFuture = showStorage.findById(id);
+            Future<List<EpisodeView>> episodeViewsFuture = watchHistory.getEpisodeWatchHistoryOfShow(id.toString());
+            return WatchableShow.from(showFuture.get(), episodeViewsFuture.get());
         } catch (Exception e) {
             throw new ShowLookupException(id, e);
         }

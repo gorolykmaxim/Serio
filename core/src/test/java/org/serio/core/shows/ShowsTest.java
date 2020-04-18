@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -50,11 +51,16 @@ public class ShowsTest {
         anotherNotWatchedShow = Show.createNew("American Family", "https://family.com/thumbnail.jpg", Collections.emptyList());
         showStorage = mock(ShowStorage.class);
         watchHistory = mock(WatchHistory.class);
-        when(showStorage.findById(show.getId())).thenReturn(show);
-        when(showStorage.findById(notWatchedShow.getId())).thenReturn(notWatchedShow);
-        when(showStorage.findAll()).thenReturn(Stream.of(show, notWatchedShow, anotherShow, anotherNotWatchedShow).map(Show::getMetaData).collect(Collectors.toList()));
-        when(watchHistory.getShowWatchHistory()).thenReturn(Arrays.asList(showView, anotherShowView));
-        when(watchHistory.getEpisodeWatchHistoryOfShow(showId)).thenReturn(episodeViews);
+        when(showStorage.findById(show.getId())).thenReturn(CompletableFuture.completedFuture(show));
+        when(showStorage.findById(notWatchedShow.getId())).thenReturn(CompletableFuture.completedFuture(notWatchedShow));
+        when(showStorage.findAll()).thenReturn(CompletableFuture.completedFuture(Stream
+                .of(show, notWatchedShow, anotherShow, anotherNotWatchedShow)
+                .map(Show::getMetaData)
+                .collect(Collectors.toList())
+        ));
+        when(watchHistory.getShowWatchHistory()).thenReturn(CompletableFuture.completedFuture(Arrays.asList(showView, anotherShowView)));
+        when(watchHistory.getEpisodeWatchHistoryOfShow(notWatchedShow.getId().toString())).thenReturn(CompletableFuture.completedFuture(Collections.emptyList()));
+        when(watchHistory.getEpisodeWatchHistoryOfShow(showId)).thenReturn(CompletableFuture.completedFuture(episodeViews));
         shows = new Shows(showStorage, watchHistory);
     }
 
