@@ -8,10 +8,19 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * An episode of a show that a user might have watched or might be watching.
+ */
 public class WatchableEpisode {
     private final Episode episode;
     private final EpisodeView view;
 
+    /**
+     * Construct a watchable episode.
+     *
+     * @param episode an actual episode
+     * @param view view of this episode. Must be null if a user have not watched this episode at all.
+     */
     public WatchableEpisode(Episode episode, EpisodeView view) {
         if (episode == null) {
             throw new IllegalArgumentException("Episode is not specified");
@@ -20,26 +29,56 @@ public class WatchableEpisode {
         this.view = view;
     }
 
+    /**
+     * Get ID of the episode.
+     *
+     * @return ID of the episode
+     */
     public long getId() {
         return episode.getId();
     }
 
+    /**
+     * Get name of the episode.
+     *
+     * @return name of the episode
+     */
     public String getName() {
         return episode.getName();
     }
 
+    /**
+     * Get URL to the video file of this episode.
+     *
+     * @return episode's video file URL
+     */
     public String getVideoUrl() {
         return episode.getVideoUrl();
     }
 
+    /**
+     * Get duration of this episode the user has already seen.
+     *
+     * @return watched duration of this episode. If the user haven't seen this episode at all - {@link Duration#ZERO}
+     * will be returned.
+     */
     public Duration getWatchProgress() {
         return view != null ? view.getWatchProgress() : Duration.ZERO;
     }
 
+    /**
+     * Get the date when the user has watched this episode the last time.
+     *
+     * @return optional of the last episode watch date. If the user hasn't watched this episode - an empty optional
+     * will be returned.
+     */
     public Optional<LocalDate> getLastWatchDate() {
         return Optional.ofNullable(view != null ? view.getLastWatchDate() : null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,11 +88,17 @@ public class WatchableEpisode {
                 Objects.equals(view, that.view);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(episode, view);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "WatchableEpisode{" +
