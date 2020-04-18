@@ -12,7 +12,10 @@ public class WatchableEpisode {
     private final Episode episode;
     private final EpisodeView view;
 
-    WatchableEpisode(Episode episode, EpisodeView view) {
+    public WatchableEpisode(Episode episode, EpisodeView view) {
+        if (episode == null) {
+            throw new IllegalArgumentException("Episode is not specified");
+        }
         this.episode = episode;
         this.view = view;
     }

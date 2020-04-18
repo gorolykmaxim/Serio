@@ -12,7 +12,7 @@ public class WatchableShow {
     private final WatchableShowMetaData metaData;
     private final List<WatchableEpisode> episodes;
 
-    static WatchableShow from(Show show, List<EpisodeView> episodeViews) {
+    public static WatchableShow from(Show show, List<EpisodeView> episodeViews) {
         Map<String, EpisodeView> episodeIdToView = new HashMap<>();
         episodeViews.forEach(episodeView -> episodeIdToView.put(episodeView.getEpisodeId(), episodeView));
         List<WatchableEpisode> episodes = show

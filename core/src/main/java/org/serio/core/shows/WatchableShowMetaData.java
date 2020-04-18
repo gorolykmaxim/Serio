@@ -12,7 +12,10 @@ public class WatchableShowMetaData {
     private final ShowMetaData metaData;
     private final ShowView view;
 
-    WatchableShowMetaData(ShowMetaData metaData, ShowView view) {
+    public WatchableShowMetaData(ShowMetaData metaData, ShowView view) {
+        if (metaData == null) {
+            throw new IllegalArgumentException("metaData is not specified");
+        }
         this.metaData = metaData;
         this.view = view;
     }
