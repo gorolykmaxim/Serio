@@ -54,7 +54,8 @@ public class ShowMetaData {
     /**
      * Get URL of the thumbnail image, representing the show.
      *
-     * @return URL to the show's thumbnail
+     * @return URL to the show's thumbnail. Won't be null even if the show does not have a thumbnail:
+     * some placeholder value will be returned.
      */
     public String getThumbnailUrl() {
         return thumbnailUrl;
