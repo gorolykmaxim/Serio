@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 /**
  * A show that the user might be watching or might have watched.
+ *
+ * @see Show
  */
 public class WatchableShow {
     private final WatchableShowMetaData metaData;
@@ -48,54 +50,42 @@ public class WatchableShow {
     }
 
     /**
-     * Get ID of the show.
-     *
-     * @return ID of the show
+     * @see Show#getId()
      */
     public UUID getId() {
         return metaData.getId();
     }
 
     /**
-     * Get name of the show.
-     *
-     * @return name of the show
+     * @see Show#getName()
      */
     public String getName() {
         return metaData.getName();
     }
 
     /**
-     * Get URL to the thumbnail image file, that represents the show.
-     *
-     * @return URL to the thumbnail file
+     * @see Show#getThumbnailUrl()
      */
     public String getThumbnailUrl() {
         return metaData.getThumbnailUrl();
     }
 
     /**
-     * Check if this show has been watched by the user.
-     *
-     * @return true if the show has been watched by the user
+     * @see WatchableShowMetaData#hasBeenWatched()
      */
     public boolean hasBeenWatched() {
         return metaData.hasBeenWatched();
     }
 
     /**
-     * Get the last date the user has watched one of the episodes of the show
-     *
-     * @return the last date the user has watched the show
+     * @see WatchableShowMetaData#getLastWatchedDate()
      */
     public Optional<LocalDate> getLastWatchedDate() {
         return metaData.getLastWatchedDate();
     }
 
     /**
-     * Get all episodes of the show.
-     *
-     * @return collection of episodes of the show
+     * @see Show#getEpisodes()
      */
     public List<WatchableEpisode> getEpisodes() {
         return episodes;

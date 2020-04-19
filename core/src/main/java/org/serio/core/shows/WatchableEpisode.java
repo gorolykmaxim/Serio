@@ -10,6 +10,8 @@ import java.util.Optional;
 
 /**
  * An episode of a show that a user might have watched or might be watching.
+ *
+ * @see Episode
  */
 public class WatchableEpisode {
     private final Episode episode;
@@ -30,27 +32,21 @@ public class WatchableEpisode {
     }
 
     /**
-     * Get ID of the episode.
-     *
-     * @return ID of the episode
+     * @see Episode#getId()
      */
     public long getId() {
         return episode.getId();
     }
 
     /**
-     * Get name of the episode.
-     *
-     * @return name of the episode
+     * @see Episode#getName()
      */
     public String getName() {
         return episode.getName();
     }
 
     /**
-     * Get URL to the video file of this episode.
-     *
-     * @return episode's video file URL
+     * @see Episode#getVideoUrl()
      */
     public String getVideoUrl() {
         return episode.getVideoUrl();

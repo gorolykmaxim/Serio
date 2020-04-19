@@ -11,8 +11,7 @@ import java.util.UUID;
 /**
  * Meta-data of a show that the user might be watching or might have watched.
  *
- * <p>Contains only the information about the show itself. Does not include information about the episodes
- * of the show.</p>
+ * @see ShowMetaData
  */
 public class WatchableShowMetaData {
     private final ShowMetaData metaData;
@@ -34,27 +33,21 @@ public class WatchableShowMetaData {
     }
 
     /**
-     * Get ID of the show.
-     *
-     * @return ID of the show
+     * @see ShowMetaData#getId()
      */
     public UUID getId() {
         return metaData.getId();
     }
 
     /**
-     * Get name of the show.
-     *
-     * @return name of the show
+     * @see ShowMetaData#getName()
      */
     public String getName() {
         return metaData.getName();
     }
 
     /**
-     * Get URL to the thumbnail image file, that represents the show.
-     *
-     * @return URL to the thumbnail file
+     * @see ShowMetaData#getThumbnailUrl()
      */
     public String getThumbnailUrl() {
         return metaData.getThumbnailUrl();
