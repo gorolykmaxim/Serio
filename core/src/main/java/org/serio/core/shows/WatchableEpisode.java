@@ -55,6 +55,8 @@ public class WatchableEpisode {
     /**
      * Get duration of this episode the user has already seen.
      *
+     * @see EpisodeView#getWatchProgress()
+     *
      * @return watched duration of this episode. If the user haven't seen this episode at all - {@link Duration#ZERO}
      * will be returned.
      */
@@ -64,6 +66,8 @@ public class WatchableEpisode {
 
     /**
      * Get the date when the user has watched this episode the last time.
+     *
+     * @see EpisodeView#getLastWatchDate()
      *
      * @return optional of the last episode watch date. If the user hasn't watched this episode - an empty optional
      * will be returned.

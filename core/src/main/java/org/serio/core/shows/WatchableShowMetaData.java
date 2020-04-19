@@ -65,6 +65,8 @@ public class WatchableShowMetaData {
     /**
      * Get the last date the user has watched one of the episodes of the show
      *
+     * @see ShowView#getLastWatchedDate()
+     *
      * @return the last date the user has watched the show
      */
     public Optional<LocalDate> getLastWatchedDate() {
