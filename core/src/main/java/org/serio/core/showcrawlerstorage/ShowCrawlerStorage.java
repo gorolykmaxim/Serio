@@ -14,7 +14,7 @@ public interface ShowCrawlerStorage {
      * @return show crawler used to crawl the show. Can't be null. If the crawler for an existing show does not
      * exist - an exception will be thrown.
      */
-    Future<ShowCrawler> findShowCrawlerByShowId(UUID showId);
+    Future<String> findShowCrawlerByShowId(UUID showId);
 
     /**
      * Save the specified crawler in the storage, while binding it to the show with the specified ID.
@@ -22,7 +22,7 @@ public interface ShowCrawlerStorage {
      * @param showId ID of the show that was crawled using the crawler
      * @param showCrawler show crawler to save
      */
-    void saveShowCrawler(UUID showId, ShowCrawler showCrawler);
+    void saveShowCrawler(UUID showId, String showCrawler);
 
     /**
      * Remove show crawler, used to crawl the show with the specified ID, from the storage.
