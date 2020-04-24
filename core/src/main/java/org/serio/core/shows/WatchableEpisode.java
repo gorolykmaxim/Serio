@@ -65,6 +65,15 @@ public class WatchableEpisode {
     }
 
     /**
+     * Check if this episode has been watched by the user.
+     *
+     * @return true if the episode has been watched by the user
+     */
+    public boolean hasBeenWatched() {
+        return view != null;
+    }
+
+    /**
      * Get the date when the user has watched this episode the last time.
      *
      * @see EpisodeView#getLastWatchDate()

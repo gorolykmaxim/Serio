@@ -154,12 +154,15 @@ public class ShowsTest {
             Episode episode = show.getEpisodes().get(i);
             WatchableEpisode watchableEpisode = watchableShow.getEpisodes().get(i);
             if (episode.getId() < 3) {
+                assertTrue(watchableEpisode.hasBeenWatched());
                 assertEquals(LocalDate.now(), watchableEpisode.getLastWatchDate().map(LocalDateTime::toLocalDate).orElse(null));
                 assertEquals(fullyWatched, watchableEpisode.getWatchProgress());
             } else if (episode.getId() == 9) {
+                assertTrue(watchableEpisode.hasBeenWatched());
                 assertEquals(LocalDate.now(), watchableEpisode.getLastWatchDate().map(LocalDateTime::toLocalDate).orElse(null));
                 assertEquals(justStarted, watchableEpisode.getWatchProgress());
             } else {
+                assertFalse(watchableEpisode.hasBeenWatched());
                 assertFalse(watchableEpisode.getLastWatchDate().isPresent());
                 assertEquals(Duration.ZERO, watchableEpisode.getWatchProgress());
             }
