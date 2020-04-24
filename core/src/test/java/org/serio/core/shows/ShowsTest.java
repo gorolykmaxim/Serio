@@ -4,18 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
+import org.serio.core.showstorage.ShowMetaData;
 import org.serio.core.showstorage.ShowStorage;
 import org.serio.core.watchhistory.EpisodeView;
 import org.serio.core.watchhistory.ShowView;
 import org.serio.core.watchhistory.WatchHistory;
 import org.serio.core.watchhistory.WatchProgress;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -27,43 +26,35 @@ public class ShowsTest {
     private ShowStorage showStorage;
     private WatchHistory watchHistory;
     private Shows shows;
-    private Show show, anotherShow, notWatchedShow, anotherNotWatchedShow;
-    private ShowView showView, anotherShowView;
-    private WatchProgress fullyWatched, justStarted;
-    private List<EpisodeView> episodeViews;
+    private UUID watchedShow1, watchedShow2, showWithoutEpisodes, notWatchedShow;
+    private LocalDateTime watchedShow1LastWatchDate, watchedShow2LastWatchDate;
 
     @Before
     public void setUp() throws Exception {
-        fullyWatched = WatchProgress.COMPLETE;
-        justStarted = WatchProgress.NONE;
-        List<Episode> episodes = IntStream.range(1, 10)
-                .mapToObj(i -> new Episode(i, String.format("http://friends.com/episode%d.mp4", i)))
-                .collect(Collectors.toList());
-        // Episodes 1 and 2 are fully watched and the last 9th episodes is just started.
-        LocalDateTime now = LocalDateTime.now();
-        episodeViews = episodes.stream()
-                .filter(episode -> episode.getId() < 3 || episode.getId() > 8)
-                .map(episode -> new EpisodeView(Long.toString(episode.getId()), episode.getId() == 9 ? justStarted : fullyWatched, now.minusHours(episodes.size() - episode.getId())))
-                .collect(Collectors.toList());
-        show = Show.createNew("Friends", "https://friends.com/thumbnail.jpg", episodes);
-        String showId = show.getId().toString();
-        showView = new ShowView(showId, now);
-        anotherShow = Show.createNew("How i met your mother", Collections.emptyList());
-        anotherShowView = new ShowView(anotherShow.getId().toString(), LocalDateTime.now().minusDays(3));
-        notWatchedShow = Show.createNew("Clinic", Collections.emptyList());
-        anotherNotWatchedShow = Show.createNew("American Family", "https://family.com/thumbnail.jpg", Collections.emptyList());
         showStorage = mock(ShowStorage.class);
         watchHistory = mock(WatchHistory.class);
-        when(showStorage.findById(show.getId())).thenReturn(CompletableFuture.completedFuture(show));
-        when(showStorage.findById(notWatchedShow.getId())).thenReturn(CompletableFuture.completedFuture(notWatchedShow));
-        when(showStorage.findAll()).thenReturn(CompletableFuture.completedFuture(Stream
-                .of(show, notWatchedShow, anotherShow, anotherNotWatchedShow)
+        LocalDateTime now = LocalDateTime.now();
+        watchedShow1LastWatchDate = now;
+        watchedShow2LastWatchDate = now.minusDays(2);
+        watchedShow1 = createShow("Show 1", "https://show-1.com/thumbnail.jpg", 10, watchedShow1LastWatchDate);
+        watchedShow2 = createShow("Show 2", null, 6, watchedShow2LastWatchDate);
+        showWithoutEpisodes = createShow("Show 3", null, 0, null);
+        notWatchedShow = createShow("Show 4", null, 5, null);
+        ShowView watchedShow1View = new ShowView(watchedShow1.toString(), watchedShow1LastWatchDate);
+        ShowView watchedShow2View = new ShowView(watchedShow2.toString(), watchedShow2LastWatchDate);
+        when(watchHistory.getShowWatchHistory()).thenReturn(CompletableFuture.completedFuture(Arrays.asList(watchedShow1View, watchedShow2View)));
+        List<ShowMetaData> allShows = Stream.of(watchedShow1, watchedShow2, showWithoutEpisodes, notWatchedShow)
+                .map(showStorage::findById)
+                .map(future -> {
+                    try {
+                        return future.get();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .map(Show::getMetaData)
-                .collect(Collectors.toList())
-        ));
-        when(watchHistory.getShowWatchHistory()).thenReturn(CompletableFuture.completedFuture(Arrays.asList(showView, anotherShowView)));
-        when(watchHistory.getEpisodeWatchHistoryOfShow(notWatchedShow.getId().toString())).thenReturn(CompletableFuture.completedFuture(Collections.emptyList()));
-        when(watchHistory.getEpisodeWatchHistoryOfShow(showId)).thenReturn(CompletableFuture.completedFuture(episodeViews));
+                .collect(Collectors.toList());
+        when(showStorage.findAll()).thenReturn(CompletableFuture.completedFuture(allShows));
         shows = new Shows(showStorage, watchHistory);
     }
 
@@ -76,15 +67,15 @@ public class ShowsTest {
     }
 
     @Test
-    public void shouldFindMetaDataInformationAboutAllShows() {
+    public void shouldFindMetaDataInformationAboutAllShows() throws ExecutionException, InterruptedException {
         // given
-        List<Show> expectedShows = Arrays.asList(show, notWatchedShow, anotherShow, anotherNotWatchedShow);
+        List<ShowMetaData> expectedShows = showStorage.findAll().get();
         // when
         List<WatchableShowMetaData> allShows = shows.findAllShows().getAllShows();
         // then
         for (int i = 0; i < expectedShows.size(); i++) {
             WatchableShowMetaData watchableShow = allShows.get(i);
-            Show show = expectedShows.get(i);
+            ShowMetaData show = expectedShows.get(i);
             assertEquals(show.getId(), watchableShow.getId());
             assertEquals(show.getName(), watchableShow.getName());
             assertEquals(show.getThumbnailUrl(), watchableShow.getThumbnailUrl());
@@ -97,11 +88,11 @@ public class ShowsTest {
         List<WatchableShowMetaData> allShows = shows.findAllShows().getAllShows();
         // then
         for (WatchableShowMetaData watchableShow: allShows) {
-            if (watchableShow.getId().equals(show.getId())) {
-                assertEquals(LocalDate.now(), watchableShow.getLastWatchedDate().map(LocalDateTime::toLocalDate).orElse(null));
+            if (watchedShow1.equals(watchableShow.getId())) {
+                assertEquals(watchedShow1LastWatchDate, watchableShow.getLastWatchedDate().orElse(null));
                 assertTrue(watchableShow.hasBeenWatched());
-            } else if (watchableShow.getId().equals(anotherShow.getId())) {
-                assertEquals(LocalDate.now().minusDays(3), watchableShow.getLastWatchedDate().map(LocalDateTime::toLocalDate).orElse(null));
+            } else if (watchedShow2.equals(watchableShow.getId())) {
+                assertEquals(watchedShow2LastWatchDate, watchableShow.getLastWatchedDate().orElse(null));
                 assertTrue(watchableShow.hasBeenWatched());
             } else {
                 assertFalse(watchableShow.getLastWatchedDate().isPresent());
@@ -116,28 +107,32 @@ public class ShowsTest {
         List<WatchableShowMetaData> lastWatchedShows = shows.findAllShows().getLastWatchedShows();
         // then
         assertEquals(2, lastWatchedShows.size());
-        assertEquals(show.getId(), lastWatchedShows.get(0).getId());
-        assertEquals(anotherShow.getId(), lastWatchedShows.get(1).getId());
+        assertEquals(watchedShow1, lastWatchedShows.get(0).getId());
+        assertEquals(watchedShow2, lastWatchedShows.get(1).getId());
     }
 
     @Test(expected = ShowLookupException.class)
     public void shouldFailToFindSpecifiedShow() {
         // given
-        when(showStorage.findById(show.getId())).thenThrow(new RuntimeException());
+        when(showStorage.findById(watchedShow1)).thenThrow(new RuntimeException());
         // when
-        shows.findShowById(show.getId());
+        shows.findShowById(watchedShow1);
     }
 
     @Test
-    public void shouldFindSpecifiedShowWithItsEpisodes() {
+    public void shouldFindSpecifiedShowWithItsEpisodes() throws ExecutionException, InterruptedException {
+        // given
+        Show show = showStorage.findById(watchedShow1).get();
+        List<Episode> episodes = new ArrayList<>(show.getEpisodes());
+        episodes.sort(Comparator.comparing(Episode::getId));
         // when
-        WatchableShow watchableShow = shows.findShowById(show.getId());
+        WatchableShow watchableShow = shows.findShowById(watchedShow1);
         // then
         assertEquals(show.getId(), watchableShow.getId());
         assertEquals(show.getName(), watchableShow.getName());
         assertEquals(show.getThumbnailUrl(), watchableShow.getThumbnailUrl());
         for (int i = 0; i < show.getEpisodes().size(); i++) {
-            Episode episode = show.getEpisodes().get(i);
+            Episode episode = episodes.get(i);
             WatchableEpisode watchableEpisode = watchableShow.getEpisodes().get(i);
             assertEquals(episode.getId(), watchableEpisode.getId());
             assertEquals(episode.getName(), watchableEpisode.getName());
@@ -148,29 +143,29 @@ public class ShowsTest {
     @Test
     public void shouldFindSpecifiedShowWhichHasSomeOfItsEpisodesWatched() {
         // when
-        WatchableShow watchableShow = shows.findShowById(show.getId());
+        WatchableShow watchableShow = shows.findShowById(watchedShow1);
         // then
         assertTrue(watchableShow.hasBeenWatched());
-        assertEquals(showView.getLastWatchedDate(), watchableShow.getLastWatchedDate().orElse(null));
-        WatchableEpisode lastWatchedEpisode = watchableShow.getEpisodes().get(8);
-        assertEquals(lastWatchedEpisode, watchableShow.getLastWatchedEpisode().orElse(null));
-        for (int i = 0; i < show.getEpisodes().size(); i++) {
-            Episode episode = show.getEpisodes().get(i);
-            WatchableEpisode watchableEpisode = watchableShow.getEpisodes().get(i);
-            if (episode.getId() < 3) {
-                EpisodeView view = episodeViews.get((int) episode.getId() - 1);
-                assertTrue(watchableEpisode.hasBeenWatched());
-                assertEquals(view.getLastWatchDate(), watchableEpisode.getLastWatchDate().orElse(null));
-                assertEquals(fullyWatched, watchableEpisode.getWatchProgress());
-            } else if (episode.getId() == 9) {
-                EpisodeView view = episodeViews.get(2);
-                assertTrue(watchableEpisode.hasBeenWatched());
-                assertEquals(view.getLastWatchDate(), watchableEpisode.getLastWatchDate().orElse(null));
-                assertEquals(justStarted, watchableEpisode.getWatchProgress());
+        assertEquals(watchedShow1LastWatchDate, watchableShow.getLastWatchedDate().orElse(null));
+        assertEquals(watchedShow1LastWatchDate, watchableShow.getLastWatchedEpisode().flatMap(WatchableEpisode::getLastWatchDate).orElse(null));
+        int episodeCount = watchableShow.getEpisodes().size();
+        for (int i = 0; i < episodeCount; i++) {
+            WatchableEpisode episode = watchableShow.getEpisodes().get(i);
+            if (episode.getId() > episodeCount / 2) {
+                assertTrue(episode.hasBeenWatched());
+                assertEquals(watchedShow1LastWatchDate.minusHours(episodeCount - episode.getId()), episode.getLastWatchDate().orElse(null));
+                if (episode.getId() == episodeCount) {
+                    assertFalse(episode.hasBeenWatchedCompletely());
+                    assertEquals(WatchProgress.NONE, episode.getWatchProgress());
+                } else {
+                    assertTrue(episode.hasBeenWatchedCompletely());
+                    assertEquals(WatchProgress.COMPLETE, episode.getWatchProgress());
+                }
             } else {
-                assertFalse(watchableEpisode.hasBeenWatched());
-                assertFalse(watchableEpisode.getLastWatchDate().isPresent());
-                assertEquals(WatchProgress.NONE, watchableEpisode.getWatchProgress());
+                assertFalse(episode.hasBeenWatched());
+                assertFalse(episode.hasBeenWatchedCompletely());
+                assertFalse(episode.getLastWatchDate().isPresent());
+                assertEquals(WatchProgress.NONE, episode.getWatchProgress());
             }
         }
     }
@@ -178,7 +173,7 @@ public class ShowsTest {
     @Test
     public void shouldFindSpecifiedShowWhichHasNotBeenWatched() {
         // when
-        WatchableShow watchableShow = shows.findShowById(notWatchedShow.getId());
+        WatchableShow watchableShow = shows.findShowById(notWatchedShow);
         // then
         assertFalse(watchableShow.hasBeenWatched());
         assertFalse(watchableShow.getLastWatchedDate().isPresent());
@@ -190,7 +185,63 @@ public class ShowsTest {
     }
 
     @Test
-    public void shouldSaveSpecifiedShow() {
+    public void shouldGetEpisodeById() {
+        // then
+        assertTrue(shows.findShowById(watchedShow1).getEpisodeById(3).isPresent());
+    }
+
+    @Test
+    public void shouldNotGetEpisodeById() {
+        // then
+        assertFalse(shows.findShowById(watchedShow1).getEpisodeById(0).isPresent());
+        assertFalse(shows.findShowById(showWithoutEpisodes).getEpisodeById(1).isPresent());
+    }
+
+    @Test
+    public void shouldGetFirstEpisodeOfTheShow() {
+        // then
+        assertTrue(shows.findShowById(watchedShow1).getFirstEpisode().isPresent());
+    }
+
+    @Test
+    public void shouldNotGetFirstEpisodeOfAnEmptyShow() {
+        // then
+        assertFalse(shows.findShowById(showWithoutEpisodes).getFirstEpisode().isPresent());
+    }
+
+    @Test
+    public void shouldGetEpisodeBeforeEpisode() {
+        // when
+        WatchableEpisode previousEpisode = shows.findShowById(watchedShow1).getEpisodeBeforeEpisode(2).orElse(null);
+        // then
+        assertEquals(1, previousEpisode.getId());
+    }
+
+    @Test
+    public void shouldNotGetEpisodeBeforeEpisode() {
+        // then
+        assertFalse(shows.findShowById(watchedShow1).getEpisodeBeforeEpisode(1).isPresent());
+        assertFalse(shows.findShowById(watchedShow1).getEpisodeBeforeEpisode(999).isPresent());
+    }
+
+    @Test
+    public void shouldGetEpisodeAfterEpisode() {
+        // when
+        WatchableEpisode nextEpisode = shows.findShowById(watchedShow1).getEpisodeAfterEpisode(9).orElse(null);
+        // then
+        assertEquals(10, nextEpisode.getId());
+    }
+
+    @Test
+    public void shouldNotGetEpisodeAfterEpisode() {
+        // then
+        assertFalse(shows.findShowById(watchedShow1).getEpisodeAfterEpisode(10).isPresent());
+    }
+
+    @Test
+    public void shouldSaveSpecifiedShow() throws ExecutionException, InterruptedException {
+        // given
+        Show show = showStorage.findById(watchedShow1).get();
         // when
         shows.saveShow(show);
         // then
@@ -198,8 +249,9 @@ public class ShowsTest {
     }
 
     @Test
-    public void shouldCreateViewOfTheSpecifiedShowOfTheSpecifiedEpisode() {
+    public void shouldCreateViewOfTheSpecifiedShowOfTheSpecifiedEpisode() throws ExecutionException, InterruptedException {
         // given
+        Show show = showStorage.findById(watchedShow1).get();
         Episode episode = show.getEpisodes().get(0);
         WatchProgress watchProgress = WatchProgress.fromPercentage(15);
         // when
@@ -211,16 +263,44 @@ public class ShowsTest {
     @Test
     public void shouldClearWatchHistoryOfTheSpecifiedShow() {
         // when
-        shows.clearWatchHistoryOfShow(show.getId());
+        shows.clearWatchHistoryOfShow(watchedShow1);
         // then
-        verify(watchHistory).clearWatchHistoryOfShow(show.getId().toString());
+        verify(watchHistory).clearWatchHistoryOfShow(watchedShow1.toString());
     }
 
     @Test
     public void shouldDeleteSpecifiedShow() {
         // when
-        shows.deleteShow(show.getId());
+        shows.deleteShow(watchedShow1);
         // then
-        verify(showStorage).deleteById(show.getId());
+        verify(showStorage).deleteById(watchedShow1);
+    }
+
+    private UUID createShow(String name, String thumbnail, int episodesCount, LocalDateTime lastWatchDate) {
+        List<Episode> episodes;
+        List<EpisodeView> episodeViews;
+        if (episodesCount == 0) {
+            episodes = Collections.emptyList();
+        } else {
+            episodes = IntStream
+                    .range(1, episodesCount + 1)
+                    .mapToObj(i -> new Episode(i, String.format("http://show.com/episode%d.mp4", i)))
+                    .collect(Collectors.toList());
+        }
+        if (!episodes.isEmpty() && lastWatchDate != null) {
+            episodeViews = episodes
+                    .stream()
+                    .filter(episode -> episode.getId() > episodesCount / 2)
+                    .map(episode -> new EpisodeView(Long.toString(episode.getId()), episode.getId() == episodesCount ? WatchProgress.NONE : WatchProgress.COMPLETE, lastWatchDate.minusHours(episodesCount - episode.getId())))
+                    .collect(Collectors.toList());
+        } else {
+            episodeViews = Collections.emptyList();
+        }
+        episodes = new ArrayList<>(episodes);
+        Collections.shuffle(episodes);
+        Show show = Show.createNew(name, thumbnail, episodes);
+        when(watchHistory.getEpisodeWatchHistoryOfShow(show.getId().toString())).thenReturn(CompletableFuture.completedFuture(episodeViews));
+        when(showStorage.findById(show.getId())).thenReturn(CompletableFuture.completedFuture(show));
+        return show.getId();
     }
 }

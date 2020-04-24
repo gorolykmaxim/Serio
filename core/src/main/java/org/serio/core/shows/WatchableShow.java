@@ -1,5 +1,6 @@
 package org.serio.core.shows;
 
+import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
 import org.serio.core.watchhistory.EpisodeView;
 import org.serio.core.watchhistory.ShowView;
@@ -31,6 +32,7 @@ public class WatchableShow {
         List<WatchableEpisode> episodes = show
                 .getEpisodes()
                 .stream()
+                .sorted(Comparator.comparing(Episode::getId))
                 .map(episode -> new WatchableEpisode(episode, episodeIdToView.get(Long.toString(episode.getId()))))
                 .collect(Collectors.toList());
         Optional<LocalDateTime> possibleLastWatchDate = episodeViews
@@ -85,10 +87,61 @@ public class WatchableShow {
     }
 
     /**
+     * Returns episodes of this show in their natural order.
+     *
      * @see Show#getEpisodes()
      */
     public List<WatchableEpisode> getEpisodes() {
         return episodes;
+    }
+
+    /**
+     * Get episode of the show with the specified ID.
+     *
+     * @param episodeId ID of the episode
+     * @return episode with the specified ID. Can be empty if the show does not have such episode.
+     */
+    public Optional<WatchableEpisode> getEpisodeById(long episodeId) {
+        if (episodeId < 1 || episodeId > episodes.size()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(episodes.get((int) (episodeId - 1)));
+        }
+    }
+
+    /**
+     * Get first episode of this show.
+     *
+     * @return first episode of the show. Can be empty if the show has no episodes.
+     */
+    public Optional<WatchableEpisode> getFirstEpisode() {
+        return getEpisodeById(1);
+    }
+
+    /**
+     * Get the previous episode relative to the specified one.
+     *
+     * @param episodeId ID of the episode
+     * @return previous episode relative to the specified one. Can be empty if the specified episode is the first one
+     * or does not exist.
+     */
+    public Optional<WatchableEpisode> getEpisodeBeforeEpisode(long episodeId) {
+        if (episodeId < 2 || episodeId > episodes.size() + 1) {
+            return Optional.empty();
+        } else {
+            return Optional.of(episodes.get((int) (episodeId - 2)));
+        }
+    }
+
+    /**
+     * Get the next episode relative to the specified one.
+     *
+     * @param episodeId ID of the episode
+     * @return next episode relative to the specified one. Can be empty if the specified episode is the last one
+     * or does not exist.
+     */
+    public Optional<WatchableEpisode> getEpisodeAfterEpisode(long episodeId) {
+        return getEpisodeById(episodeId + 1);
     }
 
     /**

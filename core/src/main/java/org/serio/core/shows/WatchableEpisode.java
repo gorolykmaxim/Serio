@@ -65,6 +65,13 @@ public class WatchableEpisode {
     }
 
     /**
+     * @see EpisodeView#isComplete()
+     */
+    public boolean hasBeenWatchedCompletely() {
+        return view != null && view.isComplete();
+    }
+
+    /**
      * Check if this episode has been watched by the user.
      *
      * @return true if the episode has been watched by the user
