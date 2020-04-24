@@ -33,8 +33,8 @@ export default class ShowPlayer extends React.Component {
     get progressInterval() {
         return this.props.progressInterval || PROGRESS_INTERVAL;
     }
-    get startTime() {
-        return this.props.startTime;
+    get startProgress() {
+        return this.props.startProgress;
     }
     get onBack() {
         return getFunction(this.props.onBack);
@@ -66,8 +66,8 @@ export default class ShowPlayer extends React.Component {
         }
     }
     onStart() {
-        if (this.startTime) {
-            this.player.seekTo(this.startTime);
+        if (this.startProgress) {
+            this.player.seekTo(this.startProgress / 100);
         }
     }
     onPlay() {
@@ -87,10 +87,10 @@ export default class ShowPlayer extends React.Component {
     }
     handleProgress(playedTime) {
         const totalTime = this.state.totalTime;
-        if (playedTime % this.progressInterval === 0) {
-            this.onProgressChange(playedTime);
-        }
         const playedPercent = totalTime > 0 ? playedTime / totalTime * 100 : 0;
+        if (playedTime % this.progressInterval === 0) {
+            this.onProgressChange(playedPercent);
+        }
         this.setState({
             playedTime: playedTime,
             playedPercent: playedPercent

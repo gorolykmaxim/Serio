@@ -280,7 +280,7 @@ function showPlayer(seek) {
     window.dispatchApplicationEvent({
         dataType: SHOW_PLAYER,
         info: playerInfo,
-        startTime: seek ? 25 : null,
+        startProgress: seek ? 25 : null,
         showId: showCrawlerId
     });
 }

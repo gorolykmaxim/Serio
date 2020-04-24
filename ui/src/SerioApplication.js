@@ -164,9 +164,9 @@ export class SerioApplication extends React.Component {
                             onDelete={() => window.serioController.initiateShowRemoval(id)}/>;
     }
     renderShowPlayer() {
-        const {info, startTime, showId} = this.state.data;
+        const {info, startProgress, showId} = this.state.data;
         return <ShowPlayer info={info}
-                           startTime={startTime}
+                           startProgress={startProgress}
                            onProgressChange={progress => window.serioController.reportShowWatchProgress(showId, progress)}
                            onBack={window.serioController.back}
                            onEnd={() => window.serioController.playNextEpisode(showId)}

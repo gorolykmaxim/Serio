@@ -63,7 +63,7 @@ export default class SerioController {
         console.info(`Opening dialog view to confirm show removal of ${showId}`);
     }
     reportShowWatchProgress(showId, progress) {
-        console.info(`Reporting watch progress of ${showId} - ${progress}`);
+        console.info(`Reporting watch progress of ${showId} - ${progress}%`);
     }
     playPreviousEpisode(showId) {
         console.info(`Going to play previous episode of ${showId}`);
