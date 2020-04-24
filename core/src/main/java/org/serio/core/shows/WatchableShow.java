@@ -92,6 +92,21 @@ public class WatchableShow {
     }
 
     /**
+     * Get the episode of this show the user has watched the most recently.
+     *
+     * @return the most recently watched episode of the show. Will be empty if the user hasn't watched the show yet.
+     */
+    public Optional<WatchableEpisode> getLastWatchedEpisode() {
+        if (!hasBeenWatched()) {
+            return Optional.empty();
+        }
+        return episodes
+                .stream()
+                .filter(WatchableEpisode::hasBeenWatched)
+                .max(Comparator.comparing(episode -> episode.getLastWatchDate().get()));
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
