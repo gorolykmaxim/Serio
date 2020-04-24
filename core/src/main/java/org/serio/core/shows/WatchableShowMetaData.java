@@ -3,7 +3,7 @@ package org.serio.core.shows;
 import org.serio.core.showstorage.ShowMetaData;
 import org.serio.core.watchhistory.ShowView;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,7 +69,7 @@ public class WatchableShowMetaData {
      *
      * @return the last date the user has watched the show
      */
-    public Optional<LocalDate> getLastWatchedDate() {
+    public Optional<LocalDateTime> getLastWatchedDate() {
         return Optional.ofNullable(view != null ? view.getLastWatchedDate() : null);
     }
 

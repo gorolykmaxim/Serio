@@ -4,7 +4,7 @@ import org.serio.core.showstorage.Episode;
 import org.serio.core.watchhistory.EpisodeView;
 
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -72,7 +72,7 @@ public class WatchableEpisode {
      * @return optional of the last episode watch date. If the user hasn't watched this episode - an empty optional
      * will be returned.
      */
-    public Optional<LocalDate> getLastWatchDate() {
+    public Optional<LocalDateTime> getLastWatchDate() {
         return Optional.ofNullable(view != null ? view.getLastWatchDate() : null);
     }
 

@@ -11,6 +11,7 @@ import org.serio.core.watchhistory.WatchHistory;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ShowsTest {
         String showId = show.getId().toString();
         showView = new ShowView(showId);
         anotherShow = Show.createNew("How i met your mother", Collections.emptyList());
-        anotherShowView = new ShowView(anotherShow.getId().toString(), LocalDate.now().minusDays(3));
+        anotherShowView = new ShowView(anotherShow.getId().toString(), LocalDateTime.now().minusDays(3));
         notWatchedShow = Show.createNew("Clinic", Collections.emptyList());
         anotherNotWatchedShow = Show.createNew("American Family", "https://family.com/thumbnail.jpg", Collections.emptyList());
         showStorage = mock(ShowStorage.class);
@@ -95,10 +96,10 @@ public class ShowsTest {
         // then
         for (WatchableShowMetaData watchableShow: allShows) {
             if (watchableShow.getId().equals(show.getId())) {
-                assertEquals(LocalDate.now(), watchableShow.getLastWatchedDate().orElse(null));
+                assertEquals(LocalDate.now(), watchableShow.getLastWatchedDate().map(LocalDateTime::toLocalDate).orElse(null));
                 assertTrue(watchableShow.hasBeenWatched());
             } else if (watchableShow.getId().equals(anotherShow.getId())) {
-                assertEquals(LocalDate.now().minusDays(3), watchableShow.getLastWatchedDate().orElse(null));
+                assertEquals(LocalDate.now().minusDays(3), watchableShow.getLastWatchedDate().map(LocalDateTime::toLocalDate).orElse(null));
                 assertTrue(watchableShow.hasBeenWatched());
             } else {
                 assertFalse(watchableShow.getLastWatchedDate().isPresent());
@@ -153,10 +154,10 @@ public class ShowsTest {
             Episode episode = show.getEpisodes().get(i);
             WatchableEpisode watchableEpisode = watchableShow.getEpisodes().get(i);
             if (episode.getId() < 3) {
-                assertEquals(LocalDate.now(), watchableEpisode.getLastWatchDate().orElse(null));
+                assertEquals(LocalDate.now(), watchableEpisode.getLastWatchDate().map(LocalDateTime::toLocalDate).orElse(null));
                 assertEquals(fullyWatched, watchableEpisode.getWatchProgress());
             } else if (episode.getId() == 9) {
-                assertEquals(LocalDate.now(), watchableEpisode.getLastWatchDate().orElse(null));
+                assertEquals(LocalDate.now(), watchableEpisode.getLastWatchDate().map(LocalDateTime::toLocalDate).orElse(null));
                 assertEquals(justStarted, watchableEpisode.getWatchProgress());
             } else {
                 assertFalse(watchableEpisode.getLastWatchDate().isPresent());

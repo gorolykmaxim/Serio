@@ -1,7 +1,7 @@
 package org.serio.core.watchhistory;
 
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -12,17 +12,17 @@ import java.util.Objects;
 public class EpisodeView {
     private final String episodeId;
     private final Duration watchProgress;
-    private final LocalDate lastWatchDate;
+    private final LocalDateTime lastWatchDate;
 
     /**
-     * @see EpisodeView#EpisodeView(String, Duration, LocalDate)
+     * @see EpisodeView#EpisodeView(String, Duration, LocalDateTime)
      */
     public EpisodeView(String episodeId) {
         this(episodeId, null, null);
     }
 
     /**
-     * @see EpisodeView#EpisodeView(String, Duration, LocalDate)
+     * @see EpisodeView#EpisodeView(String, Duration, LocalDateTime)
      */
     public EpisodeView(String episodeId, Duration watchProgress) {
         this(episodeId, watchProgress, null);
@@ -37,13 +37,13 @@ public class EpisodeView {
      * @param lastWatchDate the date of the last time the user has watched the specified episode.
      *                      If not specified - today's date will be used.
      */
-    public EpisodeView(String episodeId, Duration watchProgress, LocalDate lastWatchDate) {
+    public EpisodeView(String episodeId, Duration watchProgress, LocalDateTime lastWatchDate) {
         if (episodeId == null) {
             throw new IllegalArgumentException("Episode ID is not specified");
         }
         this.episodeId = episodeId;
         this.watchProgress = watchProgress != null ? watchProgress : Duration.ZERO;
-        this.lastWatchDate = lastWatchDate != null ? lastWatchDate : LocalDate.now();
+        this.lastWatchDate = lastWatchDate != null ? lastWatchDate : LocalDateTime.now();
     }
 
     /**
@@ -69,7 +69,7 @@ public class EpisodeView {
      *
      * @return date of the last time the corresponding episode has been watched
      */
-    public LocalDate getLastWatchDate() {
+    public LocalDateTime getLastWatchDate() {
         return lastWatchDate;
     }
 

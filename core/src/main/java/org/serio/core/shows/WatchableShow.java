@@ -4,7 +4,7 @@ import org.serio.core.showstorage.Show;
 import org.serio.core.watchhistory.EpisodeView;
 import org.serio.core.watchhistory.ShowView;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,10 +33,10 @@ public class WatchableShow {
                 .stream()
                 .map(episode -> new WatchableEpisode(episode, episodeIdToView.get(Long.toString(episode.getId()))))
                 .collect(Collectors.toList());
-        Optional<LocalDate> possibleLastWatchDate = episodeViews
+        Optional<LocalDateTime> possibleLastWatchDate = episodeViews
                 .stream()
                 .map(EpisodeView::getLastWatchDate)
-                .max(LocalDate::compareTo);
+                .max(LocalDateTime::compareTo);
         WatchableShowMetaData metaData;
         metaData = possibleLastWatchDate
                 .map(localDate -> new WatchableShowMetaData(show.getMetaData(), new ShowView(show.getId().toString(), localDate)))
@@ -80,7 +80,7 @@ public class WatchableShow {
     /**
      * @see WatchableShowMetaData#getLastWatchedDate()
      */
-    public Optional<LocalDate> getLastWatchedDate() {
+    public Optional<LocalDateTime> getLastWatchedDate() {
         return metaData.getLastWatchedDate();
     }
 

@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -12,13 +13,13 @@ import static org.junit.Assert.assertNotEquals;
 public class EpisodeViewTest {
     private String episodeId;
     private Duration watchProgress;
-    private LocalDate lastWatchedDate;
+    private LocalDateTime lastWatchedDate;
 
     @Before
     public void setUp() throws Exception {
         episodeId = "15";
         watchProgress = Duration.ofMinutes(13);
-        lastWatchedDate = LocalDate.now().minusDays(2);
+        lastWatchedDate = LocalDateTime.now().minusDays(2);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class EpisodeViewTest {
         // when
         EpisodeView view = new EpisodeView(episodeId, watchProgress);
         // then
-        assertEquals(LocalDate.now(), view.getLastWatchDate());
+        assertEquals(LocalDate.now(), view.getLastWatchDate().toLocalDate());
     }
 
     @Test

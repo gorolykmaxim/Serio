@@ -1,6 +1,6 @@
 package org.serio.core.watchhistory;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -10,10 +10,10 @@ import java.util.Objects;
  */
 public class ShowView {
     private final String showId;
-    private final LocalDate lastWatchedDate;
+    private final LocalDateTime lastWatchedDate;
 
     /**
-     * @see ShowView#ShowView(String, LocalDate)
+     * @see ShowView#ShowView(String, LocalDateTime)
      */
     public ShowView(String showId) {
         this(showId, null);
@@ -26,12 +26,12 @@ public class ShowView {
      * @param lastWatchedDate the date when the show has been watched the last time. If not specified - today's date
      *                        will be used.
      */
-    public ShowView(String showId, LocalDate lastWatchedDate) {
+    public ShowView(String showId, LocalDateTime lastWatchedDate) {
         if (showId == null) {
             throw new IllegalArgumentException("ID of the show is not specified");
         }
         this.showId = showId;
-        this.lastWatchedDate = lastWatchedDate != null ? lastWatchedDate : LocalDate.now();
+        this.lastWatchedDate = lastWatchedDate != null ? lastWatchedDate : LocalDateTime.now();
     }
 
     /**
@@ -48,7 +48,7 @@ public class ShowView {
      *
      * @return date of the last time the corresponding show has been watched
      */
-    public LocalDate getLastWatchedDate() {
+    public LocalDateTime getLastWatchedDate() {
         return lastWatchedDate;
     }
 
