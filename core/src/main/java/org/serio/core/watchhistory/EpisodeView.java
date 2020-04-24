@@ -1,6 +1,5 @@
 package org.serio.core.watchhistory;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,20 +10,20 @@ import java.util.Objects;
  */
 public class EpisodeView {
     private final String episodeId;
-    private final Duration watchProgress;
+    private final WatchProgress watchProgress;
     private final LocalDateTime lastWatchDate;
 
     /**
-     * @see EpisodeView#EpisodeView(String, Duration, LocalDateTime)
+     * @see EpisodeView#EpisodeView(String, WatchProgress, LocalDateTime)
      */
     public EpisodeView(String episodeId) {
         this(episodeId, null, null);
     }
 
     /**
-     * @see EpisodeView#EpisodeView(String, Duration, LocalDateTime)
+     * @see EpisodeView#EpisodeView(String, WatchProgress, LocalDateTime)
      */
-    public EpisodeView(String episodeId, Duration watchProgress) {
+    public EpisodeView(String episodeId, WatchProgress watchProgress) {
         this(episodeId, watchProgress, null);
     }
 
@@ -32,17 +31,16 @@ public class EpisodeView {
      * Construct a view of an episode.
      *
      * @param episodeId ID of the episode, that has been viewed
-     * @param watchProgress amount of the episode's duration, that has been watched by the user so far.
-     *                      If not specified - {@link Duration#ZERO} will be used.
+     * @param watchProgress amount of the episode's duration, that has been watched by the user so far
      * @param lastWatchDate the date of the last time the user has watched the specified episode.
      *                      If not specified - today's date will be used.
      */
-    public EpisodeView(String episodeId, Duration watchProgress, LocalDateTime lastWatchDate) {
+    public EpisodeView(String episodeId, WatchProgress watchProgress, LocalDateTime lastWatchDate) {
         if (episodeId == null) {
             throw new IllegalArgumentException("Episode ID is not specified");
         }
         this.episodeId = episodeId;
-        this.watchProgress = watchProgress != null ? watchProgress : Duration.ZERO;
+        this.watchProgress = watchProgress != null ? watchProgress : WatchProgress.NONE;
         this.lastWatchDate = lastWatchDate != null ? lastWatchDate : LocalDateTime.now();
     }
 
@@ -60,7 +58,7 @@ public class EpisodeView {
      *
      * @return duration of the episode the user has already seen
      */
-    public Duration getWatchProgress() {
+    public WatchProgress getWatchProgress() {
         return watchProgress;
     }
 

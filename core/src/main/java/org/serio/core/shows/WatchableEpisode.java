@@ -2,8 +2,8 @@ package org.serio.core.shows;
 
 import org.serio.core.showstorage.Episode;
 import org.serio.core.watchhistory.EpisodeView;
+import org.serio.core.watchhistory.WatchProgress;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,11 +57,11 @@ public class WatchableEpisode {
      *
      * @see EpisodeView#getWatchProgress()
      *
-     * @return watched duration of this episode. If the user haven't seen this episode at all - {@link Duration#ZERO}
+     * @return watched duration of this episode. If the user haven't seen this episode at all - {@link WatchProgress#NONE}
      * will be returned.
      */
-    public Duration getWatchProgress() {
-        return view != null ? view.getWatchProgress() : Duration.ZERO;
+    public WatchProgress getWatchProgress() {
+        return view != null ? view.getWatchProgress() : WatchProgress.NONE;
     }
 
     /**

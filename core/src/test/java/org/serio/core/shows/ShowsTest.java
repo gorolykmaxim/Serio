@@ -8,8 +8,8 @@ import org.serio.core.showstorage.ShowStorage;
 import org.serio.core.watchhistory.EpisodeView;
 import org.serio.core.watchhistory.ShowView;
 import org.serio.core.watchhistory.WatchHistory;
+import org.serio.core.watchhistory.WatchProgress;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -29,24 +29,25 @@ public class ShowsTest {
     private Shows shows;
     private Show show, anotherShow, notWatchedShow, anotherNotWatchedShow;
     private ShowView showView, anotherShowView;
-    private Duration fullyWatched, justStarted;
+    private WatchProgress fullyWatched, justStarted;
     private List<EpisodeView> episodeViews;
 
     @Before
     public void setUp() throws Exception {
-        fullyWatched = Duration.ofMinutes(15);
-        justStarted = Duration.ZERO;
+        fullyWatched = WatchProgress.COMPLETE;
+        justStarted = WatchProgress.NONE;
         List<Episode> episodes = IntStream.range(1, 10)
                 .mapToObj(i -> new Episode(i, String.format("http://friends.com/episode%d.mp4", i)))
                 .collect(Collectors.toList());
         // Episodes 1 and 2 are fully watched and the last 9th episodes is just started.
+        LocalDateTime now = LocalDateTime.now();
         episodeViews = episodes.stream()
                 .filter(episode -> episode.getId() < 3 || episode.getId() > 8)
-                .map(episode -> new EpisodeView(Long.toString(episode.getId()), episode.getId() == 9 ? justStarted : fullyWatched, LocalDateTime.now().minusHours(episodes.size() - episode.getId())))
+                .map(episode -> new EpisodeView(Long.toString(episode.getId()), episode.getId() == 9 ? justStarted : fullyWatched, now.minusHours(episodes.size() - episode.getId())))
                 .collect(Collectors.toList());
         show = Show.createNew("Friends", "https://friends.com/thumbnail.jpg", episodes);
         String showId = show.getId().toString();
-        showView = new ShowView(showId);
+        showView = new ShowView(showId, now);
         anotherShow = Show.createNew("How i met your mother", Collections.emptyList());
         anotherShowView = new ShowView(anotherShow.getId().toString(), LocalDateTime.now().minusDays(3));
         notWatchedShow = Show.createNew("Clinic", Collections.emptyList());
@@ -169,7 +170,7 @@ public class ShowsTest {
             } else {
                 assertFalse(watchableEpisode.hasBeenWatched());
                 assertFalse(watchableEpisode.getLastWatchDate().isPresent());
-                assertEquals(Duration.ZERO, watchableEpisode.getWatchProgress());
+                assertEquals(WatchProgress.NONE, watchableEpisode.getWatchProgress());
             }
         }
     }
@@ -184,7 +185,7 @@ public class ShowsTest {
         assertFalse(watchableShow.getLastWatchedEpisode().isPresent());
         for (WatchableEpisode episode: watchableShow.getEpisodes()) {
             assertFalse(episode.getLastWatchDate().isPresent());
-            assertEquals(Duration.ZERO, episode.getWatchProgress());
+            assertEquals(WatchProgress.NONE, episode.getWatchProgress());
         }
     }
 
@@ -200,7 +201,7 @@ public class ShowsTest {
     public void shouldCreateViewOfTheSpecifiedShowOfTheSpecifiedEpisode() {
         // given
         Episode episode = show.getEpisodes().get(0);
-        Duration watchProgress = Duration.ofSeconds(326);
+        WatchProgress watchProgress = WatchProgress.fromPercentage(15);
         // when
         shows.watchShowEpisode(show.getId(), episode.getId(), watchProgress);
         // then

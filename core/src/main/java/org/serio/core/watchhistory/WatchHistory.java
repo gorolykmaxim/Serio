@@ -1,6 +1,5 @@
 package org.serio.core.watchhistory;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -31,7 +30,7 @@ public interface WatchHistory {
      * @param episodeId ID of the episode the user has just watched
      * @param watchProgress amount of episode's duration the user has already watched
      */
-    void watchShowEpisode(String showId, String episodeId, Duration watchProgress);
+    void watchShowEpisode(String showId, String episodeId, WatchProgress watchProgress);
 
     /**
      * Clear user's watch history information about the specified show.

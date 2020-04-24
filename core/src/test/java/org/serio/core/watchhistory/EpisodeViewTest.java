@@ -3,7 +3,6 @@ package org.serio.core.watchhistory;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,13 +11,13 @@ import static org.junit.Assert.assertNotEquals;
 
 public class EpisodeViewTest {
     private String episodeId;
-    private Duration watchProgress;
+    private WatchProgress watchProgress;
     private LocalDateTime lastWatchedDate;
 
     @Before
     public void setUp() throws Exception {
         episodeId = "15";
-        watchProgress = Duration.ofMinutes(13);
+        watchProgress = WatchProgress.fromPercentage(15);
         lastWatchedDate = LocalDateTime.now().minusDays(2);
     }
 
@@ -49,7 +48,7 @@ public class EpisodeViewTest {
         // when
         EpisodeView view = new EpisodeView(episodeId);
         // then
-        assertEquals(Duration.ZERO, view.getWatchProgress());
+        assertEquals(WatchProgress.NONE, view.getWatchProgress());
     }
 
     @Test

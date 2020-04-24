@@ -6,8 +6,8 @@ import org.serio.core.showstorage.ShowStorage;
 import org.serio.core.watchhistory.EpisodeView;
 import org.serio.core.watchhistory.ShowView;
 import org.serio.core.watchhistory.WatchHistory;
+import org.serio.core.watchhistory.WatchProgress;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
@@ -90,7 +90,7 @@ public class Shows {
      * @param episodeId ID of the episode, the user is watching
      * @param watchProgress amount of the specified episode's duration the user has just watched
      */
-    public void watchShowEpisode(UUID showId, long episodeId, Duration watchProgress) {
+    public void watchShowEpisode(UUID showId, long episodeId, WatchProgress watchProgress) {
         watchHistory.watchShowEpisode(showId.toString(), Long.toString(episodeId), watchProgress);
     }
 
