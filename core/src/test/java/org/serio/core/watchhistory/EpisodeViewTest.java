@@ -6,8 +6,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class EpisodeViewTest {
     private String episodeId;
@@ -49,6 +48,22 @@ public class EpisodeViewTest {
         EpisodeView view = new EpisodeView(episodeId);
         // then
         assertEquals(WatchProgress.NONE, view.getWatchProgress());
+    }
+
+    @Test
+    public void shouldBeCompleteIfTheWatchProgressIsComplete() {
+        // when
+        EpisodeView view = new EpisodeView(episodeId, WatchProgress.COMPLETE);
+        // then
+        assertTrue(view.isComplete());
+    }
+
+    @Test
+    public void shouldNotBeCompleteIfTheWatchProgressIsNotComplete() {
+        // when
+        EpisodeView view = new EpisodeView(episodeId, WatchProgress.fromPercentage(99));
+        // then
+        assertFalse(view.isComplete());
     }
 
     @Test

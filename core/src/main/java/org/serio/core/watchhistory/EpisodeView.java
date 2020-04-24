@@ -63,6 +63,15 @@ public class EpisodeView {
     }
 
     /**
+     * Check if the user has watched this episode from start to finish
+     *
+     * @return true if the user has completely watched this episode
+     */
+    public boolean isComplete() {
+        return WatchProgress.COMPLETE.equals(watchProgress);
+    }
+
+    /**
      * Get the date when this view was created.
      *
      * @return date of the last time the corresponding episode has been watched
