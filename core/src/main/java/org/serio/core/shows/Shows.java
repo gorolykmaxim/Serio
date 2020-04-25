@@ -90,8 +90,8 @@ public class Shows {
      * @param episodeId ID of the episode, the user is watching
      * @param watchProgress amount of the specified episode's duration the user has just watched
      */
-    public void watchShowEpisode(UUID showId, long episodeId, WatchProgress watchProgress) {
-        watchHistory.watchShowEpisode(showId.toString(), Long.toString(episodeId), watchProgress);
+    public void watchShowEpisode(UUID showId, int episodeId, WatchProgress watchProgress) {
+        watchHistory.watchShowEpisode(showId.toString(), Integer.toString(episodeId), watchProgress);
     }
 
     /**

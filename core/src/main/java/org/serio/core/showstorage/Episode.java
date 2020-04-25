@@ -6,14 +6,14 @@ import java.util.Objects;
  * An episode of a show.
  */
 public class Episode {
-    private final long id;
+    private final int id;
     private final String name;
     private final String videoUrl;
 
     /**
-     * @see Episode#Episode(long, String, String)
+     * @see Episode#Episode(int, String, String)
      */
-    public Episode(long id, String videoUrl) {
+    public Episode(int id, String videoUrl) {
         this(id, null, videoUrl);
     }
 
@@ -26,7 +26,7 @@ public class Episode {
      *             of the episode's ID
      * @param videoUrl URL to the video file, containing the episode. Can't be null.
      */
-    public Episode(long id, String name, String videoUrl) {
+    public Episode(int id, String name, String videoUrl) {
         if (id < 1) {
             throw new IllegalArgumentException("ID of an episode is it's positional number and should start from 1. Specified - " + id);
         }
@@ -45,7 +45,7 @@ public class Episode {
      *
      * @return ID of the episode
      */
-    public long getId() {
+    public int getId() {
         return id;
     }
 

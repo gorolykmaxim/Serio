@@ -33,7 +33,7 @@ public class WatchableShow {
                 .getEpisodes()
                 .stream()
                 .sorted(Comparator.comparing(Episode::getId))
-                .map(episode -> new WatchableEpisode(episode, episodeIdToView.get(Long.toString(episode.getId()))))
+                .map(episode -> new WatchableEpisode(episode, episodeIdToView.get(Integer.toString(episode.getId()))))
                 .collect(Collectors.toList());
         Optional<LocalDateTime> possibleLastWatchDate = episodeViews
                 .stream()
@@ -101,11 +101,11 @@ public class WatchableShow {
      * @param episodeId ID of the episode
      * @return episode with the specified ID. Can be empty if the show does not have such episode.
      */
-    public Optional<WatchableEpisode> getEpisodeById(long episodeId) {
+    public Optional<WatchableEpisode> getEpisodeById(int episodeId) {
         if (episodeId < 1 || episodeId > episodes.size()) {
             return Optional.empty();
         } else {
-            return Optional.of(episodes.get((int) (episodeId - 1)));
+            return Optional.of(episodes.get(episodeId - 1));
         }
     }
 
@@ -125,12 +125,8 @@ public class WatchableShow {
      * @return previous episode relative to the specified one. Can be empty if the specified episode is the first one
      * or does not exist.
      */
-    public Optional<WatchableEpisode> getEpisodeBeforeEpisode(long episodeId) {
-        if (episodeId < 2 || episodeId > episodes.size() + 1) {
-            return Optional.empty();
-        } else {
-            return Optional.of(episodes.get((int) (episodeId - 2)));
-        }
+    public Optional<WatchableEpisode> getEpisodeBeforeEpisode(int episodeId) {
+        return getEpisodeById(episodeId - 1);
     }
 
     /**
@@ -140,7 +136,7 @@ public class WatchableShow {
      * @return next episode relative to the specified one. Can be empty if the specified episode is the last one
      * or does not exist.
      */
-    public Optional<WatchableEpisode> getEpisodeAfterEpisode(long episodeId) {
+    public Optional<WatchableEpisode> getEpisodeAfterEpisode(int episodeId) {
         return getEpisodeById(episodeId + 1);
     }
 

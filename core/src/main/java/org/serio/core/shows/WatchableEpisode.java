@@ -34,7 +34,7 @@ public class WatchableEpisode {
     /**
      * @see Episode#getId()
      */
-    public long getId() {
+    public int getId() {
         return episode.getId();
     }
 

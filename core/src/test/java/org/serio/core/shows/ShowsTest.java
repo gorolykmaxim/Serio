@@ -257,7 +257,7 @@ public class ShowsTest {
         // when
         shows.watchShowEpisode(show.getId(), episode.getId(), watchProgress);
         // then
-        verify(watchHistory).watchShowEpisode(show.getId().toString(), Long.toString(episode.getId()), watchProgress);
+        verify(watchHistory).watchShowEpisode(show.getId().toString(), Integer.toString(episode.getId()), watchProgress);
     }
 
     @Test
@@ -291,7 +291,7 @@ public class ShowsTest {
             episodeViews = episodes
                     .stream()
                     .filter(episode -> episode.getId() > episodesCount / 2)
-                    .map(episode -> new EpisodeView(Long.toString(episode.getId()), episode.getId() == episodesCount ? WatchProgress.NONE : WatchProgress.COMPLETE, lastWatchDate.minusHours(episodesCount - episode.getId())))
+                    .map(episode -> new EpisodeView(Integer.toString(episode.getId()), episode.getId() == episodesCount ? WatchProgress.NONE : WatchProgress.COMPLETE, lastWatchDate.minusHours(episodesCount - episode.getId())))
                     .collect(Collectors.toList());
         } else {
             episodeViews = Collections.emptyList();
