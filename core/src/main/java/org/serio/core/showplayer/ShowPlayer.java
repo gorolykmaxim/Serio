@@ -29,7 +29,7 @@ public class ShowPlayer {
     /**
      * @see Player#of(WatchableShow, boolean)
      */
-    public Player playShow(UUID showId, boolean fromBeginning) {
+    public synchronized Player playShow(UUID showId, boolean fromBeginning) {
         try  {
             WatchableShow show = shows.findShowById(showId);
             return setPlayer(Player.of(show, fromBeginning));
@@ -41,7 +41,7 @@ public class ShowPlayer {
     /**
      * @see Player#of(WatchableShow, int)
      */
-    public Player playShowEpisode(UUID showId, int episodeId) {
+    public synchronized Player playShowEpisode(UUID showId, int episodeId) {
         try {
             WatchableShow show = shows.findShowById(showId);
             return setPlayer(Player.of(show, episodeId));
@@ -71,7 +71,7 @@ public class ShowPlayer {
      *
      * @return current state of the show player
      */
-    public Player playNextEpisode() {
+    public synchronized Player playNextEpisode() {
         try {
             return setPlayer(getPlayer().nextEpisode());
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class ShowPlayer {
      *
      * @return current state of the show player
      */
-    public Player playPreviousEpisode() {
+    public synchronized Player playPreviousEpisode() {
         try {
             return setPlayer(getPlayer().previousEpisode());
         } catch (Exception e) {
