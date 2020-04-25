@@ -4,7 +4,9 @@ interface WatchHistory
 interface ShowCrawlerStorage
 interface ShowCrawlerLogStorage
 interface HttpClient
-interface ApplicationController
+interface Clipboard
+interface Notifications
+interface UserInterface
 [AndroidStorage] --|> WatchHistory
 [AndroidStorage] --|> ShowStorage
 [AndroidStorage] --|> ShowCrawlerStorage
@@ -15,14 +17,21 @@ interface ApplicationController
 [DesktopStorage] --|> ShowCrawlerLogStorage
 [AndroidHttpClient] --|> HttpClient
 [DesktopHttpClient] --|> HttpClient
-[AndroidApplicationController] --|> ApplicationController
-[DesktopApplicationController] --|> ApplicationController
+[AndroidClipboard] --|> Clipboard
+[DesktopClipboard] --|> Clipboard
+[AndroidNotifications] --|> Notifications
+[DesktopNotifications] --|> Notifications
+[AndroidUserInterface] --|> UserInterface
+[DesktopUserInterface] --|> UserInterface
 [Shows] --> WatchHistory
 [Shows] --> ShowStorage
 [ShowsCrawler] --> ShowCrawlerStorage
 [ShowsCrawler] --> HttpClient
 [ShowPlayer] --> [Shows]
-ApplicationController --> [Shows]
-ApplicationController --> [ShowPlayer]
-ApplicationController --> [ShowsCrawler]
+[ApplicationController] --> [Shows]
+[ApplicationController] --> [ShowPlayer]
+[ApplicationController] --> [ShowsCrawler]
+[ApplicationController] --> Clipboard
+[ApplicationController] --> Notifications
+[ApplicationController] --> UserInterface
 @enduml
