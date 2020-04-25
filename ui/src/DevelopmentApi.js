@@ -216,20 +216,20 @@ export default function enableDevelopmentApi() {
     registerFunction('allShowsNoWatched', viewNameToTrigger, () => allShows(true));
     registerFunction('addShowCrawler', viewNameToTrigger, () => editShowCrawler());
     registerFunction('editShowCrawler', viewNameToTrigger, () => editShowCrawler(true));
-    registerFunction('importShowCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: IMPORT_SHOW_CRAWLER}));
-    registerFunction('editCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([]), showCrawlerId: showCrawlerId}));
-    registerFunction('crawlPreview', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems, showCrawlerId: showCrawlerId}));
-    registerFunction('crawlLog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog, showCrawlerId: showCrawlerId}));
-    registerFunction('crawlLogEntryDetails', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
-    registerFunction('crawlingInProgress', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: CRAWLING_IN_PROGRESS}));
+    registerFunction('importShowCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: IMPORT_SHOW_CRAWLER}));
+    registerFunction('editCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([]), showCrawlerId: showCrawlerId}));
+    registerFunction('crawlPreview', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems, showCrawlerId: showCrawlerId}));
+    registerFunction('crawlLog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog, showCrawlerId: showCrawlerId}));
+    registerFunction('crawlLogEntryDetails', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
+    registerFunction('crawlingInProgress', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWLING_IN_PROGRESS}));
     registerFunction('showDetails', viewNameToTrigger, () => showDetails());
     registerFunction('showDetailsNoEpisodes', viewNameToTrigger, () => showDetails(true));
     registerFunction('showPlayer', viewNameToTrigger, () => showPlayer());
     registerFunction('showPlayerSeek', viewNameToTrigger, () => showPlayer(true));
-    registerFunction('clearWatchHistoryDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({dataType: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
+    registerFunction('clearWatchHistoryDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
     console.info(`You can also use those function names as a window.location.hash attribute "view" like "#view=${Object.keys(viewNameToTrigger)[0]}".`);
 }
 
@@ -257,28 +257,28 @@ function registerFunction(name, listeners, f) {
 
 function allShows(noWatchedShows) {
     window.dispatchApplicationEvent({
-        dataType: ALL_SHOWS,
+        viewId: ALL_SHOWS,
         showInfo: {lastWatchedShows: shows.slice(0, noWatchedShows ? 0 : 2), allShows: shows}
     });
 }
 
 function editShowCrawler(edit) {
     window.dispatchApplicationEvent({
-        dataType: EDIT_SHOW_CRAWLER,
+        viewId: EDIT_SHOW_CRAWLER,
         showCrawler: {id: showCrawlerId, name: edit ? 'Boruto' : null}
     });
 }
 
 function showDetails(noEpisodes) {
     window.dispatchApplicationEvent({
-        dataType: SHOW_DETAILS,
+        viewId: SHOW_DETAILS,
         show: shows[noEpisodes ? 1 : 0]
     });
 }
 
 function showPlayer(seek) {
     window.dispatchApplicationEvent({
-        dataType: SHOW_PLAYER,
+        viewId: SHOW_PLAYER,
         info: playerInfo,
         startProgress: seek ? 25 : null,
         showId: showCrawlerId

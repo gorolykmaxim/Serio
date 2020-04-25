@@ -52,8 +52,8 @@ export class SerioApplication extends React.Component {
         this.setState({data: event.detail});
     }
     render() {
-        const type = this.state.data.dataType;
-        switch (type) {
+        const viewId = this.state.data.viewId;
+        switch (viewId) {
             case ALL_SHOWS:
                 return this.renderAllShows();
             case EDIT_SHOW_CRAWLER:
@@ -83,10 +83,10 @@ export class SerioApplication extends React.Component {
             case SHOW_ERROR_DIALOG:
                 return this.renderErrorDialog();
             default:
-                if (!type) {
+                if (!viewId) {
                     return <Logo/>;
                 } else {
-                    console.error(`Unknown data type: ${type}. Skipping...`);
+                    console.error(`Unknown view ID: ${viewId}. Skipping...`);
                 }
         }
     }
