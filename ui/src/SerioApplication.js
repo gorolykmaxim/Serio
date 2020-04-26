@@ -132,13 +132,13 @@ export class SerioApplication extends React.Component {
                              onViewLog={() => window.serioController.viewCrawlLog(null)}/>;
     }
     renderCrawlLog() {
-        const {crawlType: crawlerType, logEntries, showCrawlerId} = this.state.data;
+        const {crawlerType, logEntries} = this.state.data;
         return <CrawlLog crawlerType={crawlerType}
                          logEntries={logEntries}
                          hoverableLogEntries={!this.isTv}
                          scrollOnFocus={this.isTv}
                          onBack={window.serioController.back}
-                         onLogEntry={entry => window.serioController.viewLogEntry(showCrawlerId, entry.id)}/>;
+                         onLogEntry={entry => window.serioController.viewLogEntry(entry.id)}/>;
     }
     renderCrawlLogEntryDetails() {
         const {logEntry} = this.state.data;

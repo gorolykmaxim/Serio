@@ -35,8 +35,8 @@ export default class SerioController {
     viewCrawlLog(showCrawlerId) {
         console.info(`Opening view crawl log view of crawler ${showCrawlerId}`);
     }
-    viewLogEntry(showCrawlerId, logEntryId) {
-        console.info(`Opening view crawl log entry details view of crawler ${showCrawlerId} to view ${logEntryId}`);
+    viewLogEntry(logEntryId) {
+        console.info(`Opening view crawl log entry details view of the currently selected crawler to view ${logEntryId}`);
     }
     playShow() {
         console.info('Play the currently selected show');
