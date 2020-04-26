@@ -8,29 +8,29 @@ export default class SerioController {
     selectShow(showId) {
         console.info(`Opening show details view from show ${showId}`);
     }
-    editThumbnailCrawler(showCrawlerId) {
-        console.info(`Opening edit crawler view for thumbnail crawler of show ${showCrawlerId}`);
+    editThumbnailCrawler() {
+        console.info('Opening edit crawler view for thumbnail crawler of the currently selected show');
     }
-    editEpisodeVideoCrawler(showCrawlerId) {
-        console.info(`Opening edit crawler view for episode video crawler of show ${showCrawlerId}`);
+    editEpisodeVideoCrawler() {
+        console.info('Opening edit crawler view for episode video crawler of the currently selected show');
     }
-    editEpisodeNameCrawler(showCrawlerId) {
-        console.info(`Opening edit crawler view for episode name crawler of show ${showCrawlerId}`);
+    editEpisodeNameCrawler() {
+        console.info('Opening edit crawler view for episode name crawler of the currently selected show');
     }
     back() {
         console.info('Opening previous view');
     }
-    saveShowCrawler(showCrawlerId, showCrawlerName) {
-        console.info(`Committing changes of show crawler ${showCrawlerId} with a name ${showCrawlerName}`);
+    saveShowCrawler(showCrawlerName) {
+        console.info(`Committing changes of the currently selected show crawler with a name ${showCrawlerName}`);
     }
     importShowCrawler(rawShowCrawler) {
         console.info(`Importing show crawler: ${rawShowCrawler}`);
     }
-    previewCrawler(showCrawlerId, crawlerType, rawCrawler) {
-        console.info(`Opening crawl preview view for crawler ${showCrawlerId} with type ${crawlerType} to edit ${rawCrawler}`);
+    previewCrawler(rawCrawler) {
+        console.info(`Opening crawl preview view for the currently selected crawler to edit ${rawCrawler}`);
     }
-    saveCrawler(showCrawlerId, crawlerType, rawCrawler) {
-        console.info(`Committing changes of ${crawlerType} ${showCrawlerId}: ${rawCrawler}`);
+    saveCrawler(rawCrawler) {
+        console.info(`Committing changes of the currently selected crawler: ${rawCrawler}`);
     }
     viewCrawlLog(showCrawlerId) {
         console.info(`Opening view crawl log view of crawler ${showCrawlerId}`);
@@ -38,47 +38,47 @@ export default class SerioController {
     viewLogEntry(showCrawlerId, logEntryId) {
         console.info(`Opening view crawl log entry details view of crawler ${showCrawlerId} to view ${logEntryId}`);
     }
-    playShow(showId) {
-        console.info(`Play show ${showId}`);
+    playShow() {
+        console.info('Play the currently selected show');
     }
-    playShowEpisode(showId, episodeNumber) {
-        console.info(`Play episode ${episodeNumber} of show ${showId}`);
+    playShowEpisode(episodeNumber) {
+        console.info(`Play episode ${episodeNumber} of the currently selected show`);
     }
-    editShowCrawler(showId) {
-        console.info(`Opening edit show crawler view for show ${showId}`);
+    editShowCrawler() {
+        console.info('Opening edit show crawler view for the currently selected show');
     }
-    shareShowCrawler(showId) {
-        console.info(`Copying crawler of ${showId} to the clipboard`);
+    shareShowCrawler() {
+        console.info('Copying crawler of the currently selected show to the clipboard');
     }
-    crawlShow(showId) {
-        console.info(`Crawling show ${showId}`);
+    crawlShow() {
+        console.info('Crawling the currently selected show');
     }
-    viewShowCrawlLog(showId) {
-        console.info(`Opening view crawl log view of crawler ${showId}`);
+    viewShowCrawlLog() {
+        console.info('Opening view crawl log view of crawler of the currently selected show');
     }
-    initiateClearShowWatchHistory(showId) {
-        console.info(`Opening dialog view to confirm clearing show watch history of ${showId}`);
+    initiateClearShowWatchHistory() {
+        console.info('Opening dialog view to confirm clearing show watch history of the currently selected show');
     }
-    initiateShowRemoval(showId) {
-        console.info(`Opening dialog view to confirm show removal of ${showId}`);
+    initiateShowRemoval() {
+        console.info('Opening dialog view to confirm show removal of the currently selected show');
     }
-    reportShowWatchProgress(showId, progress) {
-        console.info(`Reporting watch progress of ${showId} - ${progress}%`);
+    reportShowWatchProgress(progress) {
+        console.info(`Reporting watch progress of of the currently selected show - ${progress}%`);
     }
-    playPreviousEpisode(showId) {
-        console.info(`Going to play previous episode of ${showId}`);
+    playPreviousEpisode() {
+        console.info('Going to play previous episode of the currently selected show');
     }
-    playNextEpisode(showId) {
-        console.info(`Going to play next episode of ${showId}`);
+    playNextEpisode() {
+        console.info('Going to play next episode of the currently selected show');
     }
-    clearWatchHistory(showId) {
-        console.info(`Clear watch history of ${showId}`);
+    clearWatchHistory() {
+        console.info('Clear watch history of the currently selected show');
     }
-    deleteShow(showId) {
-        console.info(`Delete show ${showId}`);
+    deleteShow() {
+        console.info('Delete the currently selected show');
     }
-    playShowFromTheBeginning(showId) {
-        console.info(`Play show ${showId} from the beginning`);
+    playShowFromTheBeginning() {
+        console.info('Play the currently selected show from the beginning');
     }
     viewAllShows() {
         console.info('Opening all shows view');
