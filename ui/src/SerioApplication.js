@@ -115,12 +115,12 @@ export class SerioApplication extends React.Component {
                                   onCancel={window.serioController.back}/>;
     }
     renderEditCrawler() {
-        const {crawlerType, crawler, showCrawlerId} = this.state.data;
+        const {crawlerType, crawler} = this.state.data;
         return <EditCrawler crawlerType={crawlerType}
                             crawler={crawler}
                             onCancel={window.serioController.back}
-                            onPreview={rawCrawler => window.serioController.previewCrawler(showCrawlerId, crawlerType, rawCrawler)}
-                            onSave={rawCrawler => window.serioController.saveCrawler(showCrawlerId, crawlerType, rawCrawler)}/>;
+                            onPreview={rawCrawler => window.serioController.previewCrawler(rawCrawler)}
+                            onSave={rawCrawler => window.serioController.saveCrawler(rawCrawler)}/>;
     }
     renderCrawlPreview() {
         const {crawlerType, crawlItems, showCrawlerId} = this.state.data;
