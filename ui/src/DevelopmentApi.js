@@ -258,7 +258,8 @@ function registerFunction(name, listeners, f) {
 function allShows(noWatchedShows) {
     window.dispatchApplicationEvent({
         viewId: ALL_SHOWS,
-        showInfo: {lastWatchedShows: shows.slice(0, noWatchedShows ? 0 : 2), allShows: shows}
+        allShows: shows,
+        lastWatchedShows: shows.slice(0, noWatchedShows ? 0 : 2)
     });
 }
 

@@ -6,8 +6,8 @@ import {HEADLINE_5, Text} from "../components/Text";
 import {createScrollIntoTarget, getFunction} from "../common";
 
 export default function AllShows(props) {
-    const lastWatchedShows = props.showInfo.lastWatchedShows || [];
-    const allShows = props.showInfo.allShows || [];
+    const lastWatchedShows = props.lastWatchedShows || [];
+    const allShows = props.allShows || [];
     const onShowSelect = getFunction(props.onShowSelect);
     const onAddShow = getFunction(props.onAddShow);
     const onImportShowFromJson = getFunction(props.onImportShowFromJson);

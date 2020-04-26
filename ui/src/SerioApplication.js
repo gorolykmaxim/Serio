@@ -91,8 +91,9 @@ export class SerioApplication extends React.Component {
         }
     }
     renderAllShows() {
-        const {showInfo} = this.state.data;
-        return <AllShows showInfo={showInfo}
+        const {allShows, lastWatchedShows} = this.state.data;
+        return <AllShows allShows={allShows}
+                         lastWatchedShows={lastWatchedShows}
                          hoverableShowCards={!this.isTv}
                          scrollOnFocus={this.isTv}
                          onAddShow={window.serioController.addShow}
