@@ -101,14 +101,14 @@ export class SerioApplication extends React.Component {
                          onShowSelect={(show) => window.serioController.selectShow(show.id)}/>;
     }
     renderEditShowCrawler() {
-        const {showCrawler} = this.state.data;
-        const id = showCrawler.id;
-        return <EditShowCrawler showCrawler={showCrawler}
-                                onEditThumbnailCrawler={() => window.serioController.editThumbnailCrawler(id)}
-                                onEditEpisodeVideoCrawler={() => window.serioController.editEpisodeVideoCrawler(id)}
-                                onEditEpisodeNameCrawler={() => window.serioController.editEpisodeNameCrawler(id)}
+        const {showId, showName} = this.state.data;
+        return <EditShowCrawler showId={showId}
+                                showName={showName}
+                                onEditThumbnailCrawler={() => window.serioController.editThumbnailCrawler(showId)}
+                                onEditEpisodeVideoCrawler={() => window.serioController.editEpisodeVideoCrawler(showId)}
+                                onEditEpisodeNameCrawler={() => window.serioController.editEpisodeNameCrawler(showId)}
                                 onCancel={window.serioController.back}
-                                onSave={(showCrawler) => window.serioController.saveShowCrawler(id, showCrawler.name)}/>;
+                                onSave={(showName) => window.serioController.saveShowCrawler(showId, showName)}/>;
     }
     renderImportShowCrawler() {
         return <ImportShowCrawler onImport={window.serioController.importShowCrawler}

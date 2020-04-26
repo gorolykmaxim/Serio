@@ -6,8 +6,7 @@ import {HEADLINE_5, SUBTITLE_2, Text} from "../components/Text";
 import {getFunction} from "../common";
 
 export default function EditShowCrawler(props) {
-    const showCrawler = props.showCrawler || {};
-    const isNewCrawler = !showCrawler.name;
+    const isNewCrawler = !props.showId;
     const onEditThumbnailCrawler = getFunction(props.onEditThumbnailCrawler);
     const onEditEpisodeVideoCrawler = getFunction(props.onEditEpisodeVideoCrawler);
     const onEditEpisodeNameCrawler = getFunction(props.onEditEpisodeNameCrawler);
@@ -15,14 +14,14 @@ export default function EditShowCrawler(props) {
     const onSave = getFunction(props.onSave);
     return (
         <div className='serio-edit-show-crawler serio-full-height'>
-            <form className='serio-edit-show-crawler-container' onSubmit={createOnSubmit(showCrawler, onSave)}>
+            <form className='serio-edit-show-crawler-container' onSubmit={createOnSubmit(onSave)}>
                 <div>
                     <Text type={HEADLINE_5} primary={true}>Configure show crawler</Text>
                 </div>
                 <TextEdit name={'name'}
                           required={true}
                           placeholder={'TV Show name'}
-                          defaultValue={showCrawler.name}
+                          defaultValue={props.showName}
                           autoFocus={isNewCrawler}
                           disabled={!isNewCrawler}
                           className='serio-edit-show-crawler-edit-line serio-growable'/>
@@ -45,11 +44,9 @@ export default function EditShowCrawler(props) {
     );
 }
 
-function createOnSubmit(showCrawler, callback) {
+function createOnSubmit(callback) {
     return (event) => {
         event.preventDefault();
-        const form = event.target;
-        showCrawler.name = form.elements.name.value;
-        callback(showCrawler);
+        callback(event.target.elements.name.value);
     };
 }

@@ -266,7 +266,8 @@ function allShows(noWatchedShows) {
 function editShowCrawler(edit) {
     window.dispatchApplicationEvent({
         viewId: EDIT_SHOW_CRAWLER,
-        showCrawler: {id: showCrawlerId, name: edit ? 'Boruto' : null}
+        showId: edit ? showCrawlerId : null,
+        showName: edit ? 'Boruto' : null
     });
 }
 
