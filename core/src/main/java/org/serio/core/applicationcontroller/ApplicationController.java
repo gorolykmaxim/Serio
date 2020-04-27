@@ -42,8 +42,8 @@ public class ApplicationController {
         executeTask(new AddShowTask());
     }
 
-    public void selectShow(String showId) {
-
+    public synchronized void importShowFromJson() {
+        executeTask(new ImportShowFromJsonTask());
     }
 
     public void editThumbnailCrawler() {
