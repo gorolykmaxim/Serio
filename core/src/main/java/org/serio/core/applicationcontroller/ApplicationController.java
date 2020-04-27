@@ -50,14 +50,16 @@ public class ApplicationController {
         executeTask(new SelectShowTask(showId, shows, lastWatchedDateFormat));
     }
 
+    public synchronized void editThumbnailCrawler() {
+        executeTask(new EditCrawlerTask(CrawlerTypes.THUMBNAIL));
     }
 
-    public void editEpisodeVideoCrawler() {
-
+    public synchronized void editEpisodeVideoCrawler() {
+        executeTask(new EditCrawlerTask(CrawlerTypes.EPISODE_VIDEO));
     }
 
-    public void editEpisodeNameCrawler() {
-
+    public synchronized void editEpisodeNameCrawler() {
+        executeTask(new EditCrawlerTask(CrawlerTypes.EPISODE_NAME));
     }
 
     public void back() {
