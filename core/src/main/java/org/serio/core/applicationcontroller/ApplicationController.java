@@ -70,8 +70,8 @@ public class ApplicationController {
         executeTask(new SaveShowCrawlerTask(showCrawlerName, shows, showsCrawler, lastWatchedDateFormat));
     }
 
-    public void importShowCrawler(String rawShowCrawler) {
-
+    public synchronized void importShowCrawler(String rawShowCrawler) {
+        executeTask(new ImportShowCrawlerTask(rawShowCrawler, shows, showsCrawler, lastWatchedDateFormat));
     }
 
     public void previewCrawler(String rawCrawler) {
