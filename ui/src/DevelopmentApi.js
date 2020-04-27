@@ -104,24 +104,28 @@ const crawLog = [
     {
         id: '1',
         description: 'Execute step 1: Parameters: a, b, c.',
+        hasDetails: true,
         input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfg]',
         output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3 fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
         id: '2',
         description: 'Execute step 1: Parameters: a, b, c.',
+        hasDetails: true,
         input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
         output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
         id: '3',
         description: 'Execute step 1: Parameters: a, b, c.',
+        hasDetails: true,
         input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
         output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
     {
         id: '4',
         description: 'Execute step 1: Parameters: a, b, c.',
+        hasDetails: true,
         input: 'Input arguments: [fansdfnlsdfnlkasf, afsndfnkjsajdfnjkasdf, fasdjfn ksajfkjsdafkjsdafblsdafkns kjsadlk fnsdlfknsaldkfnslkafnlkasngjsdgnksdajbfgjkasdbfosavuiw]',
         output: 'Output arguments: [fnasdifosdifn osidanfoisadn ofsdiafnsdiofnioasdbfoisb oisdafboisa bdfoisdabfowehf039h3904hf 34hfu oif340804fb348fb34 9fb34f8 3b480f3048fb5380fb 3]'
     },
@@ -281,7 +285,11 @@ function showDetails(noEpisodes) {
 function showPlayer(seek) {
     window.dispatchApplicationEvent({
         viewId: SHOW_PLAYER,
-        info: playerInfo,
+        videoUrl: 'https://media.w3.org/2010/05/sintel/trailer_hd.mp4',
+        showName: 'Some movie',
+        episodeName: 'Episode 15',
+        hasPreviousEpisode: true,
+        hasNextEpisode: true,
         startProgress: seek ? 25 : null,
         showId: showCrawlerId
     });

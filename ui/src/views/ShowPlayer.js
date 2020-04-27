@@ -15,7 +15,9 @@ const INACTIVITY_TIMEOUT = 5000;
 export default class ShowPlayer extends React.Component {
     constructor(props, context) {
         super(props, context);
-        console.assert(this.info);
+        console.assert(props.videoUrl);
+        console.assert(props.showName);
+        console.assert(props.episodeName);
         this.inactivityTimeout = null;
         this.player = null;
         this.state = {
@@ -26,9 +28,6 @@ export default class ShowPlayer extends React.Component {
             isBuffering: true,
             displayControls: true
         };
-    }
-    get info() {
-        return this.props.info;
     }
     get progressInterval() {
         return this.props.progressInterval || PROGRESS_INTERVAL;
@@ -112,13 +111,14 @@ export default class ShowPlayer extends React.Component {
     }
     render() {
         const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls} = this.state;
+        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode} = this.props;
         const controlsStyle = {opacity: displayControls ? 1 : 0};
         const buffering = isBuffering ? <CircularProgress/> : null;
         return (
             <div className='serio-full-height' onMouseMove={this.handleUserActivity.bind(this)} onKeyDown={this.handleUserActivity.bind(this)}>
                 <ReactPlayer width='100%'
                              height='100%'
-                             url={this.info.videoUrl}
+                             url={videoUrl}
                              ref={player => {this.player = player}}
                              onStart={this.onStart.bind(this)}
                              onPlay={this.onPlay.bind(this)}
@@ -139,7 +139,7 @@ export default class ShowPlayer extends React.Component {
                                     size={MEDIUM_SIZE}
                                     onClick={this.onBack}
                                     className='serio-show-player-margin-after'/>
-                        <Text type={HEADLINE_5} primary>{this.info.showName}</Text>
+                        <Text type={HEADLINE_5} primary>{showName}</Text>
                     </div>
                     <div className='serio-show-player-navigation'>
                         <div className='serio-show-player-progress'>
@@ -166,13 +166,13 @@ export default class ShowPlayer extends React.Component {
                             <IconButton icon='skip_previous'
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
-                                        isDisabled={!this.info.hasPreviousEpisode}
+                                        isDisabled={!hasPreviousEpisode}
                                         onClick={this.onPreviousEpisode}/>
-                            <Text type={HEADLINE_5} className='serio-show-player-margin-after' primary>{this.info.episodeName}</Text>
+                            <Text type={HEADLINE_5} className='serio-show-player-margin-after' primary>{episodeName}</Text>
                             <IconButton icon='skip_next'
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
-                                        isDisabled={!this.info.hasNextEpisode}
+                                        isDisabled={!hasNextEpisode}
                                         onClick={this.onNextEpisode}/>
                         </div>
                     </div>

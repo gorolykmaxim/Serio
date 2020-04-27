@@ -104,11 +104,11 @@ export class SerioApplication extends React.Component {
         const {showId, showName} = this.state.data;
         return <EditShowCrawler showId={showId}
                                 showName={showName}
-                                onEditThumbnailCrawler={() => window.serioController.editThumbnailCrawler(showId)}
-                                onEditEpisodeVideoCrawler={() => window.serioController.editEpisodeVideoCrawler(showId)}
-                                onEditEpisodeNameCrawler={() => window.serioController.editEpisodeNameCrawler(showId)}
+                                onEditThumbnailCrawler={() => window.serioController.editThumbnailCrawler()}
+                                onEditEpisodeVideoCrawler={() => window.serioController.editEpisodeVideoCrawler()}
+                                onEditEpisodeNameCrawler={() => window.serioController.editEpisodeNameCrawler()}
                                 onCancel={window.serioController.back}
-                                onSave={(showName) => window.serioController.saveShowCrawler(showId, showName)}/>;
+                                onSave={(showName) => window.serioController.saveShowCrawler(showName)}/>;
     }
     renderImportShowCrawler() {
         return <ImportShowCrawler onImport={window.serioController.importShowCrawler}
@@ -150,32 +150,35 @@ export class SerioApplication extends React.Component {
     }
     renderShowDetails() {
         const {show} = this.state.data;
-        const id = show.id;
         return <ShowDetails show={show}
                             hoverableEpisodes={!this.isTv}
                             scrollOnFocus={this.isTv}
-                            onPlay={() => window.serioController.playShow(id)}
-                            onPlayEpisode={episode => window.serioController.playShowEpisode(id, episode.id)}
+                            onPlay={window.serioController.playShow}
+                            onPlayEpisode={episode => window.serioController.playShowEpisode(episode.id)}
                             onBack={window.serioController.back}
-                            onEdit={() => window.serioController.editShowCrawler(id)}
-                            onShareCrawler={() => window.serioController.shareShowCrawler(id)}
-                            onCrawl={() => window.serioController.crawlShow(id)}
-                            onViewCrawlLog={() => window.serioController.viewShowCrawlLog(id)}
-                            onClearWatchHistory={() => window.serioController.initiateClearShowWatchHistory(id)}
-                            onDelete={() => window.serioController.initiateShowRemoval(id)}/>;
+                            onEdit={window.serioController.editShowCrawler}
+                            onShareCrawler={window.serioController.shareShowCrawler}
+                            onCrawl={window.serioController.crawlShow}
+                            onViewCrawlLog={window.serioController.viewShowCrawlLog}
+                            onClearWatchHistory={window.serioController.initiateClearShowWatchHistory}
+                            onDelete={window.serioController.initiateShowRemoval}/>;
     }
     renderShowPlayer() {
-        const {info, startProgress, showId} = this.state.data;
-        return <ShowPlayer info={info}
+        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, startProgress} = this.state.data;
+        return <ShowPlayer videoUrl={videoUrl}
+                           showName={showName}
+                           episodeName={episodeName}
+                           hasPreviousEpisode={hasPreviousEpisode}
+                           hasNextEpisode={hasNextEpisode}
                            startProgress={startProgress}
-                           onProgressChange={progress => window.serioController.reportShowWatchProgress(showId, progress)}
+                           onProgressChange={progress => window.serioController.reportShowWatchProgress(progress)}
                            onBack={window.serioController.back}
-                           onEnd={() => window.serioController.playNextEpisode(showId)}
-                           onPreviousEpisode={() => window.serioController.playPreviousEpisode(showId)}
-                           onNextEpisode={() => window.serioController.playNextEpisode(showId)}/>;
+                           onEnd={window.serioController.playNextEpisode}
+                           onPreviousEpisode={window.serioController.playPreviousEpisode}
+                           onNextEpisode={window.serioController.playNextEpisode}/>;
     }
     renderClearWatchHistoryDialog() {
-        const {showId, showName} = this.state.data;
+        const {showName} = this.state.data;
         const actions = [
             {
                 name: 'Cancel',
@@ -184,7 +187,7 @@ export class SerioApplication extends React.Component {
             },
             {
                 name: 'Confirm',
-                callback: () => window.serioController.clearWatchHistory(showId),
+                callback: () => window.serioController.clearWatchHistory(),
             }
         ];
         return <Dialog title='Clear watch history'
@@ -192,7 +195,7 @@ export class SerioApplication extends React.Component {
                        actions={actions}/>
     }
     renderDeleteShowDialog() {
-        const {showId, showName} = this.state.data;
+        const {showName} = this.state.data;
         const actions = [
             {
                 name: 'Cancel',
@@ -201,7 +204,7 @@ export class SerioApplication extends React.Component {
             },
             {
                 name: 'Confirm',
-                callback: () => window.serioController.deleteShow(showId),
+                callback: () => window.serioController.deleteShow(),
             }
         ];
         return <Dialog title='Delete show'
@@ -209,7 +212,7 @@ export class SerioApplication extends React.Component {
                        actions={actions}/>;
     }
     renderWatchIsOverDialog() {
-        const {showId, showName} = this.state.data;
+        const {showName} = this.state.data;
         const actions = [
             {
                 name: 'Watch another',
@@ -218,7 +221,7 @@ export class SerioApplication extends React.Component {
             },
             {
                 name: 'Rewatch',
-                callback: () => window.serioController.playShowFromTheBeginning(showId),
+                callback: () => window.serioController.playShowFromTheBeginning(),
             }
         ];
         return <Dialog title={`'${showName}' is over`}
