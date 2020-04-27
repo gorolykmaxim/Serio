@@ -62,8 +62,8 @@ public class ApplicationController {
         executeTask(new EditCrawlerTask(CrawlerTypes.EPISODE_NAME));
     }
 
-    public void back() {
-
+    public synchronized void saveCrawler(String rawCrawler) {
+        executeTask(new SaveCrawlerTask(rawCrawler));
     }
 
     public void saveShowCrawler(String showCrawlerName) {
