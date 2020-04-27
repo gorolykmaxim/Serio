@@ -14,7 +14,7 @@ export default function CrawlLog(props) {
         <ListTile primaryText={e.description}
                   icon={null}
                   hoverable={props.hoverableLogEntries}
-                  onClick={() => onLogEntry(e)}
+                  onClick={e.hasDetails ? () => onLogEntry(e) : null}
                   onFocusCapture={onFocusCapture}/>
     );
     return (
