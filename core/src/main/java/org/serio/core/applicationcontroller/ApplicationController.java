@@ -66,8 +66,8 @@ public class ApplicationController {
         executeTask(new SaveCrawlerTask(rawCrawler));
     }
 
-    public void saveShowCrawler(String showCrawlerName) {
-
+    public synchronized void saveShowCrawler(String showCrawlerName) {
+        executeTask(new SaveShowCrawlerTask(showCrawlerName, shows, showsCrawler, lastWatchedDateFormat));
     }
 
     public void importShowCrawler(String rawShowCrawler) {
