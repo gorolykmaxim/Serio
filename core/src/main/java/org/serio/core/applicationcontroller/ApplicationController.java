@@ -74,79 +74,77 @@ public class ApplicationController {
         executeTask(new ImportShowCrawlerTask(rawShowCrawler, shows, showsCrawler, lastWatchedDateFormat));
     }
 
-    public void previewCrawler(String rawCrawler) {
+    public synchronized void previewCrawler(String rawCrawler) {
 
     }
 
-    public void saveCrawler(String rawCrawler) {
+    public synchronized void viewCrawlLog(String showId) {
 
     }
 
-    public void viewCrawlLog(String showId) {
+    public synchronized void viewLogEntry(int logEntryId) {
 
     }
 
-    public void viewLogEntry(int logEntryId) {
+    public synchronized void playShow() {
 
     }
 
-    public void playShow() {
+    public synchronized void playShowEpisode(int episodeNumber) {
 
     }
 
-    public void playShowEpisode(int episodeNumber) {
+    public synchronized void editShowCrawler() {
 
     }
 
-    public void editShowCrawler() {
+    public synchronized void shareShowCrawler() {
 
     }
 
-    public void shareShowCrawler() {
+    public synchronized void crawlShow() {
 
     }
 
-    public void crawlShow() {
+    public synchronized void viewShowCrawlLog() {
 
     }
 
-    public void viewShowCrawlLog() {
+    public synchronized void initiateClearShowWatchHistory() {
 
     }
 
-    public void initiateClearShowWatchHistory() {
+    public synchronized void initiateShowRemoval() {
 
     }
 
-    public void initiateShowRemoval() {
+    public synchronized void reportShowWatchProgress(double progress) {
 
     }
 
-    public void reportShowWatchProgress(double progress) {
+    public synchronized void playPreviousEpisode() {
 
     }
 
-    public void playPreviousEpisode() {
+    public synchronized void playNextEpisode() {
 
     }
 
-    public void playNextEpisode() {
+    public synchronized void clearWatchHistory() {
 
     }
 
-    public void clearWatchHistory() {
+    public synchronized void deleteShow() {
 
     }
 
-    public void deleteShow() {
+    public synchronized void playShowFromTheBeginning() {
 
     }
 
     public synchronized void back() {
         executeTask(new BackTask());
     }
-
-    public void viewAllShows() {
 
     private void executeTask(ControllerTask task) {
         new HandleExceptionsTask(task).execute(eventStack, userInterface);
