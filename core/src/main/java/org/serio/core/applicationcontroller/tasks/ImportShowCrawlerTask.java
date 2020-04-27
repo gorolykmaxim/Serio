@@ -32,7 +32,7 @@ public class ImportShowCrawlerTask implements ControllerTask {
                 userInterface.sendEvent(new CrawlingInProgressEvent());
                 Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
                 shows.saveShow(show);
-                new ViewAllShowsTask(shows, dateFormat).execute(eventStack, userInterface);
+                new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
             } catch (Exception e) {
                 // Similar to SaveShowCrawlerTask handling. See details there.
                 eventStack.push(possibleLastEvent.get());
