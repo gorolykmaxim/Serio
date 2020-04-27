@@ -80,6 +80,13 @@ public class WatchableShow {
     }
 
     /**
+     * @see Show#getMetaData()
+     */
+    public WatchableShowMetaData getMetaData() {
+        return metaData;
+    }
+
+    /**
      * @see WatchableShowMetaData#getLastWatchedDate()
      */
     public Optional<LocalDateTime> getLastWatchedDate() {
