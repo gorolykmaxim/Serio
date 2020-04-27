@@ -38,8 +38,8 @@ public class ApplicationController {
         executeTask(new ViewAllShowsTask(shows, lastWatchedDateFormat));
     }
 
-    public void importShowFromJson() {
-
+    public synchronized void addShow() {
+        executeTask(new AddShowTask());
     }
 
     public void selectShow(String showId) {
