@@ -1,10 +1,12 @@
 package org.serio.core.applicationcontroller.event;
 
 import org.serio.core.applicationcontroller.model.DisplayableShow;
+import org.serio.core.userinterface.ApplicationEvent;
+import org.serio.core.userinterface.ViewIds;
 
 import java.util.Objects;
 
-public class ShowDetailsEvent {
+public class ShowDetailsEvent implements ApplicationEvent {
     private final DisplayableShow show;
 
     public ShowDetailsEvent(DisplayableShow show) {
@@ -16,6 +18,11 @@ public class ShowDetailsEvent {
 
     public DisplayableShow getShow() {
         return show;
+    }
+
+    @Override
+    public int getViewId() {
+        return ViewIds.SHOW_DETAILS;
     }
 
     @Override
