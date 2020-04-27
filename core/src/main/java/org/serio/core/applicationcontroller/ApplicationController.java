@@ -142,8 +142,8 @@ public class ApplicationController {
 
     }
 
-    public void playShowFromTheBeginning() {
-
+    public synchronized void back() {
+        executeTask(new BackTask());
     }
 
     public void viewAllShows() {
