@@ -6,11 +6,11 @@ import org.serio.core.userinterface.ViewIds;
 
 import java.util.Objects;
 
-public class EditCrawler implements ApplicationEvent {
+public class EditCrawlerEvent implements ApplicationEvent {
     private final String crawlerType;
     private final String crawler;
 
-    public EditCrawler(String crawlerType, String crawler) {
+    public EditCrawlerEvent(String crawlerType, String crawler) {
         if (StringUtils.isEmpty(crawlerType)) {
             throw new IllegalArgumentException("Crawler type is empty or not specified");
         }
@@ -35,7 +35,7 @@ public class EditCrawler implements ApplicationEvent {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EditCrawler that = (EditCrawler) o;
+        EditCrawlerEvent that = (EditCrawlerEvent) o;
         return Objects.equals(crawlerType, that.crawlerType) &&
                 Objects.equals(crawler, that.crawler);
     }
