@@ -1,5 +1,10 @@
 package org.serio.core.applicationcontroller;
 
+import org.serio.core.applicationcontroller.event.EventStack;
+import org.serio.core.applicationcontroller.model.CrawlerTypes;
+import org.serio.core.applicationcontroller.model.DateFormat;
+import org.serio.core.applicationcontroller.model.DaysAgoFormat;
+import org.serio.core.applicationcontroller.tasks.*;
 import org.serio.core.clipboard.Clipboard;
 import org.serio.core.notifications.Notifications;
 import org.serio.core.showplayer.ShowPlayer;
@@ -14,6 +19,8 @@ public class ApplicationController {
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final UserInterface userInterface;
+    private final DateFormat lastWatchedDateFormat;
+    private final EventStack eventStack;
 
     public ApplicationController(Clipboard clipboard, Notifications notifications, ShowPlayer showPlayer, Shows shows,
                                  ShowsCrawler showsCrawler, UserInterface userInterface) {
@@ -23,10 +30,12 @@ public class ApplicationController {
         this.shows = shows;
         this.showsCrawler = showsCrawler;
         this.userInterface = userInterface;
+        lastWatchedDateFormat = new DaysAgoFormat();
+        eventStack = new EventStack();
     }
 
-    public void addShow() {
-
+    public synchronized void viewAllShows() {
+        executeTask(new ViewAllShowsTask(shows, lastWatchedDateFormat));
     }
 
     public void importShowFromJson() {
@@ -135,5 +144,7 @@ public class ApplicationController {
 
     public void viewAllShows() {
 
+    private void executeTask(ControllerTask task) {
+        new HandleExceptionsTask(task).execute(eventStack, userInterface);
     }
 }
