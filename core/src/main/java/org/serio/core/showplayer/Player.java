@@ -79,6 +79,15 @@ public class Player {
     }
 
     /**
+     * Get the show, being played by the player.
+     *
+     * @return show being played
+     */
+    public WatchableShow getPlayingShow() {
+        return show;
+    }
+
+    /**
      * Get ID of the episode, being played by the player right now.
      *
      * @return ID of the episode, being played. Can be empty if the player is in the not playing state.
