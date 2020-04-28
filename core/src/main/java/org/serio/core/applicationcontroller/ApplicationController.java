@@ -99,7 +99,7 @@ public class ApplicationController {
     }
 
     public synchronized void shareShowCrawler() {
-
+        executeTask(new ShareShowCrawlerTask(notifications, clipboard, showsCrawler));
     }
 
     public synchronized void crawlShow() {
