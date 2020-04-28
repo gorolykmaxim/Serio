@@ -103,7 +103,7 @@ public class ApplicationController {
     }
 
     public synchronized void crawlShow() {
-
+        executeTask(new CrawlShowTask(showsCrawler, shows, lastWatchedDateFormat));
     }
 
     public synchronized void viewShowCrawlLog() {
