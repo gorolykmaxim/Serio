@@ -111,7 +111,7 @@ public class ApplicationController {
     }
 
     public synchronized void initiateClearShowWatchHistory() {
-
+        executeTask(new InitiateClearShowWatchHistoryTask());
     }
 
     public synchronized void initiateShowRemoval() {
