@@ -1,8 +1,9 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.editshowcrawler;
 
 import org.serio.core.applicationcontroller.event.EditCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
 public class EditCrawlerTask implements ControllerTask {

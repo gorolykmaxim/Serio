@@ -1,9 +1,11 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.importshow;
 
 import org.serio.core.applicationcontroller.event.CrawlingInProgressEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.ImportShowFromJsonEvent;
 import org.serio.core.applicationcontroller.model.DateFormat;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
+import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Show;

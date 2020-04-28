@@ -1,8 +1,9 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.showdetails;
 
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.DisplayableShow;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.clipboard.Clipboard;
 import org.serio.core.notifications.Notifications;
 import org.serio.core.showscrawler.ShowsCrawler;

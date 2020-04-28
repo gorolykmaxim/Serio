@@ -1,9 +1,10 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.editcrawler;
 
 import org.serio.core.applicationcontroller.event.CrawlPreviewEvent;
 import org.serio.core.applicationcontroller.event.CrawlingInProgressEvent;
 import org.serio.core.applicationcontroller.event.EditCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.showscrawler.CrawlingResult;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;

@@ -1,15 +1,15 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.editshowcrawler;
 
 import org.apache.commons.lang3.StringUtils;
 import org.serio.core.applicationcontroller.event.*;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
 import org.serio.core.applicationcontroller.model.DateFormat;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
+import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Show;
 import org.serio.core.userinterface.UserInterface;
-
-import java.util.Optional;
 
 public class SaveShowCrawlerTask implements ControllerTask {
     private final String showName;

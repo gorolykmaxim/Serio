@@ -1,9 +1,10 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.editcrawler;
 
 import org.serio.core.applicationcontroller.event.EditCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.IllegalEventStackStateException;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
 public class SaveCrawlerTask implements ControllerTask {

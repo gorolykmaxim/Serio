@@ -1,9 +1,10 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.crawllog;
 
 import org.serio.core.applicationcontroller.event.CrawlLogEntryDetailsEvent;
 import org.serio.core.applicationcontroller.event.CrawlLogEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.model.IndexedCrawlLogEntry;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
 import java.util.Optional;

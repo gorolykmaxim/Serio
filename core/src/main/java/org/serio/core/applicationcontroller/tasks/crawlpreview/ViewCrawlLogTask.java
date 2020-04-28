@@ -1,8 +1,9 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.crawlpreview;
 
 import org.serio.core.applicationcontroller.event.CrawlLogEvent;
 import org.serio.core.applicationcontroller.event.CrawlPreviewEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
 public class ViewCrawlLogTask implements ControllerTask {

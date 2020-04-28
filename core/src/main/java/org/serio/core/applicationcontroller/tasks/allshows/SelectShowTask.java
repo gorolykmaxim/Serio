@@ -1,10 +1,11 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.allshows;
 
 import org.serio.core.applicationcontroller.event.AllShowsEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.DateFormat;
 import org.serio.core.applicationcontroller.model.DisplayableShow;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.userinterface.UserInterface;
 

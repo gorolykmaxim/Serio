@@ -1,8 +1,9 @@
-package org.serio.core.applicationcontroller.tasks;
+package org.serio.core.applicationcontroller.tasks.showplayer;
 
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.ShowDialogEvent;
 import org.serio.core.applicationcontroller.event.ShowPlayerEvent;
+import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.showplayer.Player;
 import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.userinterface.ApplicationEvent;
