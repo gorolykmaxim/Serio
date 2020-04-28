@@ -9,8 +9,6 @@ import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Show;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 public class ImportShowCrawlerTask implements ControllerTask {
     private final String rawShowCrawler;
     private final Shows shows;
@@ -26,8 +24,7 @@ public class ImportShowCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<ImportShowFromJsonEvent> possibleLastEvent = eventStack.peek(ImportShowFromJsonEvent.class);
-        if (possibleLastEvent.isPresent()) {
+        if (eventStack.isLastEventOfType(ImportShowFromJsonEvent.class)) {
             userInterface.sendEvent(new CrawlingInProgressEvent());
             Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
             shows.saveShow(show);
