@@ -107,7 +107,7 @@ public class ApplicationController {
     }
 
     public synchronized void viewShowCrawlLog() {
-
+        executeTask(new ViewShowCrawlLogTask(showsCrawler));
     }
 
     public synchronized void initiateClearShowWatchHistory() {
