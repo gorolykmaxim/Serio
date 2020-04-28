@@ -95,7 +95,7 @@ public class ApplicationController {
     }
 
     public synchronized void editShowCrawler() {
-
+        executeTask(new EditShowCrawlerTask(showsCrawler));
     }
 
     public synchronized void shareShowCrawler() {
