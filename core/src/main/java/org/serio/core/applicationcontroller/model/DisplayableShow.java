@@ -4,19 +4,17 @@ import org.serio.core.shows.WatchableShow;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class DisplayableShow {
+    private final WatchableShow show;
     private final DisplayableShowMetaData metaData;
-    private final List<DisplayableEpisode> episodes;
 
     public DisplayableShow(WatchableShow show, DateFormat dateFormat) {
+        this.show = show;
         metaData = new DisplayableShowMetaData(show.getMetaData(), dateFormat);
-        episodes = show.getEpisodes()
-                .stream()
-                .map(DisplayableEpisode::new)
-                .collect(Collectors.toList());
     }
 
     public UUID getId() {
@@ -36,28 +34,35 @@ public class DisplayableShow {
     }
 
     public List<DisplayableEpisode> getEpisodes() {
-        return episodes;
+        return show.getEpisodes()
+                .stream()
+                .map(DisplayableEpisode::new)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<DisplayableEpisode> getEpisodeById(int episodeId) {
+        return show.getEpisodeById(episodeId).map(DisplayableEpisode::new);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DisplayableShow that = (DisplayableShow) o;
-        return Objects.equals(metaData, that.metaData) &&
-                Objects.equals(episodes, that.episodes);
+        DisplayableShow show1 = (DisplayableShow) o;
+        return Objects.equals(show, show1.show) &&
+                Objects.equals(metaData, show1.metaData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(metaData, episodes);
+        return Objects.hash(show, metaData);
     }
 
     @Override
     public String toString() {
         return "DisplayableShow{" +
-                "metaData=" + metaData +
-                ", episodes=" + episodes +
+                "show=" + show +
+                ", metaData=" + metaData +
                 '}';
     }
 }

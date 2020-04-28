@@ -91,7 +91,7 @@ public class ApplicationController {
     }
 
     public synchronized void playShowEpisode(int episodeNumber) {
-
+        executeTask(new PlayShowEpisodeTask(episodeNumber, showPlayer));
     }
 
     public synchronized void editShowCrawler() {
