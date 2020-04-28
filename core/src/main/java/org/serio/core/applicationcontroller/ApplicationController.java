@@ -115,7 +115,7 @@ public class ApplicationController {
     }
 
     public synchronized void initiateShowRemoval() {
-
+        executeTask(new InitiateShowRemovalTask());
     }
 
     public synchronized void reportShowWatchProgress(double progress) {
