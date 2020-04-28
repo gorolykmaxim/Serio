@@ -8,8 +8,6 @@ import org.serio.core.showscrawler.CrawlingResult;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 public class PreviewCrawlerTask implements ControllerTask {
     private final String rawCrawler;
     private final ShowsCrawler showsCrawler;
@@ -21,14 +19,12 @@ public class PreviewCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<EditCrawlerEvent> possibleLastEvent = eventStack.peek(EditCrawlerEvent.class);
-        if (possibleLastEvent.isPresent()) {
-            EditCrawlerEvent lastEvent = possibleLastEvent.get();
+        eventStack.peek(EditCrawlerEvent.class).ifPresent(lastEvent -> {
             userInterface.sendEvent(new CrawlingInProgressEvent());
             CrawlingResult crawlingResult = showsCrawler.previewCrawler(rawCrawler);
             CrawlPreviewEvent event = new CrawlPreviewEvent(lastEvent.getCrawlerType(), crawlingResult);
             eventStack.push(event);
             userInterface.sendEvent(event);
-        }
+        });
     }
 }

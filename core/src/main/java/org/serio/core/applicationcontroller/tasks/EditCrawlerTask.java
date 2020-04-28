@@ -5,8 +5,6 @@ import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 public class EditCrawlerTask implements ControllerTask {
     private final String crawlerType;
 
@@ -16,12 +14,10 @@ public class EditCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<EditShowCrawlerEvent> possibleLastEvent = eventStack.peek(EditShowCrawlerEvent.class);
-        if (possibleLastEvent.isPresent()) {
-            EditShowCrawlerEvent lastEvent = possibleLastEvent.get();
+        eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
             EditCrawlerEvent event = new EditCrawlerEvent(crawlerType, lastEvent.getCrawler(crawlerType).orElse(""));
             eventStack.push(event);
             userInterface.sendEvent(event);
-        }
+        });
     }
 }

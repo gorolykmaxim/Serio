@@ -10,8 +10,6 @@ import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 public class PlayShowTask implements ControllerTask {
     private final ShowPlayer showPlayer;
 
@@ -21,9 +19,7 @@ public class PlayShowTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<ShowDetailsEvent> possibleLastEvent = eventStack.peek(ShowDetailsEvent.class);
-        if (possibleLastEvent.isPresent()) {
-            ShowDetailsEvent lastEvent = possibleLastEvent.get();
+        eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {
             DisplayableShow show = lastEvent.getShow();
             Player player = showPlayer.playShow(show.getId(), false);
             ApplicationEvent event;
@@ -34,6 +30,6 @@ public class PlayShowTask implements ControllerTask {
             }
             eventStack.push(event);
             userInterface.sendEvent(event);
-        }
+        });
     }
 }

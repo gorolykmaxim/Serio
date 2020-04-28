@@ -9,8 +9,6 @@ import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 public class PlayShowEpisodeTask implements ControllerTask {
     private final int episodeNumber;
     private final ShowPlayer showPlayer;
@@ -22,9 +20,7 @@ public class PlayShowEpisodeTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<ShowDetailsEvent> possibleLastEvent = eventStack.peek(ShowDetailsEvent.class);
-        if (possibleLastEvent.isPresent()) {
-            ShowDetailsEvent lastEvent = possibleLastEvent.get();
+        eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {
             DisplayableShow show = lastEvent.getShow();
             Player player = showPlayer.playShowEpisode(show.getId(), episodeNumber);
             if (player.isPlaying()) {
@@ -34,6 +30,6 @@ public class PlayShowEpisodeTask implements ControllerTask {
             } else if (!show.getEpisodeById(episodeNumber).isPresent()) {
                 throw new IllegalArgumentException(String.format("%s does not have an episode with ID %d", show, episodeNumber));
             }
-        }
+        });
     }
 }

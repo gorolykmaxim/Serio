@@ -26,9 +26,7 @@ public class SaveShowCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<EditShowCrawlerEvent> possibleLastEvent = eventStack.peek(EditShowCrawlerEvent.class);
-        if (possibleLastEvent.isPresent()) {
-            EditShowCrawlerEvent lastEvent = possibleLastEvent.get();
+        eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
             userInterface.sendEvent(new CrawlingInProgressEvent());
             Show show = showsCrawler.crawlShowAndSaveCrawler(
                     StringUtils.defaultString(showName, lastEvent.getShowName().orElse(null)),
@@ -43,6 +41,6 @@ public class SaveShowCrawlerTask implements ControllerTask {
             } else {
                 throw new IllegalEventStackStateException(lastEvent, eventStack);
             }
-        }
+        });
     }
 }
