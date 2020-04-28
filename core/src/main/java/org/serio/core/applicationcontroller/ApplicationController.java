@@ -75,7 +75,7 @@ public class ApplicationController {
     }
 
     public synchronized void previewCrawler(String rawCrawler) {
-
+        executeTask(new PreviewCrawlerTask(rawCrawler, showsCrawler));
     }
 
     public synchronized void viewCrawlLog(String showId) {
