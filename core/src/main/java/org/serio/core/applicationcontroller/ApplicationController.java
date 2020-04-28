@@ -123,7 +123,7 @@ public class ApplicationController {
     }
 
     public synchronized void playPreviousEpisode() {
-
+        executeTask(new PlayPreviousEpisodeTask(showPlayer));
     }
 
     public synchronized void playNextEpisode() {
