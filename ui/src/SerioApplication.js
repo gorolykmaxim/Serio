@@ -129,7 +129,7 @@ export class SerioApplication extends React.Component {
                              hoverableCrawlItems={!this.isTv}
                              scrollOnFocus={this.isTv}
                              onBack={window.serioController.back}
-                             onViewLog={() => window.serioController.viewCrawlLog(null)}/>;
+                             onViewLog={window.serioController.viewCrawlLog}/>;
     }
     renderCrawlLog() {
         const {crawlerType, logEntries} = this.state.data;

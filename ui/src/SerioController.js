@@ -32,8 +32,8 @@ export default class SerioController {
     saveCrawler(rawCrawler) {
         console.info(`Committing changes of the currently selected crawler: ${rawCrawler}`);
     }
-    viewCrawlLog(showCrawlerId) {
-        console.info(`Opening view crawl log view of crawler ${showCrawlerId}`);
+    viewCrawlLog() {
+        console.info('Opening view crawl log view of the currently selected crawler');
     }
     viewLogEntry(logEntryId) {
         console.info(`Opening view crawl log entry details view of the currently selected crawler to view ${logEntryId}`);
