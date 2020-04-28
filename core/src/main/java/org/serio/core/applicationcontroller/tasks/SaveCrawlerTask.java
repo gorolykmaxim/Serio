@@ -6,8 +6,6 @@ import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.IllegalEventStackStateException;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 public class SaveCrawlerTask implements ControllerTask {
     private final String crawler;
 
@@ -17,16 +15,12 @@ public class SaveCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<EditCrawlerEvent> possibleCrawlerEvent = eventStack.pop(EditCrawlerEvent.class);
-        Optional<EditShowCrawlerEvent> possibleShowCrawlerEvent = eventStack.pop(EditShowCrawlerEvent.class);
-        if (possibleCrawlerEvent.isPresent() && possibleShowCrawlerEvent.isPresent()) {
-            EditCrawlerEvent crawlerEvent = possibleCrawlerEvent.get();
-            EditShowCrawlerEvent showCrawlerEvent = possibleShowCrawlerEvent.get();
+        eventStack.pop(EditCrawlerEvent.class).ifPresent(crawlerEvent -> {
+            EditShowCrawlerEvent showCrawlerEvent = eventStack.pop(EditShowCrawlerEvent.class)
+                    .orElseThrow(() -> new IllegalEventStackStateException(crawlerEvent, EditShowCrawlerEvent.class, eventStack));
             EditShowCrawlerEvent newEvent = showCrawlerEvent.setCrawler(crawlerEvent.getCrawlerType(), crawler);
             eventStack.push(newEvent);
             userInterface.sendEvent(newEvent);
-        } else if (possibleCrawlerEvent.isPresent()) {
-            throw new IllegalEventStackStateException(possibleCrawlerEvent.get(), EditShowCrawlerEvent.class, eventStack);
-        }
+        });
     }
 }
