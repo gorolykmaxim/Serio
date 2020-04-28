@@ -79,7 +79,7 @@ public class ApplicationController {
     }
 
     public synchronized void viewCrawlLog(String showId) {
-
+        executeTask(new ViewCrawlLogTask(showId, showsCrawler));
     }
 
     public synchronized void viewLogEntry(int logEntryId) {

@@ -1,6 +1,5 @@
 package org.serio.core.applicationcontroller.event;
 
-import org.apache.commons.lang3.StringUtils;
 import org.serio.core.applicationcontroller.model.IndexedCrawlLogEntry;
 import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
 import org.serio.core.userinterface.ApplicationEvent;
@@ -9,15 +8,17 @@ import org.serio.core.userinterface.ViewIds;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CrawlLogEvent implements ApplicationEvent {
     private final String crawlerType;
     private final List<IndexedCrawlLogEntry> logEntries;
 
+    public CrawlLogEvent(List<CrawlLogEntry> logEntries) {
+        this(null, logEntries);
+    }
+
     public CrawlLogEvent(String crawlerType, List<CrawlLogEntry> logEntries) {
-        if (StringUtils.isEmpty(crawlerType)) {
-            throw new IllegalArgumentException("Crawler type is not specified or empty");
-        }
         this.crawlerType = crawlerType;
         this.logEntries = new ArrayList<>(logEntries.size());
         for (int i = 0; i < logEntries.size(); i++) {
@@ -26,8 +27,8 @@ public class CrawlLogEvent implements ApplicationEvent {
 
     }
 
-    public String getCrawlerType() {
-        return crawlerType;
+    public Optional<String> getCrawlerType() {
+        return Optional.ofNullable(crawlerType);
     }
 
     public List<IndexedCrawlLogEntry> getLogEntries() {
