@@ -87,7 +87,7 @@ public class ApplicationController {
     }
 
     public synchronized void playShow() {
-
+        executeTask(new PlayShowTask(showPlayer));
     }
 
     public synchronized void playShowEpisode(int episodeNumber) {
