@@ -83,7 +83,7 @@ public class ApplicationController {
     }
 
     public synchronized void viewLogEntry(int logEntryId) {
-
+        executeTask(new ViewLogEntryTask(logEntryId));
     }
 
     public synchronized void playShow() {
