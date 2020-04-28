@@ -1,7 +1,9 @@
 package org.serio.core.applicationcontroller;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
+import org.serio.core.applicationcontroller.event.ErrorDialogEvent;
 import org.serio.core.applicationcontroller.event.ImportShowFromJsonEvent;
 import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
@@ -55,6 +57,19 @@ public class AllShowsTest extends BaseApplicationControllerTest {
         ShowDetailsEvent event = captureLastUserInterfaceEvent(ShowDetailsEvent.class);
         assertEquals(ViewIds.SHOW_DETAILS, event.getViewId());
         assertShowEquals(shows.findShowById(friends), event.getShow(), "2 days ago");
+    }
+
+    @Test
+    public void shouldFailToSelectShow() {
+        // given
+        when(shows.findShowById(friends)).thenThrow(expectedException);
+        // when
+        applicationController.selectShow(friends.toString());
+        applicationController.selectShow(friends.toString());
+        // then
+        ErrorDialogEvent event = captureLastUserInterfaceEvent(ErrorDialogEvent.class);
+        assertEquals(ViewIds.SHOW_ERROR_DIALOG, event.getViewId());
+        assertEquals(expectedException.getMessage(), event.getErrorMessage());
     }
 
     @Override
