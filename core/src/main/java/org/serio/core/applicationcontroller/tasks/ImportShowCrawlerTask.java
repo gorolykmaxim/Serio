@@ -26,18 +26,13 @@ public class ImportShowCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<ImportShowFromJsonEvent> possibleLastEvent = eventStack.pop(ImportShowFromJsonEvent.class);
+        Optional<ImportShowFromJsonEvent> possibleLastEvent = eventStack.peek(ImportShowFromJsonEvent.class);
         if (possibleLastEvent.isPresent()) {
-            try {
-                userInterface.sendEvent(new CrawlingInProgressEvent());
-                Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
-                shows.saveShow(show);
-                new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
-            } catch (Exception e) {
-                // Similar to SaveShowCrawlerTask handling. See details there.
-                eventStack.push(possibleLastEvent.get());
-                throw e;
-            }
+            userInterface.sendEvent(new CrawlingInProgressEvent());
+            Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
+            shows.saveShow(show);
+            eventStack.pop(ImportShowFromJsonEvent.class);
+            new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
         }
     }
 }
