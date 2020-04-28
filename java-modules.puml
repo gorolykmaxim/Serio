@@ -27,6 +27,7 @@ interface UserInterface
 [Shows] --> ShowStorage
 [ShowsCrawler] --> ShowCrawlerStorage
 [ShowsCrawler] --> HttpClient
+[ShowsCrawler] --> ShowCrawlerLogStorage
 [ShowPlayer] --> [Shows]
 [ApplicationController] --> [Shows]
 [ApplicationController] --> [ShowPlayer]
