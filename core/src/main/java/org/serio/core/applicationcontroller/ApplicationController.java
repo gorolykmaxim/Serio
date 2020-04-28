@@ -119,7 +119,7 @@ public class ApplicationController {
     }
 
     public synchronized void reportShowWatchProgress(double progress) {
-
+        executeTask(new ReportShowWatchProgressTask(progress, showPlayer));
     }
 
     public synchronized void playPreviousEpisode() {

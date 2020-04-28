@@ -8,6 +8,7 @@ import org.serio.core.watchhistory.WatchProgress;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ShowPlayerEvent implements ApplicationEvent {
     private final Player player;
@@ -17,6 +18,10 @@ public class ShowPlayerEvent implements ApplicationEvent {
             throw new IllegalArgumentException("Player is not specified");
         }
         this.player = player;
+    }
+
+    public UUID getShowId() {
+        return player.getPlayingShowId();
     }
 
     public String getShowName() {
