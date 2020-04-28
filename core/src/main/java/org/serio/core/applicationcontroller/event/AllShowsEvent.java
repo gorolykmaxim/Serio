@@ -25,6 +25,14 @@ public class AllShowsEvent implements ApplicationEvent {
                 .collect(Collectors.toList());
     }
 
+    public List<DisplayableShowMetaData> getAllShows() {
+        return allShows;
+    }
+
+    public List<DisplayableShowMetaData> getLastWatchedShows() {
+        return lastWatchedShows;
+    }
+
     @Override
     public int getViewId() {
         return ViewIds.ALL_SHOWS;
