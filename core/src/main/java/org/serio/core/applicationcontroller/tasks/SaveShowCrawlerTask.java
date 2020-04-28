@@ -38,7 +38,7 @@ public class SaveShowCrawlerTask implements ControllerTask {
                         lastEvent.getCrawler(CrawlerTypes.EPISODE_NAME).orElse(null)
                 );
                 shows.saveShow(show);
-                if (eventStack.pop(AllShowsEvent.class).isPresent() || eventStack.pop(ShowDetailsEvent.class).isPresent()) {
+                if (eventStack.isLastEventOfType(AllShowsEvent.class) || eventStack.pop(ShowDetailsEvent.class).isPresent()) {
                     new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
                 } else {
                     throw new IllegalEventStackStateException(lastEvent, eventStack);
