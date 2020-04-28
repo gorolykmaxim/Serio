@@ -127,7 +127,7 @@ public class ApplicationController {
     }
 
     public synchronized void playNextEpisode() {
-
+        executeTask(new PlayNextEpisodeTask(showPlayer));
     }
 
     public synchronized void clearWatchHistory() {
