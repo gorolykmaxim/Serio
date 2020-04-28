@@ -135,7 +135,7 @@ public class ApplicationController {
     }
 
     public synchronized void deleteShow() {
-
+        executeTask(new DeleteShowTask(shows, showsCrawler, lastWatchedDateFormat));
     }
 
     public synchronized void playShowFromTheBeginning() {
