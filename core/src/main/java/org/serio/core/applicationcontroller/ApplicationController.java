@@ -131,7 +131,7 @@ public class ApplicationController {
     }
 
     public synchronized void clearWatchHistory() {
-
+        executeTask(new ClearWatchHistoryTask(shows, lastWatchedDateFormat));
     }
 
     public synchronized void deleteShow() {
