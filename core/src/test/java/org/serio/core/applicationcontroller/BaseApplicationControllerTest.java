@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.serio.core.applicationcontroller.event.AllShowsEvent;
+import org.serio.core.applicationcontroller.event.ErrorDialogEvent;
 import org.serio.core.applicationcontroller.model.DisplayableEpisode;
 import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
@@ -31,8 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public abstract class BaseApplicationControllerTest {
@@ -44,9 +44,11 @@ public abstract class BaseApplicationControllerTest {
     protected UserInterface userInterface;
     protected ApplicationController applicationController;
     protected UUID friends, office, clinic, mandalorian;
+    protected Exception expectedException;
 
     @Before
     public void setUp() throws Exception {
+        expectedException = new RuntimeException("Expected exception");
         clipboard = mock(Clipboard.class);
         notifications = mock(Notifications.class);
         showPlayer = mock(ShowPlayer.class);
@@ -105,6 +107,18 @@ public abstract class BaseApplicationControllerTest {
                 assertEquals("2 days ago", actual.getLastWatched());
             }
         }
+    }
+
+    @Test
+    public void shouldFailToViewAllShows() {
+        // given
+        when(shows.findAllShows()).thenThrow(expectedException);
+        // when
+        applicationController.viewAllShows();
+        // then
+        ErrorDialogEvent event = captureLastUserInterfaceEvent(ErrorDialogEvent.class);
+        assertEquals(ViewIds.SHOW_ERROR_DIALOG, event.getViewId());
+        assertEquals(expectedException.getMessage(), event.getErrorMessage());
     }
 
     @Test
