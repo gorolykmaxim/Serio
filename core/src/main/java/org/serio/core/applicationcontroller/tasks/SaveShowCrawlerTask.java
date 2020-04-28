@@ -26,29 +26,22 @@ public class SaveShowCrawlerTask implements ControllerTask {
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        Optional<EditShowCrawlerEvent> possibleLastEvent = eventStack.pop(EditShowCrawlerEvent.class);
+        Optional<EditShowCrawlerEvent> possibleLastEvent = eventStack.peek(EditShowCrawlerEvent.class);
         if (possibleLastEvent.isPresent()) {
             EditShowCrawlerEvent lastEvent = possibleLastEvent.get();
-            try {
-                userInterface.sendEvent(new CrawlingInProgressEvent());
-                Show show = showsCrawler.crawlShowAndSaveCrawler(
-                        StringUtils.defaultString(showName, lastEvent.getShowName().orElse(null)),
-                        lastEvent.getCrawler(CrawlerTypes.THUMBNAIL).orElse(null),
-                        lastEvent.getCrawler(CrawlerTypes.EPISODE_VIDEO).orElse(null),
-                        lastEvent.getCrawler(CrawlerTypes.EPISODE_NAME).orElse(null)
-                );
-                shows.saveShow(show);
-                if (eventStack.isLastEventOfType(AllShowsEvent.class) || eventStack.pop(ShowDetailsEvent.class).isPresent()) {
-                    new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
-                } else {
-                    throw new IllegalEventStackStateException(lastEvent, eventStack);
-                }
-            } catch (Exception e) {
-                // In case the crawl fails or anything else we will push the edit show crawler event back to stack,
-                // so that when the user will close the error dialog - the edit show crawler view will be displayed
-                // back with all the latest changes made by user.
-                eventStack.push(lastEvent);
-                throw e;
+            userInterface.sendEvent(new CrawlingInProgressEvent());
+            Show show = showsCrawler.crawlShowAndSaveCrawler(
+                    StringUtils.defaultString(showName, lastEvent.getShowName().orElse(null)),
+                    lastEvent.getCrawler(CrawlerTypes.THUMBNAIL).orElse(null),
+                    lastEvent.getCrawler(CrawlerTypes.EPISODE_VIDEO).orElse(null),
+                    lastEvent.getCrawler(CrawlerTypes.EPISODE_NAME).orElse(null)
+            );
+            shows.saveShow(show);
+            eventStack.pop(EditShowCrawlerEvent.class);
+            if (eventStack.isLastEventOfType(AllShowsEvent.class) || eventStack.pop(ShowDetailsEvent.class).isPresent()) {
+                new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
+            } else {
+                throw new IllegalEventStackStateException(lastEvent, eventStack);
             }
         }
     }
