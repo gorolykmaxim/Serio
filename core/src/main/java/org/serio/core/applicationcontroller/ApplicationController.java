@@ -78,8 +78,8 @@ public class ApplicationController {
         executeTask(new PreviewCrawlerTask(rawCrawler, showsCrawler));
     }
 
-    public synchronized void viewCrawlLog(String showId) {
-        executeTask(new ViewCrawlLogTask(showId, showsCrawler));
+    public synchronized void viewCrawlLog() {
+        executeTask(new ViewCrawlLogTask());
     }
 
     public synchronized void viewLogEntry(int logEntryId) {
