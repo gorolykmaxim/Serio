@@ -1,5 +1,6 @@
 package org.serio.core.applicationcontroller.tasks.showdetails;
 
+import org.serio.core.applicationcontroller.event.CrawlingInProgressEvent;
 import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.DateFormat;
@@ -25,6 +26,7 @@ public class CrawlShowTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {
+            userInterface.sendEvent(new CrawlingInProgressEvent());
             DisplayableShow show = lastEvent.getShow();
             Show updatedShow = showsCrawler.crawlShow(show.getId().toString());
             shows.saveShow(updatedShow);
