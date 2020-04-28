@@ -139,7 +139,7 @@ public class ApplicationController {
     }
 
     public synchronized void playShowFromTheBeginning() {
-
+        executeTask(new PlayShowFromTheBeginningTask(showPlayer));
     }
 
     public synchronized void back() {

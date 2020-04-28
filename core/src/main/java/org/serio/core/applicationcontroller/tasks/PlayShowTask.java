@@ -12,16 +12,22 @@ import org.serio.core.userinterface.UserInterface;
 
 public class PlayShowTask implements ControllerTask {
     private final ShowPlayer showPlayer;
+    private final boolean fromBeginning;
 
     public PlayShowTask(ShowPlayer showPlayer) {
+        this(showPlayer, false);
+    }
+
+    protected PlayShowTask(ShowPlayer showPlayer, boolean fromBeginning) {
         this.showPlayer = showPlayer;
+        this.fromBeginning = fromBeginning;
     }
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {
             DisplayableShow show = lastEvent.getShow();
-            Player player = showPlayer.playShow(show.getId(), false);
+            Player player = showPlayer.playShow(show.getId(), fromBeginning);
             ApplicationEvent event;
             if (player.isPlaying()) {
                 event = new ShowPlayerEvent(player);
