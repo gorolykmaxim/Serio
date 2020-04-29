@@ -3,7 +3,6 @@ package org.serio.core.applicationcontroller;
 import org.junit.Before;
 import org.junit.Test;
 import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
-import org.serio.core.applicationcontroller.event.ErrorDialogEvent;
 import org.serio.core.applicationcontroller.event.ImportShowFromJsonEvent;
 import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
@@ -67,9 +66,7 @@ public class AllShowsTest extends BaseApplicationControllerTest {
         applicationController.selectShow(friends.toString());
         applicationController.selectShow(friends.toString());
         // then
-        ErrorDialogEvent event = captureLastUserInterfaceEvent(ErrorDialogEvent.class);
-        assertEquals(ViewIds.SHOW_ERROR_DIALOG, event.getViewId());
-        assertEquals(expectedException.getMessage(), event.getErrorMessage());
+        assertErrorReceived();
     }
 
     @Override

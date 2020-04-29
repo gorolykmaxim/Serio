@@ -2,14 +2,9 @@ package org.serio.core.applicationcontroller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.event.ShowDialogEvent;
-import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.shows.WatchableShow;
-import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.ViewIds;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.reset;
@@ -31,7 +26,7 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         applicationController.importShowCrawler(rawShowCrawler);
         applicationController.importShowCrawler(rawShowCrawler);
         // then
-        assertShowCrawled();
+        assertShowCrawled(friends, "2 days ago");
     }
 
     @Test
@@ -54,8 +49,20 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         reset(userInterface);
         // when
         applicationController.confirmShowOverride();
+        applicationController.confirmShowOverride();
         // then
-        assertShowCrawled();
+        assertShowCrawled(friends, "2 days ago");
+    }
+
+    @Test
+    public void shouldFailToImportShowCrawler() {
+        // given
+        when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenThrow(expectedException);
+        // when
+        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler(rawShowCrawler);
+        // then
+        assertCrawlingErrorReceived();
     }
 
     @Override
@@ -63,8 +70,7 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         // when
         applicationController.back();
         // then
-        ApplicationEvent event = captureLastUserInterfaceEvent(ApplicationEvent.class);
-        assertEquals(ViewIds.ALL_SHOWS, event.getViewId());
+        assertCurrentView(ViewIds.ALL_SHOWS);
     }
 
     private String setUpShowNameConflict() {
@@ -72,14 +78,5 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         when(showsCrawler.getShowNameDefinedInShowCrawler(rawShowCrawler)).thenReturn(show.getName());
         when(shows.doesShowWithNameExists(show.getName())).thenReturn(true);
         return show.getName();
-    }
-
-    private void assertShowCrawled() {
-        List<ApplicationEvent> events = captureUserInterfaceEvents();
-        assertEquals(ViewIds.CRAWLING_IN_PROGRESS, events.get(0).getViewId());
-        assertEquals(ViewIds.SHOW_DETAILS, events.get(1).getViewId());
-        WatchableShow expected = shows.findShowById(friends);
-        DisplayableShow actual = ((ShowDetailsEvent)events.get(1)).getShow();
-        assertShowEquals(expected, actual, "2 days ago");
     }
 }

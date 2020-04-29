@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.serio.core.applicationcontroller.event.AllShowsEvent;
 import org.serio.core.applicationcontroller.event.ErrorDialogEvent;
+import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.DisplayableEpisode;
 import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
@@ -12,6 +13,7 @@ import org.serio.core.clipboard.Clipboard;
 import org.serio.core.notifications.Notifications;
 import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.shows.*;
+import org.serio.core.showscrawler.SerializedShowCrawlerParts;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
@@ -94,7 +96,13 @@ public abstract class BaseApplicationControllerTest {
                 .map(episode -> new Episode(episode.getId(), episode.getVideoUrl()))
                 .collect(Collectors.toList());
         Show show = Show.createNew(watchableShow.getName(), watchableShow.getThumbnailUrl(), episodes);
+        when(showsCrawler.getSerializedPartsOfCrawlerOfShow(friends.toString()))
+                .thenReturn(new SerializedShowCrawlerParts(watchableShow.getName(), rawCrawler, rawCrawler, rawCrawler));
         when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenReturn(show);
+        when(showsCrawler.crawlShowAndSaveCrawler(watchableShow.getName(), null, rawCrawler, null))
+                .thenReturn(show);
+        when(showsCrawler.crawlShowAndSaveCrawler(watchableShow.getName(), rawCrawler, rawCrawler, rawCrawler))
+                .thenReturn(show);
     }
 
     @Test
@@ -396,5 +404,33 @@ public abstract class BaseApplicationControllerTest {
             assertEquals(e.getVideoUrl(), a.getVideoUrl());
             assertEquals(e.hasBeenWatched(), a.isWatched());
         }
+    }
+
+    protected void assertShowCrawled(UUID showId, String expectedLastWatched) {
+        List<ApplicationEvent> events = captureUserInterfaceEvents();
+        assertEquals(ViewIds.CRAWLING_IN_PROGRESS, events.get(0).getViewId());
+        assertEquals(ViewIds.SHOW_DETAILS, events.get(1).getViewId());
+        WatchableShow expected = shows.findShowById(showId);
+        DisplayableShow actual = ((ShowDetailsEvent)events.get(1)).getShow();
+        assertShowEquals(expected, actual, expectedLastWatched);
+    }
+
+    protected void assertErrorReceived() {
+        ErrorDialogEvent event = captureLastUserInterfaceEvent(ErrorDialogEvent.class);
+        assertEquals(ViewIds.SHOW_ERROR_DIALOG, event.getViewId());
+        assertEquals(expectedException.getMessage(), event.getErrorMessage());
+    }
+
+    protected void assertCrawlingErrorReceived() {
+        List<ApplicationEvent> events = captureUserInterfaceEvents();
+        assertEquals(ViewIds.CRAWLING_IN_PROGRESS, events.get(0).getViewId());
+        ErrorDialogEvent event = (ErrorDialogEvent) events.get(1);
+        assertEquals(ViewIds.SHOW_ERROR_DIALOG, event.getViewId());
+        assertEquals(expectedException.getMessage(), event.getErrorMessage());
+    }
+
+    protected void assertCurrentView(int viewId) {
+        ApplicationEvent event = captureLastUserInterfaceEvent(ApplicationEvent.class);
+        assertEquals(viewId, event.getViewId());
     }
 }
