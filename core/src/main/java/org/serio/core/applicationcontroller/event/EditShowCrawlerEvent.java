@@ -41,6 +41,10 @@ public class EditShowCrawlerEvent implements ApplicationEvent {
         return new EditShowCrawlerEvent(showId, showName, updatedCrawlerTypeToCrawler);
     }
 
+    public boolean isEditingExistingShow() {
+        return showId != null;
+    }
+
     public Optional<UUID> getShowId() {
         return Optional.ofNullable(showId);
     }

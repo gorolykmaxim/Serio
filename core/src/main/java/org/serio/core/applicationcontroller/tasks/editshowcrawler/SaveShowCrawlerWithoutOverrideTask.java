@@ -25,7 +25,7 @@ public class SaveShowCrawlerWithoutOverrideTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
-            if (shows.doesShowWithNameExists(showName)) {
+            if (!lastEvent.isEditingExistingShow() && shows.doesShowWithNameExists(showName)) {
                 eventStack.pop(EditShowCrawlerEvent.class);
                 eventStack.push(lastEvent.setShowName(showName));
                 ShowDialogEvent event = ShowDialogEvent.showOverrideDialog(showName);
