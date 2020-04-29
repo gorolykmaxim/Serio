@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -107,6 +107,20 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, false, true);
         assertEquals(1, player.getPlayingEpisodeIdOrFail());
+    }
+
+    @Test
+    public void shouldPlaySpecifiedShowFromTheBeginningWithoutQueryingIt() {
+        // given
+        UUID showId = createShow(9, 9, true);
+        showPlayer.playShow(showId, true);
+        reset(shows);
+        // when
+        Player player = showPlayer.playShow(showId, true);
+        // then
+        assertStateOf(player, false, true);
+        assertEquals(1, player.getPlayingEpisodeIdOrFail());
+        verify(shows, never()).findShowById(showId);
     }
 
     @Test

@@ -173,6 +173,15 @@ public class Player {
     }
 
     /**
+     * Start playing current show from the first episode.
+     *
+     * @return new instance of the player playing the show from start
+     */
+    public Player restartShow() {
+        return Player.of(show, true);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

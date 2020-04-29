@@ -30,7 +30,10 @@ public class ShowPlayer {
      * @see Player#of(WatchableShow, boolean)
      */
     public synchronized Player playShow(UUID showId, boolean fromBeginning) {
-        try  {
+        try {
+            if (fromBeginning && player != null && player.getPlayingShowId().equals(showId)) {
+                return setPlayer(player.restartShow());
+            }
             WatchableShow show = shows.findShowById(showId);
             return setPlayer(Player.of(show, fromBeginning));
         } catch (Exception e) {
