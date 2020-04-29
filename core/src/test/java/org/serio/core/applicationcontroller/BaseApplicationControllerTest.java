@@ -6,12 +6,15 @@ import org.mockito.ArgumentCaptor;
 import org.serio.core.applicationcontroller.event.AllShowsEvent;
 import org.serio.core.applicationcontroller.event.ErrorDialogEvent;
 import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
+import org.serio.core.applicationcontroller.event.ShowPlayerEvent;
 import org.serio.core.applicationcontroller.model.DisplayableEpisode;
 import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
+import org.serio.core.applicationcontroller.model.IndexedCrawlLogEntry;
 import org.serio.core.clipboard.Clipboard;
 import org.serio.core.notifications.Notifications;
 import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
+import org.serio.core.showplayer.Player;
 import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.shows.*;
 import org.serio.core.showscrawler.CrawlingResult;
@@ -110,6 +113,7 @@ public abstract class BaseApplicationControllerTest {
                 .map(episode -> new Episode(episode.getId(), episode.getVideoUrl()))
                 .collect(Collectors.toList());
         Show show = Show.createNew(watchableShow.getName(), watchableShow.getThumbnailUrl(), episodes);
+        when(showsCrawler.getSerializedCrawlerOfShow(friends.toString())).thenReturn(rawShowCrawler);
         when(showsCrawler.getSerializedPartsOfCrawlerOfShow(friends.toString()))
                 .thenReturn(new SerializedShowCrawlerParts(watchableShow.getName(), rawCrawler, rawCrawler, rawCrawler));
         when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenReturn(show);
@@ -117,6 +121,7 @@ public abstract class BaseApplicationControllerTest {
                 .thenReturn(show);
         when(showsCrawler.crawlShowAndSaveCrawler(watchableShow.getName(), rawCrawler, rawCrawler, rawCrawler))
                 .thenReturn(show);
+        when(showsCrawler.crawlShow(friends.toString())).thenReturn(show);
         when(showsCrawler.previewCrawler(rawCrawler)).thenReturn(previewResults);
         when(showsCrawler.getLastCrawlingLogOfShow(friends.toString())).thenReturn(Optional.of(previewResults.getLog()));
     }
@@ -429,6 +434,9 @@ public abstract class BaseApplicationControllerTest {
         WatchableShow expected = shows.findShowById(showId);
         DisplayableShow actual = ((ShowDetailsEvent)events.get(1)).getShow();
         assertShowEquals(expected, actual, expectedLastWatched);
+        ArgumentCaptor<Show> captor = ArgumentCaptor.forClass(Show.class);
+        verify(shows).saveShow(captor.capture());
+        assertEquals(showId, captor.getValue().getId());
     }
 
     protected void assertErrorReceived() {
@@ -448,5 +456,41 @@ public abstract class BaseApplicationControllerTest {
     protected void assertCurrentView(int viewId) {
         ApplicationEvent event = captureLastUserInterfaceEvent(ApplicationEvent.class);
         assertEquals(viewId, event.getViewId());
+    }
+
+    protected void setUpShowPlayer(UUID showId, boolean fromBeginning) {
+        WatchableShow show = shows.findShowById(showId);
+        Player player = Player.of(show, fromBeginning);
+        when(showPlayer.playShow(showId, fromBeginning)).thenReturn(player);
+    }
+
+    protected void setUpShowPlayer(UUID showId, int episodeNumber) {
+        WatchableShow show = shows.findShowById(showId);
+        Player player = Player.of(show, episodeNumber);
+        when(showPlayer.playShowEpisode(showId, episodeNumber)).thenReturn(player);
+    }
+
+    protected void assertShowEpisodePlaying(UUID showId, int episodeNumber) {
+        WatchableShow show = shows.findShowById(showId);
+        WatchableEpisode episode = show.getEpisodeById(episodeNumber).get();
+        ShowPlayerEvent event = captureLastUserInterfaceEvent(ShowPlayerEvent.class);
+        assertEquals(ViewIds.SHOW_PLAYER, event.getViewId());
+        assertEquals(episode.getName(), event.getEpisodeName().orElse(null));
+        assertEquals(showId, event.getShowId());
+        assertEquals(show.getName(), event.getShowName());
+        assertEquals(episode.getWatchProgress().getPercentage(), event.getStartProgress().orElse(-1.0), 0.1);
+        assertEquals(episode.getVideoUrl(), event.getVideoUrl().orElse(null));
+    }
+
+    protected void assertCrawlLogsEqual(List<CrawlLogEntry> expectedLog, List<IndexedCrawlLogEntry> actualLog) {
+        for (int i = 0; i < expectedLog.size(); i++) {
+            CrawlLogEntry expected = expectedLog.get(i);
+            IndexedCrawlLogEntry actual = actualLog.get(i);
+            assertEquals(expected.getValue(), actual.getDescription());
+            assertEquals(expected.hasDetails(), actual.hasDetails());
+            assertEquals(expected.getInputInformation(), actual.getInput());
+            assertEquals(expected.getOutputInformation(), actual.getOutput());
+            assertEquals(i, actual.getId());
+        }
     }
 }
