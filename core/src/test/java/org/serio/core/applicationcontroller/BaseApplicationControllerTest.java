@@ -28,10 +28,7 @@ import org.serio.core.watchhistory.ShowView;
 import org.serio.core.watchhistory.WatchProgress;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -121,6 +118,7 @@ public abstract class BaseApplicationControllerTest {
         when(showsCrawler.crawlShowAndSaveCrawler(watchableShow.getName(), rawCrawler, rawCrawler, rawCrawler))
                 .thenReturn(show);
         when(showsCrawler.previewCrawler(rawCrawler)).thenReturn(previewResults);
+        when(showsCrawler.getLastCrawlingLogOfShow(friends.toString())).thenReturn(Optional.of(previewResults.getLog()));
     }
 
     @Test
