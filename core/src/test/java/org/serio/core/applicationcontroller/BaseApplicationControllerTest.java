@@ -44,6 +44,7 @@ public abstract class BaseApplicationControllerTest {
     protected UserInterface userInterface;
     protected ApplicationController applicationController;
     protected UUID friends, office, clinic, mandalorian;
+    protected String rawCrawler, rawShowCrawler;
     protected Exception expectedException;
 
     @Before
@@ -56,6 +57,7 @@ public abstract class BaseApplicationControllerTest {
         showsCrawler = mock(ShowsCrawler.class);
         userInterface = mock(UserInterface.class);
         setUpShows();
+        setUpShowsCrawler();
         applicationController = new ApplicationController(clipboard, notifications, showPlayer, shows, showsCrawler, userInterface);
     }
 
@@ -79,6 +81,19 @@ public abstract class BaseApplicationControllerTest {
                 .collect(Collectors.toList());
         WatchableShowList showList = WatchableShowList.from(allShowsMetaData, showViews);
         when(shows.findAllShows()).thenReturn(showList);
+    }
+
+    private void setUpShowsCrawler() {
+        rawCrawler = "Raw crawler";
+        rawShowCrawler = "Raw show crawler";
+        WatchableShow watchableShow = shows.findShowById(friends);
+        List<Episode> episodes = watchableShow
+                .getEpisodes()
+                .stream()
+                .map(episode -> new Episode(episode.getId(), episode.getVideoUrl()))
+                .collect(Collectors.toList());
+        Show show = Show.createNew(watchableShow.getName(), watchableShow.getThumbnailUrl(), episodes);
+        when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenReturn(show);
     }
 
     @Test
@@ -351,6 +366,12 @@ public abstract class BaseApplicationControllerTest {
         ArgumentCaptor<T> captor = ArgumentCaptor.forClass(expectedClass);
         verify(userInterface).sendEvent(captor.capture());
         return captor.getValue();
+    }
+
+    protected List<ApplicationEvent> captureUserInterfaceEvents() {
+        ArgumentCaptor<ApplicationEvent> captor = ArgumentCaptor.forClass(ApplicationEvent.class);
+        verify(userInterface, atLeastOnce()).sendEvent(captor.capture());
+        return captor.getAllValues();
     }
 
     protected void assertShowEquals(WatchableShow expected, DisplayableShow actual, String expectedLastWatched) {
