@@ -72,6 +72,20 @@ public class Shows {
     }
 
     /**
+     * Check if a show with the specified name exists.
+     *
+     * @param name name of a show to check
+     * @return true if there is a show with the specified name
+     */
+    public boolean doesShowWithNameExists(String name) {
+        try {
+            return showStorage.containsShowWithName(name).get();
+        } catch (Exception e) {
+            throw new ShowLookupException(name, e);
+        }
+    }
+
+    /**
      * Create the specified show, if such does not already exist, or completely replace existing one with the new one.
      *
      * <p>In case of a complete show replacement, watch history will not be affected, thus a new show will inherit

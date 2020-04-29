@@ -2,6 +2,7 @@ package org.serio.core.showscrawler;
 
 import org.junit.Test;
 import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
+import org.serio.core.showscrawler.serializer.CrawlerDeserializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,5 +110,21 @@ public class GeneralShowsCrawlerTest extends BaseShowsCrawlerTest {
         showsCrawler.deleteCrawlerOfShow(showId);
         // then
         verify(showCrawlerStorage).deleteShowCrawlerByShowId(showId);
+    }
+
+    @Test(expected = CrawlerDeserializationException.class)
+    public void shouldFailToGetShowNameDefinedInTheShowCrawlerSinceTheShowNameIsMissing() {
+        // when
+        showsCrawler.getShowNameDefinedInShowCrawler(SHOW_CRAWLER_WITHOUT_SHOW_NAME);
+    }
+
+    @Test
+    public void shouldGetShowNameDefinedInTheShowCrawler() {
+        // given
+        String showCrawler = String.format(BARE_MINIMUM_SHOW_CRAWLER_TEMPLATE, SHOW_NAME, COMPLETE_CRAWLER);
+        // when
+        String showName = showsCrawler.getShowNameDefinedInShowCrawler(showCrawler);
+        // then
+        assertEquals(SHOW_NAME, showName);
     }
 }

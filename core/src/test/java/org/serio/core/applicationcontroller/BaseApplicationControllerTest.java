@@ -32,7 +32,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public abstract class BaseApplicationControllerTest {
@@ -340,6 +341,14 @@ public abstract class BaseApplicationControllerTest {
     public void shouldPlayShowFromTheBeginning() {
         // when
         applicationController.playShowFromTheBeginning();
+        // then
+        verify(userInterface, never()).sendEvent(any());
+    }
+
+    @Test
+    public void shouldConfirmShowOverride() {
+        // when
+        applicationController.confirmShowOverride();
         // then
         verify(userInterface, never()).sendEvent(any());
     }

@@ -22,6 +22,10 @@ public class ShowDialogEvent implements ApplicationEvent {
         return new ShowDialogEvent(ViewIds.SHOW_WATCH_IS_OVER_DIALOG, showName);
     }
 
+    public static ShowDialogEvent showOverrideDialog(String showName) {
+        return new ShowDialogEvent(ViewIds.SHOW_OVERRIDE_DIALOG, showName);
+    }
+
     public ShowDialogEvent(int viewId, String showName) {
         if (StringUtils.isEmpty(showName)) {
             throw new IllegalArgumentException("Show name is empty or not specified");

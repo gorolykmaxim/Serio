@@ -4,10 +4,7 @@ import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
 import org.serio.core.applicationcontroller.model.DateFormat;
 import org.serio.core.applicationcontroller.model.DaysAgoFormat;
-import org.serio.core.applicationcontroller.tasks.BackTask;
-import org.serio.core.applicationcontroller.tasks.ControllerTask;
-import org.serio.core.applicationcontroller.tasks.HandleExceptionsTask;
-import org.serio.core.applicationcontroller.tasks.ViewAllShowsTask;
+import org.serio.core.applicationcontroller.tasks.*;
 import org.serio.core.applicationcontroller.tasks.allshows.AddShowTask;
 import org.serio.core.applicationcontroller.tasks.allshows.ImportShowFromJsonTask;
 import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
@@ -16,8 +13,8 @@ import org.serio.core.applicationcontroller.tasks.crawlpreview.ViewCrawlLogTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.PreviewCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.SaveCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editshowcrawler.EditCrawlerTask;
-import org.serio.core.applicationcontroller.tasks.editshowcrawler.SaveShowCrawlerTask;
-import org.serio.core.applicationcontroller.tasks.importshow.ImportShowCrawlerTask;
+import org.serio.core.applicationcontroller.tasks.editshowcrawler.SaveShowCrawlerWithoutOverrideTask;
+import org.serio.core.applicationcontroller.tasks.importshow.ImportShowCrawlerWithoutOverrideTask;
 import org.serio.core.applicationcontroller.tasks.showdetails.*;
 import org.serio.core.applicationcontroller.tasks.showplayer.PlayNextEpisodeTask;
 import org.serio.core.applicationcontroller.tasks.showplayer.PlayPreviousEpisodeTask;
@@ -85,11 +82,11 @@ public class ApplicationController {
     }
 
     public synchronized void saveShowCrawler(String showCrawlerName) {
-        executeTask(new SaveShowCrawlerTask(showCrawlerName, shows, showsCrawler, lastWatchedDateFormat));
+        executeTask(new SaveShowCrawlerWithoutOverrideTask(showCrawlerName, shows, showsCrawler, lastWatchedDateFormat));
     }
 
     public synchronized void importShowCrawler(String rawShowCrawler) {
-        executeTask(new ImportShowCrawlerTask(rawShowCrawler, shows, showsCrawler, lastWatchedDateFormat));
+        executeTask(new ImportShowCrawlerWithoutOverrideTask(rawShowCrawler, shows, showsCrawler, lastWatchedDateFormat));
     }
 
     public synchronized void previewCrawler(String rawCrawler) {
@@ -158,6 +155,10 @@ public class ApplicationController {
 
     public synchronized void playShowFromTheBeginning() {
         executeTask(new PlayShowFromTheBeginningTask(showPlayer));
+    }
+
+    public synchronized void confirmShowOverride() {
+        executeTask(new ConfirmShowOverrideTask(shows, showsCrawler, lastWatchedDateFormat));
     }
 
     public synchronized void back() {

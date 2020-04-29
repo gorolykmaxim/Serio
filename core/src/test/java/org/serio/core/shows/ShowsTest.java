@@ -276,6 +276,24 @@ public class ShowsTest {
         verify(showStorage).deleteById(watchedShow1);
     }
 
+    @Test
+    public void shouldCheckIfAShowWithTheSpecifiedNameExists() {
+        // given
+        WatchableShow show = shows.findShowById(watchedShow1);
+        when(showStorage.containsShowWithName(show.getName())).thenReturn(CompletableFuture.completedFuture(true));
+        // then
+        assertTrue(shows.doesShowWithNameExists(show.getName()));
+    }
+
+    @Test(expected = ShowLookupException.class)
+    public void shouldFailToCheckIfAShowWithTheSpecifiedNameExists() {
+        // given
+        when(showStorage.containsShowWithName(anyString()))
+                .thenReturn(CompletableFuture.supplyAsync(() -> {throw new RuntimeException();}));
+        // when
+        shows.doesShowWithNameExists("name");
+    }
+
     private UUID createShow(String name, String thumbnail, int episodesCount, LocalDateTime lastWatchDate) {
         List<Episode> episodes;
         List<EpisodeView> episodeViews;

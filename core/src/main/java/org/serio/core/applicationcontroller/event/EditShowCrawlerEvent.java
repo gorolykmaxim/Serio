@@ -31,6 +31,10 @@ public class EditShowCrawlerEvent implements ApplicationEvent {
         this.crawlerTypeToCrawler = Collections.unmodifiableMap(crawlerTypeToCrawler);
     }
 
+    public EditShowCrawlerEvent setShowName(String showName) {
+        return new EditShowCrawlerEvent(showId, showName, crawlerTypeToCrawler);
+    }
+
     public EditShowCrawlerEvent setCrawler(String crawlerType, String crawler) {
         Map<String, String> updatedCrawlerTypeToCrawler = new HashMap<>(crawlerTypeToCrawler);
         updatedCrawlerTypeToCrawler.put(crawlerType, crawler);

@@ -60,4 +60,9 @@ public class ViewIds {
      * View used to display unknown error messages, that can't be handled by the application itself.
      */
     public static final int SHOW_ERROR_DIALOG = 13;
+    /**
+     * View that notifies user that the name, used while adding / importing a show, is already assigned to
+     * an existing show.
+     */
+    public static final int SHOW_OVERRIDE_DIALOG = 14;
 }

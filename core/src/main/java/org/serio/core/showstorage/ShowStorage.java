@@ -24,6 +24,14 @@ public interface ShowStorage {
     Future<List<ShowMetaData>> findAll();
 
     /**
+     * Check if a show with the specified name is stored in the storage.
+     *
+     * @param name name of the show to check
+     * @return true if there is a show with such a name
+     */
+    Future<Boolean> containsShowWithName(String name);
+
+    /**
      * Save the specified show in the storage.
      *
      * <p>If a show with the same ID is already being stored in the storage - it will be replaced

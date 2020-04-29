@@ -8,8 +8,8 @@ import org.serio.core.showcrawlerstorage.ShowCrawlerStorage;
 import org.serio.core.showscrawler.crawler.Crawler;
 import org.serio.core.showscrawler.crawler.ShowCrawler;
 import org.serio.core.showscrawler.serializer.CrawlerSerializer;
-import org.serio.core.showscrawler.tasks.CrawlerTaskException;
 import org.serio.core.showscrawler.tasks.CrawlerTask;
+import org.serio.core.showscrawler.tasks.CrawlerTaskException;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
 
@@ -83,6 +83,17 @@ public class ShowsCrawler {
         } catch (Exception e) {
             throw new ShowCrawlerLookupException(showId, e);
         }
+    }
+
+    /**
+     * Get name of the show, defined in the specified show crawler configuration.
+     *
+     * @param serializedShowCrawler serialized show crawler to extract a show name from
+     * @return name of the show that will be crawled by the specified show crawler
+     */
+    public String getShowNameDefinedInShowCrawler(String serializedShowCrawler) {
+        ShowCrawler showCrawler = crawlerSerializer.deserializeShowCrawler(serializedShowCrawler);
+        return showCrawler.getShowName();
     }
 
     /**
