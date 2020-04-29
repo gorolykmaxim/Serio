@@ -178,6 +178,14 @@ public abstract class BaseApplicationControllerTest {
     }
 
     @Test
+    public void shouldSaveShowCrawler() {
+        // when
+        applicationController.saveShowCrawler("");
+        // then
+        verify(userInterface, never()).sendEvent(any());
+    }
+
+    @Test
     public void shouldImportShowCrawler() {
         // when
         applicationController.importShowCrawler("");
