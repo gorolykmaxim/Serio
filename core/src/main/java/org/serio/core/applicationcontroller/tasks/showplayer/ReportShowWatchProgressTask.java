@@ -18,7 +18,11 @@ public class ReportShowWatchProgressTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         if (eventStack.isLastEventOfType(ShowPlayerEvent.class)) {
-            showPlayer.reportPlaybackProgress(progress);
+            try {
+                showPlayer.reportPlaybackProgress(progress);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

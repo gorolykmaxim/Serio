@@ -458,16 +458,18 @@ public abstract class BaseApplicationControllerTest {
         assertEquals(viewId, event.getViewId());
     }
 
-    protected void setUpShowPlayer(UUID showId, boolean fromBeginning) {
+    protected Player setUpShowPlayer(UUID showId, boolean fromBeginning) {
         WatchableShow show = shows.findShowById(showId);
         Player player = Player.of(show, fromBeginning);
         when(showPlayer.playShow(showId, fromBeginning)).thenReturn(player);
+        return player;
     }
 
-    protected void setUpShowPlayer(UUID showId, int episodeNumber) {
+    protected Player setUpShowPlayer(UUID showId, int episodeNumber) {
         WatchableShow show = shows.findShowById(showId);
         Player player = Player.of(show, episodeNumber);
         when(showPlayer.playShowEpisode(showId, episodeNumber)).thenReturn(player);
+        return player;
     }
 
     protected void assertShowEpisodePlaying(UUID showId, int episodeNumber) {
@@ -480,6 +482,8 @@ public abstract class BaseApplicationControllerTest {
         assertEquals(show.getName(), event.getShowName());
         assertEquals(episode.getWatchProgress().getPercentage(), event.getStartProgress().orElse(-1.0), 0.1);
         assertEquals(episode.getVideoUrl(), event.getVideoUrl().orElse(null));
+        assertEquals(show.getEpisodeBeforeEpisode(episodeNumber).isPresent(), event.hasPreviousEpisode());
+        assertEquals(show.getEpisodeAfterEpisode(episodeNumber).isPresent(), event.hasNextEpisode());
     }
 
     protected void assertCrawlLogsEqual(List<CrawlLogEntry> expectedLog, List<IndexedCrawlLogEntry> actualLog) {
