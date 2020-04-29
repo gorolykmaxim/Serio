@@ -83,4 +83,7 @@ export default class SerioController {
     viewAllShows() {
         console.info('Opening all shows view');
     }
+    confirmShowOverride() {
+        console.info('Confirming the override of an existing show with the currently configured one');
+    }
 }

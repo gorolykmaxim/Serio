@@ -9,7 +9,9 @@ import {
     IMPORT_SHOW_CRAWLER,
     SHOW_CLEAR_WATCH_HISTORY_DIALOG,
     SHOW_DELETE_SHOW_DIALOG,
-    SHOW_DETAILS, SHOW_ERROR_DIALOG,
+    SHOW_DETAILS,
+    SHOW_ERROR_DIALOG,
+    SHOW_OVERRIDE_DIALOG,
     SHOW_PLAYER,
     SHOW_WATCH_IS_OVER_DIALOG
 } from "./SerioApplication";
@@ -234,6 +236,7 @@ export default function enableDevelopmentApi() {
     registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
     registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
     registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
+    registerFunction('showOverrideDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_OVERRIDE_DIALOG, showName: shows[0].name}));
     console.info(`You can also use those function names as a window.location.hash attribute "view" like "#view=${Object.keys(viewNameToTrigger)[0]}".`);
 }
 

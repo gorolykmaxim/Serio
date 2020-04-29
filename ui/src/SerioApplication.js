@@ -32,6 +32,7 @@ export const SHOW_CLEAR_WATCH_HISTORY_DIALOG = 10;
 export const SHOW_DELETE_SHOW_DIALOG = 11;
 export const SHOW_WATCH_IS_OVER_DIALOG = 12;
 export const SHOW_ERROR_DIALOG = 13;
+export const SHOW_OVERRIDE_DIALOG = 14;
 
 export class SerioApplication extends React.Component {
     constructor(props, context) {
@@ -82,6 +83,8 @@ export class SerioApplication extends React.Component {
                 return this.renderWatchIsOverDialog();
             case SHOW_ERROR_DIALOG:
                 return this.renderErrorDialog();
+            case SHOW_OVERRIDE_DIALOG:
+                return this.renderShowOverrideDialog();
             default:
                 if (!viewId) {
                     return <Logo/>;
@@ -238,5 +241,22 @@ export class SerioApplication extends React.Component {
             }
         ];
         return <Dialog title='Whoops...' text={errorMessage} actions={actions}/>;
+    }
+    renderShowOverrideDialog() {
+        const {showName} = this.state.data;
+        const actions = [
+            {
+                name: 'Cancel',
+                isDefault: true,
+                callback: () => window.serioController.back()
+            },
+            {
+                name: 'Confirm',
+                callback: () => window.serioController.confirmShowOverride()
+            }
+        ];
+        return <Dialog title={`Show '${showName}' already exists`}
+                       text={'Are you sure you want to override the existing crawler and the show with the new ones?'}
+                       actions={actions}/>;
     }
 }
