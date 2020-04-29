@@ -11,8 +11,10 @@ import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
 import org.serio.core.clipboard.Clipboard;
 import org.serio.core.notifications.Notifications;
+import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
 import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.shows.*;
+import org.serio.core.showscrawler.CrawlingResult;
 import org.serio.core.showscrawler.SerializedShowCrawlerParts;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Episode;
@@ -48,6 +50,7 @@ public abstract class BaseApplicationControllerTest {
     protected ApplicationController applicationController;
     protected UUID friends, office, clinic, mandalorian;
     protected String rawCrawler, rawShowCrawler;
+    protected CrawlingResult previewResults;
     protected Exception expectedException;
 
     @Before
@@ -89,6 +92,20 @@ public abstract class BaseApplicationControllerTest {
     private void setUpShowsCrawler() {
         rawCrawler = "Raw crawler";
         rawShowCrawler = "Raw show crawler";
+        previewResults = new CrawlingResult(
+                IntStream.range(1, 5)
+                        .mapToObj(i -> String.format("Result %d", i))
+                        .collect(Collectors.toList()),
+                IntStream.range(1, 3)
+                        .mapToObj(i -> {
+                            if (i == 1) {
+                                return new CrawlLogEntry("First crawling entry");
+                            } else {
+                                return new CrawlLogEntry("Crawler step", "Input args", "Output args");
+                            }
+                        })
+                        .collect(Collectors.toList())
+        );
         WatchableShow watchableShow = shows.findShowById(friends);
         List<Episode> episodes = watchableShow
                 .getEpisodes()
@@ -103,6 +120,7 @@ public abstract class BaseApplicationControllerTest {
                 .thenReturn(show);
         when(showsCrawler.crawlShowAndSaveCrawler(watchableShow.getName(), rawCrawler, rawCrawler, rawCrawler))
                 .thenReturn(show);
+        when(showsCrawler.previewCrawler(rawCrawler)).thenReturn(previewResults);
     }
 
     @Test
