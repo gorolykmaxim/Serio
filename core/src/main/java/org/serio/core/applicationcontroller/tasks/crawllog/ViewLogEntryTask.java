@@ -21,7 +21,8 @@ public class ViewLogEntryTask implements ControllerTask {
         Optional<CrawlLogEvent> possibleLastEvent = eventStack.peek(CrawlLogEvent.class);
         if (possibleLastEvent.isPresent()) {
             CrawlLogEvent lastEvent = possibleLastEvent.get();
-            IndexedCrawlLogEntry entry = lastEvent.getLogEntries().get(logEntryId);
+            IndexedCrawlLogEntry entry = lastEvent.getLogEntryById(logEntryId)
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("Crawl log entry with ID '%d' does not exist", logEntryId)));
             CrawlLogEntryDetailsEvent event = new CrawlLogEntryDetailsEvent(entry);
             eventStack.push(event);
             userInterface.sendEvent(event);

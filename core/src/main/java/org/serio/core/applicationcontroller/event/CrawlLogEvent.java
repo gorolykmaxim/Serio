@@ -35,6 +35,14 @@ public class CrawlLogEvent implements ApplicationEvent {
         return logEntries;
     }
 
+    public Optional<IndexedCrawlLogEntry> getLogEntryById(int id) {
+        if (id < 0 || id >= logEntries.size()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(logEntries.get(id));
+        }
+    }
+
     @Override
     public int getViewId() {
         return ViewIds.CRAWL_LOG;
