@@ -2,6 +2,8 @@ package org.serio.core.applicationcontroller.event;
 
 import org.serio.core.userinterface.ApplicationEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -10,6 +12,10 @@ public class EventStack {
 
     public EventStack() {
         events = new Stack<>();
+    }
+
+    public boolean isEmpty() {
+        return events.isEmpty();
     }
 
     public void clear() {
@@ -31,6 +37,10 @@ public class EventStack {
         } else {
             return Optional.empty();
         }
+    }
+
+    public List<ApplicationEvent> toList() {
+        return new ArrayList<>(events);
     }
 
     public <T> Optional<T> peek(Class<T> expectedEventType) {

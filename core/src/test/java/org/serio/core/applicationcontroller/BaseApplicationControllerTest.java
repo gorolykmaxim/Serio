@@ -73,7 +73,11 @@ public abstract class BaseApplicationControllerTest {
         clinic = createShow("Clinic", false, 5, 2, now.minusDays(1));
         office = createShow("Office", true, 15, 13, now);
         mandalorian = createShow("Mandalorian", true, 10, 0, now);
-        List<WatchableShow> allShows = Stream.of(friends, clinic, office, mandalorian)
+        setUpAllShows(clinic, office, mandalorian);
+    }
+
+    protected void setUpAllShows(UUID ...showIds) {
+        List<WatchableShow> allShows = Stream.of(showIds)
                 .map(shows::findShowById)
                 .collect(Collectors.toList());
         List<ShowMetaData> allShowsMetaData = allShows
@@ -134,7 +138,7 @@ public abstract class BaseApplicationControllerTest {
         AllShowsEvent event = captureLastUserInterfaceEvent(AllShowsEvent.class);
         assertEquals(ViewIds.ALL_SHOWS, event.getViewId());
         Set<UUID> showIds = event.getAllShows().stream().map(DisplayableShowMetaData::getId).collect(Collectors.toSet());
-        assertTrue(showIds.containsAll(Arrays.asList(friends, clinic, office, mandalorian)));
+        assertTrue(showIds.containsAll(Arrays.asList(clinic, office, mandalorian)));
         List<DisplayableShowMetaData> lastWatchedShows = event.getLastWatchedShows();
         WatchableShowList showList = shows.findAllShows();
         List<WatchableShowMetaData> expectedLastWatchedShows = showList.getLastWatchedShows();
@@ -148,8 +152,6 @@ public abstract class BaseApplicationControllerTest {
                 assertEquals("Today", actual.getLastWatched());
             } else if (actual.getId().equals(clinic)) {
                 assertEquals("Yesterday", actual.getLastWatched());
-            } else if (actual.getId().equals(friends)) {
-                assertEquals("2 days ago", actual.getLastWatched());
             }
         }
     }

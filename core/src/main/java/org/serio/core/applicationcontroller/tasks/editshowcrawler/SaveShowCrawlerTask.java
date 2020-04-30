@@ -5,6 +5,7 @@ import org.serio.core.applicationcontroller.event.*;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
 import org.serio.core.applicationcontroller.model.DateFormat;
 import org.serio.core.applicationcontroller.tasks.ControllerTask;
+import org.serio.core.applicationcontroller.tasks.SaveCrawledShowTask;
 import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
@@ -34,7 +35,7 @@ public class SaveShowCrawlerTask implements ControllerTask {
                     lastEvent.getCrawler(CrawlerTypes.EPISODE_VIDEO).orElse(null),
                     lastEvent.getCrawler(CrawlerTypes.EPISODE_NAME).orElse(null)
             );
-            shows.saveShow(show);
+            new SaveCrawledShowTask(shows, dateFormat, show).execute(eventStack, userInterface);
             eventStack.pop(EditShowCrawlerEvent.class);
             if (eventStack.isLastEventOfType(AllShowsEvent.class) || eventStack.pop(ShowDetailsEvent.class).isPresent()) {
                 new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);

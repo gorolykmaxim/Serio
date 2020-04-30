@@ -2,13 +2,20 @@ package org.serio.core.applicationcontroller;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.serio.core.applicationcontroller.event.AllShowsEvent;
 import org.serio.core.applicationcontroller.event.EditCrawlerEvent;
 import org.serio.core.applicationcontroller.event.ShowDialogEvent;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
+import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
 import org.serio.core.shows.WatchableShow;
 import org.serio.core.userinterface.ViewIds;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -86,6 +93,43 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
     @Override
     public void shouldSaveShowCrawler() {
         // given
+        WatchableShow show = shows.findShowById(friends);
+        applicationController.editEpisodeVideoCrawler();
+        applicationController.saveCrawler(rawCrawler);
+        reset(userInterface);
+        // when
+        applicationController.saveShowCrawler(show.getName());
+        applicationController.saveShowCrawler(show.getName());
+        // then
+        assertShowCrawled(friends, "2 days ago");
+    }
+
+    @Test
+    public void shouldAddCrawledShowToTheAllShowsView() {
+        // given
+        setUpAllShows(friends, clinic, office, mandalorian);
+        WatchableShow show = shows.findShowById(friends);
+        applicationController.editEpisodeVideoCrawler();
+        applicationController.saveCrawler(rawCrawler);
+        applicationController.saveShowCrawler(show.getName());
+        applicationController.saveShowCrawler(show.getName());
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        AllShowsEvent event = captureLastUserInterfaceEvent(AllShowsEvent.class);
+        Set<UUID> allShowIds = event
+                .getAllShows()
+                .stream()
+                .map(DisplayableShowMetaData::getId)
+                .collect(Collectors.toSet());
+        assertTrue(allShowIds.contains(friends));
+    }
+
+    @Test
+    public void shouldFailToAddCrawledShowToTheAllShowsViewButStillDisplayTheCrawledShow() {
+        // given
+        when(shows.findAllShows()).thenThrow(expectedException);
         WatchableShow show = shows.findShowById(friends);
         applicationController.editEpisodeVideoCrawler();
         applicationController.saveCrawler(rawCrawler);
