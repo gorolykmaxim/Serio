@@ -16,6 +16,7 @@ export default function ImportShowCrawler(props) {
             <TextArea className='serio-margin serio-growable'
                       required={true}
                       placeholder={'Paste configuration of a show crawler here'}
+                      defaultValue={props.showCrawler}
                       name={'showCrawler'}
                       autoFocus={true}/>
             <div className='serio-form-actions serio-margin'>

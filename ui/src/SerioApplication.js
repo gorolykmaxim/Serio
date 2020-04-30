@@ -114,7 +114,9 @@ export class SerioApplication extends React.Component {
                                 onSave={(showName) => window.serioController.saveShowCrawler(showName)}/>;
     }
     renderImportShowCrawler() {
-        return <ImportShowCrawler onImport={window.serioController.importShowCrawler}
+        const {showCrawler} = this.state.data;
+        return <ImportShowCrawler showCrawler={showCrawler}
+                                  onImport={window.serioController.importShowCrawler}
                                   onCancel={window.serioController.back}/>;
     }
     renderEditCrawler() {
