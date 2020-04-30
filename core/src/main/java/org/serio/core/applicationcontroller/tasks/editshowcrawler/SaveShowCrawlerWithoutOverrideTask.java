@@ -9,12 +9,22 @@ import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Checks if the currently edited show is new and has a name of a show, that already exists.
+ *
+ * <p>If the currently edited show is not new or has a unique new name - call {@link SaveShowCrawlerTask}.
+ * Otherwise - display {@link org.serio.core.userinterface.ViewIds#SHOW_OVERRIDE_DIALOG} and wait
+ * for user override confirmation or cancel.</p>
+ */
 public class SaveShowCrawlerWithoutOverrideTask implements ControllerTask {
     private final String showName;
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
 
+    /**
+     * @see SaveShowCrawlerTask#SaveShowCrawlerTask(String, Shows, ShowsCrawler, DateFormat)
+     */
     public SaveShowCrawlerWithoutOverrideTask(String showName, Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.showName = showName;
         this.shows = shows;
@@ -22,6 +32,9 @@ public class SaveShowCrawlerWithoutOverrideTask implements ControllerTask {
         this.dateFormat = dateFormat;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {

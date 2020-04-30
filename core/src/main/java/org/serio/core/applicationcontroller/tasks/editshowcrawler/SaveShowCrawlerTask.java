@@ -12,12 +12,27 @@ import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Show;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Save the show crawler, that is currently being edited, crawl the corresponding show and display it in
+ * the {@link org.serio.core.userinterface.ViewIds#SHOW_DETAILS} view.
+ *
+ * <p>Since the crawling process may take some time, during it the {@link CrawlingInProgressEvent} will be
+ * displayed to the user.</p>
+ */
 public class SaveShowCrawlerTask implements ControllerTask {
     private final String showName;
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
 
+    /**
+     * Construct a task.
+     *
+     * @param showName name of the show, crawled by the show crawler
+     * @param shows module that will be used to get information about the crawled show to display it
+     * @param showsCrawler module that will be used to crawl the new show
+     * @param dateFormat date format to be applied to show's last watched dates
+     */
     public SaveShowCrawlerTask(String showName, Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.showName = showName;
         this.shows = shows;
@@ -25,6 +40,9 @@ public class SaveShowCrawlerTask implements ControllerTask {
         this.dateFormat = dateFormat;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
