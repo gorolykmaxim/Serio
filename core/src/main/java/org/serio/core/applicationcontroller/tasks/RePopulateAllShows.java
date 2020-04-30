@@ -11,15 +11,33 @@ import org.serio.core.userinterface.ViewIds;
 
 import java.util.List;
 
+/**
+ * Repopulate the {@link AllShowsEvent} instance, located at the bottom of the stack.
+ *
+ * <p>Replaces an existing version of {@link AllShowsEvent} with an updated one, that might feature
+ * recently updated show information.</p>
+ *
+ * <p>Run this task every time you change information, related to some tv show, to make the changes appear
+ * in {@link ViewIds#ALL_SHOWS} view, when user goes back to it using the "back" action.</p>
+ */
 public class RePopulateAllShows implements ControllerTask {
     private final Shows shows;
     private final DateFormat dateFormat;
 
+    /**
+     * Construct a task.
+     *
+     * @param shows module that will be used to get list of shows to be displayed
+     * @param dateFormat date format to be applied to show's last watched dates
+     */
     public RePopulateAllShows(Shows shows, DateFormat dateFormat) {
         this.shows = shows;
         this.dateFormat = dateFormat;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         try {
