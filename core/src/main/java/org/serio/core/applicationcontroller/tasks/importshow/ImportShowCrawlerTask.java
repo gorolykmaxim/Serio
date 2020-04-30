@@ -5,7 +5,6 @@ import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.event.ImportShowFromJsonEvent;
 import org.serio.core.applicationcontroller.model.DateFormat;
 import org.serio.core.applicationcontroller.tasks.ControllerTask;
-import org.serio.core.applicationcontroller.tasks.RePopulateAllShows;
 import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
@@ -46,7 +45,6 @@ public class ImportShowCrawlerTask implements ControllerTask {
             userInterface.sendEvent(new CrawlingInProgressEvent());
             Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
             shows.saveShow(show);
-            new RePopulateAllShows(shows, dateFormat).execute(eventStack, userInterface);
             eventStack.pop(ImportShowFromJsonEvent.class);
             new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
         }

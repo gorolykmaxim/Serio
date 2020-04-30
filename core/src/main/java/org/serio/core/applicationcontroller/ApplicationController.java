@@ -324,7 +324,7 @@ public class ApplicationController {
      * Go back to the previous view.
      */
     public synchronized void back() {
-        executeTask(new BackTask());
+        executeTask(new BackTask(shows, lastWatchedDateFormat));
     }
 
     private void executeTask(ControllerTask task) {

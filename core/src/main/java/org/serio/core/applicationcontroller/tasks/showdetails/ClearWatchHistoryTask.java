@@ -7,7 +7,6 @@ import org.serio.core.applicationcontroller.event.ShowDialogEvent;
 import org.serio.core.applicationcontroller.model.DateFormat;
 import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.tasks.ControllerTask;
-import org.serio.core.applicationcontroller.tasks.RePopulateAllShows;
 import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.userinterface.UserInterface;
@@ -41,7 +40,6 @@ public class ClearWatchHistoryTask implements ControllerTask {
                     .orElseThrow(() -> new IllegalEventStackStateException(dialogEvent, ShowDetailsEvent.class, eventStack));
             DisplayableShow show = lastEvent.getShow();
             shows.clearWatchHistoryOfShow(show.getId());
-            new RePopulateAllShows(shows, dateFormat).execute(eventStack, userInterface);
             eventStack.pop(ShowDetailsEvent.class);
             new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
         });
