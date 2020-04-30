@@ -7,13 +7,25 @@ import org.serio.core.applicationcontroller.event.IllegalEventStackStateExceptio
 import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Attach the currently edited crawler to the currently edited show crawler, and go back to
+ * the {@link org.serio.core.userinterface.ViewIds#EDIT_SHOW_CRAWLER} view.
+ */
 public class SaveCrawlerTask implements ControllerTask {
     private final String crawler;
 
+    /**
+     * Construct a task.
+     *
+     * @param crawler crawler to attach to the currently edited show crawler
+     */
     public SaveCrawlerTask(String crawler) {
         this.crawler = crawler;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.pop(EditCrawlerEvent.class).ifPresent(crawlerEvent -> {
