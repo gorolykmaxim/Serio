@@ -7,7 +7,13 @@ import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Display the {@link org.serio.core.userinterface.ViewIds#SHOW_CLEAR_WATCH_HISTORY_DIALOG} view.
+ */
 public class InitiateClearShowWatchHistoryTask implements ControllerTask {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {

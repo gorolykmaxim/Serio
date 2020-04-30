@@ -12,17 +12,30 @@ import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Delete the currently selected show and go back to the {@link org.serio.core.userinterface.ViewIds#ALL_SHOWS} view.
+ */
 public class DeleteShowTask implements ControllerTask {
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
 
+    /**
+     * Construct a task.
+     *
+     * @param shows module that will be used to get information about the updated list of all shows
+     * @param showsCrawler module that will be used to delete the crawler of the show
+     * @param dateFormat date format to be applied to show's last watched dates
+     */
     public DeleteShowTask(Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.shows = shows;
         this.showsCrawler = showsCrawler;
         this.dateFormat = dateFormat;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.pop(ShowDialogEvent.class).ifPresent(dialogEvent -> {

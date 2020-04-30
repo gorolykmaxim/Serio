@@ -10,15 +10,28 @@ import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Open the {@link org.serio.core.userinterface.ViewIds#SHOW_PLAYER} view and play the currently selected show
+ * starting from the specified episode.
+ */
 public class PlayShowEpisodeTask implements ControllerTask {
     private final int episodeNumber;
     private final ShowPlayer showPlayer;
 
+    /**
+     * Construct a task.
+     *
+     * @param episodeNumber ID of the episode to start from
+     * @param showPlayer module that will be used to play the show
+     */
     public PlayShowEpisodeTask(int episodeNumber, ShowPlayer showPlayer) {
         this.episodeNumber = episodeNumber;
         this.showPlayer = showPlayer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {

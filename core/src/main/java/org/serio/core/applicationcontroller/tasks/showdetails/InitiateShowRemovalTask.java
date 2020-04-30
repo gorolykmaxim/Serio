@@ -7,7 +7,13 @@ import org.serio.core.applicationcontroller.model.DisplayableShow;
 import org.serio.core.applicationcontroller.tasks.ControllerTask;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Display the {@link org.serio.core.userinterface.ViewIds#SHOW_DELETE_SHOW_DIALOG} view.
+ */
 public class InitiateShowRemovalTask implements ControllerTask {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {

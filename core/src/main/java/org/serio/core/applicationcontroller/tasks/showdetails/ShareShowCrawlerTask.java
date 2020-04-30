@@ -9,17 +9,30 @@ import org.serio.core.notifications.Notifications;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Copy the crawler of the currently selected show to the clipboard and display a notification to the user about it.
+ */
 public class ShareShowCrawlerTask implements ControllerTask {
     private final Notifications notifications;
     private final Clipboard clipboard;
     private final ShowsCrawler showsCrawler;
 
+    /**
+     * Construct a task.
+     *
+     * @param notifications module that will be used to display notifications
+     * @param clipboard module that will be used to save the show crawler to the clipboard
+     * @param showsCrawler module that will be used obtain crawler configuration of the show
+     */
     public ShareShowCrawlerTask(Notifications notifications, Clipboard clipboard, ShowsCrawler showsCrawler) {
         this.notifications = notifications;
         this.clipboard = clipboard;
         this.showsCrawler = showsCrawler;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(ShowDetailsEvent.class).ifPresent(lastEvent -> {
