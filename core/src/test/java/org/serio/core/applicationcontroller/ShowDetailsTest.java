@@ -2,15 +2,17 @@ package org.serio.core.applicationcontroller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.serio.core.applicationcontroller.event.CrawlLogEvent;
-import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
-import org.serio.core.applicationcontroller.event.ErrorDialogEvent;
-import org.serio.core.applicationcontroller.event.ShowDialogEvent;
+import org.serio.core.applicationcontroller.event.*;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
+import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
 import org.serio.core.shows.WatchableShow;
 import org.serio.core.userinterface.ViewIds;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -213,6 +215,26 @@ public class ShowDetailsTest extends BaseApplicationControllerTest {
         // then
         assertCurrentView(ViewIds.SHOW_DETAILS);
         verify(shows).clearWatchHistoryOfShow(clinic);
+    }
+
+    @Test
+    public void shouldClearWatchHistoryAndUpdateAllShowsViewAccordingly() {
+        // given
+        clinic = createShow("Clinic", false, 5, 0, LocalDateTime.now());
+        setUpAllShows(friends, clinic, office, mandalorian);
+        applicationController.initiateClearShowWatchHistory();
+        applicationController.clearWatchHistory();
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        AllShowsEvent event = captureLastUserInterfaceEvent(AllShowsEvent.class);
+        Set<UUID> watchedShowIds = event
+                .getLastWatchedShows()
+                .stream()
+                .map(DisplayableShowMetaData::getId)
+                .collect(Collectors.toSet());
+        assertFalse(watchedShowIds.contains(clinic));
     }
 
     @Test

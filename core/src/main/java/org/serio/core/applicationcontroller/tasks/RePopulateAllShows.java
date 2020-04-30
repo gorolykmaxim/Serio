@@ -5,27 +5,23 @@ import org.serio.core.applicationcontroller.event.EventStack;
 import org.serio.core.applicationcontroller.model.DateFormat;
 import org.serio.core.shows.Shows;
 import org.serio.core.shows.WatchableShowList;
-import org.serio.core.showstorage.Show;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.core.userinterface.ViewIds;
 
 import java.util.List;
 
-public class SaveCrawledShowTask implements ControllerTask {
+public class RePopulateAllShows implements ControllerTask {
     private final Shows shows;
     private final DateFormat dateFormat;
-    private final Show crawledShow;
 
-    public SaveCrawledShowTask(Shows shows, DateFormat dateFormat, Show crawledShow) {
+    public RePopulateAllShows(Shows shows, DateFormat dateFormat) {
         this.shows = shows;
         this.dateFormat = dateFormat;
-        this.crawledShow = crawledShow;
     }
 
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        shows.saveShow(crawledShow);
         try {
             WatchableShowList allShows = shows.findAllShows();
             List<ApplicationEvent> events = eventStack.toList();
@@ -33,6 +29,7 @@ public class SaveCrawledShowTask implements ControllerTask {
             eventStack.push(new AllShowsEvent(allShows, dateFormat));
             events.stream().filter(event -> ViewIds.ALL_SHOWS != event.getViewId()).forEach(eventStack::push);
         } catch (Exception e) {
+            // In some cases propagating this exception can lead to bad things:
             // At this point the crawled show is saved, so the user will be able see it.
             // Though for some reason we were not able to re-query all shows list to re-build the AllShowsEvent
             // at the root of the stack to incorporate the new show.

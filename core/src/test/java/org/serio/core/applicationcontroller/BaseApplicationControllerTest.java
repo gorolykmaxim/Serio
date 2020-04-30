@@ -387,7 +387,7 @@ public abstract class BaseApplicationControllerTest {
     @Test
     public abstract void shouldBack();
 
-    private UUID createShow(String name, boolean hasThumbnail, int episodeCount, int episodesWatched, LocalDateTime lastWatchedDate) {
+    protected UUID createShow(String name, boolean hasThumbnail, int episodeCount, int episodesWatched, LocalDateTime lastWatchedDate) {
         List<Episode> episodes = IntStream
                 .range(1, episodeCount + 1)
                 .mapToObj(i -> new Episode(i, "https://show.com/episode-" + i))
