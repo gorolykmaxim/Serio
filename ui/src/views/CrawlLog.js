@@ -4,6 +4,7 @@ import {createScrollIntoTarget, getFunction} from "../common";
 import {HEADLINE_5, Text} from "../components/Text";
 import ListTile from "../components/ListTile";
 import Button from "../components/Button";
+const capitalize = require('capitalize');
 
 export default function CrawlLog(props) {
     console.assert(props.logEntries);
@@ -17,10 +18,11 @@ export default function CrawlLog(props) {
                   onClick={e.hasDetails ? () => onLogEntry(e) : null}
                   onFocusCapture={onFocusCapture}/>
     );
+    const title = capitalize(props.crawlerType ? `${props.crawlerType} crawl log` : 'Crawl log');
     return (
         <div className='serio-crawl-log serio-full-height'>
             <div className='serio-padding'>
-                <Text type={HEADLINE_5} primary>{props.crawlerType ? `${props.crawlerType} crawl log` : 'Crawl log'}</Text>
+                <Text type={HEADLINE_5} primary>{title}</Text>
             </div>
             <div className='serio-padding'>
                 <Button text='back' onClick={onBack} autoFocus={true}/>

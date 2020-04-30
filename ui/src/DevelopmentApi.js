@@ -216,8 +216,8 @@ export default function enableDevelopmentApi() {
     registerFunction('editShowCrawler', viewNameToTrigger, () => editShowCrawler(true));
     registerFunction('importShowCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: IMPORT_SHOW_CRAWLER}));
     registerFunction('editCrawler', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: EDIT_CRAWLER, crawlerType: "episode's video", crawler: JSON.stringify([])}));
-    registerFunction('crawlPreview', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_PREVIEW, crawlerType: "Episode's video", crawlItems: crawlItems}));
-    registerFunction('crawlLog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_LOG, crawlerType: "Episode's video", logEntries: crawLog}));
+    registerFunction('crawlPreview', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_PREVIEW, crawlerType: "episode's video", crawlItems: crawlItems}));
+    registerFunction('crawlLog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_LOG, crawlerType: "episode's video", logEntries: crawLog}));
     registerFunction('crawlLogEntryDetails', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWL_LOG_ENTRY_DETAILS, logEntry: crawLog[0]}));
     registerFunction('crawlingInProgress', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWLING_IN_PROGRESS}));
     registerFunction('showDetails', viewNameToTrigger, () => showDetails());
