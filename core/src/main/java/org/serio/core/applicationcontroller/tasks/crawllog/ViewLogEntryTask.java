@@ -9,13 +9,25 @@ import org.serio.core.userinterface.UserInterface;
 
 import java.util.Optional;
 
+/**
+ * Display detailed information about the specified entry of the currently viewed log in
+ * {@link org.serio.core.userinterface.ViewIds#CRAWL_LOG_ENTRY_DETAILS}.
+ */
 public class ViewLogEntryTask implements ControllerTask {
     private final int logEntryId;
 
+    /**
+     * Construct a task.
+     *
+     * @param logEntryId ID of the log entry to display
+     */
     public ViewLogEntryTask(int logEntryId) {
         this.logEntryId = logEntryId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         Optional<CrawlLogEvent> possibleLastEvent = eventStack.peek(CrawlLogEvent.class);
