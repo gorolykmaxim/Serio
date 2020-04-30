@@ -205,14 +205,6 @@ const crawLog = [
     },
 ];
 
-const playerInfo = {
-    videoUrl: 'https://media.w3.org/2010/05/sintel/trailer_hd.mp4',
-    showName: 'Some movie',
-    episodeName: 'Episode 15',
-    hasPreviousEpisode: true,
-    hasNextEpisode: true
-};
-
 const showCrawlerId = '1';
 
 export default function enableDevelopmentApi() {
@@ -232,9 +224,9 @@ export default function enableDevelopmentApi() {
     registerFunction('showDetailsNoEpisodes', viewNameToTrigger, () => showDetails(true));
     registerFunction('showPlayer', viewNameToTrigger, () => showPlayer());
     registerFunction('showPlayerSeek', viewNameToTrigger, () => showPlayer(true));
-    registerFunction('clearWatchHistoryDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_DELETE_SHOW_DIALOG, showId: shows[0].id, showName: shows[0].name}));
-    registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_WATCH_IS_OVER_DIALOG, showId: shows[0].id, showName: shows[0].name}));
+    registerFunction('clearWatchHistoryDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_CLEAR_WATCH_HISTORY_DIALOG, showName: shows[0].name}));
+    registerFunction('deleteShowDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_DELETE_SHOW_DIALOG, showName: shows[0].name}));
+    registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_WATCH_IS_OVER_DIALOG, showName: shows[0].name}));
     registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
     registerFunction('showOverrideDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_OVERRIDE_DIALOG, showName: shows[0].name}));
     console.info(`You can also use those function names as a window.location.hash attribute "view" like "#view=${Object.keys(viewNameToTrigger)[0]}".`);
