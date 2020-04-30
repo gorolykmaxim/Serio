@@ -9,13 +9,28 @@ import org.serio.core.showplayer.ShowPlayer;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 
+/**
+ * Update the currently rendered {@link org.serio.core.userinterface.ViewIds#SHOW_PLAYER} to play the next episode
+ * of the currently playing show.
+ *
+ * <p>If the currently playing episode is the last one - display
+ * the {@link org.serio.core.userinterface.ViewIds#SHOW_WATCH_IS_OVER_DIALOG} view.</p>
+ */
 public class PlayNextEpisodeTask implements ControllerTask {
     private final ShowPlayer showPlayer;
 
+    /**
+     * Construct a task.
+     *
+     * @param showPlayer module that is used to play the show
+     */
     public PlayNextEpisodeTask(ShowPlayer showPlayer) {
         this.showPlayer = showPlayer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         if (eventStack.isLastEventOfType(ShowPlayerEvent.class)) {
