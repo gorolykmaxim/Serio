@@ -41,12 +41,14 @@ public class ImportShowCrawlerTask implements ControllerTask {
      */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        if (eventStack.isLastEventOfType(ImportShowFromJsonEvent.class)) {
+        eventStack.pop(ImportShowFromJsonEvent.class).ifPresent(lastEvent -> {
+            // Save the specified show crawler so that in case of an error it will be displayed in the view.
+            eventStack.push(new ImportShowFromJsonEvent(rawShowCrawler));
             userInterface.sendEvent(new CrawlingInProgressEvent());
             Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
             shows.saveShow(show);
             eventStack.pop(ImportShowFromJsonEvent.class);
             new SelectShowTask(show.getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
-        }
+        });
     }
 }

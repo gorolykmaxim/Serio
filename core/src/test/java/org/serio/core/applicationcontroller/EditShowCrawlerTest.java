@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.serio.core.applicationcontroller.event.AllShowsEvent;
 import org.serio.core.applicationcontroller.event.EditCrawlerEvent;
+import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
 import org.serio.core.applicationcontroller.event.ShowDialogEvent;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
 import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
@@ -199,6 +200,22 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
         applicationController.saveShowCrawler(show.getName());
         // then
         assertCrawlingErrorReceived();
+    }
+
+    @Test
+    public void shouldFailToSaveShowCrawlerAndGoBackToEditorWithSavedShowName() {
+        // given
+        WatchableShow show = shows.findShowById(friends);
+        when(showsCrawler.crawlShowAndSaveCrawler(any(), any(), any(), any())).thenThrow(expectedException);
+        applicationController.editEpisodeVideoCrawler();
+        applicationController.saveCrawler(rawCrawler);
+        applicationController.saveShowCrawler(show.getName());
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        EditShowCrawlerEvent event = captureLastUserInterfaceEvent(EditShowCrawlerEvent.class);
+        assertEquals(show.getName(), event.getShowName().orElse(null));
     }
 
     @Override

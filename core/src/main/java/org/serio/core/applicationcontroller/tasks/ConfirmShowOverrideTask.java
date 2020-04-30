@@ -47,7 +47,7 @@ public class ConfirmShowOverrideTask implements ControllerTask {
             Optional<EditShowCrawlerEvent> editEvent = eventStack.peek(EditShowCrawlerEvent.class);
             if (importEvent.isPresent()) {
                 ImportShowFromJsonEvent event = importEvent.get();
-                new ImportShowCrawlerTask(event.getRawShowCrawler().orElse(null), shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
+                new ImportShowCrawlerTask(event.getShowCrawler().orElse(null), shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
             } else if (editEvent.isPresent()) {
                 EditShowCrawlerEvent event = editEvent.get();
                 new SaveShowCrawlerTask(event.getShowName().orElse(null), shows, showsCrawler, dateFormat).execute(eventStack, userInterface);

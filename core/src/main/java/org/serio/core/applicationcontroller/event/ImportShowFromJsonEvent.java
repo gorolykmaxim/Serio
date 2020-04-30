@@ -10,7 +10,7 @@ import java.util.Optional;
  * Event that will trigger rendering of {@link ViewIds#IMPORT_SHOW_CRAWLER} view.
  */
 public class ImportShowFromJsonEvent implements ApplicationEvent {
-    private final String rawShowCrawler;
+    private final String showCrawler;
 
     /**
      * @see ImportShowFromJsonEvent#ImportShowFromJsonEvent(String)
@@ -22,10 +22,10 @@ public class ImportShowFromJsonEvent implements ApplicationEvent {
     /**
      * Construct an event.
      *
-     * @param rawShowCrawler body of the entire show crawler, that should be imported
+     * @param showCrawler body of the entire show crawler, that should be imported
      */
-    public ImportShowFromJsonEvent(String rawShowCrawler) {
-        this.rawShowCrawler = rawShowCrawler;
+    public ImportShowFromJsonEvent(String showCrawler) {
+        this.showCrawler = showCrawler;
     }
 
     /**
@@ -33,8 +33,8 @@ public class ImportShowFromJsonEvent implements ApplicationEvent {
      *
      * @return show crawler body. Will be empty if was not specified during construction.
      */
-    public Optional<String> getRawShowCrawler() {
-        return Optional.ofNullable(rawShowCrawler);
+    public Optional<String> getShowCrawler() {
+        return Optional.ofNullable(showCrawler);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ImportShowFromJsonEvent implements ApplicationEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImportShowFromJsonEvent event = (ImportShowFromJsonEvent) o;
-        return Objects.equals(rawShowCrawler, event.rawShowCrawler);
+        return Objects.equals(showCrawler, event.showCrawler);
     }
 
     /**
@@ -61,7 +61,7 @@ public class ImportShowFromJsonEvent implements ApplicationEvent {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(rawShowCrawler);
+        return Objects.hash(showCrawler);
     }
 
     /**
@@ -70,7 +70,7 @@ public class ImportShowFromJsonEvent implements ApplicationEvent {
     @Override
     public String toString() {
         return "ImportShowFromJsonEvent{" +
-                "rawShowCrawler='" + rawShowCrawler + '\'' +
+                "showCrawler='" + showCrawler + '\'' +
                 '}';
     }
 }

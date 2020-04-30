@@ -3,6 +3,7 @@ package org.serio.core.applicationcontroller;
 import org.junit.Before;
 import org.junit.Test;
 import org.serio.core.applicationcontroller.event.AllShowsEvent;
+import org.serio.core.applicationcontroller.event.ImportShowFromJsonEvent;
 import org.serio.core.applicationcontroller.event.ShowDialogEvent;
 import org.serio.core.applicationcontroller.model.DisplayableShowMetaData;
 import org.serio.core.shows.WatchableShow;
@@ -100,6 +101,19 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         applicationController.importShowCrawler(rawShowCrawler);
         // then
         assertCrawlingErrorReceived();
+    }
+
+    @Test
+    public void shouldFailToImportShowCrawlerAndGoBackToImportViewWithSavedShowCrawler() {
+        // given
+        when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenThrow(expectedException);
+        applicationController.importShowCrawler(rawShowCrawler);
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        ImportShowFromJsonEvent event = captureLastUserInterfaceEvent(ImportShowFromJsonEvent.class);
+        assertEquals(rawShowCrawler, event.getShowCrawler().orElse(null));
     }
 
     @Override

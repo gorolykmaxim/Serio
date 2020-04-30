@@ -44,7 +44,10 @@ public class SaveShowCrawlerTask implements ControllerTask {
      */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
+        eventStack.pop(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
+            // Save the specified crawler so that when the user will come back to the edit crawler view
+            // the crawler will still be displayed.
+            eventStack.push(lastEvent.setShowName(showName));
             userInterface.sendEvent(new CrawlingInProgressEvent());
             Show show = showsCrawler.crawlShowAndSaveCrawler(
                     StringUtils.defaultString(showName, lastEvent.getShowName().orElse(null)),

@@ -33,7 +33,10 @@ public class PreviewCrawlerTask implements ControllerTask {
      */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        eventStack.peek(EditCrawlerEvent.class).ifPresent(lastEvent -> {
+        eventStack.pop(EditCrawlerEvent.class).ifPresent(lastEvent -> {
+            // Save the specified crawler so that when the user will come back to the edit crawler view
+            // the crawler will still be displayed.
+            eventStack.push(new EditCrawlerEvent(lastEvent.getCrawlerType(), rawCrawler));
             userInterface.sendEvent(new CrawlingInProgressEvent());
             CrawlingResult crawlingResult = showsCrawler.previewCrawler(rawCrawler);
             CrawlPreviewEvent event = new CrawlPreviewEvent(lastEvent.getCrawlerType(), crawlingResult);

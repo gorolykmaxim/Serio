@@ -3,6 +3,7 @@ package org.serio.core.applicationcontroller;
 import org.junit.Before;
 import org.junit.Test;
 import org.serio.core.applicationcontroller.event.CrawlPreviewEvent;
+import org.serio.core.applicationcontroller.event.EditCrawlerEvent;
 import org.serio.core.applicationcontroller.event.EditShowCrawlerEvent;
 import org.serio.core.applicationcontroller.model.CrawlerTypes;
 import org.serio.core.userinterface.ApplicationEvent;
@@ -102,6 +103,26 @@ public class EditCrawlerTest extends BaseApplicationControllerTest {
         assertEquals(ViewIds.CRAWL_PREVIEW, event.getViewId());
         assertEquals(crawlerType, event.getCrawlerType());
         assertEquals(previewResults.getOutput(), event.getCrawlItems());
+    }
+
+    @Test
+    public void shouldPreviewCrawlerAndReturnBackToEditorWithSavedCrawler() {
+        // given
+        applicationController.previewCrawler(rawCrawler);
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        EditCrawlerEvent event = captureLastUserInterfaceEvent(EditCrawlerEvent.class);
+        assertEquals(rawCrawler, event.getCrawler());
+    }
+
+    @Test
+    public void shouldFailToPreviewCrawlerAndReturnBackToEditorWithSavedCrawler() {
+        // given
+        when(showsCrawler.previewCrawler(rawCrawler)).thenThrow(expectedException);
+        // when
+        shouldPreviewCrawlerAndReturnBackToEditorWithSavedCrawler();
     }
 
     @Test
