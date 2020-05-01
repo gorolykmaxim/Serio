@@ -15,15 +15,15 @@
 }
 
 .serio-icon-button-normal-size {
-    font-size: 1.5rem;
+    font-size: 1.5rem !important;
 }
 
 .serio-icon-button-medium-size {
-    font-size: 3rem;
+    font-size: 3rem !important;
 }
 
 .serio-icon-button-large-size {
-    font-size: 8rem;
+    font-size: 8rem !important;
 }
 
 .serio-icon-button-enabled:hover, .serio-icon-button-enabled:focus {
