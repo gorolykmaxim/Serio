@@ -5,6 +5,9 @@ import {SerioApplication} from "./SerioApplication";
 import SerioController from "./SerioController";
 import enableDevelopmentApi from "./DevelopmentApi";
 import {parse} from "query-string";
+import 'material-icons-font/material-icons-font.css';
+import 'roboto-fontface/css/roboto/roboto-fontface.css';
+import 'typeface-passion-one';
 
 const DESKTOP_PLATFORM = 0;
 const MOBILE_PLATFORM = 1;
