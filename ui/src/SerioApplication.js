@@ -107,25 +107,28 @@ export class SerioApplication extends React.Component {
         const {showId, showName} = this.state.data;
         return <EditShowCrawler showId={showId}
                                 showName={showName}
+                                onShowNameChange={showName => window.serioController.setShowName(showName)}
                                 onEditThumbnailCrawler={() => window.serioController.editThumbnailCrawler()}
                                 onEditEpisodeVideoCrawler={() => window.serioController.editEpisodeVideoCrawler()}
                                 onEditEpisodeNameCrawler={() => window.serioController.editEpisodeNameCrawler()}
                                 onCancel={() => window.serioController.back()}
-                                onSave={(showName) => window.serioController.saveShowCrawler(showName)}/>;
+                                onSave={() => window.serioController.saveShowCrawler()}/>;
     }
     renderImportShowCrawler() {
         const {showCrawler} = this.state.data;
         return <ImportShowCrawler showCrawler={showCrawler}
                                   onImport={() => window.serioController.importShowCrawler()}
+                                  onShowCrawlerChange={showCrawler => window.serioController.setShowCrawler(showCrawler)}
                                   onCancel={() => window.serioController.back()}/>;
     }
     renderEditCrawler() {
         const {crawlerType, crawler} = this.state.data;
         return <EditCrawler crawlerType={crawlerType}
                             crawler={crawler}
+                            onCrawlerChange={rawCrawler => window.serioController.setCrawler(rawCrawler)}
                             onCancel={() => window.serioController.back()}
-                            onPreview={rawCrawler => window.serioController.previewCrawler(rawCrawler)}
-                            onSave={rawCrawler => window.serioController.saveCrawler(rawCrawler)}/>;
+                            onPreview={() => window.serioController.previewCrawler()}
+                            onSave={() => window.serioController.saveCrawler()}/>;
     }
     renderCrawlPreview() {
         const {crawlerType, crawlItems} = this.state.data;

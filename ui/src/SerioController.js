@@ -5,6 +5,9 @@ export default class SerioController {
     importShowFromJson() {
         console.info('Opening import show from json view');
     }
+    setShowCrawler(rawShowCrawler) {
+        console.info(`Saving ${rawShowCrawler} as a current version of a show crawler being imported from json`);
+    }
     selectShow(showId) {
         console.info(`Opening show details view from show ${showId}`);
     }
@@ -20,17 +23,23 @@ export default class SerioController {
     back() {
         console.info('Opening previous view');
     }
-    saveShowCrawler(showCrawlerName) {
-        console.info(`Committing changes of the currently selected show crawler with a name ${showCrawlerName}`);
+    setShowName(showName) {
+        console.info(`Save ${showName} as the name of the currently edited show crawler`);
     }
-    importShowCrawler(rawShowCrawler) {
-        console.info(`Importing show crawler: ${rawShowCrawler}`);
+    saveShowCrawler() {
+        console.info('Committing changes of the currently selected show crawler');
     }
-    previewCrawler(rawCrawler) {
-        console.info(`Opening crawl preview view for the currently selected crawler to edit ${rawCrawler}`);
+    importShowCrawler() {
+        console.info('Committing the show crawler, being imported');
     }
-    saveCrawler(rawCrawler) {
-        console.info(`Committing changes of the currently selected crawler: ${rawCrawler}`);
+    setCrawler(rawCrawler) {
+        console.info(`Set ${rawCrawler} as the body of the crawler, that is currently being edited`);
+    }
+    previewCrawler() {
+        console.info('Opening crawl preview view for the currently selected crawler');
+    }
+    saveCrawler() {
+        console.info('Committing changes of the currently selected crawler');
     }
     viewCrawlLog() {
         console.info('Opening view crawl log view of the currently selected crawler');

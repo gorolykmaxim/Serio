@@ -8,6 +8,7 @@ export default class TextEdit extends AutoFocusable {
                       type={'text'}
                       required={this.props.required}
                       name={this.props.name}
+                      onChange={this.props.onChange}
                       defaultValue={this.props.defaultValue}
                       disabled={this.props.disabled || false}
                       placeholder={this.props.placeholder}

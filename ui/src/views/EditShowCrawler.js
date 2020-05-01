@@ -11,19 +11,19 @@ export default function EditShowCrawler(props) {
     const onEditEpisodeVideoCrawler = getFunction(props.onEditEpisodeVideoCrawler);
     const onEditEpisodeNameCrawler = getFunction(props.onEditEpisodeNameCrawler);
     const onCancel = getFunction(props.onCancel);
+    const onShowNameChange = getFunction(props.onShowNameChange);
     const onSave = getFunction(props.onSave);
     return (
         <div className='serio-edit-show-crawler serio-full-height'>
-            <form className='serio-edit-show-crawler-container' onSubmit={createOnSubmit(onSave)}>
+            <div className='serio-edit-show-crawler-container'>
                 <div>
                     <Text type={HEADLINE_5} primary={true}>Configure show crawler</Text>
                 </div>
-                <TextEdit name={'name'}
-                          required={true}
-                          placeholder={'TV Show name'}
+                <TextEdit placeholder={'TV Show name'}
                           defaultValue={props.showName}
                           autoFocus={isNewCrawler}
                           disabled={!isNewCrawler}
+                          onChange={e => onShowNameChange(e.target.value)}
                           className='serio-edit-show-crawler-edit-line serio-growable'/>
                 <Button text='Configure episode video crawler'
                         className='serio-edit-show-crawler-edit-line serio-growable'
@@ -37,16 +37,9 @@ export default function EditShowCrawler(props) {
                         onClick={onEditEpisodeNameCrawler}/>
                 <div className='serio-edit-show-crawler-edit-line serio-growable serio-form-actions'>
                     <Button text={'cancel'} autoFocus={!isNewCrawler} onClick={onCancel}/>
-                    <Button submit={true} text={'save'} className='serio-margin-before'/>
+                    <Button text={'save'} onClick={onSave} className='serio-margin-before'/>
                 </div>
-            </form>
+            </div>
         </div>
     );
-}
-
-function createOnSubmit(callback) {
-    return (event) => {
-        event.preventDefault();
-        callback(event.target.elements.name.value);
-    };
 }
