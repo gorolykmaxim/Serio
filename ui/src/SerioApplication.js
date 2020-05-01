@@ -99,8 +99,8 @@ export class SerioApplication extends React.Component {
                          lastWatchedShows={lastWatchedShows}
                          hoverableShowCards={!this.isTv}
                          scrollOnFocus={this.isTv}
-                         onAddShow={window.serioController.addShow}
-                         onImportShowFromJson={window.serioController.importShowFromJson}
+                         onAddShow={() => window.serioController.addShow()}
+                         onImportShowFromJson={() => window.serioController.importShowFromJson()}
                          onShowSelect={(show) => window.serioController.selectShow(show.id)}/>;
     }
     renderEditShowCrawler() {
@@ -110,20 +110,20 @@ export class SerioApplication extends React.Component {
                                 onEditThumbnailCrawler={() => window.serioController.editThumbnailCrawler()}
                                 onEditEpisodeVideoCrawler={() => window.serioController.editEpisodeVideoCrawler()}
                                 onEditEpisodeNameCrawler={() => window.serioController.editEpisodeNameCrawler()}
-                                onCancel={window.serioController.back}
+                                onCancel={() => window.serioController.back()}
                                 onSave={(showName) => window.serioController.saveShowCrawler(showName)}/>;
     }
     renderImportShowCrawler() {
         const {showCrawler} = this.state.data;
         return <ImportShowCrawler showCrawler={showCrawler}
-                                  onImport={window.serioController.importShowCrawler}
-                                  onCancel={window.serioController.back}/>;
+                                  onImport={() => window.serioController.importShowCrawler()}
+                                  onCancel={() => window.serioController.back()}/>;
     }
     renderEditCrawler() {
         const {crawlerType, crawler} = this.state.data;
         return <EditCrawler crawlerType={crawlerType}
                             crawler={crawler}
-                            onCancel={window.serioController.back}
+                            onCancel={() => window.serioController.back()}
                             onPreview={rawCrawler => window.serioController.previewCrawler(rawCrawler)}
                             onSave={rawCrawler => window.serioController.saveCrawler(rawCrawler)}/>;
     }
@@ -133,8 +133,8 @@ export class SerioApplication extends React.Component {
                              crawlItems={crawlItems}
                              hoverableCrawlItems={!this.isTv}
                              scrollOnFocus={this.isTv}
-                             onBack={window.serioController.back}
-                             onViewLog={window.serioController.viewCrawlLog}/>;
+                             onBack={() => window.serioController.back()}
+                             onViewLog={() => window.serioController.viewCrawlLog()}/>;
     }
     renderCrawlLog() {
         const {crawlerType, logEntries} = this.state.data;
@@ -142,13 +142,13 @@ export class SerioApplication extends React.Component {
                          logEntries={logEntries}
                          hoverableLogEntries={!this.isTv}
                          scrollOnFocus={this.isTv}
-                         onBack={window.serioController.back}
+                         onBack={() => window.serioController.back()}
                          onLogEntry={entry => window.serioController.viewLogEntry(entry.id)}/>;
     }
     renderCrawlLogEntryDetails() {
         const {logEntry} = this.state.data;
         return <CrawlLogEntryDetails logEntry={logEntry}
-                                     onBack={window.serioController.back}/>;
+                                     onBack={() => window.serioController.back()}/>;
     }
     renderCrawlingInProgress() {
         return <CrawlingInProgress/>;
@@ -158,15 +158,15 @@ export class SerioApplication extends React.Component {
         return <ShowDetails show={show}
                             hoverableEpisodes={!this.isTv}
                             scrollOnFocus={this.isTv}
-                            onPlay={window.serioController.playShow}
+                            onPlay={() => window.serioController.playShow()}
                             onPlayEpisode={episode => window.serioController.playShowEpisode(episode.id)}
-                            onBack={window.serioController.back}
-                            onEdit={window.serioController.editShowCrawler}
-                            onShareCrawler={window.serioController.shareShowCrawler}
-                            onCrawl={window.serioController.crawlShow}
-                            onViewCrawlLog={window.serioController.viewShowCrawlLog}
-                            onClearWatchHistory={window.serioController.initiateClearShowWatchHistory}
-                            onDelete={window.serioController.initiateShowRemoval}/>;
+                            onBack={() => window.serioController.back()}
+                            onEdit={() => window.serioController.editShowCrawler()}
+                            onShareCrawler={() => window.serioController.shareShowCrawler()}
+                            onCrawl={() => window.serioController.crawlShow()}
+                            onViewCrawlLog={() => window.serioController.viewShowCrawlLog()}
+                            onClearWatchHistory={() => window.serioController.initiateClearShowWatchHistory()}
+                            onDelete={() => window.serioController.initiateShowRemoval()}/>;
     }
     renderShowPlayer() {
         const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, startProgress} = this.state.data;
@@ -177,10 +177,10 @@ export class SerioApplication extends React.Component {
                            hasNextEpisode={hasNextEpisode}
                            startProgress={startProgress}
                            onProgressChange={progress => window.serioController.reportShowWatchProgress(progress)}
-                           onBack={window.serioController.back}
-                           onEnd={window.serioController.playNextEpisode}
-                           onPreviousEpisode={window.serioController.playPreviousEpisode}
-                           onNextEpisode={window.serioController.playNextEpisode}/>;
+                           onBack={() => window.serioController.back()}
+                           onEnd={() => window.serioController.playNextEpisode()}
+                           onPreviousEpisode={() => window.serioController.playPreviousEpisode()}
+                           onNextEpisode={() => window.serioController.playNextEpisode()}/>;
     }
     renderClearWatchHistoryDialog() {
         const {showName} = this.state.data;
