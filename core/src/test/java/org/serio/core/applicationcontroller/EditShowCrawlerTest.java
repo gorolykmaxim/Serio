@@ -95,12 +95,14 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
     public void shouldSaveShowCrawler() {
         // given
         WatchableShow show = shows.findShowById(friends);
+        applicationController.setShowName(show.getName());
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
         reset(userInterface);
         // when
-        applicationController.saveShowCrawler(show.getName());
-        applicationController.saveShowCrawler(show.getName());
+        applicationController.saveShowCrawler();
+        applicationController.saveShowCrawler();
         // then
         assertShowCrawled(friends, "2 days ago");
     }
@@ -111,9 +113,11 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
         setUpAllShows(friends, clinic, office, mandalorian);
         WatchableShow show = shows.findShowById(friends);
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
-        applicationController.saveShowCrawler(show.getName());
-        applicationController.saveShowCrawler(show.getName());
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
+        applicationController.setShowName(show.getName());
+        applicationController.saveShowCrawler();
+        applicationController.saveShowCrawler();
         reset(userInterface);
         // when
         applicationController.back();
@@ -132,12 +136,14 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
         // given
         when(shows.findAllShows()).thenThrow(expectedException);
         WatchableShow show = shows.findShowById(friends);
+        applicationController.setShowName(show.getName());
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
         reset(userInterface);
         // when
-        applicationController.saveShowCrawler(show.getName());
-        applicationController.saveShowCrawler(show.getName());
+        applicationController.saveShowCrawler();
+        applicationController.saveShowCrawler();
         // then
         assertShowCrawled(friends, "2 days ago");
     }
@@ -146,11 +152,13 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
     public void shouldNotSaveShowCrawlerWithShowNameThatIsAlreadyTaken() {
         // given
         String showName = setUpShowNameConflict();
+        applicationController.setShowName(showName);
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
         reset(userInterface);
         // when
-        applicationController.saveShowCrawler(showName);
+        applicationController.saveShowCrawler();
         // then
         ShowDialogEvent event = captureLastUserInterfaceEvent(ShowDialogEvent.class);
         assertEquals(ViewIds.SHOW_OVERRIDE_DIALOG, event.getViewId());
@@ -161,9 +169,11 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
     public void shouldSaveShowCrawlerWithATakenShowNameAfterUsersOverrideConfirmation() {
         // given
         String showName = setUpShowNameConflict();
+        applicationController.setShowName(showName);
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
-        applicationController.saveShowCrawler(showName);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
+        applicationController.saveShowCrawler();
         reset(userInterface);
         // when
         applicationController.confirmShowOverride();
@@ -178,11 +188,13 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
         String showName = setUpShowNameConflict();
         editExistingShowCrawler();
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
+        applicationController.setShowName(showName);
         reset(userInterface);
         // when
-        applicationController.saveShowCrawler(showName);
-        applicationController.saveShowCrawler(showName);
+        applicationController.saveShowCrawler();
+        applicationController.saveShowCrawler();
         // then
         assertShowCrawled(friends, "2 days ago");
     }
@@ -193,11 +205,13 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
         WatchableShow show = shows.findShowById(friends);
         when(showsCrawler.crawlShowAndSaveCrawler(any(), any(), any(), any())).thenThrow(expectedException);
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
+        applicationController.setShowName(show.getName());
         reset(userInterface);
         // when
-        applicationController.saveShowCrawler(show.getName());
-        applicationController.saveShowCrawler(show.getName());
+        applicationController.saveShowCrawler();
+        applicationController.saveShowCrawler();
         // then
         assertCrawlingErrorReceived();
     }
@@ -208,8 +222,10 @@ public class EditShowCrawlerTest extends BaseApplicationControllerTest {
         WatchableShow show = shows.findShowById(friends);
         when(showsCrawler.crawlShowAndSaveCrawler(any(), any(), any(), any())).thenThrow(expectedException);
         applicationController.editEpisodeVideoCrawler();
-        applicationController.saveCrawler(rawCrawler);
-        applicationController.saveShowCrawler(show.getName());
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
+        applicationController.setShowName(show.getName());
+        applicationController.saveShowCrawler();
         reset(userInterface);
         // when
         applicationController.back();

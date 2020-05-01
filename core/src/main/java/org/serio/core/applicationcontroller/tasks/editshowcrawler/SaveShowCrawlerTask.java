@@ -19,7 +19,6 @@ import org.serio.core.userinterface.UserInterface;
  * displayed to the user.</p>
  */
 public class SaveShowCrawlerTask implements ControllerTask {
-    private final String showName;
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
@@ -27,13 +26,11 @@ public class SaveShowCrawlerTask implements ControllerTask {
     /**
      * Construct a task.
      *
-     * @param showName name of the show, crawled by the show crawler
      * @param shows module that will be used to get information about the crawled show to display it
      * @param showsCrawler module that will be used to crawl the new show
      * @param dateFormat date format to be applied to show's last watched dates
      */
-    public SaveShowCrawlerTask(String showName, Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
-        this.showName = showName;
+    public SaveShowCrawlerTask(Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.shows = shows;
         this.showsCrawler = showsCrawler;
         this.dateFormat = dateFormat;
@@ -45,6 +42,7 @@ public class SaveShowCrawlerTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.pop(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
+            String showName = lastEvent.getShowName().orElse(null);
             // Save the specified crawler so that when the user will come back to the edit crawler view
             // the crawler will still be displayed.
             eventStack.push(lastEvent.setShowName(showName));

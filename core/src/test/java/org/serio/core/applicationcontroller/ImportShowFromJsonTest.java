@@ -31,8 +31,9 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
     @Override
     public void shouldImportShowCrawler() {
         // when
-        applicationController.importShowCrawler(rawShowCrawler);
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
+        applicationController.importShowCrawler();
         // then
         assertShowCrawled(friends, "2 days ago");
     }
@@ -41,8 +42,9 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
     public void shouldAddCrawledShowToTheAllShowsView() {
         // given
         setUpAllShows(friends, clinic, office, mandalorian);
-        applicationController.importShowCrawler(rawShowCrawler);
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
+        applicationController.importShowCrawler();
         reset(userInterface);
         // when
         applicationController.back();
@@ -61,8 +63,9 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         // given
         when(shows.findAllShows()).thenThrow(expectedException);
         // when
-        applicationController.importShowCrawler(rawShowCrawler);
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
+        applicationController.importShowCrawler();
         // then
         assertShowCrawled(friends, "2 days ago");
     }
@@ -72,7 +75,8 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         // given
         String showName = setUpShowNameConflict();
         // when
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
         // then
         ShowDialogEvent event = captureLastUserInterfaceEvent(ShowDialogEvent.class);
         assertEquals(ViewIds.SHOW_OVERRIDE_DIALOG, event.getViewId());
@@ -83,7 +87,8 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
     public void shouldImportShowCrawlerWithATakenShowNameAfterUsersOverrideConfirmation() {
         // given
         setUpShowNameConflict();
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
         reset(userInterface);
         // when
         applicationController.confirmShowOverride();
@@ -97,8 +102,9 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
         // given
         when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenThrow(expectedException);
         // when
-        applicationController.importShowCrawler(rawShowCrawler);
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
+        applicationController.importShowCrawler();
         // then
         assertCrawlingErrorReceived();
     }
@@ -107,7 +113,8 @@ public class ImportShowFromJsonTest extends BaseApplicationControllerTest {
     public void shouldFailToImportShowCrawlerAndGoBackToImportViewWithSavedShowCrawler() {
         // given
         when(showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler)).thenThrow(expectedException);
-        applicationController.importShowCrawler(rawShowCrawler);
+        applicationController.setShowCrawler(rawShowCrawler);
+        applicationController.importShowCrawler();
         reset(userInterface);
         // when
         applicationController.back();

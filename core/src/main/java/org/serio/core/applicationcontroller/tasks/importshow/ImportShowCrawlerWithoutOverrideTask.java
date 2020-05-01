@@ -17,16 +17,14 @@ import org.serio.core.userinterface.UserInterface;
  * for user override confirmation or cancel.</p>
  */
 public class ImportShowCrawlerWithoutOverrideTask implements ControllerTask {
-    private final String rawShowCrawler;
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
 
     /**
-     * @see ImportShowCrawlerTask#ImportShowCrawlerTask(String, Shows, ShowsCrawler, DateFormat)
+     * @see ImportShowCrawlerTask#ImportShowCrawlerTask(Shows, ShowsCrawler, DateFormat)
      */
-    public ImportShowCrawlerWithoutOverrideTask(String rawShowCrawler, Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
-        this.rawShowCrawler = rawShowCrawler;
+    public ImportShowCrawlerWithoutOverrideTask(Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.shows = shows;
         this.showsCrawler = showsCrawler;
         this.dateFormat = dateFormat;
@@ -37,7 +35,8 @@ public class ImportShowCrawlerWithoutOverrideTask implements ControllerTask {
      */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        if (eventStack.isLastEventOfType(ImportShowFromJsonEvent.class)) {
+        eventStack.peek(ImportShowFromJsonEvent.class).ifPresent(lastEvent -> {
+            String rawShowCrawler = lastEvent.getShowCrawler().orElse(null);
             String showName = showsCrawler.getShowNameDefinedInShowCrawler(rawShowCrawler);
             if (shows.doesShowWithNameExists(showName)) {
                 eventStack.pop(ImportShowFromJsonEvent.class);
@@ -46,8 +45,8 @@ public class ImportShowCrawlerWithoutOverrideTask implements ControllerTask {
                 eventStack.push(event);
                 userInterface.sendEvent(event);
             } else {
-                new ImportShowCrawlerTask(rawShowCrawler, shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
+                new ImportShowCrawlerTask(shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
             }
-        }
+        });
     }
 }

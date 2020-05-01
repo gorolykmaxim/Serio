@@ -12,11 +12,10 @@ import org.serio.core.showstorage.Show;
 import org.serio.core.userinterface.UserInterface;
 
 /**
- * Import the specified show crawler, crawl the corresponding show and display it in
+ * Import the show crawler, that has been previously persisted, crawl the corresponding show and display it in
  * the {@link org.serio.core.userinterface.ViewIds#SHOW_DETAILS} view.
  */
 public class ImportShowCrawlerTask implements ControllerTask {
-    private final String rawShowCrawler;
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
@@ -24,13 +23,11 @@ public class ImportShowCrawlerTask implements ControllerTask {
     /**
      * Construct a task.
      *
-     * @param rawShowCrawler body of the show crawler to import
      * @param shows module that will be used to get information about the crawled show to display it
      * @param showsCrawler module that will be used to crawl the new show
      * @param dateFormat date format to be applied to show's last watched dates
      */
-    public ImportShowCrawlerTask(String rawShowCrawler, Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
-        this.rawShowCrawler = rawShowCrawler;
+    public ImportShowCrawlerTask(Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.shows = shows;
         this.showsCrawler = showsCrawler;
         this.dateFormat = dateFormat;
@@ -41,9 +38,8 @@ public class ImportShowCrawlerTask implements ControllerTask {
      */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        eventStack.pop(ImportShowFromJsonEvent.class).ifPresent(lastEvent -> {
-            // Save the specified show crawler so that in case of an error it will be displayed in the view.
-            eventStack.push(new ImportShowFromJsonEvent(rawShowCrawler));
+        eventStack.peek(ImportShowFromJsonEvent.class).ifPresent(lastEvent -> {
+            String rawShowCrawler = lastEvent.getShowCrawler().orElse(null);
             userInterface.sendEvent(new CrawlingInProgressEvent());
             Show show = showsCrawler.crawlShowAndSaveCrawler(rawShowCrawler);
             shows.saveShow(show);

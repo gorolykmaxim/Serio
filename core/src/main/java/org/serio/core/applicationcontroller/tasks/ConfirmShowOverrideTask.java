@@ -11,8 +11,6 @@ import org.serio.core.shows.Shows;
 import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;
 
-import java.util.Optional;
-
 /**
  * The task that confirms the override of an existing show with a new show with the same name.
  *
@@ -43,14 +41,10 @@ public class ConfirmShowOverrideTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         if (eventStack.pop(ShowDialogEvent.class).isPresent()) {
-            Optional<ImportShowFromJsonEvent> importEvent = eventStack.peek(ImportShowFromJsonEvent.class);
-            Optional<EditShowCrawlerEvent> editEvent = eventStack.peek(EditShowCrawlerEvent.class);
-            if (importEvent.isPresent()) {
-                ImportShowFromJsonEvent event = importEvent.get();
-                new ImportShowCrawlerTask(event.getShowCrawler().orElse(null), shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
-            } else if (editEvent.isPresent()) {
-                EditShowCrawlerEvent event = editEvent.get();
-                new SaveShowCrawlerTask(event.getShowName().orElse(null), shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
+            if (eventStack.isLastEventOfType(ImportShowFromJsonEvent.class)) {
+                new ImportShowCrawlerTask(shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
+            } else if (eventStack.isLastEventOfType(EditShowCrawlerEvent.class)) {
+                new SaveShowCrawlerTask(shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
             }
         }
     }

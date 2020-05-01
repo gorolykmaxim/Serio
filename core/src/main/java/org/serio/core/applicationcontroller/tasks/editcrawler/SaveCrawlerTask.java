@@ -12,17 +12,6 @@ import org.serio.core.userinterface.UserInterface;
  * the {@link org.serio.core.userinterface.ViewIds#EDIT_SHOW_CRAWLER} view.
  */
 public class SaveCrawlerTask implements ControllerTask {
-    private final String crawler;
-
-    /**
-     * Construct a task.
-     *
-     * @param crawler crawler to attach to the currently edited show crawler
-     */
-    public SaveCrawlerTask(String crawler) {
-        this.crawler = crawler;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -31,7 +20,7 @@ public class SaveCrawlerTask implements ControllerTask {
         eventStack.pop(EditCrawlerEvent.class).ifPresent(crawlerEvent -> {
             EditShowCrawlerEvent showCrawlerEvent = eventStack.pop(EditShowCrawlerEvent.class)
                     .orElseThrow(() -> new IllegalEventStackStateException(crawlerEvent, EditShowCrawlerEvent.class, eventStack));
-            EditShowCrawlerEvent newEvent = showCrawlerEvent.setCrawler(crawlerEvent.getCrawlerType(), crawler);
+            EditShowCrawlerEvent newEvent = showCrawlerEvent.setCrawler(crawlerEvent.getCrawlerType(), crawlerEvent.getCrawler());
             eventStack.push(newEvent);
             userInterface.sendEvent(newEvent);
         });

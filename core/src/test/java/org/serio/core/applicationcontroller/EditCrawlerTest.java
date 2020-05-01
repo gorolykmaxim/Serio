@@ -57,8 +57,9 @@ public class EditCrawlerTest extends BaseApplicationControllerTest {
         // given
         reset(userInterface);
         // when
-        applicationController.saveCrawler(rawCrawler);
-        applicationController.saveCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.saveCrawler();
+        applicationController.saveCrawler();
         // then
         EditShowCrawlerEvent event = captureLastUserInterfaceEvent(EditShowCrawlerEvent.class);
         assertEquals(rawCrawler, event.getCrawler(crawlerType).orElse(null));

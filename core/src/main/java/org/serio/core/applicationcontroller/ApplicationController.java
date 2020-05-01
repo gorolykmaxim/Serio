@@ -12,9 +12,12 @@ import org.serio.core.applicationcontroller.tasks.crawllog.ViewLogEntryTask;
 import org.serio.core.applicationcontroller.tasks.crawlpreview.ViewCrawlLogTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.PreviewCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.SaveCrawlerTask;
+import org.serio.core.applicationcontroller.tasks.editcrawler.SetCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editshowcrawler.EditCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editshowcrawler.SaveShowCrawlerWithoutOverrideTask;
+import org.serio.core.applicationcontroller.tasks.editshowcrawler.SetShowNameTask;
 import org.serio.core.applicationcontroller.tasks.importshow.ImportShowCrawlerWithoutOverrideTask;
+import org.serio.core.applicationcontroller.tasks.importshow.SetShowCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.showdetails.*;
 import org.serio.core.applicationcontroller.tasks.showplayer.PlayNextEpisodeTask;
 import org.serio.core.applicationcontroller.tasks.showplayer.PlayPreviousEpisodeTask;
@@ -117,6 +120,15 @@ public class ApplicationController {
     }
 
     /**
+     * Persist the currently specified show crawler, being imported from json.
+     *
+     * @param rawShowCrawler show crawler to persist
+     */
+    public synchronized void setShowCrawler(String rawShowCrawler) {
+        executeTask(new SetShowCrawlerTask(rawShowCrawler));
+    }
+
+    /**
      * Go to the view, that displays details about the specified show.
      *
      * @param showId ID of the show
@@ -147,13 +159,29 @@ public class ApplicationController {
     }
 
     /**
+     * Persist the crawler, that is currently being edited.
+     *
+     * @param rawCrawler crawler to persist
+     */
+    public synchronized void setCrawler(String rawCrawler) {
+        executeTask(new SetCrawlerTask(rawCrawler));
+    }
+
+    /**
      * Save the crawler, that currently being edited (either a thumbnail / video or a name crawler), and proceed back
      * to the show crawler editor view.
-     *
-     * @param rawCrawler crawler to save
      */
-    public synchronized void saveCrawler(String rawCrawler) {
-        executeTask(new SaveCrawlerTask(rawCrawler));
+    public synchronized void saveCrawler() {
+        executeTask(new SaveCrawlerTask());
+    }
+
+    /**
+     * Persist the name of the show, crawler of which is being edited right now.
+     *
+     * @param showName show name to persist
+     */
+    public synchronized void setShowName(String showName) {
+        executeTask(new SetShowNameTask(showName));
     }
 
     /**
@@ -166,21 +194,17 @@ public class ApplicationController {
      *     <li>the user finishes configuring a new crawler for a new show</li>
      *     <li>the user finishes editing an existing crawler</li>
      * </ul>
-     *
-     * @param showCrawlerName name of the show, that should be crawled
      */
-    public synchronized void saveShowCrawler(String showCrawlerName) {
-        executeTask(new SaveShowCrawlerWithoutOverrideTask(showCrawlerName, shows, showsCrawler, lastWatchedDateFormat));
+    public synchronized void saveShowCrawler() {
+        executeTask(new SaveShowCrawlerWithoutOverrideTask(shows, showsCrawler, lastWatchedDateFormat));
     }
 
     /**
-     * Import the specified show crawler, execute it to crawl the corresponding show and go to the show details view
-     * of the crawled show.
-     *
-     * @param rawShowCrawler whole show crawler configuration to be imported
+     * Import the currently persisted show crawler, execute it to crawl the corresponding show and go to the
+     * show details view of the crawled show.
      */
-    public synchronized void importShowCrawler(String rawShowCrawler) {
-        executeTask(new ImportShowCrawlerWithoutOverrideTask(rawShowCrawler, shows, showsCrawler, lastWatchedDateFormat));
+    public synchronized void importShowCrawler() {
+        executeTask(new ImportShowCrawlerWithoutOverrideTask(shows, showsCrawler, lastWatchedDateFormat));
     }
 
     /**

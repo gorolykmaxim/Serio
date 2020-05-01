@@ -29,6 +29,16 @@ public class EditCrawlerEvent implements ApplicationEvent {
     }
 
     /**
+     * Attach the current body of the crawler to an event.
+     *
+     * @param crawler body of the crawler to attach
+     * @return new instance of the event with the crawler attached
+     */
+    public EditCrawlerEvent setCrawler(String crawler) {
+        return new EditCrawlerEvent(crawlerType, crawler);
+    }
+
+    /**
      * Get type of the crawler being edited.
      *
      * @return crawler type

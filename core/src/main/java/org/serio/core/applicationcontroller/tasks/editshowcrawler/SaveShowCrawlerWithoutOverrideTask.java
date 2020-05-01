@@ -17,16 +17,14 @@ import org.serio.core.userinterface.UserInterface;
  * for user override confirmation or cancel.</p>
  */
 public class SaveShowCrawlerWithoutOverrideTask implements ControllerTask {
-    private final String showName;
     private final Shows shows;
     private final ShowsCrawler showsCrawler;
     private final DateFormat dateFormat;
 
     /**
-     * @see SaveShowCrawlerTask#SaveShowCrawlerTask(String, Shows, ShowsCrawler, DateFormat)
+     * @see SaveShowCrawlerTask#SaveShowCrawlerTask(Shows, ShowsCrawler, DateFormat)
      */
-    public SaveShowCrawlerWithoutOverrideTask(String showName, Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
-        this.showName = showName;
+    public SaveShowCrawlerWithoutOverrideTask(Shows shows, ShowsCrawler showsCrawler, DateFormat dateFormat) {
         this.shows = shows;
         this.showsCrawler = showsCrawler;
         this.dateFormat = dateFormat;
@@ -38,6 +36,7 @@ public class SaveShowCrawlerWithoutOverrideTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.peek(EditShowCrawlerEvent.class).ifPresent(lastEvent -> {
+            String showName = lastEvent.getShowName().orElse(null);
             if (!lastEvent.isEditingExistingShow() && shows.doesShowWithNameExists(showName)) {
                 eventStack.pop(EditShowCrawlerEvent.class);
                 eventStack.push(lastEvent.setShowName(showName));
@@ -45,7 +44,7 @@ public class SaveShowCrawlerWithoutOverrideTask implements ControllerTask {
                 eventStack.push(event);
                 userInterface.sendEvent(event);
             } else {
-                new SaveShowCrawlerTask(showName, shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
+                new SaveShowCrawlerTask(shows, showsCrawler, dateFormat).execute(eventStack, userInterface);
             }
         });
     }

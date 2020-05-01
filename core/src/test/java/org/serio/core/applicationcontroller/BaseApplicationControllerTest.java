@@ -219,7 +219,7 @@ public abstract class BaseApplicationControllerTest {
     @Test
     public void shouldSaveCrawler() {
         // when
-        applicationController.saveCrawler("");
+        applicationController.saveCrawler();
         // then
         verify(userInterface, never()).sendEvent(any());
     }
@@ -227,7 +227,7 @@ public abstract class BaseApplicationControllerTest {
     @Test
     public void shouldSaveShowCrawler() {
         // when
-        applicationController.saveShowCrawler("");
+        applicationController.saveShowCrawler();
         // then
         verify(userInterface, never()).sendEvent(any());
     }
@@ -235,7 +235,7 @@ public abstract class BaseApplicationControllerTest {
     @Test
     public void shouldImportShowCrawler() {
         // when
-        applicationController.importShowCrawler("");
+        applicationController.importShowCrawler();
         // then
         verify(userInterface, never()).sendEvent(any());
     }
