@@ -20,10 +20,11 @@ public class SaveShowTask implements StorageTask<Void> {
     @Override
     public Void execute(JdbcTemplate template) {
         new DeleteShowByIdTask(show.getId(), queries).execute(template);
-        template.update(queries.getProperty("create-show"), show.getId().toString(), show.getName(), show.getThumbnailUrl());
+        String showId = show.getId().toString();
+        template.update(queries.getProperty("create-show"), showId, show.getName(), show.getThumbnailUrl());
         List<Object[]> arguments = show.getEpisodes()
                 .stream()
-                .map(episode -> new Object[]{episode.getId(), episode.getName(), episode.getVideoUrl()})
+                .map(episode -> new Object[]{episode.getId(), showId, episode.getName(), episode.getVideoUrl()})
                 .collect(Collectors.toList());
         template.batchUpdate(queries.getProperty("create-episode"), arguments);
         return null;
