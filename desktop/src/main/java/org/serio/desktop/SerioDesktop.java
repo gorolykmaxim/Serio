@@ -30,6 +30,7 @@ public class SerioDesktop extends Application {
         storageQueries.load(getClass().getClassLoader().getResourceAsStream("storage/queries.properties"));
         String storageInitializationQuery = IOUtils.resourceToString("storage/schema.sql", Charset.defaultCharset(), getClass().getClassLoader());
         SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setEnforceForeinKeys(true);
         dataSource.setUrl("jdbc:sqlite:" + Paths.get(System.getProperty("user.home"), ".serio.db").toString());
         DesktopStorage storage = new DesktopStorage(dataSource, storageQueries, storageInitializationQuery);
         storage.initialize();
