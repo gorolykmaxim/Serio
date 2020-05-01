@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+apply plugin: 'java'
+
+group 'org.serio'
+version '1.0.0'
+
+application {
+    mainClassName = 'SerioDesktop'
+}
+
+repositories {
+    mavenCentral()
+}
+
+processResources {
+    from ('../ui/build') {
+        into 'resources/assets'
+    }
+}
+
+task buildUi(type: Exec) {
+    workingDir '../ui'
+    commandLine 'npm', 'run', 'build'
+}
+
+tasks.buildUi {
+    onlyIf {
+        !new File('../ui/build').exists()
+    }
+}
+
+processResources.dependsOn buildUi
+
+dependencies {
+    compile project(':core')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
