@@ -10,21 +10,18 @@ import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.userinterface.UserInterface;
 
 /**
- * Preview the specified crawler by executing it and showing it's output in
+ * Preview the crawler, that is currently being edited, by executing it and showing it's output in
  * {@link org.serio.core.userinterface.ViewIds#CRAWL_PREVIEW} view.
  */
 public class PreviewCrawlerTask implements ControllerTask {
-    private final String rawCrawler;
     private final ShowsCrawler showsCrawler;
 
     /**
      * Construct a task.
      *
-     * @param rawCrawler body of the crawler to preview
      * @param showsCrawler module that will be used to preview the crawler
      */
-    public PreviewCrawlerTask(String rawCrawler, ShowsCrawler showsCrawler) {
-        this.rawCrawler = rawCrawler;
+    public PreviewCrawlerTask(ShowsCrawler showsCrawler) {
         this.showsCrawler = showsCrawler;
     }
 
@@ -33,10 +30,8 @@ public class PreviewCrawlerTask implements ControllerTask {
      */
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
-        eventStack.pop(EditCrawlerEvent.class).ifPresent(lastEvent -> {
-            // Save the specified crawler so that when the user will come back to the edit crawler view
-            // the crawler will still be displayed.
-            eventStack.push(new EditCrawlerEvent(lastEvent.getCrawlerType(), rawCrawler));
+        eventStack.peek(EditCrawlerEvent.class).ifPresent(lastEvent -> {
+            String rawCrawler = lastEvent.getCrawler();
             userInterface.sendEvent(new CrawlingInProgressEvent());
             CrawlingResult crawlingResult = showsCrawler.previewCrawler(rawCrawler);
             CrawlPreviewEvent event = new CrawlPreviewEvent(lastEvent.getCrawlerType(), crawlingResult);

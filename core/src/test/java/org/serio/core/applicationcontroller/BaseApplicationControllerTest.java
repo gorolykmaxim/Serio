@@ -243,7 +243,7 @@ public abstract class BaseApplicationControllerTest {
     @Test
     public void shouldPreviewCrawler() {
         // when
-        applicationController.previewCrawler("");
+        applicationController.previewCrawler();
         // then
         verify(userInterface, never()).sendEvent(any());
     }

@@ -96,7 +96,8 @@ public class EditCrawlerTest extends BaseApplicationControllerTest {
         // given
         reset(userInterface);
         // when
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         // then
         List<ApplicationEvent> events = captureUserInterfaceEvents();
         assertEquals(ViewIds.CRAWLING_IN_PROGRESS, events.get(0).getViewId());
@@ -109,7 +110,8 @@ public class EditCrawlerTest extends BaseApplicationControllerTest {
     @Test
     public void shouldPreviewCrawlerAndReturnBackToEditorWithSavedCrawler() {
         // given
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         reset(userInterface);
         // when
         applicationController.back();
@@ -131,8 +133,9 @@ public class EditCrawlerTest extends BaseApplicationControllerTest {
         // given
         when(showsCrawler.previewCrawler(rawCrawler)).thenThrow(expectedException);
         // when
-        applicationController.previewCrawler(rawCrawler);
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
+        applicationController.previewCrawler();
         // then
         assertCrawlingErrorReceived();
     }

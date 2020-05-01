@@ -17,7 +17,8 @@ public class CrawlPreviewTest extends BaseApplicationControllerTest {
         applicationController.viewAllShows();
         applicationController.addShow();
         applicationController.editThumbnailCrawler();
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         reset(userInterface);
     }
 
@@ -27,7 +28,8 @@ public class CrawlPreviewTest extends BaseApplicationControllerTest {
         applicationController.back();
         applicationController.back();
         applicationController.editThumbnailCrawler();
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         // when
         shouldViewCrawlLogOfSpecifiedCrawler(CrawlerTypes.THUMBNAIL);
     }
@@ -38,7 +40,8 @@ public class CrawlPreviewTest extends BaseApplicationControllerTest {
         applicationController.back();
         applicationController.back();
         applicationController.editEpisodeVideoCrawler();
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         // when
         shouldViewCrawlLogOfSpecifiedCrawler(CrawlerTypes.EPISODE_VIDEO);
     }
@@ -49,7 +52,8 @@ public class CrawlPreviewTest extends BaseApplicationControllerTest {
         applicationController.back();
         applicationController.back();
         applicationController.editEpisodeNameCrawler();
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         // when
         shouldViewCrawlLogOfSpecifiedCrawler(CrawlerTypes.EPISODE_NAME);
     }

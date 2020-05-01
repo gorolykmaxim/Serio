@@ -18,7 +18,8 @@ public class CrawlLogTest extends BaseApplicationControllerTest {
         applicationController.viewAllShows();
         applicationController.addShow();
         applicationController.editEpisodeVideoCrawler();
-        applicationController.previewCrawler(rawCrawler);
+        applicationController.setCrawler(rawCrawler);
+        applicationController.previewCrawler();
         applicationController.viewCrawlLog();
         reset(userInterface);
     }

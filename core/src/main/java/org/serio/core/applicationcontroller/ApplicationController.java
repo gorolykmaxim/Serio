@@ -208,13 +208,11 @@ public class ApplicationController {
     }
 
     /**
-     * Run the specified crawler (thumbnail/video/name) without modifying anything and display it's crawling results
-     * in the corresponding view.
-     *
-     * @param rawCrawler crawler configuration to preview
+     * Run the crawler (thumbnail/video/name), that is currently being edited, without modifying anything
+     * and display it's crawling results in the corresponding view.
      */
-    public synchronized void previewCrawler(String rawCrawler) {
-        executeTask(new PreviewCrawlerTask(rawCrawler, showsCrawler));
+    public synchronized void previewCrawler() {
+        executeTask(new PreviewCrawlerTask(showsCrawler));
     }
 
     /**
