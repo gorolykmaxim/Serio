@@ -493,7 +493,7 @@ public abstract class BaseApplicationControllerTest {
             CrawlLogEntry expected = expectedLog.get(i);
             IndexedCrawlLogEntry actual = actualLog.get(i);
             assertEquals(expected.getValue(), actual.getDescription());
-            assertEquals(expected.hasDetails(), actual.hasDetails());
+            assertEquals(expected.hasDetails(), actual.getHasDetails());
             assertEquals(expected.getInputInformation(), actual.getInput());
             assertEquals(expected.getOutputInformation(), actual.getOutput());
             assertEquals(i, actual.getId());

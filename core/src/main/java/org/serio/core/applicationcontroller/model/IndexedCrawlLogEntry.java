@@ -48,7 +48,7 @@ public class IndexedCrawlLogEntry {
     /**
      * @see CrawlLogEntry#hasDetails()
      */
-    public boolean hasDetails() {
+    public boolean getHasDetails() {
         return entry.hasDetails();
     }
 

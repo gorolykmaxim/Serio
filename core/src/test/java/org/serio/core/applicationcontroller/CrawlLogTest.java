@@ -37,7 +37,7 @@ public class CrawlLogTest extends BaseApplicationControllerTest {
         assertEquals(ViewIds.CRAWL_LOG_ENTRY_DETAILS, event.getViewId());
         IndexedCrawlLogEntry actual = event.getLogEntry();
         assertEquals(entryId, actual.getId());
-        assertEquals(expected.hasDetails(), actual.hasDetails());
+        assertEquals(expected.hasDetails(), actual.getHasDetails());
         assertEquals(expected.getValue(), actual.getDescription());
         assertEquals(expected.getInputInformation(), actual.getInput());
         assertEquals(expected.getOutputInformation(), actual.getOutput());
