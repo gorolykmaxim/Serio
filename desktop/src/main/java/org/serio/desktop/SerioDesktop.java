@@ -25,6 +25,7 @@ public class SerioDesktop extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Serio");
         WebView webView = new WebView();
+        webView.setContextMenuEnabled(false);
         UserInterface userInterface = new DesktopUserInterface(webView.getEngine());
         Properties storageQueries = new Properties();
         storageQueries.load(getClass().getClassLoader().getResourceAsStream("storage/queries.properties"));
