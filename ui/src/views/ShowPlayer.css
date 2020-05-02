@@ -6,6 +6,10 @@
     right: 0;
 }
 
+.serio-show-player-container {
+    overflow: hidden;
+}
+
 .serio-show-player-controls {
     display: flex;
     background-color: rgba(0, 0, 0, 0.6);

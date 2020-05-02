@@ -7,6 +7,7 @@ import {HEADLINE_5, SUBTITLE_2, Text} from "../components/Text";
 import {IconButton, MEDIUM_SIZE} from "../components/IconButton";
 import {getFunction} from "../common";
 import CircularProgress from "../components/CircularProgress";
+import {ARROW_BACK, FORWARD_30, PAUSE, PLAY_ARROW, REPLAY_3O, SKIP_NEXT, SKIP_PREVIOUS} from "../components/Icons";
 
 const SEEK_TIME_PERIOD = 30;
 const PROGRESS_INTERVAL = 10;
@@ -20,6 +21,7 @@ export default class ShowPlayer extends React.Component {
         console.assert(props.episodeName);
         this.inactivityTimeout = null;
         this.player = null;
+        this.isInitialBufferingComplete = false;
         this.state = {
             playedTime: 0,
             totalTime: 0,
@@ -64,11 +66,6 @@ export default class ShowPlayer extends React.Component {
             this.player.seekTo(this.state.playedTime + timeDelta);
         }
     }
-    onStart() {
-        if (this.startProgress) {
-            this.player.seekTo(this.startProgress / 100);
-        }
-    }
     onPlay() {
         this.setState({isPlaying: true});
     }
@@ -76,6 +73,10 @@ export default class ShowPlayer extends React.Component {
         this.setState({isBuffering: true});
     }
     onBufferEnd() {
+        if (!this.isInitialBufferingComplete && this.startProgress) {
+            this.player.seekTo(this.startProgress / 100);
+        }
+        this.isInitialBufferingComplete = true;
         this.setState({isBuffering: false});
     }
     onPause() {
@@ -115,12 +116,11 @@ export default class ShowPlayer extends React.Component {
         const controlsStyle = {opacity: displayControls ? 1 : 0};
         const buffering = isBuffering ? <CircularProgress/> : null;
         return (
-            <div className='serio-full-height' onMouseMove={this.handleUserActivity.bind(this)} onKeyDown={this.handleUserActivity.bind(this)}>
+            <div className='serio-full-height serio-show-player-container' onMouseMove={this.handleUserActivity.bind(this)} onKeyDown={this.handleUserActivity.bind(this)}>
                 <ReactPlayer width='100%'
                              height='100%'
                              url={videoUrl}
                              ref={player => {this.player = player}}
-                             onStart={this.onStart.bind(this)}
                              onPlay={this.onPlay.bind(this)}
                              onPause={this.onPause.bind(this)}
                              onEnded={this.onEnd.bind(this)}
@@ -135,7 +135,7 @@ export default class ShowPlayer extends React.Component {
                 </div>
                 <div className='serio-show-player-layer serio-show-player-controls' style={controlsStyle}>
                     <div className='serio-show-player-title serio-show-player-margin'>
-                        <IconButton icon='arrow_back'
+                        <IconButton icon={ARROW_BACK}
                                     size={MEDIUM_SIZE}
                                     onClick={this.onBack}
                                     className='serio-show-player-margin-after'/>
@@ -150,26 +150,26 @@ export default class ShowPlayer extends React.Component {
                             <Text type={SUBTITLE_2} className='serio-show-player-horizontal-margin'>{format(totalTime * 1000)}</Text>
                         </div>
                         <div className='serio-show-player-episode-navigation serio-show-player-padding'>
-                            <IconButton icon={isPlaying ? 'pause' : 'play_arrow'}
+                            <IconButton icon={isPlaying ? PAUSE : PLAY_ARROW}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         autoFocus={true}
                                         onClick={this.togglePlay.bind(this)}/>
-                            <IconButton icon='replay_30'
+                            <IconButton icon={REPLAY_3O}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         onClick={this.createSeek(SEEK_TIME_PERIOD * -1)}/>
-                            <IconButton icon='forward_30'
+                            <IconButton icon={FORWARD_30}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         onClick={this.createSeek(SEEK_TIME_PERIOD)}/>
-                            <IconButton icon='skip_previous'
+                            <IconButton icon={SKIP_PREVIOUS}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasPreviousEpisode}
                                         onClick={this.onPreviousEpisode}/>
                             <Text type={HEADLINE_5} className='serio-show-player-margin-after' primary>{episodeName}</Text>
-                            <IconButton icon='skip_next'
+                            <IconButton icon={SKIP_NEXT}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasNextEpisode}

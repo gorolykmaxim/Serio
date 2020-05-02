@@ -4,6 +4,7 @@ import {HEADLINE_5, HEADLINE_6, SUBTITLE_1, Text} from "../components/Text";
 import Button from "../components/Button";
 import {createScrollIntoTarget, getFunction} from "../common";
 import ListTile from "../components/ListTile";
+import {VISIBILITY} from "../components/Icons";
 
 export default function ShowDetails(props) {
     const show = props.show;
@@ -25,7 +26,7 @@ export default function ShowDetails(props) {
     const hasEpisodes = show.episodes && show.episodes.length > 0;
     if (hasEpisodes) {
         const episodes = show.episodes.map(e =>
-            <ListTile icon={e.watched ? 'visibility' : undefined}
+            <ListTile icon={e.watched ? VISIBILITY : undefined}
                       primaryText={e.name}
                       hoverable={props.hoverableEpisodes}
                       onFocusCapture={onFocusCapture}

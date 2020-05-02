@@ -1,0 +1,9 @@
+export const VISIBILITY = '\ue8f4';
+export const BUG_REPORT = '\ue868';
+export const ARROW_BACK = '\ue5c4';
+export const PAUSE = '\ue034';
+export const PLAY_ARROW = '\ue037';
+export const REPLAY_3O = '\ue05a';
+export const FORWARD_30 = '\ue057';
+export const SKIP_PREVIOUS = '\ue045';
+export const SKIP_NEXT = '\ue044';

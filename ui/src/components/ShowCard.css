@@ -2,13 +2,13 @@
     position: relative;
     border: 0;
     border-radius: 4px;
-    width: 300px;
-    height: 100%;
     padding: 0;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     text-align: start;
+    flex-basis: 300px;
+    flex-shrink: 0;
 }
 
 .serio-show-card:focus, .serio-show-card:hover {

@@ -1,13 +1,14 @@
 import React from "react";
 import './ListTile.css';
 import {BODY_1, BODY_2, Text} from "./Text";
+import {BUG_REPORT} from "./Icons";
 
 export default function ListTile(props) {
     let icon;
     if (props.icon) {
         icon = <span className="material-icons">{props.icon}</span>;
     } else if (props.icon !== null) {
-        icon = <span className="material-icons serio-list-tile-icon-placeholder">bug_report</span>;
+        icon = <span className="material-icons serio-list-tile-icon-placeholder">{BUG_REPORT}</span>;
     }
     const className = ['serio-list-tile', 'serio-padding'];
     if (props.hoverable) {
