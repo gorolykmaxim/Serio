@@ -2,12 +2,16 @@ package org.serio.core.applicationcontroller;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.event.ShowDialogEvent;
 import org.serio.core.showplayer.Player;
 import org.serio.core.shows.WatchableShow;
 import org.serio.core.userinterface.ViewIds;
 
+import java.time.LocalDateTime;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.*;
 
 public class ShowPlayerTest extends BaseApplicationControllerTest {
@@ -109,6 +113,23 @@ public class ShowPlayerTest extends BaseApplicationControllerTest {
         // then
         verify(showPlayer).reportPlaybackProgress(progress);
         verify(userInterface, never()).sendEvent(any());
+    }
+
+    @Test
+    public void shouldGoBackToTheShowDetailsViewWhichShouldHaveWatchedEpisodesUpdated() {
+        // given
+        applicationController.back();
+        applicationController.back();
+        applicationController.selectShow(mandalorian.toString());
+        applicationController.playShow();
+        WatchableShow show = shows.findShowById(mandalorian);
+        mandalorian = createShow(show.getName(), true, 10, 1, LocalDateTime.now());
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        ShowDetailsEvent event = captureLastUserInterfaceEvent(ShowDetailsEvent.class);
+        assertFalse(event.getShow().getLastWatched().isEmpty());
     }
 
     @Test

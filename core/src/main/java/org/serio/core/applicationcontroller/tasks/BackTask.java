@@ -1,7 +1,9 @@
 package org.serio.core.applicationcontroller.tasks;
 
 import org.serio.core.applicationcontroller.event.EventStack;
+import org.serio.core.applicationcontroller.event.ShowDetailsEvent;
 import org.serio.core.applicationcontroller.model.DateFormat;
+import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.shows.Shows;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.core.userinterface.ViewIds;
@@ -38,11 +40,17 @@ public class BackTask implements ControllerTask {
     @Override
     public void execute(EventStack eventStack, UserInterface userInterface) {
         eventStack.popAndPeek().ifPresent(newTopEvent -> {
-            // If the new top event is AllShowsEvent - execute ViewAllShowsTask
-            // to replace the existing event with a new one with the updated list of displayed shows.
             // Crutch of this ApplicationController's implementation.
             if (ViewIds.ALL_SHOWS == newTopEvent.getViewId()) {
+                // If the new top event is AllShowsEvent - execute ViewAllShowsTask
+                // to replace the existing event with a new one with the updated list of displayed shows.
                 new ViewAllShowsTask(shows, dateFormat).execute(eventStack, userInterface);
+            } else if (ViewIds.SHOW_DETAILS == newTopEvent.getViewId()) {
+                // If the new top event is ShowDetailsEvent - execute SelectShowTask
+                // to replace the existing evnet with a new one with the updated list of watched episodes.
+                eventStack.pop(ShowDetailsEvent.class).ifPresent(event -> {
+                    new SelectShowTask(event.getShow().getId().toString(), shows, dateFormat).execute(eventStack, userInterface);
+                });
             } else {
                 userInterface.sendEvent(newTopEvent);
             }
