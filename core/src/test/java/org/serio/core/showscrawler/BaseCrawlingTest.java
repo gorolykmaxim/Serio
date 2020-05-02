@@ -1,8 +1,11 @@
 package org.serio.core.showscrawler;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
 import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
@@ -18,6 +21,13 @@ import static org.mockito.Mockito.*;
 
 public abstract class BaseCrawlingTest extends BaseShowsCrawlerTest {
     protected CrawlingMethod method;
+    @Captor
+    protected ArgumentCaptor<List<CrawlLogEntry>> logCaptor;
+
+    @Before
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+    }
     
     @Test
     public void shouldCrawlAndSaveInStorageCompleteCrawler() {
@@ -63,7 +73,6 @@ public abstract class BaseCrawlingTest extends BaseShowsCrawlerTest {
         // when
         method.call(SHOW_NAME, COMPLETE_THUMBNAIL_CRAWLER, COMPLETE_VIDEO_CRAWLER, COMPLETE_NAME_CRAWLER);
         // then
-        ArgumentCaptor<List<CrawlLogEntry>> logCaptor = ArgumentCaptor.forClass(List.class);
         verify(showCrawlerLogStorage).saveCrawlingLogOfTheShow(eq(showId), logCaptor.capture());
         String log = logCaptor.getValue().toString();
         assertTrue(log.contains("Crawling thumbnail"));
@@ -77,7 +86,6 @@ public abstract class BaseCrawlingTest extends BaseShowsCrawlerTest {
         // when
         method.call(SHOW_NAME, null, COMPLETE_VIDEO_CRAWLER, null);
         // then
-        ArgumentCaptor<List<CrawlLogEntry>> logCaptor = ArgumentCaptor.forClass(List.class);
         verify(showCrawlerLogStorage).saveCrawlingLogOfTheShow(eq(showId), logCaptor.capture());
         String log = logCaptor.getValue().toString();
         assertTrue(log.contains("Crawling thumbnail"));
