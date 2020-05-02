@@ -35,7 +35,7 @@ public class ShowDetailsTest extends BaseApplicationControllerTest {
         applicationController.playShow();
         applicationController.playShow();
         // then
-        assertShowEpisodePlaying(clinic, 3);
+        assertShowEpisodePlaying(clinic, 3, true);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ShowDetailsTest extends BaseApplicationControllerTest {
         applicationController.playShowEpisode(2);
         applicationController.playShowEpisode(2);
         // then
-        assertShowEpisodePlaying(clinic, 2);
+        assertShowEpisodePlaying(clinic, 2, true);
     }
 
     @Test

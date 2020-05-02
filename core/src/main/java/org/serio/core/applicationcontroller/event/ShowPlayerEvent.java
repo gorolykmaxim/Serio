@@ -4,7 +4,6 @@ import org.serio.core.showplayer.Player;
 import org.serio.core.shows.WatchableEpisode;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.ViewIds;
-import org.serio.core.watchhistory.WatchProgress;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -85,10 +84,8 @@ public class ShowPlayerEvent implements ApplicationEvent {
      *
      * @return fraction of the video to start playing from
      */
-    public Optional<Double> getStartProgress() {
-        return player.getPlayingEpisode()
-                .map(WatchableEpisode::getWatchProgress)
-                .map(WatchProgress::getPercentage);
+    public double getStartProgress() {
+        return player.getStartProgress();
     }
 
     /**

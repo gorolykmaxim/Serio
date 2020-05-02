@@ -474,7 +474,7 @@ public abstract class BaseApplicationControllerTest {
         return player;
     }
 
-    protected void assertShowEpisodePlaying(UUID showId, int episodeNumber) {
+    protected void assertShowEpisodePlaying(UUID showId, int episodeNumber, boolean fromBeginning) {
         WatchableShow show = shows.findShowById(showId);
         WatchableEpisode episode = show.getEpisodeById(episodeNumber).get();
         ShowPlayerEvent event = captureLastUserInterfaceEvent(ShowPlayerEvent.class);
@@ -482,7 +482,11 @@ public abstract class BaseApplicationControllerTest {
         assertEquals(episode.getName(), event.getEpisodeName().orElse(null));
         assertEquals(showId, event.getShowId());
         assertEquals(show.getName(), event.getShowName());
-        assertEquals(episode.getWatchProgress().getPercentage(), event.getStartProgress().orElse(-1.0), 0.1);
+        if (fromBeginning) {
+            assertEquals(0, event.getStartProgress(), 0.1);
+        } else {
+            assertTrue(event.getStartProgress() > 0);
+        }
         assertEquals(episode.getVideoUrl(), event.getVideoUrl().orElse(null));
         assertEquals(show.getEpisodeBeforeEpisode(episodeNumber).isPresent(), event.hasPreviousEpisode());
         assertEquals(show.getEpisodeAfterEpisode(episodeNumber).isPresent(), event.hasNextEpisode());

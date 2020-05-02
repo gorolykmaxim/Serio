@@ -37,7 +37,7 @@ public class ShowPlayerTest extends BaseApplicationControllerTest {
         // when
         applicationController.playNextEpisode();
         // then
-        assertShowEpisodePlaying(friends, 2);
+        assertShowEpisodePlaying(friends, 2, true);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ShowPlayerTest extends BaseApplicationControllerTest {
         // when
         applicationController.playShowFromTheBeginning();
         // then
-        assertShowEpisodePlaying(friends, 1);
+        assertShowEpisodePlaying(friends, 1, true);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ShowPlayerTest extends BaseApplicationControllerTest {
         // when
         applicationController.playPreviousEpisode();
         // then
-        assertShowEpisodePlaying(friends, 2);
+        assertShowEpisodePlaying(friends, 2, true);
     }
 
     @Override

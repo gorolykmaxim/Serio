@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -46,6 +47,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, true, true);
         assertEquals(5, player.getPlayingEpisodeOrFail().getId());
+        assertTrue(player.getStartProgress() > 0);
     }
 
     @Test
@@ -57,6 +59,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, true, true);
         assertEquals(6, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
     }
 
     @Test
@@ -68,6 +71,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, false, true);
         assertEquals(1, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
     }
 
     @Test
@@ -107,6 +111,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, false, true);
         assertEquals(1, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
     }
 
     @Test
@@ -120,6 +125,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, false, true);
         assertEquals(1, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
         verify(shows, never()).findShowById(showId);
     }
 
@@ -150,6 +156,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, true, false);
         assertEquals(8, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
     }
 
     @Test
@@ -234,6 +241,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, true, true);
         assertEquals(2, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
     }
 
     @Test(expected = EpisodeChangeException.class)
@@ -272,6 +280,7 @@ public class ShowPlayerTest {
         // then
         assertStateOf(player, true, true);
         assertEquals(4, player.getPlayingEpisodeIdOrFail());
+        assertEquals(0, player.getStartProgress(), 0.1);
     }
 
     private void assertStateOf(Player player, boolean hasPreviousEpisode, boolean hasNextEpisode) {

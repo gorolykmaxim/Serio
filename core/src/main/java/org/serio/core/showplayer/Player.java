@@ -2,6 +2,7 @@ package org.serio.core.showplayer;
 
 import org.serio.core.shows.WatchableEpisode;
 import org.serio.core.shows.WatchableShow;
+import org.serio.core.watchhistory.WatchProgress;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class Player {
     private final WatchableShow show;
     private final Optional<WatchableEpisode> currentEpisode;
+    private final double startProgress;
 
     /**
      * Create player of the specified show.
@@ -25,6 +27,11 @@ public class Player {
      * the user has stopped watching the show on the episode #5 - the player will start from that
      * exact episode from the timestamp where the user has finished watching it the last time. In case the
      * user has completely watched the episode #5 - the player will start from the episode #6 instead.</p>
+     *
+     * <p>In the aforementioned case (player starts playing the episode from the last timestamp), only the
+     * first episode, played by the player, will be played from the position where the user has left it.
+     * All the episodes after it will be played from the beginning even if the user has already
+     * fully or partially watched them.</p>
      *
      * <p>If the specified show has not been watched by the user yet - the player will start playing the show
      * from the beginning.</p>
@@ -44,7 +51,11 @@ public class Player {
             // If the last watched episode is present - then the show has been already watched and
             // we will play either that episode or the episode after it.
             // Otherwise - the shows has not been watched yet, so we will play it from the beginning.
-            return new Player(show, lastWatchedEpisode.isPresent() ? episodeToWatch : show.getFirstEpisode());
+            if (lastWatchedEpisode.isPresent()) {
+                return new Player(show, episodeToWatch, episodeToWatch.map(WatchableEpisode::getWatchProgress).map(WatchProgress::getPercentage).orElse(0.0));
+            } else {
+                return new Player(show, show.getFirstEpisode());
+            }
         }
     }
 
@@ -62,11 +73,16 @@ public class Player {
     }
 
     private Player(WatchableShow show, Optional<WatchableEpisode> currentEpisode) {
+        this(show, currentEpisode, 0);
+    }
+
+    private Player(WatchableShow show, Optional<WatchableEpisode> currentEpisode, double startProgress) {
         if (show == null) {
             throw new IllegalArgumentException("Show to be played is not specified");
         }
         this.show = show;
         this.currentEpisode = currentEpisode;
+        this.startProgress = startProgress;
     }
 
     /**
@@ -179,6 +195,15 @@ public class Player {
      */
     public Player restartShow() {
         return Player.of(show, true);
+    }
+
+    /**
+     * Get the percentage of the overall episode's length, from which the player should start playing the episode.
+     *
+     * @return percentage of episode's duration to start playing from
+     */
+    public double getStartProgress() {
+        return startProgress;
     }
 
     /**
