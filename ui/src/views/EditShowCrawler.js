@@ -23,7 +23,7 @@ export default function EditShowCrawler(props) {
                           defaultValue={props.showName}
                           autoFocus={isNewCrawler}
                           disabled={!isNewCrawler}
-                          onChange={e => onShowNameChange(e.target.value)}
+                          onChange={onShowNameChange}
                           className='serio-edit-show-crawler-edit-line serio-growable'/>
                 <Button text='Configure episode video crawler'
                         className='serio-edit-show-crawler-edit-line serio-growable'

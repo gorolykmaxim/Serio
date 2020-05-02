@@ -20,7 +20,7 @@ export default function EditCrawler(props) {
             </div>
             <TextArea className='serio-margin serio-growable'
                       placeholder='Enter configuration of the crawler'
-                      onChange={e => onCrawlerChange(e.target.value)}
+                      onChange={onCrawlerChange}
                       defaultValue={crawler}
                       autoFocus={true}/>
             <div className='serio-form-actions serio-margin'>

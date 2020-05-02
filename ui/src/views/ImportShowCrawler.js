@@ -17,7 +17,7 @@ export default function ImportShowCrawler(props) {
             <TextArea className='serio-margin serio-growable'
                       placeholder={'Paste configuration of a show crawler here'}
                       defaultValue={props.showCrawler}
-                      onChange={e => onChange(e.target.value)}
+                      onChange={onChange}
                       autoFocus={true}/>
             <div className='serio-form-actions serio-margin'>
                 <Button text='cancel' onClick={onCancel}/>
