@@ -41,7 +41,7 @@ export default function ShowDetails(props) {
             <div className='serio-show-details-container serio-full-height'>
                 <div className='serio-padding serio-show-details-title'>
                     <Text type={HEADLINE_5} primary>{show.name}</Text>
-                    <Text type={SUBTITLE_1}>Last watched {show.lastWatched}</Text>
+                    <Text type={SUBTITLE_1}>{show.lastWatched ? `Last watched ${show.lastWatched.toLowerCase()}` : ''}</Text>
                 </div>
                 <div>
                     <Button text='play' autoFocus={hasEpisodes} className='serio-margin' onClick={() => onPlay(show)} disabled={!hasEpisodes}/>
