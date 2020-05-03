@@ -12,6 +12,15 @@ application {
     mainClassName = 'org.serio.desktop.SerioDesktop'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.serio.desktop.SerioDesktop'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 repositories {
     mavenCentral()
 }
