@@ -11,6 +11,8 @@ import org.apache.commons.io.IOUtils;
 import org.serio.core.Core;
 import org.serio.core.applicationcontroller.ApplicationController;
 import org.serio.core.userinterface.UserInterface;
+import org.serio.desktop.platform.DesktopPlatform;
+import org.serio.desktop.platform.Platforms;
 import org.serio.desktop.storage.DesktopStorage;
 import org.sqlite.SQLiteDataSource;
 
@@ -26,6 +28,7 @@ public class SerioDesktop extends Application {
         WebView webView = new WebView();
         webView.setContextMenuEnabled(false);
         UserInterface userInterface = new DesktopUserInterface(webView.getEngine());
+        DesktopPlatform platform = Platforms.getCurrentPlatform("Serio");
         Properties storageQueries = new Properties();
         storageQueries.load(getClass().getClassLoader().getResourceAsStream("storage/queries.properties"));
         String storageInitializationQuery = IOUtils.resourceToString("storage/schema.sql", Charset.defaultCharset(), getClass().getClassLoader());
@@ -34,7 +37,7 @@ public class SerioDesktop extends Application {
         dataSource.setUrl("jdbc:sqlite:" + Paths.get(System.getProperty("user.home"), ".serio.db").toString());
         DesktopStorage storage = new DesktopStorage(dataSource, storageQueries, storageInitializationQuery);
         storage.initialize();
-        Core core = new Core(null, null, null, storage, storage, storage, userInterface, storage);
+        Core core = new Core(platform, null, platform, storage, storage, storage, userInterface, storage);
         URL uiEntryPoint = getClass().getClassLoader().getResource("assets/index.html");
         webView.getEngine().load(uiEntryPoint.toString() + "#platform=0&runtimeType=0");
         webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
