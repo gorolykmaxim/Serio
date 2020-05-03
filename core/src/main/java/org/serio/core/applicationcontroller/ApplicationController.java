@@ -343,6 +343,15 @@ public class ApplicationController {
     }
 
     /**
+     * Display the specified error in the error dialog, while discarding the currently displayed view.
+     *
+     * @param error error message to display
+     */
+    public synchronized void displayError(String error) {
+        executeTask(new DisplayErrorTask(error));
+    }
+
+    /**
      * Go back to the previous view.
      */
     public synchronized void back() {

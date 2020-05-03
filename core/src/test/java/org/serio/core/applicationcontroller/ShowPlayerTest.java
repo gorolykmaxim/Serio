@@ -142,6 +142,25 @@ public class ShowPlayerTest extends BaseApplicationControllerTest {
         verify(userInterface, never()).sendEvent(any());
     }
 
+    @Test
+    public void shouldFailToPlayTheSpecifiedUrlAndDisplayError() {
+        // when
+        applicationController.displayError(expectedException.getMessage());
+        // then
+        assertErrorReceived();
+    }
+
+    @Test
+    public void shouldFailToPlayTheSpecifiedUrlDisplayErrorAndGoBackToShowDetails() {
+        // given
+        applicationController.displayError(expectedException.getMessage());
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        assertCurrentView(ViewIds.SHOW_DETAILS);
+    }
+
     @Override
     public void shouldBack() {
         // when
