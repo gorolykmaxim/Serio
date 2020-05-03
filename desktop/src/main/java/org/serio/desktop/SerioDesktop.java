@@ -24,6 +24,7 @@ import java.util.Properties;
 public class SerioDesktop extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
         primaryStage.setTitle("Serio");
         WebView webView = new WebView();
         webView.setContextMenuEnabled(false);
@@ -31,7 +32,7 @@ public class SerioDesktop extends Application {
         HttpClient httpClient = new DesktopHttpClient();
         DesktopPlatform platform = Platforms.getCurrentPlatform("Serio");
         Properties storageQueries = new Properties();
-        storageQueries.load(getClass().getClassLoader().getResourceAsStream("storage/queries.properties"));
+        storageQueries.load(classLoader.getResourceAsStream("storage/queries.properties"));
         String storageInitializationQuery = IOUtils.resourceToString("storage/schema.sql", Charset.defaultCharset(), getClass().getClassLoader());
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setEnforceForeinKeys(true);
@@ -39,7 +40,7 @@ public class SerioDesktop extends Application {
         DesktopStorage storage = new DesktopStorage(dataSource, storageQueries, storageInitializationQuery);
         storage.initialize();
         Core core = new Core(platform, httpClient, platform, storage, storage, storage, userInterface, storage);
-        URL uiEntryPoint = getClass().getClassLoader().getResource("assets/index.html");
+        URL uiEntryPoint = classLoader.getResource("assets/index.html");
         webView.getEngine().load(uiEntryPoint.toString() + "#platform=0&runtimeType=0");
         webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == Worker.State.SUCCEEDED) {
