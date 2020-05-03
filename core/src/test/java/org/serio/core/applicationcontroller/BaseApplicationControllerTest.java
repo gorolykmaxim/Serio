@@ -488,8 +488,8 @@ public abstract class BaseApplicationControllerTest {
             assertTrue(event.getStartProgress() > 0);
         }
         assertEquals(episode.getVideoUrl(), event.getVideoUrl().orElse(null));
-        assertEquals(show.getEpisodeBeforeEpisode(episodeNumber).isPresent(), event.hasPreviousEpisode());
-        assertEquals(show.getEpisodeAfterEpisode(episodeNumber).isPresent(), event.hasNextEpisode());
+        assertEquals(show.getEpisodeBeforeEpisode(episodeNumber).isPresent(), event.getHasPreviousEpisode());
+        assertEquals(show.getEpisodeAfterEpisode(episodeNumber).isPresent(), event.getHasNextEpisode());
     }
 
     protected void assertCrawlLogsEqual(List<CrawlLogEntry> expectedLog, List<IndexedCrawlLogEntry> actualLog) {

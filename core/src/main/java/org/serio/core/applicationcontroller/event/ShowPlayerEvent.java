@@ -66,7 +66,7 @@ public class ShowPlayerEvent implements ApplicationEvent {
      *
      * @return true if there is a previous episode to play
      */
-    public boolean hasPreviousEpisode() {
+    public boolean getHasPreviousEpisode() {
         return player.hasPreviousEpisode();
     }
 
@@ -75,7 +75,7 @@ public class ShowPlayerEvent implements ApplicationEvent {
      *
      * @return true if there is a next episode to play
      */
-    public boolean hasNextEpisode() {
+    public boolean getHasNextEpisode() {
         return player.hasNextEpisode();
     }
 
