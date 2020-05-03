@@ -95,4 +95,7 @@ export default class SerioController {
     confirmShowOverride() {
         console.info('Confirming the override of an existing show with the currently configured one');
     }
+    displayError(error) {
+        console.info(`Opening error dialog to display '${error}'`);
+    }
 }

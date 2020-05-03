@@ -52,6 +52,9 @@ export default class ShowPlayer extends React.Component {
     get onEnd() {
         return getFunction(this.props.onEnd);
     }
+    get onError() {
+        return getFunction(this.props.onError);
+    }
     componentDidMount() {
         this.handleUserActivity();
     }
@@ -129,6 +132,7 @@ export default class ShowPlayer extends React.Component {
                              onDuration={this.onDuration.bind(this)}
                              onBuffer={this.onBuffer.bind(this)}
                              onBufferEnd={this.onBufferEnd.bind(this)}
+                             onError={() => this.onError(`Can't play ${videoUrl}`)}
                              playing={isPlaying}/>
                 <div className='serio-show-player-layer serio-show-player-buffering'>
                     {buffering}
