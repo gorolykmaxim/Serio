@@ -10,6 +10,7 @@ import netscape.javascript.JSObject;
 import org.apache.commons.io.IOUtils;
 import org.serio.core.Core;
 import org.serio.core.applicationcontroller.ApplicationController;
+import org.serio.core.httpclient.HttpClient;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.desktop.platform.DesktopPlatform;
 import org.serio.desktop.platform.Platforms;
@@ -28,6 +29,7 @@ public class SerioDesktop extends Application {
         WebView webView = new WebView();
         webView.setContextMenuEnabled(false);
         UserInterface userInterface = new DesktopUserInterface(webView.getEngine());
+        HttpClient httpClient = new DesktopHttpClient();
         DesktopPlatform platform = Platforms.getCurrentPlatform("Serio");
         Properties storageQueries = new Properties();
         storageQueries.load(getClass().getClassLoader().getResourceAsStream("storage/queries.properties"));
@@ -37,7 +39,7 @@ public class SerioDesktop extends Application {
         dataSource.setUrl("jdbc:sqlite:" + Paths.get(System.getProperty("user.home"), ".serio.db").toString());
         DesktopStorage storage = new DesktopStorage(dataSource, storageQueries, storageInitializationQuery);
         storage.initialize();
-        Core core = new Core(platform, null, platform, storage, storage, storage, userInterface, storage);
+        Core core = new Core(platform, httpClient, platform, storage, storage, storage, userInterface, storage);
         URL uiEntryPoint = getClass().getClassLoader().getResource("assets/index.html");
         webView.getEngine().load(uiEntryPoint.toString() + "#platform=0&runtimeType=0");
         webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {

@@ -46,6 +46,8 @@ processResources.dependsOn buildUi
 
 dependencies {
     compile project(':core')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.2.6.RELEASE'
+    compile group: 'org.projectreactor', name: 'reactor-spring', version: '1.0.1.RELEASE'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile group: 'org.springframework', name: 'spring-jdbc', version: '3.1.0.RELEASE'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
