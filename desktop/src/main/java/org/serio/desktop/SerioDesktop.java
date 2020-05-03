@@ -10,7 +10,6 @@ import netscape.javascript.JSObject;
 import org.apache.commons.io.IOUtils;
 import org.serio.core.Core;
 import org.serio.core.applicationcontroller.ApplicationController;
-import org.serio.core.httpclient.HttpClient;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.desktop.platform.DesktopPlatform;
 import org.serio.desktop.platform.Platforms;
@@ -20,8 +19,11 @@ import org.sqlite.SQLiteDataSource;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SerioDesktop extends Application {
+    private ExecutorService controllerService;
     @Override
     public void start(Stage primaryStage) throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -29,7 +31,7 @@ public class SerioDesktop extends Application {
         WebView webView = new WebView();
         webView.setContextMenuEnabled(false);
         UserInterface userInterface = new DesktopUserInterface(webView.getEngine());
-        HttpClient httpClient = new DesktopHttpClient();
+        DesktopHttpClient httpClient = new DesktopHttpClient();
         DesktopPlatform platform = Platforms.getCurrentPlatform("Serio");
         Properties storageQueries = new Properties();
         storageQueries.load(classLoader.getResourceAsStream("storage/queries.properties"));
@@ -40,17 +42,25 @@ public class SerioDesktop extends Application {
         DesktopStorage storage = new DesktopStorage(dataSource, storageQueries, storageInitializationQuery);
         storage.initialize();
         Core core = new Core(platform, httpClient, platform, storage, storage, storage, userInterface, storage);
+        ApplicationController controller = core.getApplicationController();
+        controllerService = Executors.newSingleThreadExecutor();
+        BackgroundThreadApplicationControllerProxy controllerProxy = new BackgroundThreadApplicationControllerProxy(controller, controllerService);
         URL uiEntryPoint = classLoader.getResource("assets/index.html");
         webView.getEngine().load(uiEntryPoint.toString() + "#platform=0&runtimeType=0");
         webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == Worker.State.SUCCEEDED) {
                 primaryStage.show();
-                ApplicationController controller = core.initializeApplicationController();
+                controller.viewAllShows();
                 JSObject window = (JSObject) webView.getEngine().executeScript("window");
-                window.setMember("serioController", controller);
+                window.setMember("serioController", controllerProxy);
             }
         });
         primaryStage.setScene(new Scene(new StackPane(webView), 800, 600));
+    }
+
+    @Override
+    public void stop() throws Exception {
+        controllerService.shutdownNow();
     }
 
     public static void main(String[] args) {

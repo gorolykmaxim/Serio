@@ -43,6 +43,15 @@ public class Core {
     }
 
     /**
+     * Return the module, that can be used by the user interface to interact with the rest of the core's modules.
+     *
+     * @return application controller
+     */
+    public ApplicationController getApplicationController() {
+        return controller;
+    }
+
+    /**
      * Initialize and return the module, that can be used by the user interface to interact with the rest of the
      * core's modules.
      *
