@@ -19,7 +19,6 @@ import org.sqlite.SQLiteDataSource;
 
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class SerioDesktop extends Application {
@@ -36,7 +35,7 @@ public class SerioDesktop extends Application {
         String storageInitializationQuery = IOUtils.resourceToString("storage/schema.sql", Charset.defaultCharset(), getClass().getClassLoader());
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setEnforceForeinKeys(true);
-        dataSource.setUrl("jdbc:sqlite:" + Paths.get(System.getProperty("user.home"), ".serio.db").toString());
+        dataSource.setUrl("jdbc:sqlite:" + platform.getDatabasePath().toString());
         DesktopStorage storage = new DesktopStorage(dataSource, storageQueries, storageInitializationQuery);
         storage.initialize();
         Core core = new Core(platform, httpClient, platform, storage, storage, storage, userInterface, storage);
