@@ -17,13 +17,13 @@ export default function CrawlLogEntryDetails(props) {
                 <Button text='back' onClick={onBack} autoFocus={true}/>
             </div>
             <div className='serio-padding serio-crawl-log-entry-details-multiline-text'>
-                <Text wrap={true} type={BODY_1}>{logEntry.description}</Text>
+                <Text wrap={true} type={BODY_1}>Step: {logEntry.description}</Text>
             </div>
             <div className='serio-padding serio-crawl-log-entry-details-multiline-text'>
-                <Text wrap={true} type={BODY_1}>{logEntry.input}</Text>
+                <Text wrap={true} type={BODY_1}>Input: {logEntry.input}</Text>
             </div>
             <div className='serio-padding serio-crawl-log-entry-details-multiline-text'>
-                <Text wrap={true} type={BODY_1}>{logEntry.output}</Text>
+                <Text wrap={true} type={BODY_1}>Output: {logEntry.output}</Text>
             </div>
         </div>
     );
