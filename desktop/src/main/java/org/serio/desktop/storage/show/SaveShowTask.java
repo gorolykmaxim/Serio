@@ -8,15 +8,30 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+/**
+ * Save the specified show and it's episodes in the storage.
+ *
+ * <p>If there is an existing show with the specified ID, both it and all of it's existing episodes will be
+ * completely replaced by the specified new one.</p>
+ */
 public class SaveShowTask implements StorageTask<Void> {
     private final Show show;
     private final Properties queries;
 
+    /**
+     * Construct a task.
+     *
+     * @param show show to save
+     * @param queries {@link Properties}, that contains the SQL queries, used by this task
+     */
     public SaveShowTask(Show show, Properties queries) {
         this.show = show;
         this.queries = queries;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Void execute(JdbcTemplate template) {
         new DeleteShowByIdTask(show.getId(), queries).execute(template);

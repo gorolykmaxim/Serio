@@ -32,6 +32,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+/**
+ * Desktop implementation of all the "storage" modules of the {@link org.serio.core.Core}
+ */
 public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerStorage, ShowCrawlerLogStorage {
     private final JdbcTemplate template;
     private final PlatformTransactionManager transactionManager;
@@ -43,6 +46,14 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
     private final Properties queries;
     private final String schemaInitializationScript;
 
+    /**
+     * Construct a storage module.
+     *
+     * @param dataSource data source, where all the data will be stored
+     * @param queries {@link Properties} that contains all the SQL queries, used by the storage to interact
+     *                                  with the underlying database
+     * @param schemaInitializationScript the SQL script, that will be executed each time the storage get's initialized
+     */
     public DesktopStorage(DataSource dataSource, Properties queries, String schemaInitializationScript) {
         template = new JdbcTemplate(dataSource);
         transactionManager = new DataSourceTransactionManager(dataSource);
@@ -55,6 +66,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         episodeViewRowMapper = new EpisodeViewRowMapper();
     }
 
+    /**
+     * Initialize the storage by running the specified initialization script.
+     */
     public void initialize() {
         execute(
                 new InitializeStorageTask(schemaInitializationScript),
@@ -63,6 +77,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Optional<List<CrawlLogEntry>>> getLastCrawlingLogOfTheShow(String showId) {
         return execute(
@@ -72,6 +89,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveCrawlingLogOfTheShow(String showId, List<CrawlLogEntry> log) {
         execute(
@@ -81,6 +101,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<String> findShowCrawlerByShowId(String showId) {
         return execute(
@@ -90,6 +113,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveShowCrawler(String showId, String showCrawler) {
         execute(
@@ -99,6 +125,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteShowCrawlerByShowId(String showId) {
         execute(
@@ -108,6 +137,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Show> findById(UUID id) {
         return execute(
@@ -117,6 +149,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<List<ShowMetaData>> findAll() {
         return execute(
@@ -126,6 +161,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Boolean> containsShowWithName(String name) {
         return execute(
@@ -135,6 +173,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(Show show) {
         execute(
@@ -144,6 +185,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteById(UUID id) {
         execute(
@@ -153,6 +197,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<List<ShowView>> getShowWatchHistory() {
         return execute(
@@ -162,6 +209,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<List<EpisodeView>> getEpisodeWatchHistoryOfShow(String showId) {
         return execute(
@@ -171,6 +221,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void watchShowEpisode(String showId, String episodeId, WatchProgress watchProgress) {
         execute(
@@ -180,6 +233,9 @@ public class DesktopStorage implements WatchHistory, ShowStorage, ShowCrawlerSto
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clearWatchHistoryOfShow(String showId) {
         execute(
