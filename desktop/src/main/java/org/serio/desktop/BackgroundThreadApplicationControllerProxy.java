@@ -61,7 +61,7 @@ public class BackgroundThreadApplicationControllerProxy {
     /**
      * @see ApplicationController#editThumbnailCrawler()
      */
-    public void editThumbnailService() {
+    public void editThumbnailCrawler() {
         service.execute(controller::editThumbnailCrawler);
     }
 
