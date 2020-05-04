@@ -54,14 +54,21 @@ public class LoggingTaskDecorator implements CrawlerStepTask {
     private String truncateAndSerialize(List<String> data) {
         long symbolsCount = 0;
         List<String> dataToBeSerialized = new ArrayList<>();
+        boolean wasTruncated = false;
         for (int i = 0; i < data.size(); i++) {
             if (symbolsCount >= detailsLength) {
+                wasTruncated = true;
                 break;
             }
             String part = data.get(i);
             dataToBeSerialized.add(part);
             symbolsCount += part.length();
         }
-        return StringUtils.truncate(dataToBeSerialized.toString(), (int) detailsLength);
+        String unCutDataToBeSerialized = dataToBeSerialized.toString();
+        if (!wasTruncated && unCutDataToBeSerialized.length() > detailsLength) {
+            wasTruncated = true;
+        }
+        String truncatedData = StringUtils.truncate(dataToBeSerialized.toString(), (int) detailsLength);
+        return wasTruncated ? truncatedData + "..." : truncatedData;
     }
 }

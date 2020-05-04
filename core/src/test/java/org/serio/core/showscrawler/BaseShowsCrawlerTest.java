@@ -188,7 +188,7 @@ public abstract class BaseShowsCrawlerTest {
     public void setUp() throws Exception {
         expectedShow = Show.createNew(SHOW_NAME, Collections.emptyList());
         showId = expectedShow.getId().toString();
-        crawlerLogDetailsLength = 100;
+        crawlerLogDetailsLength = 15;
         showCrawlerStorage = mock(ShowCrawlerStorage.class);
         showCrawlerLogStorage = mock(ShowCrawlerLogStorage.class);
         httpClient = mock(HttpClient.class);

@@ -79,6 +79,7 @@ public abstract class BaseCrawlingTest extends BaseShowsCrawlerTest {
         assertTrue(log.contains("Crawling episode videos"));
         assertTrue(log.contains("Crawling episode names"));
         assertTrue(log.contains(StringUtils.truncate(SHOW_WEB_PAGE, (int) crawlerLogDetailsLength / 2)));
+        assertTrue(log.contains("..."));
     }
 
     @Test
@@ -92,6 +93,7 @@ public abstract class BaseCrawlingTest extends BaseShowsCrawlerTest {
         assertTrue(log.contains("Crawling episode videos"));
         assertFalse(log.contains("Crawling episode names"));
         assertTrue(log.contains(StringUtils.truncate(SHOW_WEB_PAGE, (int) crawlerLogDetailsLength / 2)));
+        assertTrue(log.contains("..."));
     }
 
     @Test
