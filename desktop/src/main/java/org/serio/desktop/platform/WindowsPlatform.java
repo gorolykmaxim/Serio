@@ -22,7 +22,8 @@ public class WindowsPlatform extends DesktopPlatform {
         try {
             if (SystemTray.isSupported()) {
                 SystemTray tray = SystemTray.getSystemTray();
-                Image trayImage = Toolkit.getDefaultToolkit().createImage(new URL(""));
+                URL iconUrl = getClass().getClassLoader().getResource("favicon.ico");
+                Image trayImage = Toolkit.getDefaultToolkit().createImage(iconUrl);
                 TrayIcon trayIcon = new TrayIcon(trayImage, applicationName);
                 trayIcon.setImageAutoSize(true);
                 tray.add(trayIcon);
