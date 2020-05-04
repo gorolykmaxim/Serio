@@ -26,13 +26,24 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The desktop version of the Serio application.
+ *
+ * <p>This is the application's entry point and the place where all the modules are being wired-up together.</p>
+ */
 public class SerioDesktop extends Application {
     private final List<Closeable> closeables;
 
+    /**
+     * Construct a Serio desktop application.
+     */
     public SerioDesktop() {
         closeables = new ArrayList<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -75,6 +86,9 @@ public class SerioDesktop extends Application {
         primaryStage.setScene(new Scene(new StackPane(webView), 800, 600));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void stop() throws Exception {
         for (Closeable closeable: closeables) {
