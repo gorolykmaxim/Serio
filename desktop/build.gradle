@@ -13,6 +13,7 @@ application {
 }
 
 jar {
+    archivesBaseName = 'serio-desktop'
     manifest {
         attributes 'Main-Class': 'org.serio.desktop.SerioDesktop'
     }
