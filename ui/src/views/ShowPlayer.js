@@ -149,7 +149,7 @@ export default class ShowPlayer extends React.Component {
                         <div className='serio-show-player-progress'>
                             <Text type={SUBTITLE_2} className='serio-show-player-horizontal-margin'>{format(playedTime * 1000)}</Text>
                             <div className='serio-growable'>
-                                <Line percent={playedPercent} strokeColor='#FB8C00'/>
+                                <Line percent={playedPercent} style={{height: '8px', width: '100%'}} strokeColor='#FB8C00'/>
                             </div>
                             <Text type={SUBTITLE_2} className='serio-show-player-horizontal-margin'>{format(totalTime * 1000)}</Text>
                         </div>
