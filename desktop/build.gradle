@@ -6,7 +6,7 @@ plugins {
 apply plugin: 'java'
 
 group 'org.serio'
-version '1.0.0'
+version '1.0.1'
 
 application {
     mainClassName = 'org.serio.desktop.SerioDesktop'
