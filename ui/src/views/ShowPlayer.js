@@ -137,11 +137,11 @@ export default class ShowPlayer extends React.Component {
                 <div className='serio-show-player-layer serio-show-player-buffering'>
                     {buffering}
                 </div>
-                <div className='serio-show-player-layer serio-show-player-controls' style={controlsStyle}>
+                <div className='serio-show-player-layer serio-show-player-controls' style={controlsStyle} onClick={this.togglePlay.bind(this)}>
                     <div className='serio-show-player-title serio-show-player-margin'>
                         <IconButton icon={ARROW_BACK}
                                     size={MEDIUM_SIZE}
-                                    onClick={this.onBack}
+                                    onClickStopPropagate={this.onBack}
                                     className='serio-show-player-margin-after'/>
                         <Text type={HEADLINE_5} primary>{showName}</Text>
                     </div>
@@ -158,26 +158,26 @@ export default class ShowPlayer extends React.Component {
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         autoFocus={true}
-                                        onClick={this.togglePlay.bind(this)}/>
+                                        onClickStopPropagate={this.togglePlay.bind(this)}/>
                             <IconButton icon={REPLAY_3O}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
-                                        onClick={this.createSeek(SEEK_TIME_PERIOD * -1)}/>
+                                        onClickStopPropagate={this.createSeek(SEEK_TIME_PERIOD * -1)}/>
                             <IconButton icon={FORWARD_30}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
-                                        onClick={this.createSeek(SEEK_TIME_PERIOD)}/>
+                                        onClickStopPropagate={this.createSeek(SEEK_TIME_PERIOD)}/>
                             <IconButton icon={SKIP_PREVIOUS}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasPreviousEpisode}
-                                        onClick={this.onPreviousEpisode}/>
+                                        onClickStopPropagate={this.onPreviousEpisode}/>
                             <Text type={HEADLINE_5} className='serio-show-player-margin-after' primary>{episodeName}</Text>
                             <IconButton icon={SKIP_NEXT}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasNextEpisode}
-                                        onClick={this.onNextEpisode}/>
+                                        onClickStopPropagate={this.onNextEpisode}/>
                         </div>
                     </div>
                 </div>

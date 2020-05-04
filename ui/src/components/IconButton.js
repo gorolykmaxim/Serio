@@ -27,7 +27,14 @@ export class IconButton extends AutoFocusable {
         return (
             <button disabled={this.props.isDisabled}
                     className={buttonClassName.join(' ')}
-                    onClick={this.props.onClick}
+                    onClick={e => {
+                        if (this.props.onClickStopPropagate) {
+                            e.stopPropagation();
+                            this.props.onClickStopPropagate();
+                        } else if (this.props.onClick) {
+                            this.props.onClick();
+                        }
+                    }}
                     ref={root => {this.focusable = root}}>
                 <span className={iconClassName.join(' ')}>{this.props.icon}</span>
             </button>
