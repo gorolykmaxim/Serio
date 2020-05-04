@@ -7,7 +7,18 @@ import {HEADLINE_5, SUBTITLE_2, Text} from "../components/Text";
 import {IconButton, MEDIUM_SIZE} from "../components/IconButton";
 import {getFunction} from "../common";
 import CircularProgress from "../components/CircularProgress";
-import {ARROW_BACK, FORWARD_30, PAUSE, PLAY_ARROW, REPLAY_3O, SKIP_NEXT, SKIP_PREVIOUS} from "../components/Icons";
+import {
+    ARROW_BACK,
+    FORWARD_30, FULLSCREEN,
+    FULLSCREEN_EXIT,
+    PAUSE,
+    PLAY_ARROW,
+    REPLAY_3O,
+    SKIP_NEXT,
+    SKIP_PREVIOUS
+} from "../components/Icons";
+
+const screenfull = require('screenfull');
 
 const SEEK_TIME_PERIOD = 30;
 const PROGRESS_INTERVAL = 10;
@@ -27,6 +38,7 @@ export default class ShowPlayer extends React.Component {
             totalTime: 0,
             playedPercent: 0,
             isPlaying: true,
+            isFullScreen: false,
             isBuffering: true,
             displayControls: true
         };
@@ -88,6 +100,10 @@ export default class ShowPlayer extends React.Component {
     onProgress(progress) {
         this.handleProgress(Math.round(progress.playedSeconds));
     }
+    async toggleFullScreen() {
+        await screenfull.toggle();
+        this.setState({isFullScreen: !this.state.isFullScreen});
+    }
     handleProgress(playedTime) {
         const totalTime = this.state.totalTime;
         const playedPercent = totalTime > 0 ? playedTime / totalTime * 100 : 0;
@@ -114,7 +130,7 @@ export default class ShowPlayer extends React.Component {
         }, INACTIVITY_TIMEOUT);
     }
     render() {
-        const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls} = this.state;
+        const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls, isFullScreen} = this.state;
         const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode} = this.props;
         const controlsStyle = {opacity: displayControls ? 1 : 0, cursor: displayControls ? 'auto' : 'none'};
         const buffering = isBuffering ? <CircularProgress/> : null;
@@ -178,6 +194,10 @@ export default class ShowPlayer extends React.Component {
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasNextEpisode}
                                         onClickStopPropagate={this.onNextEpisode}/>
+                            <span className='serio-growable'/>
+                            <IconButton icon={isFullScreen ? FULLSCREEN_EXIT : FULLSCREEN}
+                                        size={MEDIUM_SIZE}
+                                        onClickStopPropagate={this.toggleFullScreen.bind(this)}/>
                         </div>
                     </div>
                 </div>
