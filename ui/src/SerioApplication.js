@@ -182,7 +182,7 @@ export class SerioApplication extends React.Component {
                            onProgressChange={progress => window.serioController.reportShowWatchProgress(progress)}
                            onBack={() => window.serioController.back()}
                            onEnd={() => window.serioController.playNextEpisode()}
-                           onError={error => window.serioController.displayError(error)}
+                           onError={error => window.serioController.displayError(`${error}. You might need to re-crawl the show.`)}
                            onPreviousEpisode={() => window.serioController.playPreviousEpisode()}
                            onNextEpisode={() => window.serioController.playNextEpisode()}/>;
     }
