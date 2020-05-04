@@ -3,11 +3,20 @@ package org.serio.desktop.platform;
 import java.awt.*;
 import java.net.URL;
 
+/**
+ * Windows {@link DesktopPlatform}.
+ */
 public class WindowsPlatform extends DesktopPlatform {
+    /**
+     * @see DesktopPlatform#DesktopPlatform(String)
+     */
     public WindowsPlatform(String applicationName) {
         super(applicationName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void displayTextAsNotification(String text) {
         try {
