@@ -115,7 +115,7 @@ export default class ShowPlayer extends React.Component {
     }
     render() {
         const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls} = this.state;
-        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode} = this.props;
+        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, fullBodyPlayPause} = this.props;
         const controlsStyle = {opacity: displayControls ? 1 : 0, cursor: displayControls ? 'auto' : 'none'};
         const buffering = isBuffering ? <CircularProgress/> : null;
         return (
@@ -137,7 +137,7 @@ export default class ShowPlayer extends React.Component {
                 <div className='serio-show-player-layer serio-show-player-buffering'>
                     {buffering}
                 </div>
-                <div className='serio-show-player-layer serio-show-player-controls' style={controlsStyle} onClick={this.togglePlay.bind(this)}>
+                <div className='serio-show-player-layer serio-show-player-controls' style={controlsStyle} onClick={fullBodyPlayPause ? this.togglePlay.bind(this) : null}>
                     <div className='serio-show-player-title serio-show-player-margin'>
                         <IconButton icon={ARROW_BACK}
                                     size={MEDIUM_SIZE}

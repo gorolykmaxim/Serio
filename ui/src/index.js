@@ -27,7 +27,7 @@ if (window.runtimeType === DEVELOPMENT_RUNTIME) {
 
 ReactDOM.render(
   <React.StrictMode>
-      <SerioApplication isTv={window.platform === TV_PLATFORM}/>
+      <SerioApplication isTv={window.platform === TV_PLATFORM} isDesktop={window.platform === DESKTOP_PLATFORM}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

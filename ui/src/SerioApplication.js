@@ -43,6 +43,9 @@ export class SerioApplication extends React.Component {
     get isTv() {
         return this.props.isTv;
     }
+    get isDesktop() {
+        return this.props.isDesktop;
+    }
     componentDidMount() {
         window.addEventListener(EVENT_TYPE, this.handleEvent);
     }
@@ -179,6 +182,7 @@ export class SerioApplication extends React.Component {
                            hasPreviousEpisode={hasPreviousEpisode}
                            hasNextEpisode={hasNextEpisode}
                            startProgress={startProgress}
+                           fullBodyPlayPause={this.isDesktop}
                            onProgressChange={progress => window.serioController.reportShowWatchProgress(progress)}
                            onBack={() => window.serioController.back()}
                            onEnd={() => window.serioController.playNextEpisode()}
