@@ -11,6 +11,7 @@ import netscape.javascript.JSObject;
 import org.apache.commons.io.IOUtils;
 import org.serio.core.Core;
 import org.serio.core.applicationcontroller.ApplicationController;
+import org.serio.core.applicationcontroller.BackgroundThreadApplicationControllerProxy;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.desktop.platform.DesktopPlatform;
 import org.serio.desktop.platform.Platforms;
@@ -70,7 +71,7 @@ public class SerioDesktop extends Application {
         ApplicationController controller = core.getApplicationController();
         ExecutorService controllerService = Executors.newSingleThreadExecutor();
         closeables.add(controllerService::shutdownNow);
-        BackgroundThreadApplicationControllerProxy controllerProxy = new BackgroundThreadApplicationControllerProxy(controller, controllerService);
+        ApplicationController controllerProxy = new BackgroundThreadApplicationControllerProxy(controller, controllerService);
         // Bootstrap the application
         URL uiEntryPoint = classLoader.getResource("assets/index.html");
         webEngine.load(String.format("%s#platform=0&runtimeType=0", uiEntryPoint));
