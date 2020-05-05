@@ -132,15 +132,9 @@ export default class ShowPlayer extends React.Component {
     }
     render() {
         const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls, isFullScreen} = this.state;
-        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, enableFullScreen} = this.props;
+        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode} = this.props;
         const controlsStyle = {opacity: displayControls ? 1 : 0, cursor: displayControls ? 'auto' : 'none'};
         const buffering = isBuffering ? <CircularProgress/> : null;
-        let fullscreenButton = null;
-        if (enableFullScreen) {
-            fullscreenButton = <IconButton icon={isFullScreen ? FULLSCREEN_EXIT : FULLSCREEN}
-                                           size={MEDIUM_SIZE}
-                                           onClickStopPropagate={this.toggleFullScreen.bind(this)}/>;
-        }
         return (
             <div className='serio-full-height serio-show-player-container' onMouseMove={this.handleUserActivity.bind(this)} onKeyDown={this.handleUserActivity.bind(this)}>
                 <ReactPlayer width='100%'
@@ -202,7 +196,9 @@ export default class ShowPlayer extends React.Component {
                                         isDisabled={!hasNextEpisode}
                                         onClickStopPropagate={this.onNextEpisode}/>
                             <span className='serio-growable'/>
-                            {fullscreenButton}
+                            <IconButton icon={isFullScreen ? FULLSCREEN_EXIT : FULLSCREEN}
+                                        size={MEDIUM_SIZE}
+                                        onClickStopPropagate={this.toggleFullScreen.bind(this)}/>
                         </div>
                     </div>
                 </div>
