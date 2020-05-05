@@ -7,5 +7,3 @@ export const REPLAY_3O = '\ue05a';
 export const FORWARD_30 = '\ue057';
 export const SKIP_PREVIOUS = '\ue045';
 export const SKIP_NEXT = '\ue044';
-export const FULLSCREEN = '\ue5d0';
-export const FULLSCREEN_EXIT = '\ue5d1';
