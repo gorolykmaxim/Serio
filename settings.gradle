@@ -1,2 +1,4 @@
 include 'core'
 include 'desktop'
+include ':android'
+project(':android').projectDir = new File(settingsDir, 'android');

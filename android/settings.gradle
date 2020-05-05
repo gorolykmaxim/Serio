@@ -1,0 +1,4 @@
+rootProject.name='Serio'
+include ':app'
+include ':core'
+project(':core').projectDir = new File(settingsDir, '../core');
