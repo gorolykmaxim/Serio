@@ -1,6 +1,7 @@
 package org.serio.core;
 
 import org.serio.core.applicationcontroller.ApplicationController;
+import org.serio.core.applicationcontroller.EventStackApplicationController;
 import org.serio.core.clipboard.Clipboard;
 import org.serio.core.httpclient.HttpClient;
 import org.serio.core.notifications.Notifications;
@@ -39,7 +40,7 @@ public class Core {
         Shows shows = new Shows(showStorage, watchHistory);
         ShowsCrawler showsCrawler = new ShowsCrawler(showCrawlerStorage, showCrawlerLogStorage, httpClient, 500);
         ShowPlayer showPlayer = new ShowPlayer(shows);
-        controller = new ApplicationController(clipboard, notifications, showPlayer, shows, showsCrawler, userInterface);
+        controller = new EventStackApplicationController(clipboard, notifications, showPlayer, shows, showsCrawler, userInterface);
     }
 
     /**

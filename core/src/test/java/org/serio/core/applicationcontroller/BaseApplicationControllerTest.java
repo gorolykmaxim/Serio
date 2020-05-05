@@ -64,7 +64,7 @@ public abstract class BaseApplicationControllerTest {
         userInterface = mock(UserInterface.class);
         setUpShows();
         setUpShowsCrawler();
-        applicationController = new ApplicationController(clipboard, notifications, showPlayer, shows, showsCrawler, userInterface);
+        applicationController = new EventStackApplicationController(clipboard, notifications, showPlayer, shows, showsCrawler, userInterface);
     }
 
     private void setUpShows() {
