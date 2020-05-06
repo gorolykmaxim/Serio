@@ -3,15 +3,12 @@ package com.gorolykmaxim.android.serio;
 import android.webkit.JavascriptInterface;
 
 import org.serio.core.applicationcontroller.ApplicationController;
-import org.serio.core.applicationcontroller.BackgroundThreadApplicationControllerProxy;
-
-import java.util.concurrent.ExecutorService;
 
 public class AndroidApplicationControllerDecorator implements ApplicationController {
     private final ApplicationController controller;
 
-    public AndroidApplicationControllerDecorator(ApplicationController controller, ExecutorService service) {
-        this.controller = new BackgroundThreadApplicationControllerProxy(controller, service);
+    public AndroidApplicationControllerDecorator(ApplicationController controller) {
+        this.controller = controller;
     }
 
     @JavascriptInterface
