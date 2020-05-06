@@ -11,6 +11,7 @@ import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.ViewIds;
 
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,8 +19,8 @@ public class AndroidMobileUserInterface extends AndroidUserInterface {
     private static final Set<Integer> FULL_SCREEN_VIEWS = Stream.of(ViewIds.SHOW_PLAYER).collect(Collectors.toSet());
     private int lastView;
 
-    public AndroidMobileUserInterface(String userInterfaceEntryPointLocation) {
-        super(userInterfaceEntryPointLocation);
+    public AndroidMobileUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
+        super(userInterfaceEntryPointLocation, scheduledExecutorService);
         lastView = -1;
     }
 

@@ -5,7 +5,6 @@ import android.app.Application;
 import org.android.serio.storage.AndroidStorage;
 import org.android.serio.userinterface.AndroidUserInterface;
 import org.android.serio.userinterface.AndroidUserInterfaces;
-
 import org.serio.core.Core;
 import org.serio.core.applicationcontroller.BackgroundThreadApplicationControllerProxy;
 import org.serio.core.clipboard.Clipboard;
@@ -13,6 +12,7 @@ import org.serio.core.httpclient.HttpClient;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class SerioApplication extends Application {
     private AndroidNotifications notifications;
@@ -22,7 +22,8 @@ public class SerioApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AndroidStorage storage = new AndroidStorage(this);
-        userInterface = AndroidUserInterfaces.createForCurrentPlatform("file:///android_asset/index.html", this);
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        userInterface = AndroidUserInterfaces.createForCurrentPlatform("file:///android_asset/index.html", this, scheduledExecutorService);
         Clipboard clipboard = new AndroidClipboard("Serio", this);
         notifications = new AndroidNotifications();
         HttpClient httpClient = new AndroidHttpClient();
@@ -35,7 +36,6 @@ public class SerioApplication extends Application {
                 )
         );
         userInterface.setApplicationController(androidController);
-        androidController.viewAllShows();
     }
 
     public AndroidNotifications getNotifications() {

@@ -18,21 +18,28 @@ import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.core.userinterface.ViewIds;
 
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public abstract class AndroidUserInterface implements UserInterface {
     private final String userInterfaceEntryPointLocation;
     private final ObjectMapper objectMapper;
     private final MutableLiveData<ApplicationEvent> applicationEventObserver;
     private final WebChromeClient chromeClient;
+    private final ScheduledExecutorService scheduledExecutorService;
     private AndroidApplicationControllerDecorator applicationController;
+    private boolean isInitialized;
     protected int currentView;
 
-    public AndroidUserInterface(String userInterfaceEntryPointLocation) {
+    public AndroidUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
         this.userInterfaceEntryPointLocation = userInterfaceEntryPointLocation;
+        this.scheduledExecutorService = scheduledExecutorService;
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new Jdk8Module());
         this.applicationEventObserver = new MutableLiveData<>();
         chromeClient = new DarkVideoPosterClient();
         currentView = -1;
+        isInitialized = false;
     }
 
     public void setApplicationController(AndroidApplicationControllerDecorator applicationController) {
@@ -49,6 +56,10 @@ public abstract class AndroidUserInterface implements UserInterface {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                if (!isInitialized) {
+                    isInitialized = true;
+                    scheduledExecutorService.schedule(applicationController::viewAllShows, 1500, TimeUnit.MILLISECONDS);
+                }
                 applicationEventObserver.observe(activity, event -> {
                     currentView = event.getViewId();
                     sendEventToWebView(event, webView, activity);

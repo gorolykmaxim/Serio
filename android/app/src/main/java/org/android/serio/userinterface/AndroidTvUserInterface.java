@@ -7,9 +7,12 @@ import androidx.activity.ComponentActivity;
 
 import org.serio.core.userinterface.ApplicationEvent;
 
+import java.util.concurrent.ScheduledExecutorService;
+
 public class AndroidTvUserInterface extends AndroidUserInterface {
-    public AndroidTvUserInterface(String userInterfaceEntryPointLocation) {
-        super(userInterfaceEntryPointLocation);
+
+    public AndroidTvUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
+        super(userInterfaceEntryPointLocation, scheduledExecutorService);
     }
 
     @Override
