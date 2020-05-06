@@ -36,12 +36,22 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+/**
+ * Android implementation of all the storage modules of the {@link org.serio.core.Core}.
+ *
+ * <p>Uses the Room ORM to store data in a SQLite database.</p>
+ */
 public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage, ShowStorage, WatchHistory {
     private PersistentCrawlLogEntryDao crawlLogEntryDao;
     private PersistentEpisodeViewDao episodeViewDao;
     private PersistentShowCrawlerDao showCrawlerDao;
     private PersistentShowDao showDao;
 
+    /**
+     * Construct a storage.
+     *
+     * @param context context that will be used to build a database instance
+     */
     public AndroidStorage(Context context) {
         SerioDatabase database = Room.databaseBuilder(context, SerioDatabase.class, SerioDatabase.NAME)
                 .build();
@@ -51,6 +61,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         showDao = database.getShowDao();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Optional<List<CrawlLogEntry>>> getLastCrawlingLogOfTheShow(String showId) {
         return execute(() -> {
@@ -62,6 +75,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         }, "get last crawling log of the show with ID '%s'", showId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveCrawlingLogOfTheShow(String showId, List<CrawlLogEntry> log) {
        execute(() -> {
@@ -74,6 +90,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
        }, "save crawling log of the show with ID '%s': %s", showId, log);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<String> findShowCrawlerByShowId(String showId) {
         return execute(
@@ -82,6 +101,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveShowCrawler(String showId, String showCrawler) {
         execute(
@@ -90,6 +112,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteShowCrawlerByShowId(String showId) {
         execute(
@@ -98,6 +123,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Show> findById(UUID id) {
         return execute(() -> {
@@ -111,6 +139,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         }, "find show with ID '%s'", id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<List<ShowMetaData>> findAll() {
         return execute(
@@ -119,6 +150,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<Boolean> containsShowWithName(String name) {
         return execute(
@@ -127,6 +161,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(Show show) {
         execute(() -> {
@@ -139,6 +176,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         }, "save %s", show);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteById(UUID id) {
         execute(
@@ -147,6 +187,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<List<ShowView>> getShowWatchHistory() {
         return execute(() ->
@@ -157,6 +200,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
                 "get watch history of all shows");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Future<List<EpisodeView>> getEpisodeWatchHistoryOfShow(String showId) {
         return execute(() ->
@@ -168,6 +214,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void watchShowEpisode(String showId, String episodeId, WatchProgress watchProgress) {
         execute(
@@ -176,6 +225,9 @@ public class AndroidStorage implements ShowCrawlerLogStorage, ShowCrawlerStorage
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clearWatchHistoryOfShow(String showId) {
         execute(
