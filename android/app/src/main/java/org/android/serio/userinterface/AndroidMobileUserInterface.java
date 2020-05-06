@@ -15,15 +15,32 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * {@link AndroidUserInterface} on mobile devices (smart-phones and tablets).
+ *
+ * <p>Any time one of the views, specified in {@link AndroidMobileUserInterface#FULL_SCREEN_VIEWS},
+ * will get rendered - the user interface will transition into a landscape mode and will go
+ * {@link View#SYSTEM_UI_FLAG_IMMERSIVE_STICKY} full screen. Otherwise the user interface
+ * will always be in a portrait mode.</p>
+ */
 public class AndroidMobileUserInterface extends AndroidUserInterface {
-    private static final Set<Integer> FULL_SCREEN_VIEWS = Stream.of(ViewIds.SHOW_PLAYER).collect(Collectors.toSet());
+    /**
+     * Set of IDs of views, which will be displayed in full screen immersive mode.
+     */
+    public static final Set<Integer> FULL_SCREEN_VIEWS = Stream.of(ViewIds.SHOW_PLAYER).collect(Collectors.toSet());
     private int lastView;
 
+    /**
+     * @see AndroidUserInterface#AndroidUserInterface(String, ScheduledExecutorService)
+     */
     public AndroidMobileUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
         super(userInterfaceEntryPointLocation, scheduledExecutorService);
         lastView = -1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onActivityCreate(Activity activity) {
         activity.setRequestedOrientation(isDisplayingFullScreenView() ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -32,6 +49,9 @@ public class AndroidMobileUserInterface extends AndroidUserInterface {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onActivityWindowFocusChanged(Activity activity, boolean hasFocus) {
         if (hasFocus && isDisplayingFullScreenView()) {
@@ -39,6 +59,9 @@ public class AndroidMobileUserInterface extends AndroidUserInterface {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void sendEventToWebView(ApplicationEvent event, WebView webView, ComponentActivity activity) {
         int previousView = lastView;
@@ -50,6 +73,9 @@ public class AndroidMobileUserInterface extends AndroidUserInterface {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected int getPlatform() {
         return 1;
