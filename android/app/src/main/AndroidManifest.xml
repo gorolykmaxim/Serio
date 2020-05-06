@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gorolykmaxim.android.serio">
+    package="org.android.serio">
 
     <application
         android:name=".SerioApplication"

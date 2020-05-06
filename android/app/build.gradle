@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.gorolykmaxim.android.serio"
+        applicationId "org.android.serio"
         minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
