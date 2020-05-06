@@ -14,10 +14,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * Entry point of the application.
+ *
+ * <p>Constructs all the modules of the application and wires them together.</p>
+ */
 public class SerioApplication extends Application {
     private AndroidNotifications notifications;
     private AndroidUserInterface userInterface;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,10 +46,20 @@ public class SerioApplication extends Application {
         userInterface.setApplicationController(androidController);
     }
 
+    /**
+     * Get the module, used to display notifications
+     *
+     * @return notifications modules
+     */
     public AndroidNotifications getNotifications() {
         return notifications;
     }
 
+    /**
+     * Get the module, used to display the user interface.
+     *
+     * @return user interface module
+     */
     public AndroidUserInterface getUserInterface() {
         return userInterface;
     }

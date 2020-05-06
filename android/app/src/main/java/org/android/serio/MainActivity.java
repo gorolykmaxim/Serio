@@ -7,9 +7,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.android.serio.userinterface.AndroidUserInterface;
 
+/**
+ * Main activity of the application, which only has a {@link WebView} in it, where the actual
+ * user interface is being rendered in.
+ */
 public class MainActivity extends AppCompatActivity {
     private AndroidUserInterface userInterface;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,11 +29,17 @@ public class MainActivity extends AppCompatActivity {
         userInterface.setWebView(webView, this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         userInterface.onActivityWindowFocusChanged(this, hasFocus);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onBackPressed() {
         userInterface.onActivityBackPressed(super::onBackPressed);
