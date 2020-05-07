@@ -3,6 +3,7 @@ import {
     CRAWL_LOG,
     CRAWL_LOG_ENTRY_DETAILS,
     CRAWL_PREVIEW,
+    CRAWLER_HELP,
     CRAWLING_IN_PROGRESS,
     EDIT_CRAWLER,
     EDIT_SHOW_CRAWLER,
@@ -229,6 +230,7 @@ export default function enableDevelopmentApi() {
     registerFunction('watchIsOverDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_WATCH_IS_OVER_DIALOG, showName: shows[0].name}));
     registerFunction('errorDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_ERROR_DIALOG, errorMessage: 'An error message that will be displayed to the user...'}));
     registerFunction('showOverrideDialog', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: SHOW_OVERRIDE_DIALOG, showName: shows[0].name}));
+    registerFunction('crawlerHelp', viewNameToTrigger, () => window.dispatchApplicationEvent({viewId: CRAWLER_HELP}));
     console.info(`You can also use those function names as a window.location.hash attribute "view" like "#view=${Object.keys(viewNameToTrigger)[0]}".`);
 }
 

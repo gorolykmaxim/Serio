@@ -11,6 +11,7 @@ import ShowDetails from "./views/ShowDetails";
 import ShowPlayer from "./views/ShowPlayer";
 import Logo from "./views/Logo";
 import Dialog from "./views/Dialog";
+import CrawlerHelp from "./views/CrawlerHelp";
 
 const EVENT_TYPE = 'serio-event';
 
@@ -33,6 +34,7 @@ export const SHOW_DELETE_SHOW_DIALOG = 11;
 export const SHOW_WATCH_IS_OVER_DIALOG = 12;
 export const SHOW_ERROR_DIALOG = 13;
 export const SHOW_OVERRIDE_DIALOG = 14;
+export const CRAWLER_HELP = 15;
 
 export class SerioApplication extends React.Component {
     constructor(props, context) {
@@ -88,6 +90,8 @@ export class SerioApplication extends React.Component {
                 return this.renderErrorDialog();
             case SHOW_OVERRIDE_DIALOG:
                 return this.renderShowOverrideDialog();
+            case CRAWLER_HELP:
+                return this.renderCrawlerHelp();
             default:
                 if (!viewId) {
                     return <Logo/>;
@@ -130,6 +134,7 @@ export class SerioApplication extends React.Component {
                             crawler={crawler}
                             onCrawlerChange={rawCrawler => window.serioController.setCrawler(rawCrawler)}
                             onCancel={() => window.serioController.back()}
+                            onHelp={() => window.serioController.displayCrawlerHelp()}
                             onPreview={() => window.serioController.previewCrawler()}
                             onSave={() => window.serioController.saveCrawler()}/>;
     }
@@ -268,5 +273,8 @@ export class SerioApplication extends React.Component {
         return <Dialog title={`Show '${showName}' already exists`}
                        text={'Are you sure you want to override the existing crawler and the show with the new ones?'}
                        actions={actions}/>;
+    }
+    renderCrawlerHelp() {
+        return <CrawlerHelp onBack={() => window.serioController.back()}/>;
     }
 }

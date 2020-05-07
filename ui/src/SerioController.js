@@ -98,4 +98,7 @@ export default class SerioController {
     displayError(error) {
         console.info(`Opening error dialog to display '${error}'`);
     }
+    displayCrawlerHelp() {
+        console.info('Opening the crawler help view');
+    }
 }

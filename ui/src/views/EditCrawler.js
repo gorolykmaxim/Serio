@@ -11,6 +11,7 @@ export default function EditCrawler(props) {
     const crawler = props.crawler;
     const onCancel = getFunction(props.onCancel);
     const onCrawlerChange = getFunction(props.onCrawlerChange);
+    const onHelp = getFunction(props.onHelp);
     const onPreview = getFunction(props.onPreview);
     const onSave = getFunction(props.onSave);
     return (
@@ -25,6 +26,7 @@ export default function EditCrawler(props) {
                       autoFocus={true}/>
             <div className='serio-form-actions serio-margin'>
                 <Button text={'cancel'} onClick={onCancel}/>
+                <Button text={'help'} onClick={onHelp} className='serio-margin-before'/>
                 <Button text={'preview'} onClick={onPreview} className='serio-margin-before'/>
                 <Button text={'save'} onClick={onSave} className='serio-margin-before'/>
             </div>
