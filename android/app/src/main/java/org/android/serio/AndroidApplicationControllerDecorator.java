@@ -313,6 +313,15 @@ public class AndroidApplicationControllerDecorator implements ApplicationControl
      */
     @JavascriptInterface
     @Override
+    public void displayCrawlerHelp() {
+        controller.displayCrawlerHelp();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @JavascriptInterface
+    @Override
     public void back() {
         controller.back();
     }
