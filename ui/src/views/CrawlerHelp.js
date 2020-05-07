@@ -69,7 +69,7 @@ export default function CrawlerHelp(props) {
             </div>
             <div className='serio-padding'>
                 <Text type={BODY_1} wrap={true}>Step with "type": "fetch" treats every string from the input array as
-                    a link, fetches content of such link and returns an array of fetched contents.</Text>
+                    a link, fetches content of each link and returns an array of fetched contents.</Text>
             </div>
             <div className='serio-padding'>
                 <Text type={BODY_1} wrap={true}>Step with "type": "regExp" applies the regular expression, specified in
