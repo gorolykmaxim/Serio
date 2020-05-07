@@ -280,6 +280,14 @@ public class BackgroundThreadApplicationControllerProxy implements ApplicationCo
      * {@inheritDoc}
      */
     @Override
+    public void displayCrawlerHelp() {
+        service.execute(controller::displayCrawlerHelp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void back() {
         service.execute(controller::back);
     }

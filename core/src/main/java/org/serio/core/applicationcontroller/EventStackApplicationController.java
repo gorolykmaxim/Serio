@@ -10,6 +10,7 @@ import org.serio.core.applicationcontroller.tasks.allshows.ImportShowFromJsonTas
 import org.serio.core.applicationcontroller.tasks.allshows.SelectShowTask;
 import org.serio.core.applicationcontroller.tasks.crawllog.ViewLogEntryTask;
 import org.serio.core.applicationcontroller.tasks.crawlpreview.ViewCrawlLogTask;
+import org.serio.core.applicationcontroller.tasks.editcrawler.DisplayCrawlerHelpTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.PreviewCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.SaveCrawlerTask;
 import org.serio.core.applicationcontroller.tasks.editcrawler.SetCrawlerTask;
@@ -344,6 +345,14 @@ public class EventStackApplicationController implements ApplicationController {
     @Override
     public synchronized void displayError(String error) {
         executeTask(new DisplayErrorTask(error));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void displayCrawlerHelp() {
+        executeTask(new DisplayCrawlerHelpTask());
     }
 
     /**

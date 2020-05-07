@@ -69,6 +69,17 @@ public class AllShowsTest extends BaseApplicationControllerTest {
         assertErrorReceived();
     }
 
+    @Test
+    public void shouldDisplayErrorAndGoBackToAllShowsView() {
+        // given
+        applicationController.displayError(expectedException.getMessage());
+        reset(userInterface);
+        // when
+        applicationController.back();
+        // then
+        assertCurrentView(ViewIds.ALL_SHOWS);
+    }
+
     @Override
     public void shouldBack() {
         // when

@@ -65,4 +65,8 @@ public class ViewIds {
      * an existing show.
      */
     public static final int SHOW_OVERRIDE_DIALOG = 14;
+    /**
+     * View that displays the help on how to configure a crawler.
+     */
+    public static final int CRAWLER_HELP = 15;
 }

@@ -385,6 +385,22 @@ public abstract class BaseApplicationControllerTest {
     }
 
     @Test
+    public void shouldDisplayError() {
+        // when
+        applicationController.displayError(expectedException.getMessage());
+        // then
+        assertErrorReceived();
+    }
+
+    @Test
+    public void shouldDisplayCrawlerHelp() {
+        // when
+        applicationController.displayCrawlerHelp();
+        // then
+        verify(userInterface, never()).sendEvent(any());
+    }
+
+    @Test
     public abstract void shouldBack();
 
     protected UUID createShow(String name, boolean hasThumbnail, int episodeCount, int episodesWatched, LocalDateTime lastWatchedDate) {

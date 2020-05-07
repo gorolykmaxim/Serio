@@ -204,6 +204,11 @@ public interface ApplicationController {
     void displayError(String error);
 
     /**
+     * Go to the view with help on how to configure a crawler.
+     */
+    void displayCrawlerHelp();
+
+    /**
      * Go back to the previous view.
      */
     void back();

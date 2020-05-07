@@ -141,6 +141,14 @@ public class EditCrawlerTest extends BaseApplicationControllerTest {
     }
 
     @Override
+    public void shouldDisplayCrawlerHelp() {
+        // when
+        applicationController.displayCrawlerHelp();
+        // then
+        assertCurrentView(ViewIds.CRAWLER_HELP);
+    }
+
+    @Override
     public void shouldBack() {
         // when
         applicationController.back();
