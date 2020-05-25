@@ -33,4 +33,12 @@ public class FetchStep implements CrawlerStep {
     public int hashCode() {
         return Objects.hashCode(TYPE);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "FetchStep{}";
+    }
 }
