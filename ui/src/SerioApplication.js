@@ -178,6 +178,7 @@ export class SerioApplication extends React.Component {
         const {show} = this.state.data;
         return <ShowDetails show={show}
                             hoverableEpisodes={!this.isTv}
+                            hoverableButtons={!this.isTv}
                             scrollOnFocus={this.isTv}
                             onPlay={() => window.serioController.playShow()}
                             onPlayEpisode={episode => window.serioController.playShowEpisode(episode.id)}

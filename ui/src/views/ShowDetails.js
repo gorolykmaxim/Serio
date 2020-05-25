@@ -44,14 +44,14 @@ export default function ShowDetails(props) {
                     <Text type={SUBTITLE_1}>{show.lastWatched ? `Last watched ${show.lastWatched.toLowerCase()}` : ''}</Text>
                 </div>
                 <div>
-                    <Button text='play' autoFocus={hasEpisodes} className='serio-margin' onClick={() => onPlay(show)} disabled={!hasEpisodes}/>
-                    <Button text='back' className='serio-margin' onClick={onBack}/>
-                    <Button text='edit' className='serio-margin' onClick={() => onEdit(show)} autoFocus={!hasEpisodes}/>
-                    <Button text='share crawler' className='serio-margin' onClick={() => onShareCrawler(show)}/>
-                    <Button text='crawl' className='serio-margin' onClick={() => onCrawl(show)}/>
-                    <Button text='view crawl log' className='serio-margin' onClick={() => onViewCrawlLog(show)}/>
-                    <Button text='clear watch history' className='serio-margin' onClick={() => onClearWatchHistory(show)}/>
-                    <Button text='delete' className='serio-margin' onClick={() => onDelete(show)}/>
+                    <Button text='play' autoFocus={hasEpisodes} className='serio-margin' onClick={() => onPlay(show)} disabled={!hasEpisodes} hoverable={props.hoverableButtons}/>
+                    <Button text='back' className='serio-margin' onClick={onBack} hoverable={props.hoverableButtons}/>
+                    <Button text='edit' className='serio-margin' onClick={() => onEdit(show)} autoFocus={!hasEpisodes} hoverable={props.hoverableButtons}/>
+                    <Button text='share crawler' className='serio-margin' onClick={() => onShareCrawler(show)} hoverable={props.hoverableButtons}/>
+                    <Button text='crawl' className='serio-margin' onClick={() => onCrawl(show)} hoverable={props.hoverableButtons}/>
+                    <Button text='view crawl log' className='serio-margin' onClick={() => onViewCrawlLog(show)} hoverable={props.hoverableButtons}/>
+                    <Button text='clear watch history' className='serio-margin' onClick={() => onClearWatchHistory(show)} hoverable={props.hoverableButtons}/>
+                    <Button text='delete' className='serio-margin' onClick={() => onDelete(show)} hoverable={props.hoverableButtons}/>
                 </div>
                 {content}
             </div>

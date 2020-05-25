@@ -12,7 +12,7 @@
     color: #FB8C00;
 }
 
-.serio-button-enabled:hover, .serio-button-enabled:focus {
+.serio-button-enabled.serio-button-hoverable:hover, .serio-button-enabled:focus {
     background-color: #FB8C00;
     color: #000000;
     cursor: pointer;
