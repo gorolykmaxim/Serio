@@ -11,7 +11,6 @@ import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.ViewIds;
 
 import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,10 +30,10 @@ public class AndroidMobileUserInterface extends AndroidUserInterface {
     private int lastView;
 
     /**
-     * @see AndroidUserInterface#AndroidUserInterface(String, ScheduledExecutorService)
+     * @see AndroidUserInterface#AndroidUserInterface(String)
      */
-    public AndroidMobileUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
-        super(userInterfaceEntryPointLocation, scheduledExecutorService);
+    public AndroidMobileUserInterface(String userInterfaceEntryPointLocation) {
+        super(userInterfaceEntryPointLocation);
         lastView = -1;
     }
 

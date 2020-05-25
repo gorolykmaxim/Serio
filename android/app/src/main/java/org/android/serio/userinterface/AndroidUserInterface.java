@@ -1,6 +1,7 @@
 package org.android.serio.userinterface;
 
 import android.app.Activity;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -19,9 +20,6 @@ import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.core.userinterface.ViewIds;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Android implementation of {@link UserInterface}.
  *
@@ -32,22 +30,13 @@ import java.util.concurrent.TimeUnit;
  * <p>It will trigger {@link ApplicationController#viewAllShows()} as soon as the user interface
  * assets complete loading in the {@link WebView}. It will also fully configure the latter
  * one to make sure that the UI assets will be properly displayed in it.</p>
- *
- * <p>It will also make sure, that the application's logo will be displayed for
- * {@link AndroidUserInterface#LOGO_DISPLAY_TIME_IN_MILLISECONDS}. It is done to prevent a flicker
- * of a logo: without a proper delay the logo will appear on a screen for a very-very short
- * period of time and then the {@link ViewIds#ALL_SHOWS} will be displayed. The interval of
- * time in such case will be short enough to be seem like a weird bug.</p>
  */
 public abstract class AndroidUserInterface implements UserInterface {
-    public static final long LOGO_DISPLAY_TIME_IN_MILLISECONDS = 1500;
     private final String userInterfaceEntryPointLocation;
     private final ObjectMapper objectMapper;
     private final MutableLiveData<ApplicationEvent> applicationEventObserver;
     private final WebChromeClient chromeClient;
-    private final ScheduledExecutorService scheduledExecutorService;
     private AndroidApplicationControllerDecorator applicationController;
-    private boolean isInitialized;
     protected int currentView;
 
     /**
@@ -55,20 +44,14 @@ public abstract class AndroidUserInterface implements UserInterface {
      *
      * @param userInterfaceEntryPointLocation absolute path to the entry point of the UI
      *                                        assets - index.html
-     * @param scheduledExecutorService scheduled executor service, that will be used to bootstrap
-     *                                 the {@link ApplicationController} by calling
-     *                                 {@link ApplicationController#viewAllShows()} in it after
-     *                                 a {@link AndroidUserInterface#LOGO_DISPLAY_TIME_IN_MILLISECONDS}.
      */
-    public AndroidUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
+    public AndroidUserInterface(String userInterfaceEntryPointLocation) {
         this.userInterfaceEntryPointLocation = userInterfaceEntryPointLocation;
-        this.scheduledExecutorService = scheduledExecutorService;
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new Jdk8Module());
         this.applicationEventObserver = new MutableLiveData<>();
         chromeClient = new DarkVideoPosterClient();
         currentView = -1;
-        isInitialized = false;
     }
 
     /**
@@ -102,10 +85,7 @@ public abstract class AndroidUserInterface implements UserInterface {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (!isInitialized) {
-                    isInitialized = true;
-                    scheduledExecutorService.schedule(applicationController::viewAllShows, LOGO_DISPLAY_TIME_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
-                }
+                webView.setVisibility(View.VISIBLE);
                 applicationEventObserver.observe(activity, event -> {
                     currentView = event.getViewId();
                     sendEventToWebView(event, webView, activity);

@@ -12,7 +12,6 @@ import org.serio.core.httpclient.HttpClient;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Entry point of the application.
@@ -30,8 +29,7 @@ public class SerioApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AndroidStorage storage = new AndroidStorage(this);
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        userInterface = AndroidUserInterfaces.createForCurrentPlatform("file:///android_asset/index.html", this, scheduledExecutorService);
+        userInterface = AndroidUserInterfaces.createForCurrentPlatform("file:///android_asset/index.html", this);
         Clipboard clipboard = new AndroidClipboard("Serio", this);
         notifications = new AndroidNotifications();
         HttpClient httpClient = new AndroidHttpClient();
@@ -44,6 +42,7 @@ public class SerioApplication extends Application {
                 )
         );
         userInterface.setApplicationController(androidController);
+        androidController.viewAllShows();
     }
 
     /**

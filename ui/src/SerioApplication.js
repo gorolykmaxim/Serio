@@ -42,21 +42,31 @@ export class SerioApplication extends React.Component {
         this.state = {data: {}};
         this.handleEvent = this.handleEvent.bind(this);
     }
+
     get isTv() {
         return this.props.isTv;
     }
+
     get isDesktop() {
         return this.props.isDesktop;
     }
+
+    get displayLogo() {
+        return this.props.displayLogo;
+    }
+
     componentDidMount() {
         window.addEventListener(EVENT_TYPE, this.handleEvent);
     }
+
     componentWillUnmount() {
         window.removeEventListener(EVENT_TYPE, this.handleEvent);
     }
+
     handleEvent(event) {
         this.setState({data: event.detail});
     }
+
     render() {
         const viewId = this.state.data.viewId;
         switch (viewId) {
@@ -94,7 +104,7 @@ export class SerioApplication extends React.Component {
                 return this.renderCrawlerHelp();
             default:
                 if (!viewId) {
-                    return <Logo/>;
+                    return this.displayLogo ? <Logo/> : null;
                 } else {
                     console.error(`Unknown view ID: ${viewId}. Skipping...`);
                 }

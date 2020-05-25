@@ -7,17 +7,15 @@ import androidx.activity.ComponentActivity;
 
 import org.serio.core.userinterface.ApplicationEvent;
 
-import java.util.concurrent.ScheduledExecutorService;
-
 /**
  * {@link AndroidUserInterface} on TV devices.
  */
 public class AndroidTvUserInterface extends AndroidUserInterface {
     /**
-     * @see AndroidUserInterface#AndroidUserInterface(String, ScheduledExecutorService)
+     * @see AndroidUserInterface#AndroidUserInterface(String)
      */
-    public AndroidTvUserInterface(String userInterfaceEntryPointLocation, ScheduledExecutorService scheduledExecutorService) {
-        super(userInterfaceEntryPointLocation, scheduledExecutorService);
+    public AndroidTvUserInterface(String userInterfaceEntryPointLocation) {
+        super(userInterfaceEntryPointLocation);
     }
 
     /**
