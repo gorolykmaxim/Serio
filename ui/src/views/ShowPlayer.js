@@ -21,6 +21,7 @@ export default class ShowPlayer extends React.Component {
         console.assert(props.episodeName);
         this.inactivityTimeout = null;
         this.player = null;
+        this.playButton = null;
         this.isInitialBufferingComplete = false;
         this.state = {
             playedTime: 0,
@@ -49,21 +50,33 @@ export default class ShowPlayer extends React.Component {
     get onProgressChange() {
         return getFunction(this.props.onProgressChange);
     }
+
     get onEnd() {
         return getFunction(this.props.onEnd);
     }
+
     get onError() {
         return getFunction(this.props.onError);
     }
+
     componentDidMount() {
         this.handleUserActivity();
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.videoUrl !== this.props.videoUrl) {
+            this.focusPlayButtonIfNotFocused();
+        }
+    }
+
     componentWillUnmount() {
         clearTimeout(this.inactivityTimeout);
     }
+
     togglePlay() {
         this.setState({isPlaying: !this.state.isPlaying});
     }
+
     createSeek(timeDelta) {
         return () => {
             this.player.seekTo(this.state.playedTime + timeDelta);
@@ -111,15 +124,24 @@ export default class ShowPlayer extends React.Component {
         this.inactivityTimeout = setTimeout(() => {
             this.setState({displayControls: false});
             this.inactivityTimeout = null;
+            this.focusPlayButtonIfNotFocused();
         }, INACTIVITY_TIMEOUT);
     }
+
+    focusPlayButtonIfNotFocused() {
+        if (this.playButton && document.activeElement !== this.playButton) {
+            this.playButton.focus();
+        }
+    }
+
     render() {
         const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls} = this.state;
         const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, fullBodyPlayPause} = this.props;
         const controlsStyle = {opacity: displayControls ? 1 : 0, cursor: displayControls ? 'auto' : 'none'};
         const buffering = isBuffering ? <CircularProgress/> : null;
         return (
-            <div className='serio-full-height serio-show-player-container' onMouseMove={this.handleUserActivity.bind(this)} onKeyDown={this.handleUserActivity.bind(this)}>
+            <div className='serio-full-height serio-show-player-container'
+                 onMouseMove={this.handleUserActivity.bind(this)} onKeyDown={this.handleUserActivity.bind(this)}>
                 <ReactPlayer width='100%'
                              height='100%'
                              url={videoUrl}
@@ -158,6 +180,7 @@ export default class ShowPlayer extends React.Component {
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         autoFocus={true}
+                                        focusableRef={button => this.playButton = button}
                                         onClickStopPropagate={this.togglePlay.bind(this)}/>
                             <IconButton icon={REPLAY_3O}
                                         className='serio-show-player-margin-after'
