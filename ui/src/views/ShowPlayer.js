@@ -66,6 +66,7 @@ export default class ShowPlayer extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.videoUrl !== this.props.videoUrl) {
             this.focusPlayButtonIfNotFocused();
+            this.setState({isPlaying: true});
         }
     }
 
