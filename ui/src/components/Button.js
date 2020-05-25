@@ -15,7 +15,7 @@ export default class Button extends AutoFocusable {
         } else {
             className.push("serio-button-enabled");
         }
-        if (this.props.hoverable) {
+        if (this.props.hoverable !== false) {
             className.push('serio-button-hoverable');
         }
         return (
