@@ -3,7 +3,9 @@ package org.serio.core.showscrawler.serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.serio.core.showscrawler.crawler.*;
+import org.apache.commons.lang3.StringUtils;
+import org.serio.core.showscrawler.crawler.Crawler;
+import org.serio.core.showscrawler.crawler.ShowCrawler;
 import org.serio.core.showscrawler.crawler.step.*;
 
 import java.util.ArrayList;
@@ -55,6 +57,9 @@ public class CrawlerSerializer {
      */
     public ShowCrawler deserializeShowCrawler(String serializedShowCrawler) {
         try {
+            if (StringUtils.isEmpty(serializedShowCrawler)) {
+                throw new IllegalArgumentException("Show crawler is not specified");
+            }
             Map<String, Object> rawShowCrawler = deserialize(serializedShowCrawler, Map.class);
             return new ShowCrawler(
                     (String) rawShowCrawler.get("showName"),
@@ -75,6 +80,9 @@ public class CrawlerSerializer {
      */
     public Crawler deserializeCrawler(String serializedCrawler) {
         try {
+            if (StringUtils.isEmpty(serializedCrawler)) {
+                throw new IllegalArgumentException("Crawler is not specified");
+            }
             return createCrawlerFromMap(deserialize(serializedCrawler, Map.class), null);
         } catch (Exception e) {
             throw new CrawlerDeserializationException(serializedCrawler, e);
