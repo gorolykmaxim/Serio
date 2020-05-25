@@ -199,6 +199,7 @@ export class SerioApplication extends React.Component {
                            hasNextEpisode={hasNextEpisode}
                            startProgress={startProgress}
                            fullBodyPlayPause={this.isDesktop}
+                           hoverableButtons={this.isDesktop}
                            onProgressChange={progress => window.serioController.reportShowWatchProgress(progress)}
                            onBack={() => window.serioController.back()}
                            onEnd={() => window.serioController.playNextEpisode()}

@@ -26,7 +26,7 @@
     font-size: 8rem !important;
 }
 
-.serio-icon-button-enabled:hover, .serio-icon-button-enabled:focus {
+.serio-icon-button-enabled.serio-icon-button-hoverable:hover, .serio-icon-button-enabled:focus {
     background-color: #FB8C00;
     color: #000000;
     cursor: pointer;

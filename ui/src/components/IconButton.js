@@ -21,6 +21,9 @@ export class IconButton extends AutoFocusable {
         } else {
             buttonClassName.push('serio-icon-button-enabled')
         }
+        if (this.props.hoverable !== false) {
+            buttonClassName.push('serio-icon-button-hoverable');
+        }
         if (this.props.className) {
             buttonClassName.push(this.props.className);
         }

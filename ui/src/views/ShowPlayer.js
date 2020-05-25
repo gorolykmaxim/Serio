@@ -136,7 +136,7 @@ export default class ShowPlayer extends React.Component {
 
     render() {
         const {playedTime, totalTime, playedPercent, isPlaying, isBuffering, displayControls} = this.state;
-        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, fullBodyPlayPause} = this.props;
+        const {videoUrl, showName, episodeName, hasPreviousEpisode, hasNextEpisode, fullBodyPlayPause, hoverableButtons} = this.props;
         const controlsStyle = {opacity: displayControls ? 1 : 0, cursor: displayControls ? 'auto' : 'none'};
         const buffering = isBuffering ? <CircularProgress/> : null;
         return (
@@ -163,6 +163,7 @@ export default class ShowPlayer extends React.Component {
                     <div className='serio-show-player-title serio-show-player-margin'>
                         <IconButton icon={ARROW_BACK}
                                     size={MEDIUM_SIZE}
+                                    hoverable={hoverableButtons}
                                     onClickStopPropagate={this.onBack}
                                     className='serio-show-player-margin-after'/>
                         <Text type={HEADLINE_5} primary>{showName}</Text>
@@ -181,25 +182,30 @@ export default class ShowPlayer extends React.Component {
                                         size={MEDIUM_SIZE}
                                         autoFocus={true}
                                         focusableRef={button => this.playButton = button}
+                                        hoverable={hoverableButtons}
                                         onClickStopPropagate={this.togglePlay.bind(this)}/>
                             <IconButton icon={REPLAY_3O}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
+                                        hoverable={hoverableButtons}
                                         onClickStopPropagate={this.createSeek(SEEK_TIME_PERIOD * -1)}/>
                             <IconButton icon={FORWARD_30}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
+                                        hoverable={hoverableButtons}
                                         onClickStopPropagate={this.createSeek(SEEK_TIME_PERIOD)}/>
                             <IconButton icon={SKIP_PREVIOUS}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasPreviousEpisode}
+                                        hoverable={hoverableButtons}
                                         onClickStopPropagate={this.onPreviousEpisode}/>
                             <Text type={HEADLINE_5} className='serio-show-player-margin-after' primary>{episodeName}</Text>
                             <IconButton icon={SKIP_NEXT}
                                         className='serio-show-player-margin-after'
                                         size={MEDIUM_SIZE}
                                         isDisabled={!hasNextEpisode}
+                                        hoverable={hoverableButtons}
                                         onClickStopPropagate={this.onNextEpisode}/>
                         </div>
                     </div>
