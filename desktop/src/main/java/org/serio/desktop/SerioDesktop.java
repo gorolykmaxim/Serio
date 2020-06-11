@@ -11,21 +11,15 @@ import netscape.javascript.JSObject;
 import org.apache.commons.io.IOUtils;
 import org.serio.core.Core;
 import org.serio.core.applicationcontroller.ApplicationController;
-import org.serio.core.applicationcontroller.BackgroundThreadApplicationControllerProxy;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.desktop.platform.DesktopPlatform;
 import org.serio.desktop.platform.Platforms;
 import org.serio.desktop.storage.DesktopStorage;
 import org.sqlite.SQLiteDataSource;
 
-import java.io.Closeable;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * The desktop version of the Serio application.
@@ -33,14 +27,7 @@ import java.util.concurrent.Executors;
  * <p>This is the application's entry point and the place where all the modules are being wired-up together.</p>
  */
 public class SerioDesktop extends Application {
-    private final List<Closeable> closeables;
-
-    /**
-     * Construct a Serio desktop application.
-     */
-    public SerioDesktop() {
-        closeables = new ArrayList<>();
-    }
+    private Core core;
 
     /**
      * {@inheritDoc}
@@ -67,11 +54,8 @@ public class SerioDesktop extends Application {
         WebEngine webEngine = webView.getEngine();
         UserInterface userInterface = new DesktopUserInterface(webEngine);
         // Initialize core and the application controller
-        Core core = new Core(platform, httpClient, platform, storage, storage, storage, userInterface, storage);
+        core = new Core(platform, httpClient, platform, storage, storage, storage, userInterface, storage);
         ApplicationController controller = core.getApplicationController();
-        ExecutorService controllerService = Executors.newSingleThreadExecutor();
-        closeables.add(controllerService::shutdownNow);
-        ApplicationController controllerProxy = new BackgroundThreadApplicationControllerProxy(controller, controllerService);
         // Bootstrap the application
         URL uiEntryPoint = classLoader.getResource("assets/index.html");
         webEngine.load(String.format("%s#platform=0&runtimeType=0", uiEntryPoint));
@@ -80,7 +64,7 @@ public class SerioDesktop extends Application {
                 primaryStage.show();
                 controller.viewAllShows();
                 JSObject window = (JSObject) webEngine.executeScript("window");
-                window.setMember("serioController", controllerProxy);
+                window.setMember("serioController", controller);
             }
         });
         primaryStage.setTitle("Serio");
@@ -92,9 +76,7 @@ public class SerioDesktop extends Application {
      */
     @Override
     public void stop() throws Exception {
-        for (Closeable closeable: closeables) {
-            closeable.close();
-        }
+        core.close();
     }
 
     public static void main(String[] args) {
