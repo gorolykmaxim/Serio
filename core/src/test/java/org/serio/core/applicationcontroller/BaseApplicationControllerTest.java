@@ -23,6 +23,7 @@ import org.serio.core.showscrawler.ShowsCrawler;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
 import org.serio.core.showstorage.ShowMetaData;
+import org.serio.core.taskexecutor.TaskExecutor;
 import org.serio.core.userinterface.ApplicationEvent;
 import org.serio.core.userinterface.UserInterface;
 import org.serio.core.userinterface.ViewIds;
@@ -62,9 +63,22 @@ public abstract class BaseApplicationControllerTest {
         shows = mock(Shows.class);
         showsCrawler = mock(ShowsCrawler.class);
         userInterface = mock(UserInterface.class);
+        TaskExecutor taskExecutor = mock(TaskExecutor.class);
+        doAnswer(invocation -> {
+            ((Runnable) invocation.getArgument(0)).run();
+            return null;
+        }).when(taskExecutor).executeOneAtATime(any());
         setUpShows();
         setUpShowsCrawler();
-        applicationController = new EventStackApplicationController(clipboard, notifications, showPlayer, shows, showsCrawler, userInterface);
+        applicationController = new ApplicationController(
+                clipboard,
+                notifications,
+                showPlayer,
+                shows,
+                showsCrawler,
+                userInterface,
+                taskExecutor
+        );
     }
 
     private void setUpShows() {

@@ -28,6 +28,7 @@ interface UserInterface
 [ShowsCrawler] --> ShowCrawlerStorage
 [ShowsCrawler] --> HttpClient
 [ShowsCrawler] --> ShowCrawlerLogStorage
+[ShowsCrawler] --> [TaskExecutor]
 [ShowPlayer] --> [Shows]
 [ApplicationController] --> [Shows]
 [ApplicationController] --> [ShowPlayer]
@@ -35,4 +36,5 @@ interface UserInterface
 [ApplicationController] --> Clipboard
 [ApplicationController] --> Notifications
 [ApplicationController] --> UserInterface
+[ApplicationController] --> [TaskExecutor]
 @enduml

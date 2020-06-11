@@ -12,13 +12,12 @@ import org.serio.core.showscrawler.tasks.CrawlerTask;
 import org.serio.core.showscrawler.tasks.CrawlerTaskException;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
+import org.serio.core.taskexecutor.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -29,25 +28,26 @@ public class ShowsCrawler {
     private final ShowCrawlerLogStorage showCrawlerLogStorage;
     private final HttpClient httpClient;
     private final CrawlerSerializer crawlerSerializer;
-    private final ExecutorService executorService;
+    private final TaskExecutor taskExecutor;
     private final long crawlerLogDetailsLength;
 
     /**
      * Construct a shows crawler module.
      *
-     * @param showCrawlerStorage storage, that will be used to store show crawlers
-     * @param showCrawlerLogStorage storage, that will be used to store show crawling logs
-     * @param httpClient http client, that will be used by crawlers to access web resources
+     * @param showCrawlerStorage      storage, that will be used to store show crawlers
+     * @param showCrawlerLogStorage   storage, that will be used to store show crawling logs
+     * @param httpClient              http client, that will be used by crawlers to access web resources
+     * @param taskExecutor            executor, that will be used to execute crawlers in parallel
      * @param crawlerLogDetailsLength maximum length of each crawling log entry input and output information fields
      */
     public ShowsCrawler(ShowCrawlerStorage showCrawlerStorage, ShowCrawlerLogStorage showCrawlerLogStorage,
-                        HttpClient httpClient, long crawlerLogDetailsLength) {
+                        HttpClient httpClient, TaskExecutor taskExecutor, long crawlerLogDetailsLength) {
         this.showCrawlerStorage = showCrawlerStorage;
         this.showCrawlerLogStorage = showCrawlerLogStorage;
         this.httpClient = httpClient;
+        this.taskExecutor = taskExecutor;
         this.crawlerLogDetailsLength = crawlerLogDetailsLength;
         crawlerSerializer = new CrawlerSerializer();
-        executorService = Executors.newCachedThreadPool();
     }
 
     /**
@@ -156,8 +156,8 @@ public class ShowsCrawler {
 
     private Show crawlShow(ShowCrawler showCrawler, boolean saveCrawler) throws ExecutionException, InterruptedException {
         List<CrawlLogEntry> log = new ArrayList<>();
-        Future<CrawlingResult> thumbnailResultsFuture = executorService.submit(new CrawlerTask(showCrawler.getThumbnailCrawler(), httpClient, crawlerLogDetailsLength));
-        Future<CrawlingResult> episodeVideosFuture = executorService.submit(new CrawlerTask(showCrawler.getEpisodeVideoCrawler(), httpClient, crawlerLogDetailsLength));
+        Future<CrawlingResult> thumbnailResultsFuture = taskExecutor.execute(new CrawlerTask(showCrawler.getThumbnailCrawler(), httpClient, crawlerLogDetailsLength));
+        Future<CrawlingResult> episodeVideosFuture = taskExecutor.execute(new CrawlerTask(showCrawler.getEpisodeVideoCrawler(), httpClient, crawlerLogDetailsLength));
         CrawlingResult thumbnailResults = thumbnailResultsFuture.get();
         String thumbnailUrl = thumbnailResults.getFirstOutputLine();
         log.add(new CrawlLogEntry("Crawling thumbnail"));
@@ -172,7 +172,7 @@ public class ShowsCrawler {
                 episodes.add(new Episode(i + 1, episodeVideoUrls.get(i)));
             }
         } else {
-            Future<CrawlingResult> episodeNamesFuture = executorService.submit(new CrawlerTask(showCrawler.getEpisodeNameCrawler(), httpClient, crawlerLogDetailsLength, episodeVideoUrls));
+            Future<CrawlingResult> episodeNamesFuture = taskExecutor.execute(new CrawlerTask(showCrawler.getEpisodeNameCrawler(), httpClient, crawlerLogDetailsLength, episodeVideoUrls));
             CrawlingResult episodeNameResults = episodeNamesFuture.get();
             log.add(new CrawlLogEntry("Crawling episode names"));
             log.addAll(episodeNameResults.getLog());

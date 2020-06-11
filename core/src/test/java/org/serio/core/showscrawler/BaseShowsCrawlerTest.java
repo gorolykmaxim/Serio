@@ -5,12 +5,13 @@ import org.serio.core.httpclient.HttpClient;
 import org.serio.core.showcrawlerlogstorage.ShowCrawlerLogStorage;
 import org.serio.core.showcrawlerstorage.ShowCrawlerStorage;
 import org.serio.core.showstorage.Show;
+import org.serio.core.taskexecutor.TaskExecutor;
 
 import java.util.Collections;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public abstract class BaseShowsCrawlerTest {
     protected static final String SHOW_NAME = "Game of Thrones";
@@ -192,7 +193,10 @@ public abstract class BaseShowsCrawlerTest {
         showCrawlerStorage = mock(ShowCrawlerStorage.class);
         showCrawlerLogStorage = mock(ShowCrawlerLogStorage.class);
         httpClient = mock(HttpClient.class);
+        TaskExecutor executor = mock(TaskExecutor.class);
+        when(executor.execute(any()))
+                .thenAnswer(invocation -> CompletableFuture.completedFuture(((Callable<CrawlingResult>) invocation.getArgument(0)).call()));
         when(httpClient.fetchContentFromUrl(SHOW_URL)).thenReturn(CompletableFuture.completedFuture(SHOW_WEB_PAGE));
-        showsCrawler = new ShowsCrawler(showCrawlerStorage, showCrawlerLogStorage, httpClient, crawlerLogDetailsLength);
+        showsCrawler = new ShowsCrawler(showCrawlerStorage, showCrawlerLogStorage, httpClient, executor, crawlerLogDetailsLength);
     }
 }
