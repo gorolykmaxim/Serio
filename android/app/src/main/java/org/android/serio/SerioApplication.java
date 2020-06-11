@@ -6,12 +6,8 @@ import org.android.serio.storage.AndroidStorage;
 import org.android.serio.userinterface.AndroidUserInterface;
 import org.android.serio.userinterface.AndroidUserInterfaces;
 import org.serio.core.Core;
-import org.serio.core.applicationcontroller.BackgroundThreadApplicationControllerProxy;
 import org.serio.core.clipboard.Clipboard;
 import org.serio.core.httpclient.HttpClient;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Entry point of the application.
@@ -34,13 +30,7 @@ public class SerioApplication extends Application {
         notifications = new AndroidNotifications();
         HttpClient httpClient = new AndroidHttpClient();
         Core core = new Core(clipboard, httpClient, notifications, storage, storage, storage, userInterface, storage);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        AndroidApplicationControllerDecorator androidController = new AndroidApplicationControllerDecorator(
-                new BackgroundThreadApplicationControllerProxy(
-                        core.getApplicationController(),
-                        executorService
-                )
-        );
+        AndroidApplicationControllerDecorator androidController = new AndroidApplicationControllerDecorator(core.getApplicationController());
         userInterface.setApplicationController(androidController);
         androidController.viewAllShows();
     }

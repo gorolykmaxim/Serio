@@ -8,7 +8,7 @@ import org.serio.core.applicationcontroller.ApplicationController;
  * Decorator of {@link ApplicationController}, that decorates each of it's methods with
  * {@link JavascriptInterface}, so that they can be called from the {@link android.webkit.WebView}.
  */
-public class AndroidApplicationControllerDecorator implements ApplicationController {
+public class AndroidApplicationControllerDecorator {
     private final ApplicationController controller;
 
     /**
@@ -21,307 +21,273 @@ public class AndroidApplicationControllerDecorator implements ApplicationControl
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#viewAllShows()
      */
     @JavascriptInterface
-    @Override
     public void viewAllShows() {
         controller.viewAllShows();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#addShow()
      */
     @JavascriptInterface
-    @Override
     public void addShow() {
         controller.addShow();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#importShowFromJson()
      */
     @JavascriptInterface
-    @Override
     public void importShowFromJson() {
         controller.importShowFromJson();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#setShowCrawler(String)
      */
     @JavascriptInterface
-    @Override
     public void setShowCrawler(String rawShowCrawler) {
         controller.setShowCrawler(rawShowCrawler);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#selectShow(String)
      */
     @JavascriptInterface
-    @Override
     public void selectShow(String showId) {
         controller.selectShow(showId);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#editThumbnailCrawler()
      */
     @JavascriptInterface
-    @Override
     public void editThumbnailCrawler() {
         controller.editThumbnailCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#editEpisodeVideoCrawler()
      */
     @JavascriptInterface
-    @Override
     public void editEpisodeVideoCrawler() {
         controller.editEpisodeVideoCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#editEpisodeNameCrawler()
      */
     @JavascriptInterface
-    @Override
     public void editEpisodeNameCrawler() {
         controller.editEpisodeNameCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#setCrawler(String)
      */
     @JavascriptInterface
-    @Override
     public void setCrawler(String rawCrawler) {
         controller.setCrawler(rawCrawler);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#saveCrawler()
      */
     @JavascriptInterface
-    @Override
     public void saveCrawler() {
         controller.saveCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#setShowName(String)
      */
     @JavascriptInterface
-    @Override
     public void setShowName(String showName) {
         controller.setShowName(showName);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#saveShowCrawler()
      */
     @JavascriptInterface
-    @Override
     public void saveShowCrawler() {
         controller.saveShowCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#importShowCrawler()
      */
     @JavascriptInterface
-    @Override
     public void importShowCrawler() {
         controller.importShowCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#previewCrawler()
      */
     @JavascriptInterface
-    @Override
     public void previewCrawler() {
         controller.previewCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#viewCrawlLog()
      */
     @JavascriptInterface
-    @Override
     public void viewCrawlLog() {
         controller.viewCrawlLog();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#viewLogEntry(int)
      */
     @JavascriptInterface
-    @Override
     public void viewLogEntry(int logEntryId) {
         controller.viewLogEntry(logEntryId);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#playShow()
      */
     @JavascriptInterface
-    @Override
     public void playShow() {
         controller.playShow();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#playShowEpisode(int)
      */
     @JavascriptInterface
-    @Override
     public void playShowEpisode(int episodeNumber) {
         controller.playShowEpisode(episodeNumber);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#editShowCrawler()
      */
     @JavascriptInterface
-    @Override
     public void editShowCrawler() {
         controller.editShowCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#shareShowCrawler()
      */
     @JavascriptInterface
-    @Override
     public void shareShowCrawler() {
         controller.shareShowCrawler();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#crawlShow()
      */
     @JavascriptInterface
-    @Override
     public void crawlShow() {
         controller.crawlShow();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#viewShowCrawlLog()
      */
     @JavascriptInterface
-    @Override
     public void viewShowCrawlLog() {
         controller.viewShowCrawlLog();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#initiateClearShowWatchHistory()
      */
     @JavascriptInterface
-    @Override
     public void initiateClearShowWatchHistory() {
         controller.initiateClearShowWatchHistory();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#initiateShowRemoval()
      */
     @JavascriptInterface
-    @Override
     public void initiateShowRemoval() {
         controller.initiateShowRemoval();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#reportShowWatchProgress(double)
      */
     @JavascriptInterface
-    @Override
     public void reportShowWatchProgress(double progress) {
         controller.reportShowWatchProgress(progress);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#playPreviousEpisode()
      */
     @JavascriptInterface
-    @Override
     public void playPreviousEpisode() {
         controller.playPreviousEpisode();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#playNextEpisode()
      */
     @JavascriptInterface
-    @Override
     public void playNextEpisode() {
         controller.playNextEpisode();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#clearWatchHistory()
      */
     @JavascriptInterface
-    @Override
     public void clearWatchHistory() {
         controller.clearWatchHistory();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#deleteShow()
      */
     @JavascriptInterface
-    @Override
     public void deleteShow() {
         controller.deleteShow();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#playShowFromTheBeginning()
      */
     @JavascriptInterface
-    @Override
     public void playShowFromTheBeginning() {
         controller.playShowFromTheBeginning();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#confirmShowOverride()
      */
     @JavascriptInterface
-    @Override
     public void confirmShowOverride() {
         controller.confirmShowOverride();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#displayError(String)
      */
     @JavascriptInterface
-    @Override
     public void displayError(String error) {
         controller.displayError(error);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#displayCrawlerHelp()
      */
     @JavascriptInterface
-    @Override
     public void displayCrawlerHelp() {
         controller.displayCrawlerHelp();
     }
 
     /**
-     * {@inheritDoc}
+     * @see ApplicationController#back()
      */
     @JavascriptInterface
-    @Override
     public void back() {
         controller.back();
     }
