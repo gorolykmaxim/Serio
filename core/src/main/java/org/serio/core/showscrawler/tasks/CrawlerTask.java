@@ -1,12 +1,16 @@
 package org.serio.core.showscrawler.tasks;
 
-import org.serio.core.httpclient.HttpClient;
 import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
 import org.serio.core.showscrawler.CrawlingResult;
-import org.serio.core.showscrawler.crawler.*;
-import org.serio.core.showscrawler.crawler.step.*;
+import org.serio.core.showscrawler.crawler.Crawler;
+import org.serio.core.showscrawler.crawler.CrawlerStep;
+import org.serio.core.showscrawler.crawler.CrawlerStepTypes;
+import org.serio.core.showscrawler.crawler.UnknownCrawlerStepTypeException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -20,31 +24,29 @@ import java.util.concurrent.Callable;
 public class CrawlerTask implements Callable<CrawlingResult> {
     private final Crawler crawler;
     private final List<String> input;
-    private final HttpClient httpClient;
     private final long logDetailsLength;
-
-    /**
-     * @see CrawlerTask#CrawlerTask(Crawler, HttpClient, long, List)
-     */
-    public CrawlerTask(Crawler crawler, HttpClient httpClient, long logDetailsLength) {
-        this(crawler, httpClient, logDetailsLength, null);
-    }
+    private final CrawlerStepTypes crawlerStepTypes;
+    private final Map<String, CrawlerStepTask> stepTypeToTask;
 
     /**
      * Construct a task, that will execute a crawler.
      *
-     * @param crawler crawler to execute
-     * @param httpClient http client, that can be used by crawler steps, that require it
+     * @param crawler          crawler to execute
+     * @param input            optional input data, that should be passed to the first crawler step of the specified crawler. Can
      * @param logDetailsLength maximum length of {@link CrawlLogEntry#getInputInformation()} and
-     * {@link CrawlLogEntry#getOutputInformation()} of each {@link CrawlLogEntry} generated during the crawling
-     * @param input optional input data, that should be passed to the first crawler step of the specified crawler. Can
-     *              be null
+     *                         {@link CrawlLogEntry#getOutputInformation()} of each {@link CrawlLogEntry} generated during the crawling
+     * @param crawlerStepTypes collection of all possible {@link CrawlerStep} types. Will be used to enrich the
+     *                         exception message in case the task will stumble upon a step with an unknown type.
+     * @param stepTypeToTask   a map where each key is a crawler step type and each value is a corresponding
+     *                         {@link CrawlerStepTask} to be executed upon such step
      */
-    public CrawlerTask(Crawler crawler, HttpClient httpClient, long logDetailsLength, List<String> input) {
+    public CrawlerTask(Crawler crawler, List<String> input, long logDetailsLength, CrawlerStepTypes crawlerStepTypes,
+                       Map<String, CrawlerStepTask> stepTypeToTask) {
         this.crawler = crawler;
-        this.httpClient = httpClient;
-        this.logDetailsLength = logDetailsLength;
         this.input = Collections.unmodifiableList(input != null ? input : new ArrayList<>());
+        this.logDetailsLength = logDetailsLength;
+        this.crawlerStepTypes = crawlerStepTypes;
+        this.stepTypeToTask = stepTypeToTask;
     }
 
     /**
@@ -55,21 +57,13 @@ public class CrawlerTask implements Callable<CrawlingResult> {
         try {
             List<String> data = input;
             List<CrawlLogEntry> log = new ArrayList<>();
-            for (CrawlerStep step: crawler.getSteps()) {
-                CrawlerStepTask task;
-                if (step instanceof ValueStep) {
-                    task = new ValueTask((ValueStep) step);
-                } else if (step instanceof FetchStep) {
-                    task = new FetchTask((FetchStep) step, httpClient);
-                } else if (step instanceof TransformStep) {
-                    task = new TransformTask((TransformStep) step);
-                } else if (step instanceof RegExpStep) {
-                    task = new RegExpTask((RegExpStep) step);
-                } else {
-                    throw new IllegalArgumentException(String.format("%s does not support crawler steps with type '%s'", getClass().getName(), step.getType()));
+            for (CrawlerStep step : crawler.getSteps()) {
+                CrawlerStepTask task = stepTypeToTask.get(step.getType());
+                if (task == null) {
+                    throw new UnknownCrawlerStepTypeException(step.getType(), crawlerStepTypes.getAllTypes());
                 }
-                task = new LoggingTaskDecorator(task, step, log, logDetailsLength);
-                data = task.execute(data);
+                task = new LoggingTaskDecorator(task, log, logDetailsLength);
+                data = task.execute(step, data);
             }
             return new CrawlingResult(data, log);
         } catch (Exception e) {

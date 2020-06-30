@@ -6,10 +6,10 @@ import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
 import org.serio.core.showcrawlerlogstorage.ShowCrawlerLogStorage;
 import org.serio.core.showcrawlerstorage.ShowCrawlerStorage;
 import org.serio.core.showscrawler.crawler.Crawler;
+import org.serio.core.showscrawler.crawler.CrawlerStepTypes;
 import org.serio.core.showscrawler.crawler.ShowCrawler;
-import org.serio.core.showscrawler.serializer.CrawlerSerializer;
-import org.serio.core.showscrawler.tasks.CrawlerTask;
-import org.serio.core.showscrawler.tasks.CrawlerTaskException;
+import org.serio.core.showscrawler.serializer.Serializer;
+import org.serio.core.showscrawler.tasks.*;
 import org.serio.core.showstorage.Episode;
 import org.serio.core.showstorage.Show;
 import org.serio.core.taskexecutor.TaskExecutor;
@@ -26,10 +26,10 @@ import java.util.concurrent.Future;
 public class ShowsCrawler {
     private final ShowCrawlerStorage showCrawlerStorage;
     private final ShowCrawlerLogStorage showCrawlerLogStorage;
-    private final HttpClient httpClient;
-    private final CrawlerSerializer crawlerSerializer;
+    private final CrawlerStepTypes crawlerStepTypes;
+    private final CrawlerTaskFactory crawlerTaskFactory;
+    private final Serializer crawlerSerializer;
     private final TaskExecutor taskExecutor;
-    private final long crawlerLogDetailsLength;
 
     /**
      * Construct a shows crawler module.
@@ -44,10 +44,14 @@ public class ShowsCrawler {
                         HttpClient httpClient, TaskExecutor taskExecutor, long crawlerLogDetailsLength) {
         this.showCrawlerStorage = showCrawlerStorage;
         this.showCrawlerLogStorage = showCrawlerLogStorage;
-        this.httpClient = httpClient;
         this.taskExecutor = taskExecutor;
-        this.crawlerLogDetailsLength = crawlerLogDetailsLength;
-        crawlerSerializer = new CrawlerSerializer();
+        crawlerStepTypes = new CrawlerStepTypes();
+        crawlerSerializer = new Serializer(crawlerStepTypes);
+        crawlerTaskFactory = new CrawlerTaskFactory(crawlerStepTypes, crawlerLogDetailsLength);
+        registerCrawlerStepType("fetch", new FetchTask(httpClient));
+        registerCrawlerStepType("regExp", new RegExpTask(), RegExpTask.REG_EXP);
+        registerCrawlerStepType("transform", new TransformTask(), TransformTask.TEMPLATE);
+        registerCrawlerStepType("value", new ValueTask(), ValueTask.VALUE);
     }
 
     /**
@@ -156,8 +160,8 @@ public class ShowsCrawler {
 
     private Show crawlShow(ShowCrawler showCrawler, boolean saveCrawler) throws ExecutionException, InterruptedException {
         List<CrawlLogEntry> log = new ArrayList<>();
-        Future<CrawlingResult> thumbnailResultsFuture = taskExecutor.execute(new CrawlerTask(showCrawler.getThumbnailCrawler(), httpClient, crawlerLogDetailsLength));
-        Future<CrawlingResult> episodeVideosFuture = taskExecutor.execute(new CrawlerTask(showCrawler.getEpisodeVideoCrawler(), httpClient, crawlerLogDetailsLength));
+        Future<CrawlingResult> thumbnailResultsFuture = taskExecutor.execute(crawlerTaskFactory.create(showCrawler.getThumbnailCrawler()));
+        Future<CrawlingResult> episodeVideosFuture = taskExecutor.execute(crawlerTaskFactory.create(showCrawler.getEpisodeVideoCrawler()));
         CrawlingResult thumbnailResults = thumbnailResultsFuture.get();
         String thumbnailUrl = thumbnailResults.getFirstOutputLine();
         log.add(new CrawlLogEntry("Crawling thumbnail"));
@@ -172,7 +176,7 @@ public class ShowsCrawler {
                 episodes.add(new Episode(i + 1, episodeVideoUrls.get(i)));
             }
         } else {
-            Future<CrawlingResult> episodeNamesFuture = taskExecutor.execute(new CrawlerTask(showCrawler.getEpisodeNameCrawler(), httpClient, crawlerLogDetailsLength, episodeVideoUrls));
+            Future<CrawlingResult> episodeNamesFuture = taskExecutor.execute(crawlerTaskFactory.create(showCrawler.getEpisodeNameCrawler(), episodeVideoUrls));
             CrawlingResult episodeNameResults = episodeNamesFuture.get();
             log.add(new CrawlLogEntry("Crawling episode names"));
             log.addAll(episodeNameResults.getLog());
@@ -204,7 +208,7 @@ public class ShowsCrawler {
     public CrawlingResult previewCrawler(String serializedCrawler) {
         try {
             Crawler crawler = crawlerSerializer.deserializeCrawler(serializedCrawler);
-            CrawlerTask crawlerTask = new CrawlerTask(crawler, httpClient, crawlerLogDetailsLength);
+            CrawlerTask crawlerTask = crawlerTaskFactory.create(crawler);
             return crawlerTask.call();
         } catch (CrawlerTaskException e) {
             throw e;
@@ -234,5 +238,10 @@ public class ShowsCrawler {
      */
     public void deleteCrawlerOfShow(String showId) {
         showCrawlerStorage.deleteShowCrawlerByShowId(showId);
+    }
+
+    private void registerCrawlerStepType(String type, CrawlerStepTask task, String... mandatoryProperties) {
+        crawlerStepTypes.addType(type, mandatoryProperties);
+        crawlerTaskFactory.addStepTask(type, task);
     }
 }

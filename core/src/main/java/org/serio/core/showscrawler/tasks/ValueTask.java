@@ -1,32 +1,26 @@
 package org.serio.core.showscrawler.tasks;
 
-import org.serio.core.showscrawler.crawler.step.ValueStep;
+import org.serio.core.showscrawler.crawler.CrawlerStep;
 
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Executes a {@link ValueStep}.
+ * Executes a {@link CrawlerTask} with a "value" type.
  *
- * @see ValueStep
+ * <p>Return specified value as a result of this step while ignoring any input data from previous steps.</p>
  */
 public class ValueTask implements CrawlerStepTask {
-    private final ValueStep step;
-
     /**
-     * Construct a task.
-     *
-     * @param step crawler step to execute
+     * Name of the property of this step, that contains the value to return.
      */
-    public ValueTask(ValueStep step) {
-        this.step = step;
-    }
+    public static final String VALUE = "value";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> execute(List<String> input) {
-        return Collections.singletonList(step.getValue());
+    public List<String> execute(CrawlerStep step, List<String> input) {
+        return Collections.singletonList(step.getProperty(VALUE).get());
     }
 }

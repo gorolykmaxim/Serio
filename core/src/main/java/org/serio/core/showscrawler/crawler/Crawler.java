@@ -1,7 +1,5 @@
 package org.serio.core.showscrawler.crawler;
 
-import org.serio.core.showscrawler.crawler.step.CrawlerStep;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.serio.core.showscrawler.tasks;
 
-import org.serio.core.showscrawler.crawler.step.CrawlerStep;
+import org.serio.core.showscrawler.crawler.CrawlerStep;
 
 public class CrawlerStepTaskException extends RuntimeException {
     public CrawlerStepTaskException(CrawlerStep step, Throwable cause) {

@@ -1,6 +1,6 @@
 package org.serio.core.showscrawler.tasks;
 
-import org.serio.core.showscrawler.crawler.step.RegExpStep;
+import org.serio.core.showscrawler.crawler.CrawlerStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,29 +8,28 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Executes a {@link RegExpStep}.
+ * Executes a {@link CrawlerTask} with a "regExp" type.
  *
- * @see RegExpStep
+ * <p>Applies the regular expression to each string from the input array, finds all the matches across all of
+ * the input strings and returns all of them as a singular flat array of results.</p>
+ *
+ * <p>If the regular expression of this step utilizes groups (e.g. "()"), will only return those matched groups
+ * without returning an actual complete match. In other case when there are no such groups specified in the
+ * expression - the actual expression match will be returned instead.</p>
  */
 public class RegExpTask implements CrawlerStepTask {
-    private final RegExpStep step;
-
     /**
-     * Construct a task.
-     *
-     * @param step crawler step to execute
+     * Name of the property of this step, that contains the regular expression.
      */
-    public RegExpTask(RegExpStep step) {
-        this.step = step;
-    }
+    public static final String REG_EXP = "regExp";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<String> execute(List<String> input) {
+    public List<String> execute(CrawlerStep step, List<String> input) {
         try {
-            Pattern pattern = Pattern.compile(step.getRegExp());
+            Pattern pattern = Pattern.compile(step.getProperty(REG_EXP).get());
             return input
                     .stream()
                     .map(pattern::matcher)

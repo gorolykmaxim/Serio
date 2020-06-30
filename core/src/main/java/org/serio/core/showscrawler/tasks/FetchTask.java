@@ -1,7 +1,7 @@
 package org.serio.core.showscrawler.tasks;
 
 import org.serio.core.httpclient.HttpClient;
-import org.serio.core.showscrawler.crawler.step.FetchStep;
+import org.serio.core.showscrawler.crawler.CrawlerStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,22 +10,20 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
- * Executes a {@link FetchStep}.
+ * Executes a {@link CrawlerTask} with a "fetch" type.
  *
- * @see FetchStep
+ * <p>Treats array of input strings from the previous steps as URLs and fetches their contents. Returns a corresponding
+ * array of raw string response bodies.</p>
  */
 public class FetchTask implements CrawlerStepTask {
-    private final FetchStep step;
     private final HttpClient httpClient;
 
     /**
      * Construct a task.
      *
-     * @param step crawler step to execute
      * @param httpClient http client to fetch link content with
      */
-    public FetchTask(FetchStep step, HttpClient httpClient) {
-        this.step = step;
+    public FetchTask(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -33,14 +31,14 @@ public class FetchTask implements CrawlerStepTask {
      * {@inheritDoc}
      */
     @Override
-    public List<String> execute(List<String> input) {
+    public List<String> execute(CrawlerStep step, List<String> input) {
         try {
             List<Future<String>> responseFutures = input
                     .stream()
                     .map(httpClient::fetchContentFromUrl)
                     .collect(Collectors.toList());
             List<String> responses = new ArrayList<>(responseFutures.size());
-            for (Future<String> responseFuture: responseFutures) {
+            for (Future<String> responseFuture : responseFutures) {
                 responses.add(responseFuture.get());
             }
             return responses;

@@ -1,4 +1,4 @@
-package org.serio.core.showscrawler.crawler.step;
+package org.serio.core.showscrawler.crawler;
 
 public class CrawlerStepTypeNotSpecifiedException extends CrawlerStepTypeException {
     public CrawlerStepTypeNotSpecifiedException() {

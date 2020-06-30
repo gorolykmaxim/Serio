@@ -2,7 +2,7 @@ package org.serio.core.showscrawler.tasks;
 
 import org.apache.commons.lang3.StringUtils;
 import org.serio.core.showcrawlerlogstorage.CrawlLogEntry;
-import org.serio.core.showscrawler.crawler.step.CrawlerStep;
+import org.serio.core.showscrawler.crawler.CrawlerStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +22,18 @@ import java.util.List;
  */
 public class LoggingTaskDecorator implements CrawlerStepTask {
     private final CrawlerStepTask task;
-    private final CrawlerStep step;
     private final List<CrawlLogEntry> log;
     private final long detailsLength;
 
     /**
      * Construct a logging crawler step task decorator.
      *
-     * @param task task to decorate
-     * @param step crawler step being executed
-     * @param log the overall crawling log to append a generated entry to
+     * @param task          task to decorate
+     * @param log           the overall crawling log to append a generated entry to
      * @param detailsLength maximum length of crawler step input and ouput data that will be stored in the log entry
      */
-    public LoggingTaskDecorator(CrawlerStepTask task, CrawlerStep step, List<CrawlLogEntry> log, long detailsLength) {
+    public LoggingTaskDecorator(CrawlerStepTask task, List<CrawlLogEntry> log, long detailsLength) {
         this.task = task;
-        this.step = step;
         this.log = log;
         this.detailsLength = detailsLength;
     }
@@ -45,9 +42,10 @@ public class LoggingTaskDecorator implements CrawlerStepTask {
      * {@inheritDoc}
      */
     @Override
-    public List<String> execute(List<String> input) {
-        List<String> output = task.execute(input);
-        log.add(new CrawlLogEntry(step.toString(), truncateAndSerialize(input), truncateAndSerialize(output)));
+    public List<String> execute(CrawlerStep step, List<String> input) {
+        List<String> output = task.execute(step, input);
+        String text = String.format("Executing %s step with properties '%s'", step.getType(), step.getProperties());
+        log.add(new CrawlLogEntry(text, truncateAndSerialize(input), truncateAndSerialize(output)));
         return output;
     }
 

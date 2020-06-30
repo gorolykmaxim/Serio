@@ -1,4 +1,4 @@
-package org.serio.core.showscrawler.crawler.step;
+package org.serio.core.showscrawler.crawler;
 
 import org.apache.commons.lang3.StringUtils;
 
