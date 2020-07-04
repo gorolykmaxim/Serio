@@ -121,6 +121,7 @@ public class ShowPlayerTest extends BaseApplicationControllerTest {
         applicationController.back();
         applicationController.back();
         applicationController.selectShow(mandalorian.toString());
+        setUpShowPlayer(mandalorian, false);
         applicationController.playShow();
         WatchableShow show = shows.findShowById(mandalorian);
         mandalorian = createShow(show.getName(), true, 10, 1, LocalDateTime.now());
