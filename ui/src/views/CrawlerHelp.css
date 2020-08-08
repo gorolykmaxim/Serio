@@ -1,8 +1,0 @@
-.serio-crawler-help {
-    display: flex;
-    flex-direction: column;
-}
-
-.serio-crawler-help-scrollable-container {
-    overflow-x: hidden;
-}
