@@ -1,5 +1,5 @@
 # Serio
-Cross-platform application to crawl and watch tv shows
+Cross-platform application to crawl and watch tv shows.
 
 ## How to build
 You need to have Qt5 installed. CMAKE_PREFIX_PATH env variable should be set to Qt's installation location.
