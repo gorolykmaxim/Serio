@@ -6,4 +6,5 @@ You need to have Qt5 installed. CMAKE_PREFIX_PATH env variable should be set to 
 
 Here is the list of useful targets:
 - CoreTest - run tests of all the core modules
+- SerioTest - run tests of qt implementation of the app
 - Serio - run the Qt-based front-end of the application
