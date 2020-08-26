@@ -14,5 +14,17 @@
         <file>fonts/Roboto-Thin.ttf</file>
         <file>fonts/Roboto-ThinItalic.ttf</file>
         <file>qml/main.qml</file>
+        <file>qml/widgets/TvShowCard.qml</file>
+        <file>qml/animations/SerioNumberAnimation.qml</file>
+        <file>qml/widgets/ElideRightLabel.qml</file>
+        <file>qml/widgets/Title.qml</file>
+        <file>qml/widgets/Subtitle.qml</file>
+        <file>qml/widgets/NoImagePlaceholder.qml</file>
+        <file>qml/widgets/RoundNullableImage.qml</file>
+        <file>qml/widgets/AnimatedList.qml</file>
+        <file>qml/widgets/HorizontalCardList.qml</file>
+        <file>qml/widgets/Shade.qml</file>
+        <file>qml/widgets/CursorArea.qml</file>
+        <file>qml/widgets/BottomColumnLayout.qml</file>
     </qresource>
 </RCC>

@@ -1,7 +1,16 @@
 add_library(Core STATIC
-        include/HelloWorld.h
-        src/HelloWorld.cpp)
+        include/tv-shows/TvShowsFacade.h
+        include/tv-shows/TvShow.h
+        include/tv-shows/LastWatchDate.h
+        src/tv-shows/TvShow.cpp
+        src/tv-shows/LastWatchDate.cpp
+        include/tv-shows/ListPage.h
+        include/tv-shows/BigListProxy.h)
 target_include_directories(Core PUBLIC include)
 
-add_executable(CoreTest test/HelloWorldTest.cpp)
+add_executable(CoreTest
+        test/tv-shows/TvShowTest.cpp
+        test/tv-shows/LastWatchDateTest.cpp
+        test/tv-shows/ListPageTest.cpp
+        test/tv-shows/BigListProxyTest.cpp)
 target_link_libraries(CoreTest Core gtest gmock gtest_main)
