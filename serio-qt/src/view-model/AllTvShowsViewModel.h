@@ -4,7 +4,6 @@
 #include <QObject>
 #include <model/TvShowListModel.h>
 #include <storage/TvShowStorage.h>
-#include <QThreadPool>
 #include <QFutureWatcher>
 #include <concurrency/TaskExecutor.h>
 

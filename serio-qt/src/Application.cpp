@@ -2,7 +2,6 @@
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <storage/TvShowStorage.h>
-#include <QtConcurrent>
 #include "Application.h"
 
 serio::qt::Application::Application(int &argc, char **argv)

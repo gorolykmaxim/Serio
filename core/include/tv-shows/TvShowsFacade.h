@@ -1,7 +1,6 @@
 #ifndef SERIO_TVSHOWSFACADE_H
 #define SERIO_TVSHOWSFACADE_H
 
-#include <vector>
 #include "TvShow.h"
 #include "ListPage.h"
 

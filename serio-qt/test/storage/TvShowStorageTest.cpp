@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <algorithm>
 #include <tv-shows/TvShowsFacade.h>
 #include <storage/TvShowStorage.h>
 

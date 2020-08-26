@@ -1,5 +1,4 @@
 #include "TvShowListModel.h"
-#include <QDebug>
 
 serio::qt::TvShowListModel::TvShowListModel(unsigned int pageSize, unsigned int pageCountLimit)
     : QAbstractListModel(nullptr), pageSize(pageSize), listProxy(pageSize, pageCountLimit) {}

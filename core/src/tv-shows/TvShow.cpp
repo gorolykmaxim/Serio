@@ -1,6 +1,5 @@
 #include "tv-shows/TvShow.h"
 
-#include <memory>
 #include <utility>
 
 serio::core::TvShow::TvShow(std::string name, std::string thumbnailUrl)
