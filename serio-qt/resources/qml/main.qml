@@ -28,7 +28,7 @@ ApplicationWindow {
             tvShowName: model.name
             thumbnailUrl: model.thumbnailUrl
             lastWatchDate: model.lastWatchDate || null
-            thumbnailSourceHeight: Screen.desktopAvailableHeight * Screen.devicePixelRatio
+            thumbnailSourceHeight: Screen.desktopAvailableHeight
         }
     }
 }
