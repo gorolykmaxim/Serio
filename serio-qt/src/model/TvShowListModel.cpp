@@ -11,7 +11,7 @@ void serio::qt::TvShowListModel::loadPage(const core::ListPage<core::TvShow>& pa
 
 void serio::qt::TvShowListModel::extendModelIfNecessary(const core::ListPage<core::TvShow>& page) {
     if (page.getTotalSize() > listProxy.getTotalSize()) {
-        beginInsertRows(QModelIndex(), listProxy.getTotalSize(), page.getTotalSize());
+        beginInsertRows(QModelIndex(), listProxy.getTotalSize(), page.getLastItemIndex());
         endInsertRows();
     }
 }

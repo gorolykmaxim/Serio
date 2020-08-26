@@ -47,7 +47,7 @@ TEST_F(TvShowListModelTest, shouldInsertNewRowsOnLoadingNewPage) {
     ASSERT_EQ(1, spy.count());
     QVariantList args = spy.takeFirst();
     EXPECT_EQ(0, args.at(1).toUInt());
-    EXPECT_EQ(page.getTotalSize(), args.at(2).toUInt());
+    EXPECT_EQ(page.getLastItemIndex(), args.at(2).toUInt());
 }
 
 TEST_F(TvShowListModelTest, shouldRemoveRowsOnLoadingNewPage) {
