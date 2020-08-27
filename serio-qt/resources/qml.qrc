@@ -26,5 +26,7 @@
         <file>qml/widgets/Shade.qml</file>
         <file>qml/widgets/CursorArea.qml</file>
         <file>qml/widgets/BottomColumnLayout.qml</file>
+        <file>qml/widgets/TvShowCardList.qml</file>
+        <file>qml/widgets/AccentTitle.qml</file>
     </qresource>
 </RCC>

@@ -23,6 +23,7 @@ namespace serio::qt {
         void initializeQmlEngine();
         void exitOnUiLoadFailure(const QUrl &url);
         void registerViewModelsInEngine();
+        void registerQmlTypes();
     };
 }
 

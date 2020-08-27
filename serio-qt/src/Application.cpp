@@ -22,6 +22,7 @@ void serio::qt::Application::initializeQmlEngine() {
     const QUrl rootUrl(QStringLiteral("qrc:/qml/main.qml"));
     exitOnUiLoadFailure(rootUrl);
     registerViewModelsInEngine();
+    registerQmlTypes();
     engine.load(rootUrl);
 }
 
@@ -35,6 +36,10 @@ void serio::qt::Application::exitOnUiLoadFailure(const QUrl &url) {
 
 void serio::qt::Application::registerViewModelsInEngine() {
     engine.rootContext()->setContextProperty("allTvShowsViewModel", &allTvShowsViewModel);
+}
+
+void serio::qt::Application::registerQmlTypes() {
+    qmlRegisterUncreatableType<TvShowListModel>("Serio", 1, 0, "TvShowListModel", nullptr);
 }
 
 void serio::qt::Application::initializeDatabase() {

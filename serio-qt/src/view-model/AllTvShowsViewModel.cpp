@@ -6,24 +6,42 @@ serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSi
                                                     TaskExecutor& executor)
                                                         : listModelPageSize(listModelPageSize),
                                                           allShowsListModel(listModelPageSize, listModelPageCountLimit),
+                                                          watchedShowsListModel(listModelPageSize, listModelPageCountLimit),
                                                           tvShows(tvShows),
                                                           executor(executor){
-    connect(&allShowsListModel, &TvShowListModel::requestPageLoad, this, &AllTvShowsViewModel::loadNextPage);
-    connect(&allShowsWatcher, &QFutureWatcher<core::ListPage<core::TvShow>>::finished, this, &AllTvShowsViewModel::displayNextPage);
+    connect(&allShowsListModel, &TvShowListModel::requestPageLoad, this, &AllTvShowsViewModel::loadNextPageOfAllShows);
+    connect(&allShowsWatcher, &QFutureWatcher<core::ListPage<core::TvShow>>::finished, this, &AllTvShowsViewModel::displayNextPageOfAllShows);
+    connect(&watchedShowsListModel, &TvShowListModel::requestPageLoad, this, &AllTvShowsViewModel::loadNextPageOfWatchedShows);
+    connect(&watchedShowsWatcher, &QFutureWatcher<core::ListPage<core::TvShow>>::finished, this, &AllTvShowsViewModel::displayNextPageOfWatchedShows);
 }
 
 serio::qt::TvShowListModel* serio::qt::AllTvShowsViewModel::getAllShows() {
     return &allShowsListModel;
 }
 
-void serio::qt::AllTvShowsViewModel::loadNextPage(unsigned int offset, unsigned int limit) {
+serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getWatchedShows() {
+    return &watchedShowsListModel;
+}
+
+void serio::qt::AllTvShowsViewModel::loadNextPageOfAllShows(unsigned int offset, unsigned int limit) {
     executor.runInBackground(allShowsWatcher, &tvShows, &core::TvShowsFacade::getAllTvShows, offset, limit);
 }
 
-void serio::qt::AllTvShowsViewModel::displayNextPage() {
+void serio::qt::AllTvShowsViewModel::loadNextPageOfWatchedShows(unsigned int offset, unsigned int limit) {
+    executor.runInBackground(watchedShowsWatcher, &tvShows, &core::TvShowsFacade::getWatchedTvShows, offset, limit);
+}
+
+void serio::qt::AllTvShowsViewModel::displayNextPageOfAllShows() {
     allShowsListModel.loadPage(allShowsWatcher.result());
 }
 
+void serio::qt::AllTvShowsViewModel::displayNextPageOfWatchedShows() {
+    watchedShowsListModel.loadPage(watchedShowsWatcher.result());
+}
+
 void serio::qt::AllTvShowsViewModel::reload() {
-    loadNextPage(0, listModelPageSize);
+    loadNextPageOfAllShows(0, listModelPageSize);
+    emit allShowsListChanged(allShowsListModel);
+    loadNextPageOfWatchedShows(0, listModelPageSize);
+    emit watchedShowsListChanged(watchedShowsListModel);
 }

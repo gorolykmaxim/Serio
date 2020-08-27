@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
@@ -13,22 +14,29 @@ ApplicationWindow {
     height: 600
     minimumWidth: 800
     title: qsTr("Serio")
-    Material.theme: Material.Dark
-    Material.accent: Material.Orange
     property real cardPadding: 16
-    HorizontalCardList {
-        id: allShowsList
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: cardPadding
-        cardSpacing: cardPadding
-        model: allTvShowsViewModel.allShowsList
-        focus: true
-        delegate: TvShowCard {
-            height: allShowsList.height
-            tvShowName: model.name
-            thumbnailUrl: model.thumbnailUrl
-            lastWatchDate: model.lastWatchDate || null
-            thumbnailSourceHeight: Screen.desktopAvailableHeight
+        spacing: cardPadding
+        AccentTitle {
+            text: "Last Watched"
+            visible: watchedShowsList.visible
+        }
+        TvShowCardList {
+            id: watchedShowsList
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            cardSpacing: cardPadding
+            focus: true
+            visible: count > 0
+            listModel: allTvShowsViewModel.watchedShowsList
+        }
+        TvShowCardList {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            cardSpacing: cardPadding
+            listModel: allTvShowsViewModel.allShowsList
         }
     }
 }

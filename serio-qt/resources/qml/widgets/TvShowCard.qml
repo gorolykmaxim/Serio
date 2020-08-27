@@ -8,7 +8,6 @@ FocusScope {
     id: root
     width: 300
     height: 300
-    focus: hoverArea.containsMouse
     property string thumbnailUrl
     property string tvShowName
     property string lastWatchDate
@@ -44,7 +43,11 @@ FocusScope {
         }
     }
     CursorArea {
-        id: hoverArea
         anchors.fill: parent
+        onHoveredChanged: {
+            if (containsMouse) {
+                root.forceActiveFocus()
+            }
+        }
     }
 }
