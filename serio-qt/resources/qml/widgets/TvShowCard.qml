@@ -19,7 +19,7 @@ FocusScope {
         imageUrl: thumbnailUrl
         imageSourceSize: Qt.size(root.width, thumbnailSourceHeight)
     }
-    Shade {
+    BottomShade {
         anchors.fill: parent
         display: root.activeFocus
         radius: borderRadius

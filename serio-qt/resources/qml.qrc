@@ -23,7 +23,7 @@
         <file>qml/widgets/RoundNullableImage.qml</file>
         <file>qml/widgets/AnimatedList.qml</file>
         <file>qml/widgets/HorizontalCardList.qml</file>
-        <file>qml/widgets/Shade.qml</file>
+        <file>qml/widgets/BottomShade.qml</file>
         <file>qml/widgets/CursorArea.qml</file>
         <file>qml/widgets/BottomColumnLayout.qml</file>
         <file>qml/widgets/TvShowCardList.qml</file>
