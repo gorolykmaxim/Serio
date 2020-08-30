@@ -16,7 +16,7 @@ void serio::qt::FetchRequest::sendRequestsToSpecifiedLinks(QNetworkAccessManager
     for (const std::string& link: linksToFetch) {
         QUrl url(QString::fromStdString(link));
         QNetworkRequest request(url);
-        QNetworkReply* reply = manager.get(QNetworkRequest(url));
+        QNetworkReply* reply = manager.get(request);
         repliesInProgress.insert(reply);
     }
 }
