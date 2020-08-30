@@ -5,7 +5,8 @@ add_library(Core STATIC
         src/tv-shows/TvShow.cpp
         src/tv-shows/LastWatchDate.cpp
         include/tv-shows/ListPage.h
-        include/tv-shows/BigListProxy.h)
+        include/tv-shows/BigListProxy.h
+        include/http-client/HttpClient.h)
 target_include_directories(Core PUBLIC include)
 
 add_executable(CoreTest
