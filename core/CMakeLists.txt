@@ -7,7 +7,7 @@ add_library(Core STATIC
         include/tv-shows/ListPage.h
         include/tv-shows/BigListProxy.h
         include/http-client/HttpClient.h)
-target_include_directories(Core PUBLIC include)
+target_include_directories(Core PUBLIC include PRIVATE lib/json)
 
 add_executable(CoreTest
         test/tv-shows/TvShowTest.cpp
