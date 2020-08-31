@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <storage/DatabaseTvShowStorage.h>
 
-class TvShowStorageTest : public ::testing::Test {
+class DatabaseTvShowStorageTest : public ::testing::Test {
 public:
-    TvShowStorageTest()
+    DatabaseTvShowStorageTest()
         : ::testing::Test(),
             fourthTvShow("How i met your mom", "", std::chrono::system_clock::now() - std::chrono::hours(32)),
             thirdTvShow("Mandalorian", "", std::chrono::system_clock::now()),
@@ -25,39 +25,39 @@ protected:
     }
 };
 
-TEST_F(TvShowStorageTest, returnedListOfAllTvShowsShouldBeEmptyIfThereAreNoTvShows) {
+TEST_F(DatabaseTvShowStorageTest, returnedListOfAllTvShowsShouldBeEmptyIfThereAreNoTvShows) {
     serio::core::ListPage<serio::core::TvShow> tvShows = storage.getAllTvShows(0, 100);
     EXPECT_EQ(0, tvShows.getTotalSize());
 }
 
-TEST_F(TvShowStorageTest, returnedListOfAllTvShowsShouldUseSpecifiedOffsetAndLimit) {
+TEST_F(DatabaseTvShowStorageTest, returnedListOfAllTvShowsShouldUseSpecifiedOffsetAndLimit) {
     saveShows();
     serio::core::ListPage<serio::core::TvShow> tvShows = storage.getAllTvShows(1, 1);
     EXPECT_EQ(1, tvShows.getOffset());
     EXPECT_EQ(tvShows.getFirstItemIndex(), tvShows.getLastItemIndex());
 }
 
-TEST_F(TvShowStorageTest, returnedListOfAllTvShowsShouldContainLimitedAmountOfTvShows) {
+TEST_F(DatabaseTvShowStorageTest, returnedListOfAllTvShowsShouldContainLimitedAmountOfTvShows) {
     saveShows();
     serio::core::ListPage<serio::core::TvShow> tvShows = storage.getAllTvShows(0, LIMIT_ONE_ITEM);
     EXPECT_EQ(2, tvShows.getTotalSize());
     EXPECT_EQ(firstTvShow, tvShows.getItemByGlobalIndex(0));
 }
 
-TEST_F(TvShowStorageTest, returnedListOfAllTvShowsShouldStartFromTheSecondTvShowInAlphabeticalOrder) {
+TEST_F(DatabaseTvShowStorageTest, returnedListOfAllTvShowsShouldStartFromTheSecondTvShowInAlphabeticalOrder) {
     saveShows();
     serio::core::ListPage<serio::core::TvShow> tvShows = storage.getAllTvShows(1, LIMIT_ONE_ITEM);
     EXPECT_EQ(secondTvShow, tvShows.getItemByGlobalIndex(1));
 }
 
-TEST_F(TvShowStorageTest, returnedListOfAllTvShowsShouldContainAllStoredTvShowsInTheirAplhabeticalOrder) {
+TEST_F(DatabaseTvShowStorageTest, returnedListOfAllTvShowsShouldContainAllStoredTvShowsInTheirAplhabeticalOrder) {
     saveShows();
     serio::core::ListPage<serio::core::TvShow> tvShows = storage.getAllTvShows(0, 10);
     EXPECT_EQ(firstTvShow, tvShows.getItemByGlobalIndex(0));
     EXPECT_EQ(secondTvShow, tvShows.getItemByGlobalIndex(1));
 }
 
-TEST_F(TvShowStorageTest, savingShowWithNameThatAlreadyExistsWillReplaceExistingShow) {
+TEST_F(DatabaseTvShowStorageTest, savingShowWithNameThatAlreadyExistsWillReplaceExistingShow) {
     storage.saveTvShow(firstTvShow);
     serio::core::TvShow updatedFirstShow(firstTvShow.getName(), "https://thumbnail.jpg");
     storage.saveTvShow(updatedFirstShow);
@@ -65,27 +65,27 @@ TEST_F(TvShowStorageTest, savingShowWithNameThatAlreadyExistsWillReplaceExisting
     EXPECT_EQ(updatedFirstShow, tvShows.getItemByGlobalIndex(0));
 }
 
-TEST_F(TvShowStorageTest, shouldReturnEmptyListIfNoTvShowsHaveBeenWatched) {
+TEST_F(DatabaseTvShowStorageTest, shouldReturnEmptyListIfNoTvShowsHaveBeenWatched) {
     saveShows();
     serio::core::ListPage<serio::core::TvShow> watchedTvShows = storage.getWatchedTvShows(0, 10);
     EXPECT_EQ(0, watchedTvShows.getTotalSize());
 }
 
-TEST_F(TvShowStorageTest, shouldReturnTheOffsetUsedToQueryWatchedTvShows) {
+TEST_F(DatabaseTvShowStorageTest, shouldReturnTheOffsetUsedToQueryWatchedTvShows) {
     saveWatchedShows();
     unsigned int offset = 1;
     serio::core::ListPage<serio::core::TvShow> watchedTvShows = storage.getWatchedTvShows(offset, 10);
     EXPECT_EQ(offset, watchedTvShows.getOffset());
 }
 
-TEST_F(TvShowStorageTest, shouldReturnWatchedTvShowsWithTheLatestWatchedTvShowBeingFirstAndTheLatestLast) {
+TEST_F(DatabaseTvShowStorageTest, shouldReturnWatchedTvShowsWithTheLatestWatchedTvShowBeingFirstAndTheLatestLast) {
     saveWatchedShows();
     serio::core::ListPage<serio::core::TvShow> watchedTvShows = storage.getWatchedTvShows(0, 10);
     EXPECT_EQ(thirdTvShow, watchedTvShows.getItemByGlobalIndex(0));
     EXPECT_EQ(fourthTvShow, watchedTvShows.getItemByGlobalIndex(1));
 }
 
-TEST_F(TvShowStorageTest, shouldLimitCountOfReturnedWatchedTvShows) {
+TEST_F(DatabaseTvShowStorageTest, shouldLimitCountOfReturnedWatchedTvShows) {
     saveWatchedShows();
     serio::core::ListPage<serio::core::TvShow> watchedTvShow = storage.getWatchedTvShows(0, 1);
     EXPECT_TRUE(watchedTvShow.containsItemWithGlobalIndex(0));
