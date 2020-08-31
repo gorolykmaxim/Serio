@@ -16,13 +16,15 @@ public:
     void initialize(const std::string& storageUrl);
     core::ListPage<core::TvShow> getAllTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::TvShow> getWatchedTvShows(unsigned int offset, unsigned int limit) override;
-    void saveTvShow(const core::TvShow& tvShow) override;
+    core::ListPage<core::Episode> getEpisodesOfTvShowWithName(const std::string &tvShowName, unsigned int offset, unsigned int limit) override;
+    void saveTvShow(const core::TvShow& tvShow, const std::vector<core::Episode>& episodes) override;
     std::optional<std::string> getTvShowCrawlerByTvShowName(const std::string &tvShowName) override;
     void saveTvShowCrawler(const std::string &tvShowName, const std::string &serializedCrawler) override;
 private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
     void openDatabaseConnection(const std::string& storageUrl);
+    void enableForeignKeys();
 };
 
 class StorageError : public std::runtime_error {

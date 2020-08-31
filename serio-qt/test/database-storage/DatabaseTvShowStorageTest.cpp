@@ -14,14 +14,16 @@ public:
 protected:
     serio::qt::DatabaseStorage storage;
     serio::core::TvShow fourthTvShow, thirdTvShow, secondTvShow, firstTvShow;
+    std::vector<serio::core::Episode> firstTvShowEpisodes = {serio::core::Episode(1, "")};
+    std::vector<serio::core::Episode> secondTvShowEpisodes = {serio::core::Episode(1, "", "Pilot episode"), serio::core::Episode(2, "")};
     const unsigned int LIMIT_ONE_ITEM = 1;
     void saveShows() {
-        storage.saveTvShow(secondTvShow);
-        storage.saveTvShow(firstTvShow);
+        storage.saveTvShow(secondTvShow, secondTvShowEpisodes);
+        storage.saveTvShow(firstTvShow, firstTvShowEpisodes);
     }
     void saveWatchedShows() {
-        storage.saveTvShow(fourthTvShow);
-        storage.saveTvShow(thirdTvShow);
+        storage.saveTvShow(fourthTvShow, {});
+        storage.saveTvShow(thirdTvShow, {});
     }
 };
 
@@ -58,9 +60,9 @@ TEST_F(DatabaseTvShowStorageTest, returnedListOfAllTvShowsShouldContainAllStored
 }
 
 TEST_F(DatabaseTvShowStorageTest, savingShowWithNameThatAlreadyExistsWillReplaceExistingShow) {
-    storage.saveTvShow(firstTvShow);
+    storage.saveTvShow(firstTvShow, {});
     serio::core::TvShow updatedFirstShow(firstTvShow.getName(), "https://thumbnail.jpg");
-    storage.saveTvShow(updatedFirstShow);
+    storage.saveTvShow(updatedFirstShow, {});
     serio::core::ListPage<serio::core::TvShow> tvShows = storage.getAllTvShows(0, 10);
     EXPECT_EQ(updatedFirstShow, tvShows.getItemByGlobalIndex(0));
 }
@@ -90,4 +92,45 @@ TEST_F(DatabaseTvShowStorageTest, shouldLimitCountOfReturnedWatchedTvShows) {
     serio::core::ListPage<serio::core::TvShow> watchedTvShow = storage.getWatchedTvShows(0, 1);
     EXPECT_TRUE(watchedTvShow.containsItemWithGlobalIndex(0));
     EXPECT_FALSE(watchedTvShow.containsItemWithGlobalIndex(1));
+}
+
+TEST_F(DatabaseTvShowStorageTest, tvShowShouldNotHaveEpisodes) {
+    storage.saveTvShow(firstTvShow, {});
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(firstTvShow.getName(), 0, 10);
+    EXPECT_EQ(0, page.getTotalSize());
+}
+
+TEST_F(DatabaseTvShowStorageTest, tvShowShouldHaveEpisodes) {
+    saveShows();
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(firstTvShow.getName(), 0, 10);
+    EXPECT_EQ(1, page.getTotalSize());
+}
+
+TEST_F(DatabaseTvShowStorageTest, returnedListPageOfEpisodesShouldHaveSpecifiedOffset) {
+    saveShows();
+    unsigned int expectedOffset = 1;
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(firstTvShow.getName(), expectedOffset, 10);
+    EXPECT_EQ(expectedOffset, page.getOffset());
+}
+
+TEST_F(DatabaseTvShowStorageTest, returnedListPageShouldBeLimitedToTheSpecifiedCountOfEpisodes) {
+    saveShows();
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, LIMIT_ONE_ITEM);
+    EXPECT_TRUE(page.containsItemWithGlobalIndex(0));
+    EXPECT_FALSE(page.containsItemWithGlobalIndex(1));
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldReturnAllEpisodesOfTvShow) {
+    saveShows();
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
+    EXPECT_EQ(secondTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
+    EXPECT_EQ(secondTvShowEpisodes.at(1), page.getItemByGlobalIndex(1));
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldOverrideExistingTvShowEpisodesWithNewOnes) {
+    saveShows();
+    storage.saveTvShow(secondTvShow, firstTvShowEpisodes);
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
+    EXPECT_EQ(firstTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
+    EXPECT_FALSE(page.containsItemWithGlobalIndex(1));
 }

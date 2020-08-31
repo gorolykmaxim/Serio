@@ -6,8 +6,45 @@
 
 void serio::qt::DatabaseStorage::initialize(const std::string &storageUrl) {
     openDatabaseConnection(storageUrl);
+    enableForeignKeys();
     tvShowStorage.initialize();
     tvShowCrawlerStorage.initialize();
+}
+
+serio::core::ListPage<serio::core::TvShow> serio::qt::DatabaseStorage::getAllTvShows(unsigned int offset, unsigned int limit) {
+    return core::ListPage<serio::core::TvShow>(
+            offset,
+            tvShowStorage.countAllTvShows(),
+            tvShowStorage.getAllTvShowsInAlphabeticOrder(offset, limit));
+}
+
+serio::core::ListPage<serio::core::TvShow> serio::qt::DatabaseStorage::getWatchedTvShows(unsigned int offset, unsigned int limit) {
+    return core::ListPage<core::TvShow>(
+            offset,
+            tvShowStorage.countWatchedTvShows(),
+            tvShowStorage.getWatchedTvShows(offset, limit));
+}
+
+serio::core::ListPage<serio::core::Episode> serio::qt::DatabaseStorage::getEpisodesOfTvShowWithName(const std::string &tvShowName,
+                                                                                                    unsigned int offset,
+                                                                                                    unsigned int limit) {
+    return core::ListPage<core::Episode>(
+            offset,
+            tvShowStorage.countEpisodesOfTvShowWithName(tvShowName),
+            tvShowStorage.getEpisodesOfTvShowWithName(tvShowName, offset, limit));
+}
+
+void serio::qt::DatabaseStorage::saveTvShow(const core::TvShow& tvShow, const std::vector<core::Episode>& episodes) {
+    tvShowStorage.saveTvShow(tvShow, episodes);
+}
+
+std::optional<std::string> serio::qt::DatabaseStorage::getTvShowCrawlerByTvShowName(const std::string &tvShowName) {
+    return tvShowCrawlerStorage.getTvShowCrawlerByTvShowName(tvShowName);
+}
+
+void serio::qt::DatabaseStorage::saveTvShowCrawler(const std::string &tvShowName, const std::string &serializedCrawler) {
+    tvShowCrawlerStorage.deleteTvShowCrawlerOfTvShow(tvShowName);
+    tvShowCrawlerStorage.insertTvShowCrawler(tvShowName, serializedCrawler);
 }
 
 void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& storageUrl) {
@@ -18,32 +55,9 @@ void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& stora
     }
 }
 
-serio::core::ListPage<serio::core::TvShow> serio::qt::DatabaseStorage::getAllTvShows(unsigned int offset, unsigned int limit) {
-    return core::ListPage<serio::core::TvShow>(
-            offset,
-            tvShowStorage.countAllTvShows(),
-            tvShowStorage.getAllTvShowsInAlphabeticOrder(offset, limit));
-}
-
-void serio::qt::DatabaseStorage::saveTvShow(const core::TvShow& tvShow) {
-    tvShowStorage.deleteTvShowWithName(tvShow.getName());
-    tvShowStorage.insertTvShow(tvShow);
-}
-
-serio::core::ListPage<serio::core::TvShow> serio::qt::DatabaseStorage::getWatchedTvShows(unsigned int offset, unsigned int limit) {
-    return core::ListPage<core::TvShow>(
-            offset,
-            tvShowStorage.countWatchedTvShows(),
-            tvShowStorage.getWatchedTvShows(offset, limit));
-}
-
-std::optional<std::string> serio::qt::DatabaseStorage::getTvShowCrawlerByTvShowName(const std::string &tvShowName) {
-    return tvShowCrawlerStorage.getTvShowCrawlerByTvShowName(tvShowName);
-}
-
-void serio::qt::DatabaseStorage::saveTvShowCrawler(const std::string &tvShowName, const std::string &serializedCrawler) {
-    tvShowCrawlerStorage.deleteTvShowCrawlerOfTvShow(tvShowName);
-    tvShowCrawlerStorage.insertTvShowCrawler(tvShowName, serializedCrawler);
+void serio::qt::DatabaseStorage::enableForeignKeys() {
+    QSqlQuery enableForeignKeys(QSqlDatabase::database());
+    enableForeignKeys.exec("PRAGMA foreign_keys=ON");
 }
 
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)
