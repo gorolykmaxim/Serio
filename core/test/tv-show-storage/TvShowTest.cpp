@@ -24,7 +24,7 @@ TEST_F(TvShowTest, tvShowCreatedWithThumbnailUrlShouldUseSpecifiedValue) {
     ASSERT_EQ(THUMBNAIL_URL, tvShow.getThumbnailUrl());
 }
 
-TEST_F(TvShowTest, tvShowCreatedWithoutLastWatchDateShouldReturnNullAsLastWatchDate) {
+TEST_F(TvShowTest, tvShowCreatedWithoutLastWatchDateShouldReturnEmptyOptionalAsLastWatchDate) {
     serio::core::TvShow tvShow(SHOW_NAME, THUMBNAIL_URL);
     ASSERT_FALSE(tvShow.getLastWatchDate());
 }
