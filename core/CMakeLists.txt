@@ -1,11 +1,11 @@
 add_library(Core STATIC
-        include/tv-shows/TvShowsFacade.h
-        include/tv-shows/TvShow.h
-        include/tv-shows/LastWatchDate.h
+        include/tv-show-storage/TvShowStorage.h
+        include/tv-show-storage/TvShow.h
+        include/tv-show-storage/LastWatchDate.h
         src/tv-shows/TvShow.cpp
         src/tv-shows/LastWatchDate.cpp
-        include/tv-shows/ListPage.h
-        include/tv-shows/BigListProxy.h
+        include/tv-show-storage/ListPage.h
+        include/tv-show-storage/BigListProxy.h
         include/http-client/HttpClient.h)
 target_include_directories(Core PUBLIC include PRIVATE lib/json)
 

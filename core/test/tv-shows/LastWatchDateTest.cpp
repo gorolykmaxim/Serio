@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <tv-shows/LastWatchDate.h>
+#include <tv-show-storage/LastWatchDate.h>
 
 class LastWatchDateTest : public ::testing::Test {
 protected:

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <tv-shows/BigListProxy.h>
-#include <tv-shows/ListPage.h>
+#include <tv-show-storage/BigListProxy.h>
+#include <tv-show-storage/ListPage.h>
 
 class BigListProxyTest : public ::testing::Test {
 protected:

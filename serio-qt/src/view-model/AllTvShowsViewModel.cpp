@@ -2,7 +2,7 @@
 
 serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize,
                                                     unsigned int listModelPageCountLimit,
-                                                    core::TvShowsFacade& tvShows,
+                                                    core::TvShowStorage& tvShows,
                                                     TaskExecutor& executor)
                                                         : listModelPageSize(listModelPageSize),
                                                           allShowsListModel(listModelPageSize, listModelPageCountLimit),
@@ -24,11 +24,11 @@ serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getWatchedShows() {
 }
 
 void serio::qt::AllTvShowsViewModel::loadNextPageOfAllShows(unsigned int offset, unsigned int limit) {
-    executor.runInBackground(allShowsWatcher, &tvShows, &core::TvShowsFacade::getAllTvShows, offset, limit);
+    executor.runInBackground(allShowsWatcher, &tvShows, &core::TvShowStorage::getAllTvShows, offset, limit);
 }
 
 void serio::qt::AllTvShowsViewModel::loadNextPageOfWatchedShows(unsigned int offset, unsigned int limit) {
-    executor.runInBackground(watchedShowsWatcher, &tvShows, &core::TvShowsFacade::getWatchedTvShows, offset, limit);
+    executor.runInBackground(watchedShowsWatcher, &tvShows, &core::TvShowStorage::getWatchedTvShows, offset, limit);
 }
 
 void serio::qt::AllTvShowsViewModel::displayNextPageOfAllShows() {

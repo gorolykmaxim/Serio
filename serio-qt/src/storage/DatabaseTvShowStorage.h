@@ -1,13 +1,13 @@
-#ifndef SERIO_TVSHOWSTORAGE_H
-#define SERIO_TVSHOWSTORAGE_H
+#ifndef SERIO_DATABASETVSHOWSTORAGE_H
+#define SERIO_DATABASETVSHOWSTORAGE_H
 
 #include <QSqlDatabase>
 #include <string>
-#include <tv-shows/TvShowsFacade.h>
+#include <tv-show-storage/TvShowStorage.h>
 
 namespace serio::qt {
 
-class TvShowStorage : public serio::core::TvShowsFacade {
+class DatabaseTvShowStorage : public serio::core::TvShowStorage {
 public:
     void initialize(const std::string& storageUrl);
     core::ListPage<core::TvShow> getAllTvShows(unsigned int offset, unsigned int limit) override;
@@ -25,4 +25,4 @@ private:
 
 }
 
-#endif //SERIO_TVSHOWSTORAGE_H
+#endif //SERIO_DATABASETVSHOWSTORAGE_H

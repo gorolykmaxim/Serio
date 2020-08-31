@@ -1,7 +1,7 @@
 #include <QDir>
 #include <QFontDatabase>
 #include <QQmlContext>
-#include <storage/TvShowStorage.h>
+#include <storage/DatabaseTvShowStorage.h>
 #include "Application.h"
 
 serio::qt::Application::Application(int &argc, char **argv)
@@ -53,6 +53,6 @@ std::string serio::qt::Application::getPathToDatabaseFile() const {
 
 void serio::qt::Application::initializeStorageInDatabase(const std::string &databaseFilePath) {
     QFutureWatcher<void> dbInitFuture;
-    executor.runInBackground(dbInitFuture, &storage, &TvShowStorage::initialize, databaseFilePath);
+    executor.runInBackground(dbInitFuture, &storage, &DatabaseTvShowStorage::initialize, databaseFilePath);
     dbInitFuture.waitForFinished();
 }

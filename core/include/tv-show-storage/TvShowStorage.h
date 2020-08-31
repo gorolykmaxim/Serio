@@ -1,19 +1,19 @@
-#ifndef SERIO_TVSHOWSFACADE_H
-#define SERIO_TVSHOWSFACADE_H
+#ifndef SERIO_TVSHOWSTORAGE_H
+#define SERIO_TVSHOWSTORAGE_H
 
 #include "TvShow.h"
 #include "ListPage.h"
 
 namespace serio::core {
 
-class TvShowsFacade {
+class TvShowStorage {
 public:
     virtual ListPage<TvShow> getAllTvShows(unsigned int offset, unsigned int limit) = 0;
     virtual ListPage<TvShow> getWatchedTvShows(unsigned int offset, unsigned int limit) = 0;
     virtual void saveTvShow(const TvShow& tvShow) = 0;
-    virtual ~TvShowsFacade() {};
+    virtual ~TvShowStorage() {};
 };
 
 }
 
-#endif //SERIO_TVSHOWSFACADE_H
+#endif //SERIO_TVSHOWSTORAGE_H

@@ -3,7 +3,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <storage/TvShowStorage.h>
+#include <storage/DatabaseTvShowStorage.h>
 #include <view-model/AllTvShowsViewModel.h>
 #include <concurrency/TaskExecutor.h>
 
@@ -14,7 +14,7 @@ public:
     Application(int &argc, char **argv);
 private:
     TaskExecutor executor;
-    TvShowStorage storage;
+    DatabaseTvShowStorage storage;
     QQmlApplicationEngine engine;
     AllTvShowsViewModel allTvShowsViewModel;
     void loadFonts();

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <tv-shows/TvShow.h>
-#include <tv-shows/LastWatchDate.h>
+#include <tv-show-storage/TvShow.h>
+#include <tv-show-storage/LastWatchDate.h>
 
 class TvShowTest : public ::testing::Test {
 protected:

@@ -3,9 +3,9 @@
 
 #include <QObject>
 #include <model/TvShowListModel.h>
-#include <storage/TvShowStorage.h>
 #include <QFutureWatcher>
 #include <concurrency/TaskExecutor.h>
+#include <tv-show-storage/TvShowStorage.h>
 
 namespace serio::qt {
 
@@ -16,7 +16,7 @@ class AllTvShowsViewModel : public QObject {
 public:
     AllTvShowsViewModel(unsigned int listModelPageSize,
                         unsigned int listModelPageCountLimit,
-                        core::TvShowsFacade &tvShows, TaskExecutor& executor);
+                        core::TvShowStorage &tvShows, TaskExecutor& executor);
     TvShowListModel* getAllShows();
     TvShowListModel* getWatchedShows();
 signals:
@@ -28,7 +28,7 @@ private:
     const unsigned int listModelPageSize;
     TvShowListModel allShowsListModel, watchedShowsListModel;
     TaskExecutor& executor;
-    core::TvShowsFacade& tvShows;
+    core::TvShowStorage& tvShows;
     QFutureWatcher<core::ListPage<core::TvShow>> allShowsWatcher, watchedShowsWatcher;
     void loadNextPageOfAllShows(unsigned int offset, unsigned int limit);
     void loadNextPageOfWatchedShows(unsigned int offset, unsigned int limit);

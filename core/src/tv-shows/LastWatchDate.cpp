@@ -1,4 +1,4 @@
-#include "tv-shows/LastWatchDate.h"
+#include "tv-show-storage/LastWatchDate.h"
 
 serio::core::LastWatchDate::LastWatchDate(std::chrono::system_clock::time_point date)
     : date(date) {}

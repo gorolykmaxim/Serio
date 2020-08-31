@@ -2,9 +2,9 @@
 #define SERIO_TVSHOWLISTMODEL_H
 
 #include <set>
-#include <tv-shows/TvShowsFacade.h>
 #include <QAbstractListModel>
-#include <tv-shows/BigListProxy.h>
+#include <tv-show-storage/BigListProxy.h>
+#include <tv-show-storage/TvShow.h>
 
 namespace serio::qt {
 

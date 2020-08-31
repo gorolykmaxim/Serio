@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <QSignalSpy>
-#include <tv-shows/TvShowsFacade.h>
 #include "model/TvShowListModel.h"
 
 class TvShowListModelTest : public ::testing::Test {
