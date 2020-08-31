@@ -67,7 +67,7 @@ QVariant serio::qt::TvShowListModel::getAttributeOf(const serio::core::TvShow &t
     } else if (role == Role::THUMBNAIL_URL) {
         return QString::fromStdString(tvShow.getThumbnailUrl());
     } else if (role == Role::LAST_WATCH_DATE) {
-        const core::LastWatchDate* lastWatchDate = tvShow.getLastWatchDate();
+        std::optional<core::LastWatchDate> lastWatchDate = tvShow.getLastWatchDate();
         return lastWatchDate ? QString::fromStdString(lastWatchDate->toString()) : QVariant();
     } else {
         throw std::invalid_argument("Invalid role " + std::to_string(role));

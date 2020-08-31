@@ -26,7 +26,7 @@ TEST_F(TvShowTest, tvShowCreatedWithThumbnailUrlShouldUseSpecifiedValue) {
 
 TEST_F(TvShowTest, tvShowCreatedWithoutLastWatchDateShouldReturnNullAsLastWatchDate) {
     serio::core::TvShow tvShow(SHOW_NAME, THUMBNAIL_URL);
-    ASSERT_EQ(nullptr, tvShow.getLastWatchDate());
+    ASSERT_FALSE(tvShow.getLastWatchDate());
 }
 
 TEST_F(TvShowTest, tvShowCreatedWithLastWatchDateShouldReturnItAsLastWatchDate) {
@@ -64,30 +64,4 @@ TEST_F(TvShowTest, tvShowWithLastWatchDateNotSpecifiedShouldNotBeEqualToTvShowWi
 TEST_F(TvShowTest, twoTvShowWithSameNameThumbnailUrlAndNoLastWatchDateShouldBeEqual) {
     serio::core::TvShow oneShow(SHOW_NAME, THUMBNAIL_URL), anotherShow(SHOW_NAME, THUMBNAIL_URL);
     ASSERT_EQ(oneShow, anotherShow);
-}
-
-TEST_F(TvShowTest, createCopyOfWatchedTvShowUsingConstructor) {
-    serio::core::TvShow tvShow(SHOW_NAME, THUMBNAIL_URL, lastWatchDate);
-    serio::core::TvShow copy(tvShow);
-    ASSERT_EQ(tvShow, copy);
-}
-
-TEST_F(TvShowTest, createCopyOfNotWatchedTvShowUsingConstructor) {
-    serio::core::TvShow tvShow(SHOW_NAME, THUMBNAIL_URL);
-    serio::core::TvShow copy(tvShow);
-    ASSERT_EQ(tvShow, copy);
-}
-
-TEST_F(TvShowTest, createCopyOfWatchedTvShowUsingAssignment) {
-    serio::core::TvShow tvShow(SHOW_NAME, THUMBNAIL_URL, lastWatchDate);
-    serio::core::TvShow copy(SHOW_NAME);
-    copy = tvShow;
-    ASSERT_EQ(tvShow, copy);
-}
-
-TEST_F(TvShowTest, createCopyOfNotWatchedTvShowUsingAssignment) {
-    serio::core::TvShow tvShow(SHOW_NAME, THUMBNAIL_URL);
-    serio::core::TvShow copy(SHOW_NAME);
-    copy = tvShow;
-    ASSERT_EQ(tvShow, copy);
 }
