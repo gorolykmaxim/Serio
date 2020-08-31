@@ -3,14 +3,14 @@
 
 #include <QQmlApplicationEngine>
 #include <user-interface/view-model/AllTvShowsViewModel.h>
-#include <storage/DatabaseStorage.h>
+#include <database-storage/DatabaseStorage.h>
 
 namespace serio::qt {
 
 class UserInterface : public QObject {
     Q_OBJECT
 public:
-    UserInterface(DatabaseStorage& storage, TaskExecutor& executor);
+    UserInterface(DatabaseStorage& storage, QTaskExecutor& executor);
     void initialize();
 private:
     QQmlApplicationEngine engine;

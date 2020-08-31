@@ -1,7 +1,7 @@
 #include <QDir>
 #include <QFontDatabase>
 #include <QQmlContext>
-#include <storage/DatabaseStorage.h>
+#include <database-storage/DatabaseStorage.h>
 #include "Application.h"
 
 serio::qt::Application::Application(int &argc, char **argv)

@@ -3,8 +3,8 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <storage/DatabaseStorage.h>
-#include <concurrency/TaskExecutor.h>
+#include <database-storage/DatabaseStorage.h>
+#include <task-executor/QTaskExecutor.h>
 #include <user-interface/UserInterface.h>
 
 namespace serio::qt {
@@ -13,7 +13,7 @@ class Application : public QGuiApplication {
 public:
     Application(int &argc, char **argv);
 private:
-    TaskExecutor executor;
+    QTaskExecutor executor;
     DatabaseStorage storage;
     UserInterface userInterface;
     std::string getPathToDatabaseFile() const;

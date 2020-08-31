@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <storage/DatabaseStorage.h>
+#include <database-storage/DatabaseStorage.h>
 
 class DatabaseTvShowStorageTest : public ::testing::Test {
 public:

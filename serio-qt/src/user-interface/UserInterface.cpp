@@ -6,7 +6,7 @@
 #include <user-interface/model/TvShowListModel.h>
 #include "UserInterface.h"
 
-serio::qt::UserInterface::UserInterface(serio::qt::DatabaseStorage &storage, serio::qt::TaskExecutor &executor)
+serio::qt::UserInterface::UserInterface(serio::qt::DatabaseStorage &storage, serio::qt::QTaskExecutor &executor)
         : QObject(), allTvShowsViewModel(100, 2, storage, executor) {
     loadFonts();
     registerViewModelsInEngine();

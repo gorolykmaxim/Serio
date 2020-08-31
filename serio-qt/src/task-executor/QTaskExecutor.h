@@ -1,14 +1,14 @@
-#ifndef SERIO_TASKEXECUTOR_H
-#define SERIO_TASKEXECUTOR_H
+#ifndef SERIO_QTASKEXECUTOR_H
+#define SERIO_QTASKEXECUTOR_H
 
 #include <QtConcurrent>
 #include <QFutureWatcher>
 
 namespace serio::qt {
 
-class TaskExecutor {
+class QTaskExecutor {
 public:
-    TaskExecutor() {
+    QTaskExecutor() {
         singleTaskPool.setMaxThreadCount(1);
         singleTaskPool.setExpiryTimeout(-1);
     }
@@ -26,4 +26,4 @@ private:
 
 }
 
-#endif //SERIO_TASKEXECUTOR_H
+#endif //SERIO_QTASKEXECUTOR_H

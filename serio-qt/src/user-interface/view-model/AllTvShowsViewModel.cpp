@@ -3,7 +3,7 @@
 serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize,
                                                     unsigned int listModelPageCountLimit,
                                                     core::TvShowStorage& tvShows,
-                                                    TaskExecutor& executor)
+                                                    QTaskExecutor& executor)
                                                         : listModelPageSize(listModelPageSize),
                                                           allShowsListModel(listModelPageSize, listModelPageCountLimit),
                                                           watchedShowsListModel(listModelPageSize, listModelPageCountLimit),

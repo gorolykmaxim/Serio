@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <storage/DatabaseStorage.h>
+#include <database-storage/DatabaseStorage.h>
 
 TEST(DatabaseTvShowCrawlerStorageTest, shouldNotFindCrawlerOfTvShowThatDoesNotExist) {
     serio::qt::DatabaseStorage storage;
