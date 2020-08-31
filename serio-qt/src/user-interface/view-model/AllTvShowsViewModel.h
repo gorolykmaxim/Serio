@@ -2,7 +2,7 @@
 #define SERIO_ALLTVSHOWSVIEWMODEL_H
 
 #include <QObject>
-#include <model/TvShowListModel.h>
+#include <user-interface/model/TvShowListModel.h>
 #include <QFutureWatcher>
 #include <concurrency/TaskExecutor.h>
 #include <tv-show-storage/TvShowStorage.h>

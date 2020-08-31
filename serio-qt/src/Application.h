@@ -4,8 +4,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <storage/DatabaseStorage.h>
-#include <view-model/AllTvShowsViewModel.h>
 #include <concurrency/TaskExecutor.h>
+#include <user-interface/UserInterface.h>
 
 namespace serio::qt {
 
@@ -15,16 +15,9 @@ public:
 private:
     TaskExecutor executor;
     DatabaseStorage storage;
-    QQmlApplicationEngine engine;
-    AllTvShowsViewModel allTvShowsViewModel;
-    void loadFonts();
-    void initializeDatabase();
+    UserInterface userInterface;
     std::string getPathToDatabaseFile() const;
     void initializeStorageInDatabase(const std::string& databaseFilePath);
-    void initializeQmlEngine();
-    void exitOnUiLoadFailure(const QUrl &url);
-    void registerViewModelsInEngine();
-    void registerQmlTypes();
 };
 
 }
