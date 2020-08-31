@@ -8,8 +8,8 @@ qt5_add_resources(RESOURCES resources/qml.qrc)
 add_library(SerioLib STATIC
         src/Application.h
         src/Application.cpp
-        src/storage/DatabaseTvShowStorage.cpp
-        src/storage/DatabaseTvShowStorage.h
+        src/storage/DatabaseStorage.cpp
+        src/storage/DatabaseStorage.h
         src/storage/StorageError.cpp
         src/storage/StorageError.h
         src/model/TvShowListModel.cpp
@@ -20,7 +20,11 @@ add_library(SerioLib STATIC
         src/network/QHttpClient.cpp
         src/network/QHttpClient.h
         src/network/FetchRequest.cpp
-        src/network/FetchRequest.h)
+        src/network/FetchRequest.h
+        src/storage/DatabaseTvShowStorage.cpp
+        src/storage/DatabaseTvShowStorage.h
+        src/storage/DatabaseTvShowCrawlerStorage.cpp
+        src/storage/DatabaseTvShowCrawlerStorage.h)
 target_include_directories(SerioLib PUBLIC src)
 target_link_libraries(SerioLib Qt5::Quick Qt5::Concurrent Qt5::Sql Qt5::Network Core)
 
@@ -28,5 +32,6 @@ add_executable(Serio ${RESOURCES} src/main.cpp)
 target_link_libraries(Serio SerioLib)
 
 add_executable(SerioTest test/storage/DatabaseTvShowStorageTest.cpp
-        test/model/TvShowListModelTest.cpp)
+        test/model/TvShowListModelTest.cpp
+        test/storage/DatabaseTvShowCrawlerStorageTest.cpp)
 target_link_libraries(SerioTest SerioLib gtest gtest_main Qt5::Test)

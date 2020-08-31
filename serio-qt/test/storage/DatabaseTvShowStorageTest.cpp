@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <storage/DatabaseTvShowStorage.h>
+#include <storage/DatabaseStorage.h>
 
 class DatabaseTvShowStorageTest : public ::testing::Test {
 public:
@@ -12,7 +12,7 @@ public:
         storage.initialize(":memory:");
     }
 protected:
-    serio::qt::DatabaseTvShowStorage storage;
+    serio::qt::DatabaseStorage storage;
     serio::core::TvShow fourthTvShow, thirdTvShow, secondTvShow, firstTvShow;
     const unsigned int LIMIT_ONE_ITEM = 1;
     void saveShows() {
