@@ -1,15 +1,19 @@
 #include <gtest/gtest.h>
 #include <database-storage/DatabaseStorage.h>
 
-TEST(DatabaseTvShowCrawlerStorageTest, shouldNotFindCrawlerOfTvShowThatDoesNotExist) {
+class DatabaseTvShowCrawlerStorageTest : public ::testing::Test {
+protected:
     serio::qt::DatabaseStorage storage;
-    storage.initialize(":memory:");
+    virtual void SetUp() {
+        storage.initialize(":memory:");
+    }
+};
+
+TEST_F(DatabaseTvShowCrawlerStorageTest, shouldNotFindCrawlerOfTvShowThatDoesNotExist) {
     EXPECT_FALSE(storage.getTvShowCrawlerByTvShowName("Friends"));
 }
 
-TEST(DatabaseTvShowCrawlerStorageTest, shouldOverrideExistingTvShowCrawlerWithNewOne) {
-    serio::qt::DatabaseStorage storage;
-    storage.initialize(":memory:");
+TEST_F(DatabaseTvShowCrawlerStorageTest, shouldOverrideExistingTvShowCrawlerWithNewOne) {
     std::string expectedCrawler = "{\"showName\":\"Friends\",\"episodeVideoCrawler\":{}}";
     storage.saveTvShowCrawler("Friends", "{}");
     storage.saveTvShowCrawler("Friends", expectedCrawler);
