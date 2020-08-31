@@ -1,5 +1,4 @@
 #include "DatabaseStorage.h"
-#include "StorageError.h"
 #include <QString>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -15,7 +14,7 @@ void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& stora
     QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName(QString::fromStdString(storageUrl));
     if (!database.open()) {
-        throw StorageError::openDatabase(storageUrl, database.lastError().text().toStdString());
+        throw StorageError(storageUrl, database.lastError().text().toStdString());
     }
 }
 
@@ -46,3 +45,6 @@ void serio::qt::DatabaseStorage::saveTvShowCrawler(const std::string &tvShowName
     tvShowCrawlerStorage.deleteTvShowCrawlerOfTvShow(tvShowName);
     tvShowCrawlerStorage.insertTvShowCrawler(tvShowName, serializedCrawler);
 }
+
+serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)
+    : std::runtime_error("Failed to open database '" + databaseName + "'. Reason: " + reason) {}

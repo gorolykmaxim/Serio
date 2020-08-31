@@ -5,6 +5,7 @@
 #include <string>
 #include <tv-show-storage/TvShowStorage.h>
 #include <tv-show-crawler-storage/TvShowCrawlerStorage.h>
+#include <stdexcept>
 #include "DatabaseTvShowStorage.h"
 #include "DatabaseTvShowCrawlerStorage.h"
 
@@ -22,6 +23,11 @@ private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
     void openDatabaseConnection(const std::string& storageUrl);
+};
+
+class StorageError : public std::runtime_error {
+public:
+    StorageError(const std::string& databaseName, const std::string& reason);
 };
 
 }

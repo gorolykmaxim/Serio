@@ -10,8 +10,6 @@ add_library(SerioLib STATIC
         src/Application.cpp
         src/storage/DatabaseStorage.cpp
         src/storage/DatabaseStorage.h
-        src/storage/StorageError.cpp
-        src/storage/StorageError.h
         src/model/TvShowListModel.cpp
         src/model/TvShowListModel.h
         src/view-model/AllTvShowsViewModel.cpp
