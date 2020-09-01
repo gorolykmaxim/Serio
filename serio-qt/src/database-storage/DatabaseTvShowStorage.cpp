@@ -26,7 +26,7 @@ std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodesO
                                                                                                 unsigned int limit) {
     std::vector<core::Episode> result;
     QSqlQuery findEpisodesOfTvShow(QSqlDatabase::database());
-    findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL FROM EPISODE WHERE TV_SHOW_NAME = ? LIMIT ? OFFSET ?");
+    findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL FROM EPISODE WHERE TV_SHOW_NAME = ? ORDER BY ID LIMIT ? OFFSET ?");
     findEpisodesOfTvShow.addBindValue(QString::fromStdString(tvShowName));
     findEpisodesOfTvShow.addBindValue(limit);
     findEpisodesOfTvShow.addBindValue(offset);

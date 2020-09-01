@@ -134,3 +134,12 @@ TEST_F(DatabaseTvShowStorageTest, shouldOverrideExistingTvShowEpisodesWithNewOne
     EXPECT_EQ(firstTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
     EXPECT_FALSE(page.containsItemWithGlobalIndex(1));
 }
+
+TEST_F(DatabaseTvShowStorageTest, shouldReturnEpisodesOrderedById) {
+    std::vector<serio::core::Episode> episodesInWrongOrder = secondTvShowEpisodes;
+    std::reverse(episodesInWrongOrder.begin(), episodesInWrongOrder.end());
+    storage.saveTvShow(secondTvShow, episodesInWrongOrder);
+    serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
+    EXPECT_EQ(secondTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
+    EXPECT_EQ(secondTvShowEpisodes.at(1), page.getItemByGlobalIndex(1));
+}
