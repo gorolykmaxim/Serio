@@ -6,6 +6,10 @@ protected:
     std::string expectedVideoUrl = "https://tv-show.com/episode-1.mp4";
 };
 
+TEST_F(EpisodeTest, shouldFailToCreateEpisodeThatWithIdLessThan1) {
+    EXPECT_THROW(serio::core::Episode(0, expectedVideoUrl), std::invalid_argument);
+}
+
 TEST_F(EpisodeTest, shouldCreateEpisodeWithSpecifiedId) {
     serio::core::Episode episode(1, expectedVideoUrl);
     EXPECT_EQ(1, episode.getId());

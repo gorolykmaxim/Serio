@@ -3,7 +3,11 @@
 #include "tv-show-storage/Episode.h"
 
 serio::core::Episode::Episode(unsigned int id, std::string videoUrl, std::optional<std::string> episodeName)
-    : id(id), name(episodeName ? *episodeName : "Episode " + std::to_string(id)), videoUrl(std::move(videoUrl)) {}
+    : id(id), name(episodeName ? *episodeName : "Episode " + std::to_string(id)), videoUrl(std::move(videoUrl)) {
+    if (id == 0) {
+        throw std::invalid_argument("Episode ID must be greater than 0");
+    }
+}
 
 unsigned int serio::core::Episode::getId() const {
     return id;
