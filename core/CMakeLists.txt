@@ -9,13 +9,41 @@ add_library(Core STATIC
         src/tv-show-storage/TvShow.cpp
         src/tv-show-storage/LastWatchDate.cpp
         include/http-client/HttpClient.h
-        include/tv-show-crawler-storage/TvShowCrawlerStorage.h)
-target_include_directories(Core PUBLIC include PRIVATE lib/json)
+        include/tv-show-crawler-storage/TvShowCrawlerStorage.h
+        include/tv-show-crawler-runtime/TvShowCrawlerRuntime.h
+        include/tv-show-crawler-runtime/CrawlerSerializer.h
+        include/tv-show-crawler-runtime/model/CrawlerStep.h
+        include/tv-show-crawler-runtime/model/Crawler.h
+        include/tv-show-crawler-runtime/model/TvShowCrawler.h
+        include/tv-show-crawler-runtime/model/CrawlerStepType.h
+        include/tv-show-crawler-runtime/executor/RegExpStepExecutor.h
+        include/tv-show-crawler-runtime/executor/CrawlerExecutor.h
+        include/tv-show-crawler-runtime/executor/CrawlerStepExecutor.h
+        include/tv-show-crawler-runtime/executor/ValueStepExecutor.h
+        include/tv-show-crawler-runtime/executor/TransformStepExecutor.h
+        include/tv-show-crawler-runtime/executor/FetchStepExecutor.h
+        src/tv-show-crawler-runtime/TvShowCrawlerRuntime.cpp
+        src/tv-show-crawler-runtime/CrawlerSerializer.cpp
+        src/tv-show-crawler-runtime/model/CrawlerStep.cpp
+        src/tv-show-crawler-runtime/model/Crawler.cpp
+        src/tv-show-crawler-runtime/model/TvShowCrawler.cpp
+        src/tv-show-crawler-runtime/model/CrawlerStepType.cpp
+        src/tv-show-crawler-runtime/executor/CrawlerExecutor.cpp
+        src/tv-show-crawler-runtime/executor/ValueStepExecutor.cpp
+        src/tv-show-crawler-runtime/executor/TransformStepExecutor.cpp
+        src/tv-show-crawler-runtime/executor/FetchStepExecutor.cpp
+        src/tv-show-crawler-runtime/executor/RegExpStepExecutor.cpp)
+target_include_directories(Core PUBLIC include PUBLIC lib/json)
 
 add_executable(CoreTest
         test/tv-show-storage/TvShowTest.cpp
         test/tv-show-storage/LastWatchDateTest.cpp
         test/tv-show-storage/ListPageTest.cpp
         test/tv-show-storage/BigListProxyTest.cpp
-        test/tv-show-storage/EpisodeTest.cpp)
+        test/tv-show-storage/EpisodeTest.cpp
+        test/tv-show-crawler-runtime/model/CrawlerStepTest.cpp
+        test/tv-show-crawler-runtime/model/CrawlerTest.cpp
+        test/tv-show-crawler-runtime/model/TvShowCrawlerTest.cpp
+        test/tv-show-crawler-runtime/TvShowCrawlerRuntimeTest.cpp
+        test/tv-show-crawler-runtime/model/CrawlerStepTypeTest.cpp)
 target_link_libraries(CoreTest Core gtest gmock gtest_main)
