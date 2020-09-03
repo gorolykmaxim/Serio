@@ -10,11 +10,11 @@ namespace serio::core {
 
 class TvShow {
 public:
-    TvShow(std::string name, std::string thumbnailUrl = "");
+    explicit TvShow(std::string name, std::string thumbnailUrl = "");
     TvShow(std::string name, std::string thumbnailUrl, LastWatchDate lastWatchDate);
-    std::string getName() const;
-    std::string getThumbnailUrl() const;
-    std::optional<LastWatchDate> getLastWatchDate() const;
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::string getThumbnailUrl() const;
+    [[nodiscard]] std::optional<LastWatchDate> getLastWatchDate() const;
     bool operator==(const TvShow &rhs) const;
     bool operator!=(const TvShow &rhs) const;
 private:

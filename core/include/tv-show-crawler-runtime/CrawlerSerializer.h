@@ -8,10 +8,10 @@ namespace serio::core {
 
 class CrawlerSerializer {
 public:
-    std::string serialize(const TvShowCrawler& crawler) const;
+    [[nodiscard]] std::string serialize(const TvShowCrawler& crawler) const;
 private:
-    nlohmann::json serialize(const Crawler& crawler) const;
-    nlohmann::json serialize(const CrawlerStep& step) const;
+    [[nodiscard]] nlohmann::json serialize(const Crawler& crawler) const;
+    [[nodiscard]] nlohmann::json serialize(const CrawlerStep& step) const;
 };
 
 }

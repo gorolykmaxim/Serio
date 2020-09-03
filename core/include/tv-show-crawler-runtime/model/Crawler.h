@@ -8,8 +8,8 @@ namespace serio::core {
 
 class Crawler {
 public:
-    Crawler(std::vector<CrawlerStep> steps = {});
-    std::vector<CrawlerStep> getSteps() const;
+    explicit Crawler(std::vector<CrawlerStep> steps = {});
+    [[nodiscard]] std::vector<CrawlerStep> getSteps() const;
     bool operator==(const Crawler &rhs) const;
     bool operator!=(const Crawler &rhs) const;
     bool hasSteps() const;

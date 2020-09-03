@@ -15,7 +15,7 @@ class TvShowCrawlerRuntime {
 public:
     TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage, HttpClient& httpClient);
     void crawlTvShowAndSaveCrawler(const TvShowCrawler &crawler);
-    std::vector<CrawlerStepType> getCrawlerStepTypes() const;
+    [[nodiscard]] std::vector<CrawlerStepType> getCrawlerStepTypes() const;
 private:
     TvShowCrawlerStorage& crawlerStorage;
     TvShowStorage& tvShowStorage;

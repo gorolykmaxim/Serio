@@ -14,7 +14,7 @@ class BigListProxy {
 public:
     BigListProxy(const unsigned int pageSize, const unsigned int pageCountLimit)
             : totalSize(0), pageSize(pageSize), pageCountLimit(pageCountLimit) {}
-    unsigned int getTotalSize() const {
+    [[nodiscard]] unsigned int getTotalSize() const {
         return totalSize;
     }
     void addPage(serio::core::ListPage<T> page) {
@@ -24,7 +24,7 @@ public:
             pages.pop_front();
         }
     }
-    bool containsItemWithGlobalIndex(unsigned int index) const {
+    [[nodiscard]] bool containsItemWithGlobalIndex(unsigned int index) const {
         auto it = std::find_if(pages.cbegin(), pages.cend(), [=] (ListPage<T> item) {return item.containsItemWithGlobalIndex(index);});
         return it != pages.cend();
     }
@@ -36,7 +36,7 @@ public:
             return it->getItemByGlobalIndex(index);
         }
     }
-    unsigned int getOffsetOfPageWithIndex(unsigned int index) const {
+    [[nodiscard]] unsigned int getOffsetOfPageWithIndex(unsigned int index) const {
         return index / pageSize * pageSize;
     }
 private:

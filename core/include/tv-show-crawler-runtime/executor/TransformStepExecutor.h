@@ -7,7 +7,7 @@ namespace serio::core {
 
 class TransformStepExecutor : public CrawlerStepExecutor {
 public:
-    std::vector<std::string> execute(const CrawlerStep &step, const std::vector<std::string>& previousStepResults) const override;
+    [[nodiscard]] std::vector<std::string> execute(const CrawlerStep &step, const std::vector<std::string>& previousStepResults) const override;
 };
 
 }

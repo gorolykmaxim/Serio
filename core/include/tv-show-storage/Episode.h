@@ -8,9 +8,9 @@ namespace serio::core {
 class Episode {
 public:
     Episode(unsigned int id, std::string videoUrl, std::optional<std::string> episodeName = {});
-    unsigned int getId() const;
-    std::string getName() const;
-    std::string getVideoUrl() const;
+    [[nodiscard]] unsigned int getId() const;
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::string getVideoUrl() const;
     bool operator==(const Episode &rhs) const;
     bool operator!=(const Episode &rhs) const;
 private:

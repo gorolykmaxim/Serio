@@ -8,9 +8,9 @@ namespace serio::core {
 
 class CrawlerStepType {
 public:
-    CrawlerStepType(std::string name, std::vector<std::string> mandatoryProperties = {});
-    std::string getName() const;
-    std::vector<std::string> getMandatoryProperties() const;
+    explicit CrawlerStepType(std::string name, std::vector<std::string> mandatoryProperties = {});
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::vector<std::string> getMandatoryProperties() const;
     bool operator==(const CrawlerStepType &rhs) const;
     bool operator!=(const CrawlerStepType &rhs) const;
 private:

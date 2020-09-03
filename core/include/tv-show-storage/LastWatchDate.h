@@ -8,10 +8,10 @@ namespace serio::core {
 
 class LastWatchDate {
 public:
-    LastWatchDate(std::chrono::system_clock::time_point date);
-    LastWatchDate(long long timeSinceEpoch);
-    std::string toString() const;
-    long long getSinceEpoch() const;
+    explicit LastWatchDate(std::chrono::system_clock::time_point date);
+    explicit LastWatchDate(long long timeSinceEpoch);
+    [[nodiscard]] std::string toString() const;
+    [[nodiscard]] long long getSinceEpoch() const;
     bool operator==(const LastWatchDate &rhs) const;
     bool operator!=(const LastWatchDate &rhs) const;
 private:

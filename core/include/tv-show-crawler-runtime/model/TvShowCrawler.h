@@ -8,11 +8,11 @@ namespace serio::core {
 
 class TvShowCrawler {
 public:
-    TvShowCrawler(std::string tvShowName, Crawler episodeVideoCrawler, Crawler thumbnailCrawler = {}, Crawler episodeNameCrawler = {});
-    std::string getTvShowName() const;
-    Crawler getEpisodeVideoCrawler() const;
-    Crawler getThumbnailCrawler() const;
-    Crawler getEpisodeNameCrawler() const;
+    TvShowCrawler(std::string tvShowName, Crawler episodeVideoCrawler, Crawler thumbnailCrawler = Crawler(), Crawler episodeNameCrawler = Crawler());
+    [[nodiscard]] std::string getTvShowName() const;
+    [[nodiscard]] Crawler getEpisodeVideoCrawler() const;
+    [[nodiscard]] Crawler getThumbnailCrawler() const;
+    [[nodiscard]] Crawler getEpisodeNameCrawler() const;
     bool operator==(const TvShowCrawler &rhs) const;
     bool operator!=(const TvShowCrawler &rhs) const;
 private:

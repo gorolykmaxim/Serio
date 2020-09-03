@@ -8,8 +8,8 @@ namespace serio::core {
 
 class FetchStepExecutor : public CrawlerStepExecutor {
 public:
-    FetchStepExecutor(HttpClient &httpClient);
-    std::vector<std::string> execute(const CrawlerStep &step, const std::vector<std::string> &previousStepResults) const override;
+    explicit FetchStepExecutor(HttpClient &httpClient);
+    [[nodiscard]] std::vector<std::string> execute(const CrawlerStep &step, const std::vector<std::string> &previousStepResults) const override;
 private:
     HttpClient& httpClient;
 };

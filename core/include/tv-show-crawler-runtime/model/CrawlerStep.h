@@ -9,11 +9,11 @@ namespace serio::core {
 
 class CrawlerStep {
 public:
-    CrawlerStep(std::string type, std::map<std::string, std::string> properties = {});
-    std::string getType() const;
-    std::optional<std::string> getProperty(const std::string &propertyName) const;
-    std::string getPropertyOrFail(const std::string &propertyName) const;
-    std::map<std::string, std::string> getProperties() const;
+    explicit CrawlerStep(std::string type, std::map<std::string, std::string> properties = {});
+    [[nodiscard]] std::string getType() const;
+    [[nodiscard]] std::optional<std::string> getProperty(const std::string &propertyName) const;
+    [[nodiscard]] std::string getPropertyOrFail(const std::string &propertyName) const;
+    [[nodiscard]] std::map<std::string, std::string> getProperties() const;
     bool operator==(const CrawlerStep &rhs) const;
     bool operator!=(const CrawlerStep &rhs) const;
 private:
@@ -23,7 +23,7 @@ private:
 
 class CrawlerStepTypeError: public std::invalid_argument {
 public:
-    CrawlerStepTypeError(const std::string& stepType);
+    explicit CrawlerStepTypeError(const std::string& stepType);
 };
 
 class CrawlerStepPropertyMissingError : public std::invalid_argument {

@@ -8,7 +8,7 @@ namespace serio::core {
 
 class RegExpStepExecutor : public CrawlerStepExecutor {
 public:
-    std::vector<std::string> execute(const CrawlerStep &step, const std::vector<std::string> &previousStepResults) const override;
+    [[nodiscard]] std::vector<std::string> execute(const CrawlerStep &step, const std::vector<std::string> &previousStepResults) const override;
 private:
     void findAndAppendMatchesToResults(std::string input, const std::regex& regExp, std::vector<std::string>& results) const;
     void appendMatchToResults(const std::smatch& match, std::vector<std::string>& results) const;

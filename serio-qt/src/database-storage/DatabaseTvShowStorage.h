@@ -25,8 +25,8 @@ private:
     void insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes);
     unsigned int countTvShowsMatchingQuery(const QString& query = "");
     std::vector<core::TvShow> findTvShowsMatchingQuery(const QString& query, unsigned int offset, unsigned int limit);
-    core::TvShow readTvShowFrom(const QSqlQuery& query) const;
-    core::Episode readEpisodeFrom(const QSqlQuery& query) const;
+    [[nodiscard]] core::TvShow readTvShowFrom(const QSqlQuery& query) const;
+    [[nodiscard]] core::Episode readEpisodeFrom(const QSqlQuery& query) const;
 };
 
 }

@@ -45,8 +45,8 @@ TEST_F(TvShowListModelTest, shouldInsertNewRowsOnLoadingNewPage) {
     model.loadPage(page);
     ASSERT_EQ(1, spy.count());
     QVariantList args = spy.takeFirst();
-    EXPECT_EQ(0, args.at(1).toUInt());
-    EXPECT_EQ(page.getLastItemIndex(), args.at(2).toUInt());
+    EXPECT_EQ(0, args[1].toUInt());
+    EXPECT_EQ(page.getLastItemIndex(), args[2].toUInt());
 }
 
 TEST_F(TvShowListModelTest, shouldRemoveRowsOnLoadingNewPage) {
@@ -55,8 +55,8 @@ TEST_F(TvShowListModelTest, shouldRemoveRowsOnLoadingNewPage) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(1, 3, {}));
     ASSERT_EQ(1, spy.count());
     QVariantList args = spy.takeFirst();
-    EXPECT_EQ(3, args.at(1).toUInt());
-    EXPECT_EQ(4, args.at(2).toUInt());
+    EXPECT_EQ(3, args[1].toUInt());
+    EXPECT_EQ(4, args[2].toUInt());
 }
 
 TEST_F(TvShowListModelTest, shouldNeitherRemoveNorInsertRowsOnLoadingNewPageWithSameTotalSize) {
@@ -74,8 +74,8 @@ TEST_F(TvShowListModelTest, shouldChangeDataOnLoadingNewPage) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(300, 1000, tvShows));
     ASSERT_EQ(1, spy.count());
     QVariantList args = spy.takeFirst();
-    EXPECT_EQ(300, args.at(0).toModelIndex().row());
-    EXPECT_EQ(399, args.at(1).toModelIndex().row());
+    EXPECT_EQ(300, args[0].toModelIndex().row());
+    EXPECT_EQ(399, args[1].toModelIndex().row());
 }
 
 TEST_F(TvShowListModelTest, shouldReturnNullOnInvalidIndex) {
@@ -101,8 +101,8 @@ TEST_F(TvShowListModelTest, shouldReturnThumbnailOfTvShowWithSpecifiedIndex) {
 }
 
 TEST_F(TvShowListModelTest, shouldReturnLastWatchDateOfTvShowWithSpecifiedIndex) {
-    serio::core::TvShow today("", "", std::chrono::system_clock::now());
-    serio::core::TvShow yesterday("", "", std::chrono::system_clock::now() - std::chrono::hours(25));
+    serio::core::TvShow today("", "", serio::core::LastWatchDate(std::chrono::system_clock::now()));
+    serio::core::TvShow yesterday("", "", serio::core::LastWatchDate(std::chrono::system_clock::now() - std::chrono::hours(25)));
     serio::core::TvShow notWatched("");
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 10, {today, yesterday, notWatched}));
     EXPECT_EQ(today.getLastWatchDate()->toString(), model.data(model.index(0), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
@@ -127,10 +127,10 @@ TEST_F(TvShowListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
     model.data(model.index(649), serio::qt::TvShowListModel::Role::NAME);
     ASSERT_EQ(2, spy.count());
     QVariantList args = spy.takeFirst();
-    EXPECT_EQ(500, args.at(0).toUInt());
-    EXPECT_EQ(pageSize, args.at(1).toUInt());
+    EXPECT_EQ(500, args[0].toUInt());
+    EXPECT_EQ(pageSize, args[1].toUInt());
     args = spy.takeLast();
-    EXPECT_EQ(600, args.at(0).toUInt());
+    EXPECT_EQ(600, args[0].toUInt());
 }
 
 TEST_F(TvShowListModelTest, shouldNotRequestLoadOfPageOnInvalidIndex) {

@@ -5,8 +5,8 @@ class DatabaseTvShowStorageTest : public ::testing::Test {
 public:
     DatabaseTvShowStorageTest()
         : ::testing::Test(),
-            fourthTvShow("How i met your mom", "", std::chrono::system_clock::now() - std::chrono::hours(32)),
-            thirdTvShow("Mandalorian", "", std::chrono::system_clock::now()),
+            fourthTvShow("How i met your mom", "", serio::core::LastWatchDate(std::chrono::system_clock::now() - std::chrono::hours(32))),
+            thirdTvShow("Mandalorian", "", serio::core::LastWatchDate(std::chrono::system_clock::now())),
             secondTvShow("Friends"),
             firstTvShow("Clinic") {
         storage.initialize(":memory:");
@@ -123,15 +123,15 @@ TEST_F(DatabaseTvShowStorageTest, returnedListPageShouldBeLimitedToTheSpecifiedC
 TEST_F(DatabaseTvShowStorageTest, shouldReturnAllEpisodesOfTvShow) {
     saveShows();
     serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
-    EXPECT_EQ(secondTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
-    EXPECT_EQ(secondTvShowEpisodes.at(1), page.getItemByGlobalIndex(1));
+    EXPECT_EQ(secondTvShowEpisodes[0], page.getItemByGlobalIndex(0));
+    EXPECT_EQ(secondTvShowEpisodes[1], page.getItemByGlobalIndex(1));
 }
 
 TEST_F(DatabaseTvShowStorageTest, shouldOverrideExistingTvShowEpisodesWithNewOnes) {
     saveShows();
     storage.saveTvShow(secondTvShow, firstTvShowEpisodes);
     serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
-    EXPECT_EQ(firstTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
+    EXPECT_EQ(firstTvShowEpisodes[0], page.getItemByGlobalIndex(0));
     EXPECT_FALSE(page.containsItemWithGlobalIndex(1));
 }
 
@@ -140,6 +140,6 @@ TEST_F(DatabaseTvShowStorageTest, shouldReturnEpisodesOrderedById) {
     std::reverse(episodesInWrongOrder.begin(), episodesInWrongOrder.end());
     storage.saveTvShow(secondTvShow, episodesInWrongOrder);
     serio::core::ListPage<serio::core::Episode> page = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
-    EXPECT_EQ(secondTvShowEpisodes.at(0), page.getItemByGlobalIndex(0));
-    EXPECT_EQ(secondTvShowEpisodes.at(1), page.getItemByGlobalIndex(1));
+    EXPECT_EQ(secondTvShowEpisodes[0], page.getItemByGlobalIndex(0));
+    EXPECT_EQ(secondTvShowEpisodes[1], page.getItemByGlobalIndex(1));
 }

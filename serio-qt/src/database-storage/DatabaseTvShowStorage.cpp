@@ -138,7 +138,7 @@ serio::core::TvShow serio::qt::DatabaseTvShowStorage::readTvShowFrom(const QSqlQ
     if (lastWatchDate.isNull()) {
         return core::TvShow(name, thumbnailUrl);
     } else {
-        return core::TvShow(name, thumbnailUrl, lastWatchDate.toLongLong());
+        return core::TvShow(name, thumbnailUrl, serio::core::LastWatchDate(lastWatchDate.toLongLong()));
     }
 }
 
