@@ -18,7 +18,7 @@ void serio::core::TvShowCrawlerRuntime::crawlTvShowAndSaveCrawler(const TvShowCr
         std::vector<Episode> episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler));
         tvShowStorage.saveTvShow(tvShow, episodes);
         crawlerStorage.saveTvShowCrawler(crawler.getTvShowName(), serializer.serialize(crawler));
-    } catch (std::exception& e) {
+    } catch (std::runtime_error& e) {
         throw TvShowCrawlerExecutionError(crawler.getTvShowName(), e);
     }
 }

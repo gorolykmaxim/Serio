@@ -55,7 +55,7 @@ std::vector<std::string> serio::core::CrawlerExecutor::executeCrawlerStep(const 
             throw CrawlerStepTypeError(step.getType());
         }
         return executor->second->execute(step, previousStepResults);
-    } catch (std::exception& e) {
+    } catch (std::runtime_error& e) {
         throw CrawlerStepExecutionError(stepNumber, e);
     }
 }

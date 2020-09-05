@@ -78,29 +78,17 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithoutEpisodesAndThumbnail) {
 
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlThumbnailWithCrawlerStepOfUnknownType) {
-    try {
-        serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
-            serio::core::CrawlerStep("evaporate")
-        }));
-        runtime.crawlTvShowAndSaveCrawler(crawler);
-        FAIL();
-    } catch (serio::core::TvShowCrawlerExecutionError& e) {
-        EXPECT_STREQ("Failed to crawl 'Friends': Failed to execute thumbnail crawler: Failed to execute step #1: "
-                     "Unknown crawler step type 'evaporate'", e.what());
-    }
+    serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
+        serio::core::CrawlerStep("evaporate")
+    }));
+    EXPECT_THROW(runtime.crawlTvShowAndSaveCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlThumbnailWithValueCrawlerStepNotHavingValueProperty) {
-    try {
-        serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
-            serio::core::CrawlerStep("value")
-        }));
-        runtime.crawlTvShowAndSaveCrawler(crawler);
-        FAIL();
-    } catch (serio::core::TvShowCrawlerExecutionError& e) {
-        EXPECT_STREQ("Failed to crawl 'Friends': Failed to execute thumbnail crawler: Failed to execute step #1: "
-                     "Crawler step 'value' missing property 'value'", e.what());
-    }
+    serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
+        serio::core::CrawlerStep("value")
+    }));
+    EXPECT_THROW(runtime.crawlTvShowAndSaveCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailHardcoded) {
@@ -113,17 +101,11 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailHardcoded) {
 
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlThumbnailWithTransformStepNotHavingTemplateProperty) {
-    try {
-        serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
-            serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
-            serio::core::CrawlerStep("transform")
-        }));
-        runtime.crawlTvShowAndSaveCrawler(crawler);
-        FAIL();
-    } catch (serio::core::TvShowCrawlerExecutionError& e) {
-        EXPECT_STREQ("Failed to crawl 'Friends': Failed to execute thumbnail crawler: Failed to execute step #2: "
-                     "Crawler step 'transform' missing property 'template'", e.what());
-    }
+    serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
+        serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
+        serio::core::CrawlerStep("transform")
+    }));
+    EXPECT_THROW(runtime.crawlTvShowAndSaveCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedDynamically) {

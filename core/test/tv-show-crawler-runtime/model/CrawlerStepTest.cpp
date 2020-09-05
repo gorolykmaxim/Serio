@@ -37,12 +37,7 @@ TEST(CrawlerStepTest, twoStepsShouldNotBeEqualIfTheirTypesOrPropertiesAreDiffere
 
 TEST(CrawlerStepTest, shouldFailToGetPropertyStepDoesNotHave) {
     serio::core::CrawlerStep step("fetch");
-    try {
-        std::string _ = step.getPropertyOrFail("template");
-        FAIL();
-    } catch (serio::core::CrawlerStepPropertyMissingError& e) {
-        EXPECT_STREQ("Crawler step 'fetch' missing property 'template'", e.what());
-    }
+    EXPECT_THROW((void)step.getPropertyOrFail("template"), std::invalid_argument);
 }
 
 TEST(CrawlerStepTest, shouldGetPropertyStepHas) {
