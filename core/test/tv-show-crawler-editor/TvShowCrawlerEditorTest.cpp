@@ -72,12 +72,16 @@ TEST_F(TvShowCrawlerEditorTest, shouldResetEditedCrawlerAfterSavingIt) {
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldResetEditedCrawlerTvShowNameAfterSavingIt) {
-    EXPECT_CALL(runtime, crawlTvShowAndSaveCrawler(emptyCrawler));
+    serio::core::TvShowCrawler crawler(friends, serio::core::Crawler({valueStep}));
+    EXPECT_CALL(runtime, crawlTvShowAndSaveCrawler(crawler));
     editor.createTvShowCrawler();
-    editor.setTvShowName(emptyCrawler.getTvShowName());
+    editor.setTvShowName(crawler.getTvShowName());
+    editor.addStepToCrawler(serio::core::CrawlerType::episodeVideoCrawler, valueStep);
     editor.saveAndRunCrawler();
     editor.createTvShowCrawler();
     EXPECT_THROW(editor.saveAndRunCrawler(), std::logic_error);
+    EXPECT_EQ("", editor.getTvShowName());
+    EXPECT_TRUE(editor.getStepsOfCrawler(serio::core::CrawlerType::episodeVideoCrawler).empty());
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldFailToGetStepsOfCrawlerIfNoCrawlerIsBeingEdited) {
