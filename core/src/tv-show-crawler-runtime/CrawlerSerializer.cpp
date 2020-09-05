@@ -3,9 +3,9 @@
 std::string serio::core::CrawlerSerializer::serialize(const TvShowCrawler& crawler) const {
     nlohmann::json serializedCrawler;
     serializedCrawler["showName"] = crawler.getTvShowName();
-    serializedCrawler["episodeVideoCrawler"] = serialize(crawler.getEpisodeVideoCrawler());
-    serializedCrawler["thumbnailCrawler"] = serialize(crawler.getThumbnailCrawler());
-    serializedCrawler["episodeNameCrawler"] = serialize(crawler.getEpisodeNameCrawler());
+    serializedCrawler["episodeVideoCrawler"] = serialize(crawler.getCrawler(CrawlerType::episodeVideoCrawler));
+    serializedCrawler["thumbnailCrawler"] = serialize(crawler.getCrawler(CrawlerType::thumbnailCrawler));
+    serializedCrawler["episodeNameCrawler"] = serialize(crawler.getCrawler(CrawlerType::episodeNameCrawler));
     return serializedCrawler.dump();
 }
 

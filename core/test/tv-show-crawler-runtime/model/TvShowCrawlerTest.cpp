@@ -20,27 +20,27 @@ TEST_F(TvShowCrawlerTest, shouldCreateTvShowCrawlerWithSpecifiedTvShowName) {
 
 TEST_F(TvShowCrawlerTest, shouldCreateTvShowWithTheSpecifiedEpisodeVideoCrawler) {
     serio::core::TvShowCrawler tvShowCrawler(tvShowName, nonEmptyCrawler, serio::core::Crawler());
-    EXPECT_EQ(nonEmptyCrawler, tvShowCrawler.getEpisodeVideoCrawler());
+    EXPECT_EQ(nonEmptyCrawler, tvShowCrawler.getCrawler(serio::core::CrawlerType::episodeVideoCrawler));
 }
 
 TEST_F(TvShowCrawlerTest, shouldReturnDefaultEmptyThumbnailCrawlerIfItWasNotSpecified) {
     serio::core::TvShowCrawler tvShowCrawler(tvShowName, crawler, serio::core::Crawler());
-    EXPECT_EQ(crawler, tvShowCrawler.getThumbnailCrawler());
+    EXPECT_EQ(crawler, tvShowCrawler.getCrawler(serio::core::CrawlerType::thumbnailCrawler));
 }
 
 TEST_F(TvShowCrawlerTest, shouldReturnSpecifiedThumbnailCrawler) {
     serio::core::TvShowCrawler tvShowCrawler(tvShowName, crawler, nonEmptyCrawler);
-    EXPECT_EQ(nonEmptyCrawler, tvShowCrawler.getThumbnailCrawler());
+    EXPECT_EQ(nonEmptyCrawler, tvShowCrawler.getCrawler(serio::core::CrawlerType::thumbnailCrawler));
 }
 
 TEST_F(TvShowCrawlerTest, shouldReturnDefaultEmptyEpisodeNameCrawlerIfItWasNotSpecified) {
     serio::core::TvShowCrawler tvShowCrawler(tvShowName, crawler, crawler);
-    EXPECT_EQ(crawler, tvShowCrawler.getEpisodeNameCrawler());
+    EXPECT_EQ(crawler, tvShowCrawler.getCrawler(serio::core::CrawlerType::episodeNameCrawler));
 }
 
 TEST_F(TvShowCrawlerTest, shouldReturnSpecifiedEpisodeNameCrawler) {
     serio::core::TvShowCrawler tvShowCrawler(tvShowName, crawler, crawler, nonEmptyCrawler);
-    EXPECT_EQ(nonEmptyCrawler, tvShowCrawler.getEpisodeNameCrawler());
+    EXPECT_EQ(nonEmptyCrawler, tvShowCrawler.getCrawler(serio::core::CrawlerType::episodeNameCrawler));
 }
 
 TEST_F(TvShowCrawlerTest, twoTvShowCrawlersWithSameTvShowNameAndCrawlersShouldBeEqual) {

@@ -6,20 +6,20 @@
 
 namespace serio::core {
 
+enum CrawlerType {
+    episodeVideoCrawler, thumbnailCrawler, episodeNameCrawler
+};
+
 class TvShowCrawler {
 public:
     TvShowCrawler(std::string tvShowName, Crawler episodeVideoCrawler, Crawler thumbnailCrawler = Crawler(), Crawler episodeNameCrawler = Crawler());
     [[nodiscard]] std::string getTvShowName() const;
-    [[nodiscard]] Crawler getEpisodeVideoCrawler() const;
-    [[nodiscard]] Crawler getThumbnailCrawler() const;
-    [[nodiscard]] Crawler getEpisodeNameCrawler() const;
+    [[nodiscard]] Crawler getCrawler(CrawlerType type) const;
     bool operator==(const TvShowCrawler &rhs) const;
     bool operator!=(const TvShowCrawler &rhs) const;
 private:
     std::string tvShowName;
-    Crawler episodeVideoCrawler;
-    Crawler thumbnailCrawler;
-    Crawler episodeNameCrawler;
+    std::map<CrawlerType, Crawler> crawlerTypeToCrawler;
 };
 
 class EpisodeVideosToNamesMismatchError : public std::runtime_error {

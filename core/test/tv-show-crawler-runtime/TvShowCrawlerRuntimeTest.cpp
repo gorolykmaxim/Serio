@@ -6,25 +6,9 @@
 #include <tv-show-crawler-runtime/model/CrawlerStepType.h>
 #include <tv-show-storage/TvShowStorage.h>
 #include <http-client/HttpClient.h>
-
-class HttpClientMock : public serio::core::HttpClient {
-public:
-    MOCK_METHOD((std::future<std::vector<std::string>>), fetchContentFromLinks, (const std::vector<std::string>&), (override));
-};
-
-class TvShowStorageMock : public serio::core::TvShowStorage {
-public:
-    MOCK_METHOD((serio::core::ListPage<serio::core::TvShow>), getAllTvShows, (unsigned int, unsigned int), (override));
-    MOCK_METHOD((serio::core::ListPage<serio::core::TvShow>), getWatchedTvShows, (unsigned int, unsigned int), (override));
-    MOCK_METHOD((serio::core::ListPage<serio::core::Episode>), getEpisodesOfTvShowWithName, (const std::string&, unsigned int, unsigned int), (override));
-    MOCK_METHOD(void, saveTvShow, (const serio::core::TvShow&, const std::vector<serio::core::Episode>&), (override));
-};
-
-class TvShowCrawlerStorageMock : public serio::core::TvShowCrawlerStorage {
-public:
-    MOCK_METHOD((std::optional<std::string>), getTvShowCrawlerByTvShowName, (const std::string&), (override));
-    MOCK_METHOD(void, saveTvShowCrawler, (const std::string&, const std::string&), (override));
-};
+#include <HttpClientMock.h>
+#include <TvShowCrawlerStorageMock.h>
+#include <TvShowStorageMock.h>
 
 class TvShowCrawlerRuntimeTest : public ::testing::Test {
 protected:

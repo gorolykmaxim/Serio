@@ -14,8 +14,8 @@ namespace serio::core {
 class TvShowCrawlerRuntime {
 public:
     TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage, HttpClient& httpClient);
-    void crawlTvShowAndSaveCrawler(const TvShowCrawler &crawler);
-    [[nodiscard]] std::vector<CrawlerStepType> getCrawlerStepTypes() const;
+    virtual void crawlTvShowAndSaveCrawler(const TvShowCrawler &crawler);
+    [[nodiscard]] virtual std::vector<CrawlerStepType> getCrawlerStepTypes() const;
 private:
     TvShowCrawlerStorage& crawlerStorage;
     TvShowStorage& tvShowStorage;

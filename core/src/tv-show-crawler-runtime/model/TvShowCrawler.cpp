@@ -2,32 +2,23 @@
 #include "tv-show-crawler-runtime/model/TvShowCrawler.h"
 
 serio::core::TvShowCrawler::TvShowCrawler(std::string tvShowName, Crawler episodeVideoCrawler, Crawler thumbnailCrawler, Crawler episodeNameCrawler)
-    : tvShowName(std::move(tvShowName)),
-      episodeVideoCrawler(std::move(episodeVideoCrawler)),
-      thumbnailCrawler(std::move(thumbnailCrawler)),
-      episodeNameCrawler(std::move(episodeNameCrawler)) {}
+    : tvShowName(std::move(tvShowName)), crawlerTypeToCrawler({
+        {CrawlerType::episodeVideoCrawler, std::move(episodeVideoCrawler)},
+        {CrawlerType::thumbnailCrawler, std::move(thumbnailCrawler)},
+        {CrawlerType::episodeNameCrawler, std::move(episodeNameCrawler)}
+    }) {}
 
 std::string serio::core::TvShowCrawler::getTvShowName() const {
     return tvShowName;
 }
 
-serio::core::Crawler serio::core::TvShowCrawler::getEpisodeVideoCrawler() const {
-    return episodeVideoCrawler;
-}
-
-serio::core::Crawler serio::core::TvShowCrawler::getThumbnailCrawler() const {
-    return thumbnailCrawler;
-}
-
-serio::core::Crawler serio::core::TvShowCrawler::getEpisodeNameCrawler() const {
-    return episodeNameCrawler;
+serio::core::Crawler serio::core::TvShowCrawler::getCrawler(serio::core::CrawlerType type) const {
+    return crawlerTypeToCrawler.at(type);
 }
 
 bool serio::core::TvShowCrawler::operator==(const serio::core::TvShowCrawler &rhs) const {
     return tvShowName == rhs.tvShowName &&
-           episodeVideoCrawler == rhs.episodeVideoCrawler &&
-           thumbnailCrawler == rhs.thumbnailCrawler &&
-           episodeNameCrawler == rhs.episodeNameCrawler;
+           crawlerTypeToCrawler == rhs.crawlerTypeToCrawler;
 }
 
 bool serio::core::TvShowCrawler::operator!=(const serio::core::TvShowCrawler &rhs) const {
