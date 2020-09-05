@@ -108,6 +108,14 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlThumbnailWithTransformStepNotH
     EXPECT_THROW(runtime.crawlTvShowAndSaveCrawler(crawler), std::logic_error);
 }
 
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlThumbnailWithRegExpStepNotHavingRegExpProperty) {
+    serio::core::TvShowCrawler crawler(friends, emptyCrawler, serio::core::Crawler({
+        serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
+        serio::core::CrawlerStep("regExp")
+    }));
+    EXPECT_THROW(runtime.crawlTvShowAndSaveCrawler(crawler), std::logic_error);
+}
+
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedDynamically) {
     EXPECT_CALL(tvShowStorage, saveTvShow(serio::core::TvShow(mandalorian, thumbnailUrl), std::vector<serio::core::Episode>()));
     serio::core::TvShowCrawler crawler(mandalorian, emptyCrawler, serio::core::Crawler({
