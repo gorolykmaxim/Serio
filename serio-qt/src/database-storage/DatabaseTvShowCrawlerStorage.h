@@ -2,6 +2,7 @@
 #define SERIO_DATABASETVSHOWCRAWLERSTORAGE_H
 
 #include <string>
+#include <optional>
 
 namespace serio::qt {
 

@@ -1,5 +1,6 @@
 #include <string>
 #include <utility>
+#include <stdexcept>
 #include "tv-show-storage/Episode.h"
 
 serio::core::Episode::Episode(unsigned int id, std::string videoUrl, std::optional<std::string> episodeName)

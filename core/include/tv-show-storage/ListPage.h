@@ -1,6 +1,8 @@
 #ifndef SERIO_LISTPAGE_H
 #define SERIO_LISTPAGE_H
 
+#include <vector>
+
 namespace serio::core {
 
 template <typename T>

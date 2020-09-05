@@ -4,6 +4,7 @@
 #include <string>
 #include <optional>
 #include <map>
+#include <stdexcept>
 
 namespace serio::core {
 
