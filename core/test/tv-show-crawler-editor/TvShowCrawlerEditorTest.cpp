@@ -16,8 +16,8 @@ protected:
 
 TEST_F(TvShowCrawlerEditorTest, shouldReturnAllCrawlerTypesDefinedInRuntime) {
     std::vector<serio::core::CrawlerStepType> types = {
-            serio::core::CrawlerStepType("first type"),
-            serio::core::CrawlerStepType("second type", {"a", "b"})
+            serio::core::CrawlerStepType("first type", ""),
+            serio::core::CrawlerStepType("second type", "", {"a", "b"})
     };
     EXPECT_CALL(runtime, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     EXPECT_EQ(types, editor.getCrawlerStepTypes());

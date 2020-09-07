@@ -1,31 +1,44 @@
 #include <gtest/gtest.h>
 #include <tv-show-crawler-runtime/model/CrawlerStepType.h>
 
-TEST(CrawlerStepTypeTest, shoudlHaveSpecifiedName) {
-    serio::core::CrawlerStepType type("fetch");
+class CrawlerStepTypeTest : public ::testing::Test {
+protected:
+    std::string description = "Description of a crawler step type";
+};
+
+TEST_F(CrawlerStepTypeTest, shoudlHaveSpecifiedName) {
+    serio::core::CrawlerStepType type("fetch", "");
     EXPECT_EQ("fetch", type.getName());
-    type = serio::core::CrawlerStepType("value");
+    type = serio::core::CrawlerStepType("value", "");
     EXPECT_EQ("value", type.getName());
 }
 
-TEST(CrawlerStepTypeTest, shouldNotHaveMandatoryProperties) {
-    serio::core::CrawlerStepType type("fetch");
+TEST_F(CrawlerStepTypeTest, shouldHaveSpecifiedDescription) {
+    for (const std::string& description: {"Description of the step type", "Different step type description"}) {
+        serio::core::CrawlerStepType type("fetch", description);
+        EXPECT_EQ(description, type.getDescription());
+    }
+}
+
+TEST_F(CrawlerStepTypeTest, shouldNotHaveMandatoryProperties) {
+    serio::core::CrawlerStepType type("fetch", description);
     EXPECT_TRUE(type.getMandatoryProperties().empty());
 }
 
-TEST(CrawlerStepTypeTest, shouldHaveSpecifiedMandatoryProperties) {
+TEST_F(CrawlerStepTypeTest, shouldHaveSpecifiedMandatoryProperties) {
     std::vector<std::string> mandatoryProperties = {"a", "b"};
-    serio::core::CrawlerStepType type("calc", mandatoryProperties);
+    serio::core::CrawlerStepType type("calc", description, mandatoryProperties);
     EXPECT_EQ(mandatoryProperties, type.getMandatoryProperties());
 }
 
-TEST(CrawlerStepTypeTest, twoCrawlerStepTypesWithTheSameNameAndMandatoryPropertiesShouldBeEqual) {
-    EXPECT_EQ(serio::core::CrawlerStepType("value", {"value"}),
-              serio::core::CrawlerStepType("value", {"value"}));
+TEST_F(CrawlerStepTypeTest, twoCrawlerStepTypesWithTheSameNameAndMandatoryPropertiesShouldBeEqual) {
+    EXPECT_EQ(serio::core::CrawlerStepType("value", description, {"value"}),
+              serio::core::CrawlerStepType("value", description, {"value"}));
 }
 
-TEST(CrawlerStepTypeTest, twoCrawlerStepTypesWithDifferentNamesOrMandatoryPropertiesShouldNotBeEqual) {
-    serio::core::CrawlerStepType type("regExp", {"regExp"});
-    EXPECT_NE(type, serio::core::CrawlerStepType("regExp"));
-    EXPECT_NE(type, serio::core::CrawlerStepType("value", {"value"}));
+TEST_F(CrawlerStepTypeTest, twoCrawlerStepTypesWithDifferentNamesOrMandatoryPropertiesShouldNotBeEqual) {
+    serio::core::CrawlerStepType type("regExp", description, {"regExp"});
+    EXPECT_NE(type, serio::core::CrawlerStepType("regExp", description));
+    EXPECT_NE(type, serio::core::CrawlerStepType("value", description, {"value"}));
+    EXPECT_NE(type, serio::core::CrawlerStepType("regExp", "", {"regExp"}));
 }
