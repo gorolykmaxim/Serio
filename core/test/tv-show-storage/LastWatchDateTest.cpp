@@ -26,6 +26,21 @@ TEST_F(LastWatchDateTest, createLastWatchDateThatIs3DaysAgo) {
     ASSERT_EQ("3 days ago", lastWatchDate.toString());
 }
 
+TEST_F(LastWatchDateTest, createLastWatchDateThatIs1MonthAgo) {
+    serio::core::LastWatchDate lastWatchDate(now - std::chrono::hours(24 * 30));
+    ASSERT_EQ("1 month ago", lastWatchDate.toString());
+}
+
+TEST_F(LastWatchDateTest, createLastWatchDateThatIs1YearAgo) {
+    serio::core::LastWatchDate lastWatchDate(now - std::chrono::hours(24 * 30 * 12));
+    ASSERT_EQ("1 year ago", lastWatchDate.toString());
+}
+
+TEST_F(LastWatchDateTest, createLastWatchDateThatIs2YearsAgo) {
+    serio::core::LastWatchDate lastWatchDate(now - std::chrono::hours(24 * 30 * 12 * 2));
+    ASSERT_EQ("2 years ago", lastWatchDate.toString());
+}
+
 TEST_F(LastWatchDateTest, twoWatchDatesThatRepresentTheSameDateShouldBeEqual) {
     serio::core::LastWatchDate oneDate(now), anotherDate(now);
     ASSERT_EQ(oneDate, anotherDate);

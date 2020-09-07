@@ -12,8 +12,14 @@ std::string serio::core::LastWatchDate::toString() const {
         return "Today";
     } else if (hoursSinceLastWatch < std::chrono::hours(48)) {
         return "Yesterday";
-    } else {
+    } else if (hoursSinceLastWatch < std::chrono::hours(24 * 30)) {
         return std::to_string(hoursSinceLastWatch.count() / 24) + " days ago";
+    } else if (hoursSinceLastWatch < std::chrono::hours(24 * 30 * 12)) {
+        return std::to_string(hoursSinceLastWatch.count() / 24 / 30) + " month ago";
+    } else {
+        auto yearsSinceLastWatch = hoursSinceLastWatch.count() / 24 / 30 / 12;
+        std::string unitOfMeasure = yearsSinceLastWatch > 1 ? "years" : "year";
+        return std::to_string(yearsSinceLastWatch) + " " + unitOfMeasure + " ago";
     }
 }
 
