@@ -3,9 +3,11 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QVariant>
+#include <QStandardPaths>
+#include <QDir>
 
-void serio::qt::DatabaseStorage::initialize(const std::string &storageUrl) {
-    openDatabaseConnection(storageUrl);
+void serio::qt::DatabaseStorage::initialize(bool inMemory) {
+    openDatabaseConnection(inMemory ? ":memory:" : getDatabaseFilePath());
     enableForeignKeys();
     tvShowStorage.initialize();
     tvShowCrawlerStorage.initialize();
@@ -45,6 +47,11 @@ std::optional<std::string> serio::qt::DatabaseStorage::getTvShowCrawlerByTvShowN
 void serio::qt::DatabaseStorage::saveTvShowCrawler(const std::string &tvShowName, const std::string &serializedCrawler) {
     tvShowCrawlerStorage.deleteTvShowCrawlerOfTvShow(tvShowName);
     tvShowCrawlerStorage.insertTvShowCrawler(tvShowName, serializedCrawler);
+}
+
+std::string serio::qt::DatabaseStorage::getDatabaseFilePath() const {
+    QString home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    return QDir(home).filePath(".serio.dev.db").toStdString();
 }
 
 void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& storageUrl) {

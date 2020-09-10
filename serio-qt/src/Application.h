@@ -2,7 +2,6 @@
 #define SERIO_APPLICATION_H
 
 #include <QGuiApplication>
-#include <QQmlApplicationEngine>
 #include <database-storage/DatabaseStorage.h>
 #include <task-executor/QTaskExecutor.h>
 #include <user-interface/UserInterface.h>
@@ -16,8 +15,7 @@ private:
     QTaskExecutor executor;
     DatabaseStorage storage;
     UserInterface userInterface;
-    std::string getPathToDatabaseFile() const;
-    void initializeStorageInDatabase(const std::string& databaseFilePath);
+    void initializeStorageInDatabase();
 };
 
 }

@@ -9,7 +9,7 @@ public:
             thirdTvShow("Mandalorian", "", serio::core::LastWatchDate(std::chrono::system_clock::now())),
             secondTvShow("Friends"),
             firstTvShow("Clinic") {
-        storage.initialize(":memory:");
+        storage.initialize(true);
     }
 protected:
     serio::qt::DatabaseStorage storage;

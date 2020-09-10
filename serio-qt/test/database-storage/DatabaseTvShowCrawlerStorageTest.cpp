@@ -5,7 +5,7 @@ class DatabaseTvShowCrawlerStorageTest : public ::testing::Test {
 protected:
     serio::qt::DatabaseStorage storage;
     virtual void SetUp() {
-        storage.initialize(":memory:");
+        storage.initialize(true);
     }
 };
 

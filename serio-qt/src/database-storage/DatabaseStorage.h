@@ -13,7 +13,7 @@ namespace serio::qt {
 
 class DatabaseStorage : public core::TvShowStorage, public core::TvShowCrawlerStorage {
 public:
-    void initialize(const std::string& storageUrl);
+    void initialize(bool inMemory = false);
     core::ListPage<core::TvShow> getAllTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::TvShow> getWatchedTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::Episode> getEpisodesOfTvShowWithName(const std::string &tvShowName, unsigned int offset, unsigned int limit) override;
@@ -23,6 +23,7 @@ public:
 private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
+    [[nodiscard]] std::string getDatabaseFilePath() const;
     void openDatabaseConnection(const std::string& storageUrl);
     void enableForeignKeys();
 };
