@@ -34,9 +34,8 @@ add_library(Core STATIC
         src/tv-show-crawler-runtime/executor/FetchStepExecutor.cpp
         src/tv-show-crawler-runtime/executor/RegExpStepExecutor.cpp
         include/tv-show-crawler-editor/TvShowCrawlerEditor.h
-        include/tv-show-crawler-editor/TvShowCrawlerBuilder.h
         src/tv-show-crawler-editor/TvShowCrawlerEditor.cpp
-        src/tv-show-crawler-editor/TvShowCrawlerBuilder.cpp)
+        )
 target_include_directories(Core PUBLIC include PUBLIC lib/json)
 
 add_executable(CoreTest
