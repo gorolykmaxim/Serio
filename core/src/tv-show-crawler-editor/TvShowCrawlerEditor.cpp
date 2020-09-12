@@ -76,3 +76,6 @@ const serio::core::TvShowCrawlerBuilder &serio::core::TvShowCrawlerEditor::getBu
 
 serio::core::NoTvShowCrawlerEditedError::NoTvShowCrawlerEditedError()
     : std::logic_error("No tv-show crawler is being edited right now") {}
+
+serio::core::TvShowCrawlerEditorError::TvShowCrawlerEditorError(const std::runtime_error &cause)
+        : runtime_error(std::string("Failed to save and run edited tv-show crawler: ") + cause.what()) {}

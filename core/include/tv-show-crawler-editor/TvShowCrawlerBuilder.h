@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <tv-show-crawler-runtime/model/TvShowCrawler.h>
+#include "CrawlerBuilder.h"
 
 namespace serio::core {
 
@@ -20,12 +21,12 @@ public:
     [[nodiscard]] std::string getTvShowName() const;
     [[nodiscard]] std::vector<CrawlerStep> getCrawlerSteps() const;
 private:
+    std::optional<CrawlerBuilder> builder;
     std::string tvShowName;
-    std::optional<CrawlerType> editedCrawlerType;
     std::map<CrawlerType, std::vector<CrawlerStep>> crawlerTypeToSteps;
-    std::vector<CrawlerStep> editedCrawlerSteps;
     void assertCrawlerIsEdited() const;
-    void assertCrawlerStepExist(unsigned int stepIndex) const;
+    [[nodiscard]] CrawlerBuilder& getBuilderOrFail();
+    [[nodiscard]] const CrawlerBuilder& getBuilderOrFail() const;
     void assertTvShowIsSpecified() const;
 };
 
@@ -34,19 +35,9 @@ public:
     NoCrawlerEditedError();
 };
 
-class CrawlerStepDoesNotExist : public std::out_of_range {
-public:
-    CrawlerStepDoesNotExist(unsigned int stepIndex);
-};
-
 class TvShowNameNotSpecifiedError : public std::logic_error {
 public:
     TvShowNameNotSpecifiedError();
-};
-
-class TvShowCrawlerEditorError : public std::runtime_error {
-public:
-    TvShowCrawlerEditorError(const std::runtime_error& cause);
 };
 
 }

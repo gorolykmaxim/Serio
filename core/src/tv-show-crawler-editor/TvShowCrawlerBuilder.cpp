@@ -11,8 +11,7 @@ void serio::core::TvShowCrawlerBuilder::setTvShowName(std::string name) {
 }
 
 void serio::core::TvShowCrawlerBuilder::editCrawler(serio::core::CrawlerType type) {
-    editedCrawlerSteps = crawlerTypeToSteps[type];
-    editedCrawlerType = type;
+    builder = CrawlerBuilder(type, crawlerTypeToSteps[type]);
 }
 
 std::string serio::core::TvShowCrawlerBuilder::getTvShowName() const {
@@ -20,26 +19,21 @@ std::string serio::core::TvShowCrawlerBuilder::getTvShowName() const {
 }
 
 void serio::core::TvShowCrawlerBuilder::addCrawlerStep(serio::core::CrawlerStep step) {
-    assertCrawlerIsEdited();
-    editedCrawlerSteps.push_back(std::move(step));
+    getBuilderOrFail().addCrawlerStep(std::move(step));
 }
 
 void serio::core::TvShowCrawlerBuilder::replaceCrawlerStep(unsigned int stepIndex, serio::core::CrawlerStep newStep) {
-    assertCrawlerIsEdited();
-    assertCrawlerStepExist(stepIndex);
-    editedCrawlerSteps[stepIndex] = std::move(newStep);
+    getBuilderOrFail().replaceCrawlerStep(stepIndex, std::move(newStep));
 }
 
 void serio::core::TvShowCrawlerBuilder::removeCrawlerStep(unsigned int stepIndex) {
-    assertCrawlerIsEdited();
-    assertCrawlerStepExist(stepIndex);
-    editedCrawlerSteps.erase(editedCrawlerSteps.begin() + stepIndex);
+    getBuilderOrFail().removeCrawlerStep(stepIndex);
 }
 
 void serio::core::TvShowCrawlerBuilder::saveCrawler() {
     assertCrawlerIsEdited();
-    crawlerTypeToSteps[*editedCrawlerType] = editedCrawlerSteps;
-    editedCrawlerType.reset();
+    crawlerTypeToSteps[builder->getEditedCrawlerType()] = builder->getCrawlerSteps();
+    builder.reset();
 }
 
 serio::core::TvShowCrawler serio::core::TvShowCrawlerBuilder::buildTvShowCrawler() const {
@@ -52,20 +46,23 @@ serio::core::TvShowCrawler serio::core::TvShowCrawlerBuilder::buildTvShowCrawler
 }
 
 std::vector<serio::core::CrawlerStep> serio::core::TvShowCrawlerBuilder::getCrawlerSteps() const {
-    assertCrawlerIsEdited();
-    return editedCrawlerSteps;
+    return getBuilderOrFail().getCrawlerSteps();
 }
 
 void serio::core::TvShowCrawlerBuilder::assertCrawlerIsEdited() const {
-    if (!editedCrawlerType) {
+    if (!builder) {
         throw NoCrawlerEditedError();
     }
 }
 
-void serio::core::TvShowCrawlerBuilder::assertCrawlerStepExist(unsigned int stepIndex) const {
-    if (stepIndex >= editedCrawlerSteps.size()) {
-        throw CrawlerStepDoesNotExist(stepIndex);
-    }
+serio::core::CrawlerBuilder &serio::core::TvShowCrawlerBuilder::getBuilderOrFail() {
+    assertCrawlerIsEdited();
+    return *builder;
+}
+
+const serio::core::CrawlerBuilder &serio::core::TvShowCrawlerBuilder::getBuilderOrFail() const {
+    assertCrawlerIsEdited();
+    return *builder;
 }
 
 void serio::core::TvShowCrawlerBuilder::assertTvShowIsSpecified() const {
@@ -76,11 +73,5 @@ void serio::core::TvShowCrawlerBuilder::assertTvShowIsSpecified() const {
 
 serio::core::NoCrawlerEditedError::NoCrawlerEditedError() : std::logic_error("No crawler is being edited right now") {}
 
-serio::core::CrawlerStepDoesNotExist::CrawlerStepDoesNotExist(unsigned int stepIndex)
-        : std::out_of_range("Edited crawler does not have a step with index " + std::to_string(stepIndex)) {}
-
 serio::core::TvShowNameNotSpecifiedError::TvShowNameNotSpecifiedError()
         : std::logic_error("TV Show name for edited crawler was not specified") {}
-
-serio::core::TvShowCrawlerEditorError::TvShowCrawlerEditorError(const std::runtime_error &cause)
-        : runtime_error(std::string("Failed to save and run edited tv-show crawler: ") + cause.what()) {}

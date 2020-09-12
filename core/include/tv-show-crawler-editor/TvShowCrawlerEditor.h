@@ -34,6 +34,11 @@ public:
     NoTvShowCrawlerEditedError();
 };
 
+class TvShowCrawlerEditorError : public std::runtime_error {
+public:
+    explicit TvShowCrawlerEditorError(const std::runtime_error& cause);
+};
+
 }
 
 #endif //SERIO_TVSHOWCRAWLEREDITOR_H
