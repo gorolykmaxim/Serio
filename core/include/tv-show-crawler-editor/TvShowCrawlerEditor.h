@@ -2,6 +2,7 @@
 #define SERIO_TVSHOWCRAWLEREDITOR_H
 
 #include <tv-show-crawler-runtime/TvShowCrawlerRuntime.h>
+#include "TvShowCrawlerBuilder.h"
 
 namespace serio::core {
 
@@ -16,44 +17,21 @@ public:
     void removeCrawlerStep(unsigned int stepIndex);
     void saveCrawler();
     void saveAndRunTvShowCrawler();
+    bool willOverrideExistingTvShow();
     [[nodiscard]] std::string getTvShowName() const;
     [[nodiscard]] std::vector<CrawlerStep> getCrawlerSteps() const;
     [[nodiscard]] std::vector<CrawlerStepType> getCrawlerStepTypes() const;
 private:
     TvShowCrawlerRuntime& runtime;
-    std::optional<std::string> tvShowName;
-    std::optional<CrawlerType> editedCrawlerType;
-    std::map<CrawlerType, std::vector<CrawlerStep>> crawlerTypeToSteps;
-    std::vector<CrawlerStep> editedCrawlerSteps;
+    std::optional<TvShowCrawlerBuilder> builder;
     void assertTvShowCrawlerIsEdited() const;
-    void assertCrawlerIsEdited() const;
-    void assertCrawlerStepExist(unsigned int stepIndex) const;
-    void assertTvShowIsSpecified() const;
+    TvShowCrawlerBuilder& getBuilderOrFail();
+    [[nodiscard]] const TvShowCrawlerBuilder& getBuilderOrFail() const;
 };
 
 class NoTvShowCrawlerEditedError : public std::logic_error {
 public:
     NoTvShowCrawlerEditedError();
-};
-
-class NoCrawlerEditedError : public std::logic_error {
-public:
-    NoCrawlerEditedError();
-};
-
-class CrawlerStepDoesNotExist : public std::out_of_range {
-public:
-    CrawlerStepDoesNotExist(unsigned int stepIndex);
-};
-
-class TvShowNameNotSpecifiedError : public std::logic_error {
-public:
-    TvShowNameNotSpecifiedError();
-};
-
-class TvShowCrawlerEditorError : public std::runtime_error {
-public:
-    TvShowCrawlerEditorError(const std::runtime_error& cause);
 };
 
 }
