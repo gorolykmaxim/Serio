@@ -231,3 +231,15 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToSaveTvShowWithEpisodesVideoUrlsCoun
                      "video URLs count = 3 episode names count = 2", e.what());
     }
 }
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldTellThatSpecifiedCrawlerWillNotOverrideAnyOfExistingTvShows) {
+    serio::core::TvShowCrawler crawler(friends, emptyCrawler);
+    EXPECT_FALSE(runtime.willOverrideExistingTvShow(crawler));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldTellThatSpecifiedCrawlerWillOverrideExistingTvShow) {
+    serio::core::TvShow tvShow(friends);
+    EXPECT_CALL(tvShowStorage, getTvShowByName(friends)).WillOnce(::testing::Return(tvShow));
+    serio::core::TvShowCrawler crawler(friends, emptyCrawler);
+    EXPECT_TRUE(runtime.willOverrideExistingTvShow(crawler));
+}

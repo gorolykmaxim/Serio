@@ -49,3 +49,7 @@ void serio::core::TvShowCrawlerRuntime::registerCrawlerStepType(const std::strin
     crawlerExecutor.registerCrawlerStepExecutor(type, std::move(executor));
     crawlerStepTypes.emplace_back(type, description, mandatoryProperties);
 }
+
+bool serio::core::TvShowCrawlerRuntime::willOverrideExistingTvShow(const serio::core::TvShowCrawler &crawler) {
+    return tvShowStorage.getTvShowByName(crawler.getTvShowName()).has_value();
+}
