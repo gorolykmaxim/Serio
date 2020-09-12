@@ -143,3 +143,12 @@ TEST_F(DatabaseTvShowStorageTest, shouldReturnEpisodesOrderedById) {
     EXPECT_EQ(secondTvShowEpisodes[0], page.getItemByGlobalIndex(0));
     EXPECT_EQ(secondTvShowEpisodes[1], page.getItemByGlobalIndex(1));
 }
+
+TEST_F(DatabaseTvShowStorageTest, shouldNotFindTvShowWithName) {
+    EXPECT_FALSE(storage.getTvShowByName(firstTvShow.getName()));
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldFindTvShowWithName) {
+    saveShows();
+    EXPECT_EQ(firstTvShow, *storage.getTvShowByName(firstTvShow.getName()));
+}

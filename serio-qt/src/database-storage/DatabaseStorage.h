@@ -14,6 +14,7 @@ namespace serio::qt {
 class DatabaseStorage : public core::TvShowStorage, public core::TvShowCrawlerStorage {
 public:
     void initialize(bool inMemory = false);
+    std::optional<core::TvShow> getTvShowByName(const std::string &tvShowName) override;
     core::ListPage<core::TvShow> getAllTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::TvShow> getWatchedTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::Episode> getEpisodesOfTvShowWithName(const std::string &tvShowName, unsigned int offset, unsigned int limit) override;

@@ -13,6 +13,10 @@ void serio::qt::DatabaseStorage::initialize(bool inMemory) {
     tvShowCrawlerStorage.initialize();
 }
 
+std::optional<serio::core::TvShow> serio::qt::DatabaseStorage::getTvShowByName(const std::string &tvShowName) {
+    return tvShowStorage.getTvShowByName(tvShowName);
+}
+
 serio::core::ListPage<serio::core::TvShow> serio::qt::DatabaseStorage::getAllTvShows(unsigned int offset, unsigned int limit) {
     return core::ListPage<serio::core::TvShow>(
             offset,

@@ -6,6 +6,7 @@
 
 class TvShowStorageMock : public serio::core::TvShowStorage {
 public:
+    MOCK_METHOD((std::optional<serio::core::TvShow>), getTvShowByName, (const std::string&), (override));
     MOCK_METHOD((serio::core::ListPage<serio::core::TvShow>), getAllTvShows, (unsigned int, unsigned int), (override));
     MOCK_METHOD((serio::core::ListPage<serio::core::TvShow>), getWatchedTvShows, (unsigned int, unsigned int), (override));
     MOCK_METHOD((serio::core::ListPage<serio::core::Episode>), getEpisodesOfTvShowWithName, (const std::string&, unsigned int, unsigned int), (override));

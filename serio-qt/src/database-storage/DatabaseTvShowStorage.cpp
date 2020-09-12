@@ -13,6 +13,11 @@ void serio::qt::DatabaseTvShowStorage::saveTvShow(const serio::core::TvShow &tvS
     insertEpisodes(tvShow.getName(), episodes);
 }
 
+std::optional<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getTvShowByName(const std::string &tvShowName) {
+    std::vector<serio::core::TvShow> tvShows = findTvShowsMatchingQuery("WHERE NAME = ?", 0, 1, {QString::fromStdString(tvShowName)});
+    return tvShows.empty() ? std::optional<serio::core::TvShow>() : tvShows[0];
+}
+
 std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getAllTvShowsInAlphabeticOrder(unsigned int offset, unsigned int limit) {
     return findTvShowsMatchingQuery("ORDER BY NAME", offset, limit);
 }
@@ -118,10 +123,16 @@ unsigned int serio::qt::DatabaseTvShowStorage::countTvShowsMatchingQuery(const Q
     return countTvShows.value(0).toUInt();
 }
 
-std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::findTvShowsMatchingQuery(const QString &query, unsigned int offset, unsigned int limit) {
+std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::findTvShowsMatchingQuery(const QString &query,
+                                                                                            unsigned int offset,
+                                                                                            unsigned int limit,
+                                                                                            const std::vector<QVariant>& values) {
     std::vector<core::TvShow> result;
     QSqlQuery findAllTvShows(QSqlDatabase::database());
     findAllTvShows.prepare("SELECT NAME, THUMBNAIL_URL, LAST_WATCH_DATE FROM TV_SHOW " + query + " LIMIT ? OFFSET ?");
+    for (const auto& value: values) {
+        findAllTvShows.addBindValue(value);
+    }
     findAllTvShows.addBindValue(limit);
     findAllTvShows.addBindValue(offset);
     findAllTvShows.exec();
