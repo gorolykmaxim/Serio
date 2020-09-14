@@ -19,6 +19,7 @@ public:
     }
     void addPage(serio::core::ListPage<T> page) {
         totalSize = page.getTotalSize();
+        pages.remove_if([&page] (core::ListPage<T> p) { return p.getOffset() == page.getOffset(); });
         pages.push_back(std::move(page));
         if (pages.size() > pageCountLimit) {
             pages.pop_front();

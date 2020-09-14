@@ -51,3 +51,9 @@ TEST_F(BigListProxyTest, shouldDisposeTheOldestPageWhenPageAdditionExceedsPageCo
     proxy.addPage(serio::core::ListPage<int>(2, 10, {2}));
     EXPECT_FALSE(proxy.containsItemWithGlobalIndex(0));
 }
+
+TEST_F(BigListProxyTest, shouldDisposePageThatHasBeenReloadedWithNewItems) {
+    proxy.addPage(serio::core::ListPage<int>(0, 10, {0, 1, 2, 3, 4}));
+    proxy.addPage(serio::core::ListPage<int>(0, 10, {5, 6, 7, 8, 9}));
+    EXPECT_EQ(5, proxy.getItemByGlobalIndex(0));
+}
