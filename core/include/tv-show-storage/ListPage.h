@@ -30,7 +30,7 @@ public:
         return offset;
     }
     [[nodiscard]] unsigned int getLastItemIndex() const {
-        return offset + items.size() - 1;
+        return items.size() == 0 ? offset : offset + items.size() - 1;
     }
     bool operator<(const ListPage &rhs) const {
         return offset < rhs.offset;

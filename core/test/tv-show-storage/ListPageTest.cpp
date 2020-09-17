@@ -63,3 +63,7 @@ TEST_F(ListPageTest, shouldReturnIndexOfLastItem) {
     EXPECT_EQ(expectedOffset + 2, page.getLastItemIndex());
     EXPECT_EQ(5, serio::core::ListPage<int>(2, 10, {0, 1, 2, 3}).getLastItemIndex());
 }
+
+TEST_F(ListPageTest, shouldReturnIndexOfLastItemInEmptyFirstPage) {
+    EXPECT_EQ(0, serio::core::ListPage<int>(0, 10, {}).getLastItemIndex());
+}
