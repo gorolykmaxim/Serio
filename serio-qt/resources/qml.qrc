@@ -13,6 +13,7 @@
         <file>fonts/Roboto-Regular.ttf</file>
         <file>fonts/Roboto-Thin.ttf</file>
         <file>fonts/Roboto-ThinItalic.ttf</file>
+        <file>lib/circular-progressbar/CircularProgressBar.qml</file>
         <file>qml/main.qml</file>
         <file>qml/widgets/TvShowCard.qml</file>
         <file>qml/animations/SerioNumberAnimation.qml</file>
@@ -22,11 +23,33 @@
         <file>qml/widgets/NoImagePlaceholder.qml</file>
         <file>qml/widgets/RoundNullableImage.qml</file>
         <file>qml/widgets/AnimatedList.qml</file>
-        <file>qml/widgets/HorizontalCardList.qml</file>
-        <file>qml/widgets/BottomShade.qml</file>
         <file>qml/widgets/CursorArea.qml</file>
-        <file>qml/widgets/BottomColumnLayout.qml</file>
         <file>qml/widgets/TvShowCardList.qml</file>
         <file>qml/widgets/AccentTitle.qml</file>
+        <file>qml/widgets/SerioButton.qml</file>
+        <file>qml/views/AllShowsView.qml</file>
+        <file>qml/views/TvShowCrawlerEditorView.qml</file>
+        <file>qml/views/CrawlerEditorView.qml</file>
+        <file>qml/widgets/VerticalTileList.qml</file>
+        <file>qml/widgets/ListTile.qml</file>
+        <file>qml/widgets/GreySubtitle.qml</file>
+        <file>qml/views/CrawlerStepEditorView.qml</file>
+        <file>qml/widgets/BottomColumnLayout.qml</file>
+        <file>qml/widgets/BottomShade.qml</file>
+        <file>qml/widgets/HorizontalCardList.qml</file>
+        <file>qml/widgets/RightToLeftButtonRow.qml</file>
+        <file>qml/widgets/ItemWithTitle.qml</file>
+        <file>qml/widgets/DynamicRadioButton.qml</file>
+        <file>qml/widgets/DynamicRadioButtonList.qml</file>
+        <file>qml/widgets/Paragraph.qml</file>
+        <file>qml/widgets/TextFieldList.qml</file>
+        <file>qml/views/CrawlingInProgressView.qml</file>
+        <file>qml/widgets/NonDeterministicCircularProgressBar.qml</file>
+        <file>qml/StackOfViews.qml</file>
+        <file>qml/views/TvShowCrawlerOverrideDialogView.qml</file>
+        <file>qml/views/DialogView.qml</file>
+        <file>qml/views/CenteredViewLayout.qml</file>
+        <file>qml/views/ViewLayout.qml</file>
+        <file>qml/views/View.qml</file>
     </qresource>
 </RCC>

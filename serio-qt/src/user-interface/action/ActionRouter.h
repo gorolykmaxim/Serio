@@ -1,0 +1,25 @@
+#ifndef SERIO_ACTIONROUTER_H
+#define SERIO_ACTIONROUTER_H
+
+#include <QObject>
+#include <task-executor/QTaskExecutor.h>
+#include <QQmlApplicationEngine>
+#include "ActionType.h"
+
+namespace serio::qt {
+
+class ActionRouter : public QObject {
+    Q_OBJECT
+public:
+    ActionRouter(QTaskExecutor &executor, QQmlApplicationEngine& engine);
+    void registerAction(ActionType type, std::function<void(const QVariantList&)> action);
+public slots:
+    void trigger(int actionType, const QVariantList& arguments);
+private:
+    QTaskExecutor& executor;
+    std::map<ActionType, std::function<void(const QVariantList&)>> typeToAction;
+};
+
+}
+
+#endif //SERIO_ACTIONROUTER_H

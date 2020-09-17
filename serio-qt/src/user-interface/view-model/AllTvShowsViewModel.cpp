@@ -1,18 +1,22 @@
 #include "AllTvShowsViewModel.h"
+#include <QQmlContext>
 
-serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize,
-                                                    unsigned int listModelPageCountLimit,
-                                                    core::TvShowStorage& tvShows,
-                                                    QTaskExecutor& executor)
-                                                        : listModelPageSize(listModelPageSize),
-                                                          allShowsListModel(listModelPageSize, listModelPageCountLimit),
-                                                          watchedShowsListModel(listModelPageSize, listModelPageCountLimit),
-                                                          tvShows(tvShows),
-                                                          executor(executor){
-    connect(&allShowsListModel, &TvShowListModel::requestPageLoad, this, &AllTvShowsViewModel::loadNextPageOfAllShows);
-    connect(&allShowsWatcher, &QFutureWatcher<core::ListPage<core::TvShow>>::finished, this, &AllTvShowsViewModel::displayNextPageOfAllShows);
-    connect(&watchedShowsListModel, &TvShowListModel::requestPageLoad, this, &AllTvShowsViewModel::loadNextPageOfWatchedShows);
-    connect(&watchedShowsWatcher, &QFutureWatcher<core::ListPage<core::TvShow>>::finished, this, &AllTvShowsViewModel::displayNextPageOfWatchedShows);
+serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize, unsigned int listModelPageCountLimit,
+                                                    serio::core::TvShowStorage& storage)
+    : pageSize(listModelPageSize),
+      allShowsListModel(listModelPageSize, listModelPageCountLimit),
+      watchedShowsListModel(listModelPageSize, listModelPageCountLimit),
+      storage(storage) {}
+
+void serio::qt::AllTvShowsViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
+    qmlRegisterUncreatableType<TvShowListModel>("Serio", 1, 0, "TvShowListModel", nullptr);
+    engine.rootContext()->setContextProperty("allTvShowsViewModel", this);
+    router.registerAction(ActionType::LOAD_ALL_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadAllShows(args); });
+    router.registerAction(ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadWatchedShows(args); });
+}
+
+unsigned int serio::qt::AllTvShowsViewModel::getPageSize() const {
+    return pageSize;
 }
 
 serio::qt::TvShowListModel* serio::qt::AllTvShowsViewModel::getAllShows() {
@@ -23,25 +27,12 @@ serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getWatchedShows() {
     return &watchedShowsListModel;
 }
 
-void serio::qt::AllTvShowsViewModel::loadNextPageOfAllShows(unsigned int offset, unsigned int limit) {
-    executor.runInBackground(allShowsWatcher, &tvShows, &core::TvShowStorage::getAllTvShows, offset, limit);
+void serio::qt::AllTvShowsViewModel::loadAllShows(const QVariantList& args) {
+    core::ListPage<core::TvShow> page = storage.getAllTvShows(args[0].toUInt(), args[1].toUInt());
+    modifyModel([page, this] { allShowsListModel.loadPage(page); });
 }
 
-void serio::qt::AllTvShowsViewModel::loadNextPageOfWatchedShows(unsigned int offset, unsigned int limit) {
-    executor.runInBackground(watchedShowsWatcher, &tvShows, &core::TvShowStorage::getWatchedTvShows, offset, limit);
-}
-
-void serio::qt::AllTvShowsViewModel::displayNextPageOfAllShows() {
-    allShowsListModel.loadPage(allShowsWatcher.result());
-}
-
-void serio::qt::AllTvShowsViewModel::displayNextPageOfWatchedShows() {
-    watchedShowsListModel.loadPage(watchedShowsWatcher.result());
-}
-
-void serio::qt::AllTvShowsViewModel::reload() {
-    loadNextPageOfAllShows(0, listModelPageSize);
-    emit allShowsListChanged(allShowsListModel);
-    loadNextPageOfWatchedShows(0, listModelPageSize);
-    emit watchedShowsListChanged(watchedShowsListModel);
+void serio::qt::AllTvShowsViewModel::loadWatchedShows(const QVariantList& args) {
+    core::ListPage<core::TvShow> page = storage.getWatchedTvShows(args[0].toUInt(), args[1].toUInt());
+    modifyModel([page, this] { watchedShowsListModel.loadPage(page); });
 }

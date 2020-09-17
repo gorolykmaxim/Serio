@@ -3,6 +3,7 @@
 
 #include <QtConcurrent>
 #include <QFutureWatcher>
+#include <utility>
 
 namespace serio::qt {
 
@@ -12,14 +13,8 @@ public:
         singleTaskPool.setMaxThreadCount(1);
         singleTaskPool.setExpiryTimeout(-1);
     }
-    template <typename T, typename Class, typename Param1, typename Arg1>
-    void runInBackground(QFutureWatcher<T>& watcher, Class* object, T (Class::*func)(Param1), const Arg1& arg1) {
-        return watcher.setFuture(QtConcurrent::run(&singleTaskPool, object, func, arg1));
-    }
-    template <typename T, typename Class, typename Param1, typename Param2, typename Arg1, typename Arg2>
-    void runInBackground(QFutureWatcher<T>& watcher, Class* object, T (Class::*func)(Param1, Param2), const Arg1& arg1, const Arg2& arg2) {
-        return watcher.setFuture(QtConcurrent::run(&singleTaskPool, object, func, arg1, arg2));
-    }
+    void runInBackground(const std::function<void()>& task);
+    void runInBackgroundAndWait(const std::function<void()>& task);
 private:
     QThreadPool singleTaskPool;
 };

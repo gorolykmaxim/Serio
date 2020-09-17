@@ -1,39 +1,31 @@
 #ifndef SERIO_ALLTVSHOWSVIEWMODEL_H
 #define SERIO_ALLTVSHOWSVIEWMODEL_H
 
-#include <QObject>
 #include <user-interface/model/TvShowListModel.h>
-#include <QFutureWatcher>
-#include <task-executor/QTaskExecutor.h>
 #include <tv-show-storage/TvShowStorage.h>
+#include <user-interface/action/ActionRouter.h>
+#include <QQmlApplicationEngine>
+#include "ViewModel.h"
 
 namespace serio::qt {
 
-class AllTvShowsViewModel : public QObject {
+class AllTvShowsViewModel : public ViewModel {
     Q_OBJECT
-    Q_PROPERTY(TvShowListModel* allShowsList READ getAllShows NOTIFY allShowsListChanged)
-    Q_PROPERTY(TvShowListModel* watchedShowsList READ getWatchedShows NOTIFY watchedShowsListChanged)
+    Q_PROPERTY(unsigned int pageSize READ getPageSize CONSTANT)
+    Q_PROPERTY(TvShowListModel* allShowsList READ getAllShows CONSTANT)
+    Q_PROPERTY(TvShowListModel* watchedShowsList READ getWatchedShows CONSTANT)
 public:
-    AllTvShowsViewModel(unsigned int listModelPageSize,
-                        unsigned int listModelPageCountLimit,
-                        core::TvShowStorage &tvShows, QTaskExecutor& executor);
+    AllTvShowsViewModel(unsigned int listModelPageSize, unsigned int listModelPageCountLimit, core::TvShowStorage& storage);
+    void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
+    unsigned int getPageSize() const;
     TvShowListModel* getAllShows();
     TvShowListModel* getWatchedShows();
-signals:
-    void allShowsListChanged(const TvShowListModel&);
-    void watchedShowsListChanged(const TvShowListModel&);
-public slots:
-    void reload();
+    void loadAllShows(const QVariantList& args);
+    void loadWatchedShows(const QVariantList& args);
 private:
-    const unsigned int listModelPageSize;
+    unsigned int pageSize;
     TvShowListModel allShowsListModel, watchedShowsListModel;
-    QTaskExecutor& executor;
-    core::TvShowStorage& tvShows;
-    QFutureWatcher<core::ListPage<core::TvShow>> allShowsWatcher, watchedShowsWatcher;
-    void loadNextPageOfAllShows(unsigned int offset, unsigned int limit);
-    void loadNextPageOfWatchedShows(unsigned int offset, unsigned int limit);
-    void displayNextPageOfAllShows();
-    void displayNextPageOfWatchedShows();
+    core::TvShowStorage& storage;
 };
 
 }

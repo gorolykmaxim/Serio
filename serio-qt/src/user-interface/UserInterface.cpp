@@ -3,14 +3,22 @@
 #include <QFontDatabase>
 #include <QCoreApplication>
 #include <QQmlContext>
-#include <user-interface/model/TvShowListModel.h>
 #include "UserInterface.h"
 
-serio::qt::UserInterface::UserInterface(serio::qt::DatabaseStorage &storage, serio::qt::QTaskExecutor &executor)
-        : QObject(), allTvShowsViewModel(100, 2, storage, executor) {
+serio::qt::UserInterface::UserInterface(serio::core::TvShowCrawlerEditor &tvShowCrawlerEditor,
+                                        serio::qt::DatabaseStorage &storage, serio::qt::QTaskExecutor &executor)
+        : QObject(),
+          router(executor, engine),
+          allTvShowsViewModel(100, 2, storage),
+          tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, stack),
+          crawlerEditorViewModel(tvShowCrawlerEditor, stack),
+          crawlerStepEditorViewModel(tvShowCrawlerEditor, stack) {
+    stack.initialize(router, engine);
+    allTvShowsViewModel.initialize(router, engine);
+    tvShowCrawlerEditorViewModel.initialize(router, engine);
+    crawlerEditorViewModel.initialize(router, engine);
+    crawlerStepEditorViewModel.initialize(router, engine);
     loadFonts();
-    registerViewModelsInEngine();
-    registerQmlTypes();
 }
 
 void serio::qt::UserInterface::loadFonts() {
@@ -32,12 +40,4 @@ void serio::qt::UserInterface::exitOnUiLoadFailure(const QUrl &url) {
             QCoreApplication::exit(1);
         }
     }, Qt::QueuedConnection);
-}
-
-void serio::qt::UserInterface::registerViewModelsInEngine() {
-    engine.rootContext()->setContextProperty("allTvShowsViewModel", &allTvShowsViewModel);
-}
-
-void serio::qt::UserInterface::registerQmlTypes() {
-    qmlRegisterUncreatableType<TvShowListModel>("Serio", 1, 0, "TvShowListModel", nullptr);
 }

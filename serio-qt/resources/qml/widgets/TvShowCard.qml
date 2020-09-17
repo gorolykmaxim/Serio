@@ -21,14 +21,14 @@ FocusScope {
     }
     BottomShade {
         anchors.fill: parent
-        display: root.activeFocus
+        display: root.activeFocus || cursorArea.containsMouse
         radius: borderRadius
         Behavior on opacity {
             SerioNumberAnimation {}
         }
     }
     BottomColumnLayout {
-        height: root.activeFocus ? implicitHeight : 0
+        height: root.activeFocus || cursorArea.containsMouse ? implicitHeight : 0
         Title {
             text: tvShowName
             Layout.preferredWidth: parent.width
@@ -43,11 +43,7 @@ FocusScope {
         }
     }
     CursorArea {
+        id: cursorArea
         anchors.fill: parent
-        onHoveredChanged: {
-            if (containsMouse) {
-                root.forceActiveFocus()
-            }
-        }
     }
 }

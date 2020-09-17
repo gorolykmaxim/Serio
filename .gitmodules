@@ -1,3 +1,6 @@
 [submodule "lib/googletest"]
 	path = lib/googletest
 	url = https://github.com/google/googletest.git
+[submodule "serio-qt/resources/lib/circular-progressbar"]
+	path = serio-qt/resources/lib/circular-progressbar
+	url = https://github.com/rafzby/circular-progressbar.git
