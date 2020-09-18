@@ -23,8 +23,15 @@ ViewLayout {
         SerioButton {
             id: cancelBtn
             text: "cancel"
+            KeyNavigation.right: helpBtn
+            KeyNavigation.tab: helpBtn
+        }
+        SerioButton {
+            id: helpBtn
+            text: "help"
             KeyNavigation.right: addStepBtn
             KeyNavigation.tab: addStepBtn
+            KeyNavigation.down: crawlerStepList
         }
         SerioButton {
             id: addStepBtn
@@ -37,13 +44,6 @@ ViewLayout {
         SerioButton {
             id: saveBtn
             text: "save"
-            KeyNavigation.right: helpBtn
-            KeyNavigation.tab: helpBtn
-            KeyNavigation.down: crawlerStepList
-        }
-        SerioButton {
-            id: helpBtn
-            text: "help"
             KeyNavigation.tab: crawlerStepList
             KeyNavigation.down: crawlerStepList
         }
