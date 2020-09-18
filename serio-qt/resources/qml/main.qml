@@ -6,6 +6,7 @@ ApplicationWindow {
     width: 800
     height: 600
     minimumWidth: 800
+    minimumHeight: 600
     title: qsTr("Serio")
     StackOfViews {
         id: viewStack
