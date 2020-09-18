@@ -72,3 +72,10 @@ TEST_F(CrawlerEditorViewModelTest, shouldSaveEditedCrawlerAndPopCurrentViewFromS
     QVariantList args = stackPopSpy.takeFirst();
     EXPECT_TRUE(args[0].toBool());
 }
+
+TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
+    viewModel.openHelp();
+    ASSERT_EQ(1, stackPushSpy.count());
+    QVariantList args = stackPushSpy.takeFirst();
+    EXPECT_EQ(QStringList("views/CrawlerEditorHelpView.qml"), args[0].toStringList());
+}

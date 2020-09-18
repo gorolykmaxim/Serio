@@ -10,6 +10,7 @@ ViewLayout {
         cancelBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
         addStepBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_NEW_CRAWLER_STEP_EDITOR, []))
         saveBtn.clicked.connect(() => actionRouter.trigger(ActionType.SAVE_CRAWLER, []))
+        helpBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_CRAWLER_EDITOR_HELP, []))
         crawlerStepList.itemClicked.connect((index) => actionRouter.trigger(ActionType.OPEN_EXISTING_CRAWLER_STEP_EDITOR, [index]))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_CRAWLER_STEPS, [])
@@ -36,6 +37,13 @@ ViewLayout {
         SerioButton {
             id: saveBtn
             text: "save"
+            KeyNavigation.right: helpBtn
+            KeyNavigation.tab: helpBtn
+            KeyNavigation.down: crawlerStepList
+        }
+        SerioButton {
+            id: helpBtn
+            text: "help"
             KeyNavigation.tab: crawlerStepList
             KeyNavigation.down: crawlerStepList
         }

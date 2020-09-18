@@ -29,6 +29,7 @@ public:
     [[nodiscard]] int getThumbnailCrawlerType() const;
     [[nodiscard]] int getEpisodeNameCrawlerType() const;
     void openCrawlerEditor(core::CrawlerType type);
+    void openHelp();
     void loadCrawlerSteps();
     void save();
 signals:

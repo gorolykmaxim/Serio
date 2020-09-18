@@ -52,5 +52,6 @@
         <file>qml/views/ViewLayout.qml</file>
         <file>qml/views/View.qml</file>
         <file>qml/views/ErrorView.qml</file>
+        <file>qml/views/CrawlerEditorHelpView.qml</file>
     </qresource>
 </RCC>

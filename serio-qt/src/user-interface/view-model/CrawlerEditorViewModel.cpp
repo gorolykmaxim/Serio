@@ -9,6 +9,7 @@ serio::qt::CrawlerEditorViewModel::CrawlerEditorViewModel(serio::core::TvShowCra
 void serio::qt::CrawlerEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("crawlerEditorViewModel", this);
     router.registerAction(ActionType::OPEN_CRAWLER_EDITOR, [this] (const QVariantList& args) { openCrawlerEditor(static_cast<core::CrawlerType>(args[0].toInt())); });
+    router.registerAction(ActionType::OPEN_CRAWLER_EDITOR_HELP, [this] (const QVariantList& args) { openHelp(); });
     router.registerAction(ActionType::LOAD_CRAWLER_STEPS, [this] (const QVariantList& args) { loadCrawlerSteps(); });
     router.registerAction(ActionType::SAVE_CRAWLER, [this] (const QVariantList& args) { save(); });
 }
@@ -49,6 +50,10 @@ void serio::qt::CrawlerEditorViewModel::openCrawlerEditor(serio::core::CrawlerTy
         emit crawlerTypeChanged();
         stack.pushView("CrawlerEditorView.qml");
     });
+}
+
+void serio::qt::CrawlerEditorViewModel::openHelp() {
+    stack.pushView("CrawlerEditorHelpView.qml");
 }
 
 void serio::qt::CrawlerEditorViewModel::loadCrawlerSteps() {
