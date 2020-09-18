@@ -20,6 +20,8 @@ add_library(SerioLib STATIC
         src/http-client/QHttpClient.h
         src/http-client/FetchRequest.cpp
         src/http-client/FetchRequest.h
+        src/http-client/CachingNetworkAccessManagerFactory.cpp
+        src/http-client/CachingNetworkAccessManagerFactory.h
         src/user-interface/action/ActionType.h
         src/user-interface/action/ActionRouter.cpp
         src/user-interface/action/ActionRouter.h

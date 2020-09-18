@@ -7,13 +7,15 @@
 #include <user-interface/view-model/TvShowCrawlerEditorViewModel.h>
 #include <user-interface/view-model/CrawlerEditorViewModel.h>
 #include <user-interface/view-model/CrawlerStepEditorViewModel.h>
+#include <http-client/QHttpClient.h>
 
 namespace serio::qt {
 
 class UserInterface : public QObject {
     Q_OBJECT
 public:
-    UserInterface(core::TvShowCrawlerEditor& tvShowCrawlerEditor, DatabaseStorage& storage, QTaskExecutor& executor);
+    UserInterface(QHttpClient& httpClient, core::TvShowCrawlerEditor& tvShowCrawlerEditor, DatabaseStorage& storage,
+                  QTaskExecutor& executor);
     void initialize();
 private:
     QQmlApplicationEngine engine;

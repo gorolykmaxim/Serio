@@ -5,7 +5,8 @@
 #include <QQmlContext>
 #include "UserInterface.h"
 
-serio::qt::UserInterface::UserInterface(serio::core::TvShowCrawlerEditor &tvShowCrawlerEditor,
+serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
+                                        serio::core::TvShowCrawlerEditor &tvShowCrawlerEditor,
                                         serio::qt::DatabaseStorage &storage, serio::qt::QTaskExecutor &executor)
         : QObject(),
           router(executor, engine),
@@ -13,6 +14,7 @@ serio::qt::UserInterface::UserInterface(serio::core::TvShowCrawlerEditor &tvShow
           tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack) {
+    httpClient.assignTo(engine);
     stack.initialize(router, engine);
     allTvShowsViewModel.initialize(router, engine);
     tvShowCrawlerEditorViewModel.initialize(router, engine);
