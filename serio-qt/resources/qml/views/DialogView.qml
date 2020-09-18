@@ -7,6 +7,7 @@ CenteredViewLayout {
     property string dialogMessage
     property string rightButtonText: "confirm"
     property string leftButtonText: "cancel"
+    property bool hideLeftButton: false
     signal rightButtonClicked()
     signal leftButtonClicked()
     layoutSpacing: globalPadding
@@ -32,6 +33,7 @@ CenteredViewLayout {
             text: leftButtonText
             focus: true
             onClicked: leftButtonClicked()
+            visible: !hideLeftButton
             KeyNavigation.tab: rightBtn
             KeyNavigation.right: rightBtn
         }

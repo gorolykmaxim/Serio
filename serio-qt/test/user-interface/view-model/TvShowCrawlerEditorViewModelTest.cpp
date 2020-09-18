@@ -76,3 +76,11 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOverrideExistingTvShowCrawlerWith
     expectViewToBePushedToStack("views/CrawlingInProgressView.qml");
     expectAllViewsToBePoppedFromStack();
 }
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldPopCrawlingInProgressViewEvenIfAnErrorOccursDuringCrawl) {
+    EXPECT_CALL(editor, saveAndRunTvShowCrawler()).WillOnce(::testing::Throw(std::runtime_error("error")));
+    EXPECT_THROW(viewModel.saveWithOverride(), std::runtime_error);
+    ASSERT_EQ(1, stackPopSpy.count());
+    QVariantList args = stackPopSpy.takeFirst();
+    EXPECT_TRUE(args[0].toBool());
+}

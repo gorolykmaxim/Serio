@@ -8,6 +8,7 @@
 #include <user-interface/view-model/CrawlerEditorViewModel.h>
 #include <user-interface/view-model/CrawlerStepEditorViewModel.h>
 #include <http-client/QHttpClient.h>
+#include <user-interface/view-model/ErrorViewModel.h>
 
 namespace serio::qt {
 
@@ -21,6 +22,7 @@ private:
     QQmlApplicationEngine engine;
     ActionRouter router;
     StackOfViews stack;
+    ErrorViewModel errorViewModel;
     AllTvShowsViewModel allTvShowsViewModel;
     TvShowCrawlerEditorViewModel tvShowCrawlerEditorViewModel;
     CrawlerEditorViewModel crawlerEditorViewModel;

@@ -51,5 +51,6 @@
         <file>qml/views/CenteredViewLayout.qml</file>
         <file>qml/views/ViewLayout.qml</file>
         <file>qml/views/View.qml</file>
+        <file>qml/views/ErrorView.qml</file>
     </qresource>
 </RCC>

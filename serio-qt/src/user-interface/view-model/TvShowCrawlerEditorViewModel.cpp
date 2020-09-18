@@ -48,9 +48,14 @@ void serio::qt::TvShowCrawlerEditorViewModel::save() {
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::saveWithOverride() {
-    stack.pushView("CrawlingInProgressView.qml");
-    editor.saveAndRunTvShowCrawler();
-    stack.popAllViews();
+    try {
+        stack.pushView("CrawlingInProgressView.qml");
+        editor.saveAndRunTvShowCrawler();
+        stack.popAllViews();
+    } catch (std::runtime_error& e) {
+        stack.popCurrentView();
+        throw e;
+    }
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::setName(QString name) {
