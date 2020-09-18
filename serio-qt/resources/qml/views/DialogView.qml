@@ -25,13 +25,14 @@ CenteredViewLayout {
         SerioButton {
             id: rightBtn
             text: rightButtonText
+            focus: hideLeftButton
             onClicked: rightButtonClicked()
             KeyNavigation.tab: leftBtn
         }
         SerioButton {
             id: leftBtn
             text: leftButtonText
-            focus: true
+            focus: !hideLeftButton
             onClicked: leftButtonClicked()
             visible: !hideLeftButton
             KeyNavigation.tab: rightBtn
