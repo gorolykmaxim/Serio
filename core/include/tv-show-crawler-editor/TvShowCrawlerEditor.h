@@ -10,6 +10,7 @@ class TvShowCrawlerEditor {
 public:
     explicit TvShowCrawlerEditor(TvShowCrawlerRuntime& runtime);
     virtual void createTvShowCrawler();
+    virtual void importTvShowCrawler(const std::string &rawCrawler);
     virtual void setTvShowName(std::string name);
     virtual void editCrawler(CrawlerType type);
     virtual void addCrawlerStep(CrawlerStep step);
@@ -27,6 +28,7 @@ private:
     void assertTvShowCrawlerIsEdited() const;
     TvShowCrawlerBuilder& getBuilderOrFail();
     [[nodiscard]] const TvShowCrawlerBuilder& getBuilderOrFail() const;
+    void addCrawlerStepsFrom(CrawlerType type, const TvShowCrawler &crawler);
 };
 
 class NoTvShowCrawlerEditedError : public std::logic_error {

@@ -5,6 +5,7 @@
 class TvShowCrawlerEditorTest : public ::testing::Test {
 protected:
     const std::string mandalorian = "Mandalorian";
+    const std::string rawTvShowCrawler = "tv-show-crawler";
     const serio::core::CrawlerStep fetch = serio::core::CrawlerStep("fetch");
     const serio::core::CrawlerStep value = serio::core::CrawlerStep("value", {{"value", "https://tv-show/"}});
     serio::core::TvShowCrawler tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler({value}));
@@ -22,6 +23,12 @@ protected:
         EXPECT_CALL(runtime, crawlTvShowAndSaveCrawler(tvShowCrawler));
         createCrawler();
         editor.saveAndRunTvShowCrawler();
+    }
+    void expectCrawlerStepsToBeImported(serio::core::CrawlerType type) {
+        EXPECT_CALL(runtime, deserializeTvShowCrawler(rawTvShowCrawler)).WillOnce(::testing::Return(tvShowCrawler));
+        editor.importTvShowCrawler(rawTvShowCrawler);
+        editor.editCrawler(type);
+        EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
     }
 };
 
@@ -253,4 +260,25 @@ TEST_F(TvShowCrawlerEditorTest, shouldTellThatEditedNonEmptyCrawlerWillOverrideE
     editor.addCrawlerStep(fetch);
     editor.saveCrawler();
     EXPECT_TRUE(editor.willOverrideExistingTvShow());
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetTvShowNameToTheOneSpecifiedInImportedCrawler) {
+    EXPECT_CALL(runtime, deserializeTvShowCrawler(rawTvShowCrawler))
+        .WillOnce(::testing::Return(tvShowCrawler));
+    editor.importTvShowCrawler(rawTvShowCrawler);
+    EXPECT_EQ(tvShowCrawler.getTvShowName(), editor.getTvShowName());
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeVideoCrawlerStepsToTheOnesSpecifiedInImportedCrawler) {
+    expectCrawlerStepsToBeImported(serio::core::CrawlerType::episodeVideoCrawler);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetThumbnailCrawlerStepsToTheOnesSpecifiedInImportedCrawler) {
+    tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler(), serio::core::Crawler({value, fetch}));
+    expectCrawlerStepsToBeImported(serio::core::CrawlerType::thumbnailCrawler);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeNameCrawlerStepsToTheOnesSpecifiedInImportedCrawler) {
+    tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler(), serio::core::Crawler(), serio::core::Crawler({value}));
+    expectCrawlerStepsToBeImported(serio::core::CrawlerType::episodeNameCrawler);
 }
