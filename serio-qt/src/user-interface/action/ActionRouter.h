@@ -2,6 +2,7 @@
 #define SERIO_ACTIONROUTER_H
 
 #include <QObject>
+#include <optional>
 #include <task-executor/QTaskExecutor.h>
 #include <QQmlApplicationEngine>
 #include "ActionType.h"
