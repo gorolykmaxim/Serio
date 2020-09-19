@@ -5,7 +5,7 @@
 #include <tv-show-crawler-runtime/executor/RegExpStepExecutor.h>
 
 serio::core::TvShowCrawlerRuntime::TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage, HttpClient& httpClient)
-    : crawlerStorage(crawlerStorage), tvShowStorage(tvShowStorage) {
+    : crawlerStorage(crawlerStorage), tvShowStorage(tvShowStorage), serializer(crawlerStepTypes) {
     registerCrawlerStepType(
             "value",
             std::make_unique<ValueStepExecutor>(),
@@ -48,6 +48,10 @@ void serio::core::TvShowCrawlerRuntime::registerCrawlerStepType(const std::strin
                                                                 const std::vector<std::string>& mandatoryProperties) {
     crawlerExecutor.registerCrawlerStepExecutor(type, std::move(executor));
     crawlerStepTypes.emplace_back(type, description, mandatoryProperties);
+}
+
+serio::core::TvShowCrawler serio::core::TvShowCrawlerRuntime::deserializeTvShowCrawler(const std::string &rawCrawler) const {
+    return serializer.deserialize(rawCrawler);
 }
 
 bool serio::core::TvShowCrawlerRuntime::willOverrideExistingTvShow(const serio::core::TvShowCrawler &crawler) {

@@ -15,6 +15,9 @@ protected:
     const std::string friends = "Friends";
     const std::string mandalorian = "Mandalorian";
     const std::string thumbnailUrl = "https://tv-show/thumbnail.jpg";
+    const std::string emptyFriendsCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Friends","thumbnailCrawler":{"steps":[]}})";
+    const std::string mandalorianCrawlerWithEpisodeVideoCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})";
+    const std::string mandalorianCrawlerWithThumbnailCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]}})";
     std::promise<std::vector<std::string>> httpClientResponsePromise;
     ::testing::NiceMock<HttpClientMock> httpClient;
     ::testing::NiceMock<TvShowCrawlerStorageMock> crawlerStorage;
@@ -31,7 +34,6 @@ protected:
         serio::core::CrawlerStep("regExp", {{"regExp", "[a-z\\-0-9]+\\.mp4"}}),
         serio::core::CrawlerStep("transform", {{"template", "https://tv-show/%s"}})
     });
-
     virtual void SetUp() {
         std::string httpClientResponse = "Tv show image='thumbnail.jpg' is nice. Episodes are: episode-1.mp4, episode-2.mp4 and episode-3.mp4";
         std::promise<std::vector<std::string>> promise;
@@ -40,22 +42,30 @@ protected:
             .WillByDefault(::testing::Return(::testing::ByMove(promise.get_future())));
         httpClientResponsePromise.set_value({httpClientResponse});
     }
+    void expectCrawlerDeserializationToFail(const std::string& rawTvShowCrawler, const char* errorMessage) {
+        try {
+            (void)runtime.deserializeTvShowCrawler(rawTvShowCrawler);
+            FAIL();
+        } catch (std::runtime_error& e) {
+            EXPECT_STREQ(errorMessage, e.what());
+        }
+    }
 };
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveCrawlerWithoutStepsInStorage) {
-    EXPECT_CALL(crawlerStorage, saveTvShowCrawler(friends, R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Friends","thumbnailCrawler":{"steps":[]}})"));
+    EXPECT_CALL(crawlerStorage, saveTvShowCrawler(friends, emptyFriendsCrawler));
     serio::core::TvShowCrawler crawler(friends, emptyCrawler);
     runtime.crawlTvShowAndSaveCrawler(crawler);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveCrawlerWithStepsForEpisodeVideoInStorage) {
-    EXPECT_CALL(crawlerStorage, saveTvShowCrawler(mandalorian, R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})"));
+    EXPECT_CALL(crawlerStorage, saveTvShowCrawler(mandalorian, mandalorianCrawlerWithEpisodeVideoCrawler));
     serio::core::TvShowCrawler crawler(mandalorian, crawlerWithSteps);
     runtime.crawlTvShowAndSaveCrawler(crawler);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveCrawlerWithStepsForThumbnailInStorage) {
-    EXPECT_CALL(crawlerStorage, saveTvShowCrawler(mandalorian, R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]}})"));
+    EXPECT_CALL(crawlerStorage, saveTvShowCrawler(mandalorian, mandalorianCrawlerWithThumbnailCrawler));
     serio::core::TvShowCrawler crawler(mandalorian, emptyCrawler, crawlerWithSteps);
     runtime.crawlTvShowAndSaveCrawler(crawler);
 }
@@ -242,4 +252,52 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldTellThatSpecifiedCrawlerWillOverrideExist
     EXPECT_CALL(tvShowStorage, getTvShowByName(friends)).WillOnce(::testing::Return(tvShow));
     serio::core::TvShowCrawler crawler(friends, emptyCrawler);
     EXPECT_TRUE(runtime.willOverrideExistingTvShow(crawler));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerWithoutName) {
+    expectCrawlerDeserializationToFail("{}", "Failed to deserialize TV show crawler: TV show name not specified");
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerWithEmptyName) {
+    expectCrawlerDeserializationToFail(R"({"showName": ""})", "Failed to deserialize TV show crawler: TV show name is empty");
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldDeserializeEmptyTvShowCrawler) {
+    serio::core::TvShowCrawler expectedCrawler(friends, emptyCrawler);
+    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(emptyFriendsCrawler));
+    expectedCrawler = serio::core::TvShowCrawler(mandalorian, emptyCrawler);
+    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(R"({"showName": "Mandalorian"})"));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldDeserializeTvShowCrawlerWithEpisodeVideoCrawlerSpecified) {
+    serio::core::TvShowCrawler expectedCrawler(mandalorian, crawlerWithSteps);
+    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(mandalorianCrawlerWithEpisodeVideoCrawler));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldDeserializeTvShowCrawlerWithThumbnailCrawlerSpecified) {
+    serio::core::TvShowCrawler expectedCrawler(mandalorian, emptyCrawler, crawlerWithSteps);
+    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(mandalorianCrawlerWithThumbnailCrawler));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldDeserializeTvShowCrawlerWithEpisodeNameCrawlerSpecified) {
+    serio::core::TvShowCrawler expectedCrawler(mandalorian, emptyCrawler, emptyCrawler, crawlerWithSteps);
+    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(R"({"episodeNameCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})"));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerWithStepWithoutTypeSpecified) {
+    expectCrawlerDeserializationToFail(
+            R"({"showName":"a","episodeVideoCrawler":{"steps":[{"a":"b"}]}})",
+            R"(Failed to deserialize TV show crawler: Failed to deserialize "episodeVideoCrawler": Failed to deserialize crawler step #1: Crawler step type not specified)");
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerWithUnknownStepType) {
+    expectCrawlerDeserializationToFail(
+            R"({"showName":"a","thumbnailCrawler":{"steps":[{"type":"fetch"}, {"type":"unknown"}]}})",
+            R"(Failed to deserialize TV show crawler: Failed to deserialize "thumbnailCrawler": Failed to deserialize crawler step #2: Unknown crawler step type "unknown")");
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerStepHavingMandatoryPropertyMissing) {
+    expectCrawlerDeserializationToFail(
+            R"({"showName":"a","episodeNameCrawler":{"steps":[{"type":"value"}]}})",
+            R"(Failed to deserialize TV show crawler: Failed to deserialize "episodeNameCrawler": Failed to deserialize crawler step #1: Crawler step with type "value" missing following mandatory properties: "value")");
 }

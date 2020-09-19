@@ -16,6 +16,7 @@ public:
     TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage, HttpClient& httpClient);
     virtual void crawlTvShowAndSaveCrawler(const TvShowCrawler &crawler);
     [[nodiscard]] virtual std::vector<CrawlerStepType> getCrawlerStepTypes() const;
+    [[nodiscard]] TvShowCrawler deserializeTvShowCrawler(const std::string &rawCrawler) const;
     virtual bool willOverrideExistingTvShow(const TvShowCrawler &crawler);
 private:
     TvShowCrawlerStorage& crawlerStorage;
