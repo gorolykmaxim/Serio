@@ -17,7 +17,7 @@ CenteredViewLayout {
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW_CRAWLER_EDITOR_TV_SHOW_NAME, [])
     AccentTitle {
         Layout.fillWidth: true
-        text: "Configure TV Show crawler"
+        text: "Configure TV Show Crawler"
     }
     TextField {
         id: tvShowNameEdt

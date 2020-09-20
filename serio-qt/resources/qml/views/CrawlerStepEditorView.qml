@@ -14,7 +14,7 @@ ViewLayout {
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_CRAWLER_STEP, [])
     AccentTitle {
-        text: "Crawler step"
+        text: "Crawler Step"
     }
     Row {
         Layout.fillWidth: true

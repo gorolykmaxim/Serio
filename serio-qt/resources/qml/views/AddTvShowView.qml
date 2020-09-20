@@ -12,20 +12,20 @@ CenteredViewLayout {
     }
     AccentTitle {
         Layout.fillWidth: true
-        text: "Add TV-show options"
+        text: "Add TV Show Options"
     }
     SerioButton {
         id: addTvShowBtn
         Layout.fillWidth: true
         focus: true
-        text: "add tv-show"
+        text: "add tv show"
         KeyNavigation.tab: importTvShowBtn
         KeyNavigation.down: importTvShowBtn
     }
     SerioButton {
         id: importTvShowBtn
         Layout.fillWidth: true
-        text: "import tv-show"
+        text: "import tv show"
         KeyNavigation.tab: cancelBtn
         KeyNavigation.down: cancelBtn
     }

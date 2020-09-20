@@ -19,11 +19,11 @@ QString serio::qt::CrawlerEditorViewModel::getCrawlerType() const {
         throw CrawlerEditorViewNotOpenedError();
     }
     if (crawlerType == serio::core::CrawlerType::episodeVideoCrawler) {
-        return "Episode video";
+        return "Episode Video";
     } else if (crawlerType == serio::core::CrawlerType::thumbnailCrawler) {
         return "Thumbnail";
     } else {
-        return "Episode name";
+        return "Episode Name";
     }
 }
 

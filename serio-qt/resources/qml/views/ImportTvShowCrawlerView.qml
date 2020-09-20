@@ -13,7 +13,7 @@ ViewLayout {
         })
     }
     AccentTitle {
-        text: "Import TV Show crawler"
+        text: "Import TV Show Crawler"
     }
     Row {
         Layout.fillWidth: true

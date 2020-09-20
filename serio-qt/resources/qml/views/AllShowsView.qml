@@ -33,7 +33,7 @@ ViewLayout {
     SerioButton {
         id: addTvShowBtn
         focus: !watchedShowsList.visible
-        text: "add tv-show"
+        text: "add tv show"
         KeyNavigation.tab: allShowsLists
         KeyNavigation.down: allShowsLists
     }
