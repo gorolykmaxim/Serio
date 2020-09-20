@@ -254,6 +254,10 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldTellThatSpecifiedCrawlerWillOverrideExist
     EXPECT_TRUE(runtime.willOverrideExistingTvShow(crawler));
 }
 
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeCrawlerInInvalidFormat) {
+    EXPECT_THROW((void)runtime.deserializeTvShowCrawler("{something}"), std::runtime_error);
+}
+
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerWithoutName) {
     expectCrawlerDeserializationToFail("{}", "Failed to deserialize TV show crawler: TV show name not specified");
 }

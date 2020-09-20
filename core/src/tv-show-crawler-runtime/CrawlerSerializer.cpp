@@ -40,7 +40,7 @@ serio::core::TvShowCrawler serio::core::CrawlerSerializer::deserialize(const std
                 core::Crawler(deserialize(deserializedCrawler, "episodeVideoCrawler")),
                 core::Crawler(deserialize(deserializedCrawler, "thumbnailCrawler")),
                 core::Crawler(deserialize(deserializedCrawler, "episodeNameCrawler")));
-    } catch (std::runtime_error& e) {
+    } catch (std::exception& e) {
         throw TvShowCrawlerDeserializationError(e);
     }
 }
@@ -119,12 +119,12 @@ serio::core::TvShowCrawlerNameNotSpecifiedError::TvShowCrawlerNameNotSpecifiedEr
 serio::core::TvShowCrawlerNameEmptyError::TvShowCrawlerNameEmptyError()
     : std::runtime_error("TV show name is empty") {}
 
-serio::core::TvShowCrawlerDeserializationError::TvShowCrawlerDeserializationError(const std::runtime_error &e)
-    : runtime_error(std::string("Failed to deserialize TV show crawler: ") + e.what()) {}
+serio::core::TvShowCrawlerDeserializationError::TvShowCrawlerDeserializationError(const std::exception &e)
+    : std::runtime_error(std::string("Failed to deserialize TV show crawler: ") + e.what()) {}
 
 serio::core::CrawlerDeserializationError::CrawlerDeserializationError(const std::string& crawlerType,
                                                                       const std::runtime_error &e)
-    : runtime_error(std::string("Failed to deserialize \"") + crawlerType + "\": " + e.what()) {}
+    : std::runtime_error(std::string("Failed to deserialize \"") + crawlerType + "\": " + e.what()) {}
 
 serio::core::CrawlerStepDeserializationError::CrawlerStepDeserializationError(unsigned int stepIndex,
                                                                               const std::runtime_error &e)

@@ -37,7 +37,7 @@ public:
 
 class TvShowCrawlerDeserializationError: public std::runtime_error {
 public:
-    explicit TvShowCrawlerDeserializationError(const std::runtime_error& e);
+    explicit TvShowCrawlerDeserializationError(const std::exception& e);
 };
 
 class CrawlerDeserializationError: public std::runtime_error {
