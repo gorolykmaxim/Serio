@@ -57,3 +57,7 @@ serio::core::TvShowCrawler serio::core::TvShowCrawlerRuntime::deserializeTvShowC
 bool serio::core::TvShowCrawlerRuntime::willOverrideExistingTvShow(const serio::core::TvShowCrawler &crawler) {
     return tvShowStorage.getTvShowByName(crawler.getTvShowName()).has_value();
 }
+
+std::vector<std::string> serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::Crawler &crawler) {
+    return crawlerExecutor.executeCrawler(crawler, "specified");
+}

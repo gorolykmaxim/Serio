@@ -194,7 +194,7 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlTvShowDueToHttpClientError) {
     try {
         runtime.crawlTvShowAndSaveCrawler(crawler);
         FAIL();
-    } catch (serio::core::TvShowCrawlerExecutionError& e) {
+    } catch (std::runtime_error& e) {
         EXPECT_STREQ("Failed to crawl 'Mandalorian': Failed to execute episode video crawler: "
                      "Failed to execute step #2: Timeout", e.what());
     }
@@ -236,7 +236,7 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToSaveTvShowWithEpisodesVideoUrlsCoun
     try {
         runtime.crawlTvShowAndSaveCrawler(crawler);
         FAIL();
-    } catch (serio::core::TvShowCrawlerExecutionError& e) {
+    } catch (std::runtime_error& e) {
         EXPECT_STREQ("Failed to crawl 'Friends': Can't assign crawled episode names to episode video URLs: "
                      "video URLs count = 3 episode names count = 2", e.what());
     }
@@ -304,4 +304,26 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerStepHavingM
     expectCrawlerDeserializationToFail(
             R"({"showName":"a","episodeNameCrawler":{"steps":[{"type":"value"}]}})",
             R"(Failed to deserialize TV show crawler: Failed to deserialize "episodeNameCrawler": Failed to deserialize crawler step #1: Crawler step with type "value" missing following mandatory properties: "value")");
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldReturnResultsOfExecutionOfTheSpecifiedCrawler) {
+    std::vector<std::string> expectedResults = {
+            "https://tv-show/episode-1.mp4",
+            "https://tv-show/episode-2.mp4",
+            "https://tv-show/episode-3.mp4"
+    };
+    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+            .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
+    EXPECT_EQ(expectedResults, runtime.executeCrawler(episodeVideoCrawler));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteSpecifiedCrawlerDueToHttpClientError) {
+    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+            .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
+    try {
+        runtime.executeCrawler(episodeVideoCrawler);
+        FAIL();
+    } catch (std::runtime_error& e) {
+        EXPECT_STREQ("Failed to execute specified crawler: Failed to execute step #2: Timeout", e.what());
+    }
 }
