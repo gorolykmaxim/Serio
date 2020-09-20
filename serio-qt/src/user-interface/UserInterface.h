@@ -9,7 +9,6 @@
 #include <user-interface/view-model/CrawlerStepEditorViewModel.h>
 #include <http-client/QHttpClient.h>
 #include <user-interface/view-model/ErrorViewModel.h>
-#include <user-interface/view-model/AddTvShowViewModel.h>
 
 namespace serio::qt {
 
@@ -25,7 +24,6 @@ private:
     StackOfViews stack;
     ErrorViewModel errorViewModel;
     AllTvShowsViewModel allTvShowsViewModel;
-    AddTvShowViewModel addTvShowViewModel;
     TvShowCrawlerEditorViewModel tvShowCrawlerEditorViewModel;
     CrawlerEditorViewModel crawlerEditorViewModel;
     CrawlerStepEditorViewModel crawlerStepEditorViewModel;

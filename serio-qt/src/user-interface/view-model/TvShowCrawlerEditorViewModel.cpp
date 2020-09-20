@@ -10,6 +10,7 @@ void serio::qt::TvShowCrawlerEditorViewModel::initialize(serio::qt::ActionRouter
     engine.rootContext()->setContextProperty("tvShowCrawlerEditorViewModel", this);
     router.registerAction(ActionType::SET_TV_SHOW_NAME, [this] (const QVariantList& args) { setTvShowName(args); });
     router.registerAction(ActionType::IMPORT_TV_SHOW_CRAWLER, [this] (const QVariantList& args) { importTvShowCrawler(args); });
+    router.registerAction(ActionType::OPEN_ADD_TV_SHOW_VIEW, [this] (const QVariantList& args) { openAddTvShowView(); });
     router.registerAction(ActionType::OPEN_TV_SHOW_CRAWLER_EDITOR_VIEW, [this] (const QVariantList& args) { openTvShowCrawlerEditorView(); });
     router.registerAction(ActionType::OPEN_IMPORT_TV_SHOW_VIEW, [this] (const QVariantList& args) { openImportTvShowCrawlerView(); });
     router.registerAction(ActionType::LOAD_TV_SHOW_CRAWLER_EDITOR_TV_SHOW_NAME, [this] (const QVariantList& args) { loadTvShowName(); });
@@ -29,6 +30,10 @@ void serio::qt::TvShowCrawlerEditorViewModel::setTvShowName(const QVariantList& 
     QString name = args[0].toString();
     editor.setTvShowName(name.toStdString());
     modifyModel([name, this] { setName(name); });
+}
+
+void serio::qt::TvShowCrawlerEditorViewModel::openAddTvShowView() {
+    stack.pushView(QString("AddTvShowView.qml"));
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::openTvShowCrawlerEditorView() {

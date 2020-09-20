@@ -21,6 +21,7 @@ public:
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] bool canCrawlerBeSaved() const;
+    void openAddTvShowView();
     void openTvShowCrawlerEditorView();
     void setTvShowName(const QVariantList& args);
     void importTvShowCrawler(const QVariantList &args);

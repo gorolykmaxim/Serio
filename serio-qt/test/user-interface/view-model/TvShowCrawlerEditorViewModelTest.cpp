@@ -62,6 +62,11 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldLoadTvShowFromCrawlerEditor) {
     expectTvShowNameSet();
 }
 
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenAddTvShowView) {
+    viewModel.openAddTvShowView();
+    expectViewToBePushedToStack("views/AddTvShowView.qml");
+}
+
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowCrawlerEditorView) {
     EXPECT_CALL(editor, createTvShowCrawler());
     viewModel.openTvShowCrawlerEditorView();
