@@ -7,6 +7,7 @@
 class TvShowCrawlerEditorViewModelTest : public ::testing::Test {
 protected:
     QString tvShowName = "Friends";
+    QString rawCrawler = "raw crawler";
     TvShowCrawlerEditorMock editor = TvShowCrawlerEditorMock::create();
     serio::qt::StackOfViews stack;
     serio::qt::TvShowCrawlerEditorViewModel viewModel = serio::qt::TvShowCrawlerEditorViewModel(editor, stack);
@@ -14,6 +15,7 @@ protected:
     QSignalSpy canCrawlerBeSavedSpy = QSignalSpy(&viewModel, &serio::qt::TvShowCrawlerEditorViewModel::canCrawlerBeSavedChanged);
     QSignalSpy stackPushSpy = QSignalSpy(&stack, &serio::qt::StackOfViews::push);
     QSignalSpy stackPopSpy = QSignalSpy(&stack, &serio::qt::StackOfViews::pop);
+    QSignalSpy stackReplaceSpy = QSignalSpy(&stack, &serio::qt::StackOfViews::replace);
     void expectTvShowNameSet() {
         EXPECT_EQ(tvShowName, viewModel.getTvShowName());
         EXPECT_TRUE(viewModel.canCrawlerBeSaved());
@@ -29,6 +31,11 @@ protected:
         ASSERT_EQ(1, stackPopSpy.count());
         QVariantList args = stackPopSpy.takeFirst();
         EXPECT_FALSE(args[0].toBool());
+    }
+    void expectCurrentViewToBeReplacedWith(QString newView) {
+        ASSERT_EQ(1, stackReplaceSpy.count());
+        QVariantList args = stackReplaceSpy.takeFirst();
+        EXPECT_EQ(newView, args[0].toString());
     }
 };
 
@@ -51,8 +58,8 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldLoadTvShowFromCrawlerEditor) {
 
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowCrawlerEditorView) {
     EXPECT_CALL(editor, createTvShowCrawler());
-    viewModel.openView();
-    expectViewToBePushedToStack("views/TvShowCrawlerEditorView.qml");
+    viewModel.openTvShowCrawlerEditorView();
+    expectCurrentViewToBeReplacedWith("views/TvShowCrawlerEditorView.qml");
 }
 
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowOverrideConfirmationDialog) {
@@ -83,4 +90,21 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldPopCrawlingInProgressViewEvenIfAn
     ASSERT_EQ(1, stackPopSpy.count());
     QVariantList args = stackPopSpy.takeFirst();
     EXPECT_TRUE(args[0].toBool());
+}
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenImportTvShowCrawlerView) {
+    viewModel.openImportTvShowCrawlerView();
+    expectCurrentViewToBeReplacedWith("views/ImportTvShowCrawlerView.qml");
+}
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldImportRawTvShowCrawlerInEditor) {
+    EXPECT_CALL(editor, importTvShowCrawler(rawCrawler.toStdString()));
+    viewModel.setRawTvShowCrawler(QVariantList({rawCrawler}));
+}
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldReloadTvShowNameAfterSettingRawTvShowCrawler) {
+    EXPECT_CALL(editor, getTvShowName()).WillOnce(::testing::Return(tvShowName.toStdString()));
+    viewModel.setRawTvShowCrawler(QVariantList({rawCrawler}));
+    EXPECT_EQ(tvShowName, viewModel.getTvShowName());
+    expectTvShowNameSet();
 }

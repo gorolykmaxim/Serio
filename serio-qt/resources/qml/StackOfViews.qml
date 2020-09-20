@@ -16,5 +16,8 @@ StackView {
             else
                 root.pop(null)
         }
+        function onReplace(newView) {
+            root.replace(newView)
+        }
     }
 }

@@ -16,11 +16,14 @@ public:
     void pushViews(const QStringList& views);
     void popCurrentView();
     void popAllViews();
+    void replaceCurrentViewWith(const QString& newView);
 signals:
     void push(QStringList views);
     void pop(bool currentView);
+    void replace(QString newView);
 private:
     [[nodiscard]] QStringList makePathsToViewsAbsolute(QStringList views) const;
+    [[nodiscard]] QString makePathToViewAbsolute(const QString& view) const;
 };
 
 }

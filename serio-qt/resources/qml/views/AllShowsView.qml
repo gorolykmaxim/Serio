@@ -9,7 +9,7 @@ ViewLayout {
         displayed()
         allTvShowsViewModel.allShowsList.requestPageLoad.connect((offset, limit) => actionRouter.trigger(ActionType.LOAD_ALL_TV_SHOWS_LIST_PAGE, [offset, limit]))
         allTvShowsViewModel.watchedShowsList.requestPageLoad.connect((offset, limit) => actionRouter.trigger(ActionType.LOAD_WATCHED_TV_SHOWS_LIST_PAGE, [offset, limit]))
-        addTvShowBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_TV_SHOW_CRAWLER_EDITOR_VIEW, []))
+        addTvShowBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_ADD_TV_SHOW_VIEW, []))
     }
     onDisplayed: {
         actionRouter.trigger(ActionType.LOAD_ALL_TV_SHOWS_LIST_PAGE, [0, allTvShowsViewModel.pageSize])
