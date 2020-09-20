@@ -7,10 +7,7 @@ import "../widgets"
 ViewLayout {
     onCreated: {
         cancelBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
-        importBtn.clicked.connect(() => {
-            actionRouter.trigger(ActionType.SET_RAW_TV_SHOW_CRAWLER, [textArea.text])
-            actionRouter.trigger(ActionType.SAVE_TV_SHOW_CRAWLER, [])
-        })
+        importBtn.clicked.connect(() => actionRouter.trigger(ActionType.IMPORT_TV_SHOW_CRAWLER, [textArea.text]))
     }
     AccentTitle {
         text: "Import TV Show Crawler"

@@ -32,10 +32,16 @@ protected:
         QVariantList args = stackPopSpy.takeFirst();
         EXPECT_FALSE(args[0].toBool());
     }
-    void expectCurrentViewToBeReplacedWith(QString newView) {
+    void expectCurrentViewToBeReplacedWith(const QString& newView) {
         ASSERT_EQ(1, stackReplaceSpy.count());
         QVariantList args = stackReplaceSpy.takeFirst();
         EXPECT_EQ(newView, args[0].toString());
+    }
+    void expectTvShowCrawlerToBeImported(bool isImported) {
+        EXPECT_CALL(editor, importTvShowCrawler(rawCrawler.toStdString()));
+        EXPECT_CALL(editor, getTvShowName()).WillOnce(::testing::Return(tvShowName.toStdString()));
+        EXPECT_CALL(editor, willOverrideExistingTvShow()).WillOnce(::testing::Return(!isImported));
+        EXPECT_CALL(editor, saveAndRunTvShowCrawler()).Times(isImported ? 1 : 0);
     }
 };
 
@@ -97,14 +103,17 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenImportTvShowCrawlerView) {
     expectCurrentViewToBeReplacedWith("views/ImportTvShowCrawlerView.qml");
 }
 
-TEST_F(TvShowCrawlerEditorViewModelTest, shouldImportRawTvShowCrawlerInEditor) {
-    EXPECT_CALL(editor, importTvShowCrawler(rawCrawler.toStdString()));
-    viewModel.setRawTvShowCrawler(QVariantList({rawCrawler}));
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowOverrideConfirmationDialogWhileImportingExistingTvShow) {
+    expectTvShowCrawlerToBeImported(false);
+    viewModel.importTvShowCrawler(QVariantList({rawCrawler}));
+    expectTvShowNameSet();
+    expectViewToBePushedToStack("views/TvShowCrawlerOverrideDialogView.qml");
 }
 
-TEST_F(TvShowCrawlerEditorViewModelTest, shouldReloadTvShowNameAfterSettingRawTvShowCrawler) {
-    EXPECT_CALL(editor, getTvShowName()).WillOnce(::testing::Return(tvShowName.toStdString()));
-    viewModel.setRawTvShowCrawler(QVariantList({rawCrawler}));
-    EXPECT_EQ(tvShowName, viewModel.getTvShowName());
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldImportNewTvShowCrawler) {
+    expectTvShowCrawlerToBeImported(true);
+    viewModel.importTvShowCrawler(QVariantList({rawCrawler}));
     expectTvShowNameSet();
+    expectViewToBePushedToStack("views/CrawlingInProgressView.qml");
+    expectAllViewsToBePoppedFromStack();
 }

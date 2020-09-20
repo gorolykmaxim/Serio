@@ -23,7 +23,7 @@ public:
     [[nodiscard]] bool canCrawlerBeSaved() const;
     void openTvShowCrawlerEditorView();
     void setTvShowName(const QVariantList& args);
-    void setRawTvShowCrawler(const QVariantList &args);
+    void importTvShowCrawler(const QVariantList &args);
     void openImportTvShowCrawlerView();
     void loadTvShowName();
     void save();
