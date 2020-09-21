@@ -64,5 +64,6 @@ add_executable(SerioTest
         test/user-interface/view-model/TvShowCrawlerEditorViewModelTest.cpp
         test/user-interface/view-model/CrawlerEditorViewModelTest.cpp
         test/user-interface/view-model/CrawlerStepEditorViewModelTest.cpp
-        test/user-interface/view-model/ErrorViewModelTest.cpp)
+        test/user-interface/view-model/ErrorViewModelTest.cpp
+        test/user-interface/view-model/StackOfViewsTest.cpp)
 target_link_libraries(SerioTest SerioLib CoreTestMocks gtest gmock gtest_main Qt5::Test)
