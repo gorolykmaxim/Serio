@@ -20,6 +20,7 @@ public:
     MOCK_METHOD((std::vector<serio::core::CrawlerStepType>), getCrawlerStepTypes, (), (const override));
     MOCK_METHOD(serio::core::TvShowCrawler, deserializeTvShowCrawler, (const std::string&), (const override));
     MOCK_METHOD(bool, willOverrideExistingTvShow, (const serio::core::TvShowCrawler&), (override));
+    MOCK_METHOD((std::vector<std::string>), executeCrawler, (const serio::core::Crawler&), (override));
 };
 
 #endif //SERIO_TVSHOWCRAWLERRUNTIMEMOCK_H

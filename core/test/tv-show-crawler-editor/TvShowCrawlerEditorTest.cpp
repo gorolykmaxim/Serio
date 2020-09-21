@@ -282,3 +282,31 @@ TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeNameCrawlerStepsToTheOnesSpecifi
     tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler(), serio::core::Crawler(), serio::core::Crawler({value}));
     expectCrawlerStepsToBeImported(serio::core::CrawlerType::episodeNameCrawler);
 }
+
+TEST_F(TvShowCrawlerEditorTest, shouldFailToPreviewCrawlerIfNoTvShowCrawlerBeingEdited) {
+    EXPECT_THROW((void)editor.previewCrawler(), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldFailToPreviewCrawlerIfNoCrawlerIsBeingEdited) {
+    editor.createTvShowCrawler();
+    EXPECT_THROW((void)editor.previewCrawler(), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndReturnResults) {
+    std::vector<std::string> results = {"result 1", "result 2", "result 3"};
+    std::vector<serio::core::CrawlerType> crawlerTypes = {
+            serio::core::CrawlerType::episodeVideoCrawler,
+            serio::core::CrawlerType::thumbnailCrawler,
+            serio::core::CrawlerType::episodeNameCrawler
+    };
+    EXPECT_CALL(runtime, executeCrawler(serio::core::Crawler({value, fetch})))
+        .Times(crawlerTypes.size())
+        .WillRepeatedly(::testing::Return(results));
+    editor.createTvShowCrawler();
+    for (serio::core::CrawlerType type: crawlerTypes) {
+        editor.editCrawler(type);
+        editor.addCrawlerStep(value);
+        editor.addCrawlerStep(fetch);
+        EXPECT_EQ(results, editor.previewCrawler());
+    }
+}

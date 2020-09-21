@@ -55,6 +55,11 @@ void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
     }
 }
 
+std::vector<std::string> serio::core::TvShowCrawlerEditor::previewCrawler() {
+    serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
+    return runtime.executeCrawler(crawler);
+}
+
 bool serio::core::TvShowCrawlerEditor::willOverrideExistingTvShow() {
     return runtime.willOverrideExistingTvShow(getBuilderOrFail().buildTvShowCrawler());
 }

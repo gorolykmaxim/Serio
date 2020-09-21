@@ -18,6 +18,7 @@ public:
     virtual void removeCrawlerStep(unsigned int stepIndex);
     virtual void saveCrawler();
     virtual void saveAndRunTvShowCrawler();
+    virtual std::vector<std::string> previewCrawler();
     virtual bool willOverrideExistingTvShow();
     [[nodiscard]] virtual std::string getTvShowName() const;
     [[nodiscard]] virtual std::vector<CrawlerStep> getCrawlerSteps() const;
