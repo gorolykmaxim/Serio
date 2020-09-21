@@ -7,7 +7,6 @@ ItemDelegate {
     property string title
     property string subtitle
     property real tilePadding: 8
-    width: parent.width
     height: crawlerStepItem.height
     Keys.onReturnPressed: clicked()
     Keys.onEnterPressed: clicked()

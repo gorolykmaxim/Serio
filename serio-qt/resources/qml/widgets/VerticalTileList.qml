@@ -9,6 +9,7 @@ AnimatedList {
     delegate: ListTile {
         title: modelData.title
         subtitle: modelData.subtitle
+        width: root.width
         tilePadding: root.tilePadding
         highlighted: root.activeFocus && ListView.isCurrentItem
         onClicked: itemClicked(index)
