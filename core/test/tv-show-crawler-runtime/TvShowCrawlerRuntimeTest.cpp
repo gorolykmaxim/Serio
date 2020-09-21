@@ -42,6 +42,14 @@ protected:
             .WillByDefault(::testing::Return(::testing::ByMove(promise.get_future())));
         httpClientResponsePromise.set_value({httpClientResponse});
     }
+    void expectTvShowCrawlToFail(const serio::core::TvShowCrawler& crawler, const char* errorMessage) {
+        try {
+            runtime.crawlTvShowAndSaveCrawler(crawler);
+            FAIL();
+        } catch (std::runtime_error& e) {
+            EXPECT_STREQ(errorMessage, e.what());
+        }
+    }
     void expectCrawlerDeserializationToFail(const std::string& rawTvShowCrawler, const char* errorMessage) {
         try {
             (void)runtime.deserializeTvShowCrawler(rawTvShowCrawler);
@@ -191,13 +199,8 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlTvShowDueToHttpClientError) {
     EXPECT_CALL(tvShowStorage, saveTvShow(::testing::_, ::testing::_)).Times(0);
     EXPECT_CALL(crawlerStorage, saveTvShowCrawler(::testing::_, ::testing::_)).Times(0);
     serio::core::TvShowCrawler crawler(mandalorian, episodeVideoCrawler);
-    try {
-        runtime.crawlTvShowAndSaveCrawler(crawler);
-        FAIL();
-    } catch (std::runtime_error& e) {
-        EXPECT_STREQ("Failed to crawl 'Mandalorian': Failed to execute episode video crawler: "
-                     "Failed to execute step #2: Timeout", e.what());
-    }
+    expectTvShowCrawlToFail(crawler, "Failed to crawl 'Mandalorian': Failed to execute episode video crawler: "
+                                     "Failed to execute step #2: Timeout");
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithEpisodesHavingCustomEpisodeNames) {
@@ -233,13 +236,8 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToSaveTvShowWithEpisodesVideoUrlsCoun
         serio::core::CrawlerStep("transform", {{"template", "The Episode #%s"}})
     });
     serio::core::TvShowCrawler crawler(friends, episodeVideoCrawler, emptyCrawler, episodeNameCrawler);
-    try {
-        runtime.crawlTvShowAndSaveCrawler(crawler);
-        FAIL();
-    } catch (std::runtime_error& e) {
-        EXPECT_STREQ("Failed to crawl 'Friends': Can't assign crawled episode names to episode video URLs: "
-                     "video URLs count = 3 episode names count = 2", e.what());
-    }
+    expectTvShowCrawlToFail(crawler, "Failed to crawl 'Friends': Can't assign crawled episode names to episode video URLs: "
+                                     "video URLs count = 3 episode names count = 2");
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldTellThatSpecifiedCrawlerWillNotOverrideAnyOfExistingTvShows) {
@@ -321,9 +319,35 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteSpecifiedCrawlerDueToHttpCli
     EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
             .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
     try {
-        runtime.executeCrawler(episodeVideoCrawler);
+        (void)runtime.executeCrawler(episodeVideoCrawler);
         FAIL();
     } catch (std::runtime_error& e) {
         EXPECT_STREQ("Failed to execute specified crawler: Failed to execute step #2: Timeout", e.what());
     }
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithCrawlerStepOfUnknownType) {
+    serio::core::Crawler crawler({serio::core::CrawlerStep("evaporate")});
+    EXPECT_THROW((void)runtime.executeCrawler(crawler), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithValueCrawlerStepNotHavingValueProperty) {
+    serio::core::Crawler crawler({serio::core::CrawlerStep("value")});
+    EXPECT_THROW((void)runtime.executeCrawler(crawler), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithTransformStepNotHavingTemplateProperty) {
+    serio::core::Crawler crawler({
+        serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
+        serio::core::CrawlerStep("transform")
+    });
+    EXPECT_THROW((void)runtime.executeCrawler(crawler), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithRegExpStepNotHavingRegExpProperty) {
+    serio::core::Crawler crawler({
+        serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
+        serio::core::CrawlerStep("regExp")
+    });
+    EXPECT_THROW((void)runtime.executeCrawler(crawler), std::logic_error);
 }
