@@ -60,7 +60,6 @@ TEST_F(CrawlerEditorViewModelTest, shouldLoadCrawlerStepsAndDisplayThem) {
     EXPECT_EQ("Some other step", tiles[2]->getTitle());
     EXPECT_EQ("a: 1, b: false, c: text", tiles[2]->getSubtitle());
     EXPECT_EQ(2, crawlerStepsSpy.count());
-    qDeleteAll(tiles);
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldSaveEditedCrawlerAndPopCurrentViewFromStack) {
@@ -87,7 +86,6 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
         EXPECT_TRUE(tiles[i]->getSubtitle().isEmpty());
     }
     EXPECT_EQ(1, previewResultsSpy.count());
-    qDeleteAll(tiles);
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWhenPreviewCrawlerSecondTime) {
@@ -96,7 +94,6 @@ TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWh
     viewModel.openCrawlerPreview();
     QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
     EXPECT_EQ(previewResults.size(), tiles.size());
-    qDeleteAll(tiles);
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPreviewHasFailed) {

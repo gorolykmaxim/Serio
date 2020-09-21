@@ -14,6 +14,9 @@ public:
             this->clear();
         }
     }
+    virtual ~ListModel() {
+        clearAndDelete();
+    }
 };
 
 }

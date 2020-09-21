@@ -22,14 +22,6 @@ protected:
     QSignalSpy crawlerStepTypesSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::crawlerStepTypesChanged);
     QSignalSpy descriptionSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::descriptionChanged);
     QSignalSpy propertiesSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::propertiesChanged);
-    virtual void TearDown() {
-        if (!viewModel.getCrawlerStepTypes().isEmpty()) {
-            qDeleteAll(viewModel.getCrawlerStepTypes());
-        }
-        if (!viewModel.getProperties().isEmpty()) {
-            qDeleteAll(viewModel.getProperties());
-        }
-    }
     void expectTypeOptionsDisplayed(unsigned int selectedTypeIndex) {
         QList<serio::qt::RadioButtonModel*> typeOptions = viewModel.getCrawlerStepTypes();
         EXPECT_EQ(QString::fromStdString(types[0].getName()), typeOptions[0]->getName());
