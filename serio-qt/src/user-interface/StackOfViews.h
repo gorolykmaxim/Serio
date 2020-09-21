@@ -12,11 +12,11 @@ class StackOfViews : public QObject {
     Q_OBJECT
 public:
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
-    void pushView(const QString& view);
-    void pushViews(const QStringList& views);
-    void popCurrentView();
-    void popAllViews();
-    void replaceCurrentViewWith(const QString& newView);
+    virtual void pushView(const QString& view);
+    virtual void pushViews(const QStringList& views);
+    virtual void popCurrentView();
+    virtual void popAllViews();
+    virtual void replaceCurrentViewWith(const QString& newView);
 signals:
     void push(QStringList views);
     void pop(bool currentView);

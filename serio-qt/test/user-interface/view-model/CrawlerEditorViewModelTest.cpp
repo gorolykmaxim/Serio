@@ -3,21 +3,19 @@
 #include <user-interface/StackOfViews.h>
 #include <user-interface/view-model/CrawlerEditorViewModel.h>
 #include <QSignalSpy>
+#include <StackOfViewsMock.h>
 
 class CrawlerEditorViewModelTest : public ::testing::Test {
 protected:
     TvShowCrawlerEditorMock editor = TvShowCrawlerEditorMock::create();
-    serio::qt::StackOfViews stack;
+    StackOfViewsMock stack;
     serio::qt::CrawlerEditorViewModel viewModel = serio::qt::CrawlerEditorViewModel(editor, stack);
-    QSignalSpy stackPushSpy = QSignalSpy(&stack, &serio::qt::StackOfViews::push);
     QSignalSpy crawlerTypeSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerTypeChanged);
     void expectCrawlerEditorViewToOpen(serio::core::CrawlerType type, int typeNumber, const QString& crawlerType) {
         EXPECT_CALL(editor, editCrawler(type));
+        EXPECT_CALL(stack, pushView(QString("CrawlerEditorView.qml")));
         viewModel.openCrawlerEditor(static_cast<serio::core::CrawlerType>(typeNumber));
         EXPECT_EQ(crawlerType, viewModel.getCrawlerType());
-        ASSERT_EQ(1, stackPushSpy.count());
-        QVariantList args = stackPushSpy.takeFirst();
-        EXPECT_EQ(QStringList("views/CrawlerEditorView.qml"), args[0].toStringList());
         EXPECT_EQ(1, crawlerTypeSpy.count());
     }
 };
@@ -66,16 +64,11 @@ TEST_F(CrawlerEditorViewModelTest, shouldLoadCrawlerStepsAndDisplayThem) {
 
 TEST_F(CrawlerEditorViewModelTest, shouldSaveEditedCrawlerAndPopCurrentViewFromStack) {
     EXPECT_CALL(editor, saveCrawler());
-    QSignalSpy stackPopSpy(&stack, &serio::qt::StackOfViews::pop);
+    EXPECT_CALL(stack, popCurrentView());
     viewModel.save();
-    ASSERT_EQ(1, stackPopSpy.count());
-    QVariantList args = stackPopSpy.takeFirst();
-    EXPECT_TRUE(args[0].toBool());
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
+    EXPECT_CALL(stack, pushView(QString("CrawlerEditorHelpView.qml")));
     viewModel.openHelp();
-    ASSERT_EQ(1, stackPushSpy.count());
-    QVariantList args = stackPushSpy.takeFirst();
-    EXPECT_EQ(QStringList("views/CrawlerEditorHelpView.qml"), args[0].toStringList());
 }
