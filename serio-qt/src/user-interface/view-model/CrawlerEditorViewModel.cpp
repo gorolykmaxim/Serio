@@ -11,6 +11,7 @@ void serio::qt::CrawlerEditorViewModel::initialize(serio::qt::ActionRouter &rout
     router.registerAction(ActionType::OPEN_CRAWLER_EDITOR, [this] (const QVariantList& args) { openCrawlerEditor(static_cast<core::CrawlerType>(args[0].toInt())); });
     router.registerAction(ActionType::OPEN_CRAWLER_EDITOR_HELP, [this] (const QVariantList& args) { openHelp(); });
     router.registerAction(ActionType::LOAD_CRAWLER_STEPS, [this] (const QVariantList& args) { loadCrawlerSteps(); });
+    router.registerAction(ActionType::PREVIEW_CRAWLER, [this] (const QVariantList& args) { openCrawlerPreview(); });
     router.registerAction(ActionType::SAVE_CRAWLER, [this] (const QVariantList& args) { save(); });
 }
 
@@ -43,6 +44,10 @@ int serio::qt::CrawlerEditorViewModel::getEpisodeNameCrawlerType() const {
     return core::CrawlerType::episodeNameCrawler;
 }
 
+QList<serio::qt::TileModel*> serio::qt::CrawlerEditorViewModel::getPreviewResults() const {
+    return previewResults;
+}
+
 void serio::qt::CrawlerEditorViewModel::openCrawlerEditor(serio::core::CrawlerType type) {
     editor.editCrawler(type);
     modifyModel([this, type] {
@@ -66,12 +71,32 @@ void serio::qt::CrawlerEditorViewModel::save() {
     stack.popCurrentView();
 }
 
+void serio::qt::CrawlerEditorViewModel::openCrawlerPreview() {
+    try {
+        stack.pushView("CrawlingInProgressView.qml");
+        std::vector<std::string> results = editor.previewCrawler();
+        stack.replaceCurrentViewWith("CrawlerPreviewView.qml");
+        modifyModel([this, results] { setPreviewResults(results); });
+    } catch (std::runtime_error& e) {
+        stack.popCurrentView();
+        throw e;
+    }
+}
+
 void serio::qt::CrawlerEditorViewModel::setCrawlerSteps(const std::vector<core::CrawlerStep>& steps) {
     crawlerSteps.clearAndDelete();
     for (const core::CrawlerStep& step: steps) {
         crawlerSteps << createTileFrom(step);
     }
     emit crawlerStepsChanged();
+}
+
+void serio::qt::CrawlerEditorViewModel::setPreviewResults(const std::vector<std::string> &results) {
+    previewResults.clearAndDelete();
+    for (const auto& result: results) {
+        previewResults << new TileModel(QString::fromStdString(result));
+    }
+    emit previewResultsChanged();
 }
 
 serio::qt::TileModel *serio::qt::CrawlerEditorViewModel::createTileFrom(const serio::core::CrawlerStep &step) const {

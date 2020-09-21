@@ -20,6 +20,7 @@ class CrawlerEditorViewModel : public ViewModel {
     Q_PROPERTY(int episodeVideoCrawlerType READ getEpisodeVideoCrawlerType CONSTANT)
     Q_PROPERTY(int thumbnailCrawlerType READ getThumbnailCrawlerType CONSTANT)
     Q_PROPERTY(int episodeNameCrawlerType READ getEpisodeNameCrawlerType CONSTANT)
+    Q_PROPERTY(QList<TileModel*> previewResults READ getPreviewResults NOTIFY previewResultsChanged)
 public:
     CrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor, StackOfViews &stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
@@ -28,19 +29,24 @@ public:
     [[nodiscard]] int getEpisodeVideoCrawlerType() const;
     [[nodiscard]] int getThumbnailCrawlerType() const;
     [[nodiscard]] int getEpisodeNameCrawlerType() const;
+    [[nodiscard]] QList<TileModel*> getPreviewResults() const;
     void openCrawlerEditor(core::CrawlerType type);
     void openHelp();
     void loadCrawlerSteps();
     void save();
+    void openCrawlerPreview();
 signals:
     void crawlerTypeChanged();
     void crawlerStepsChanged();
+    void previewResultsChanged();
 private:
     std::optional<core::CrawlerType> crawlerType;
     ListModel<TileModel*> crawlerSteps;
+    ListModel<TileModel*> previewResults;
     core::TvShowCrawlerEditor& editor;
     StackOfViews& stack;
     void setCrawlerSteps(const std::vector<core::CrawlerStep>& steps);
+    void setPreviewResults(const std::vector<std::string>& results);
     [[nodiscard]] TileModel* createTileFrom(const core::CrawlerStep& step) const;
 };
 

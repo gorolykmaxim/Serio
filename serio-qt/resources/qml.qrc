@@ -55,5 +55,6 @@
         <file>qml/views/CrawlerEditorHelpView.qml</file>
         <file>qml/views/AddTvShowView.qml</file>
         <file>qml/views/ImportTvShowCrawlerView.qml</file>
+        <file>qml/views/CrawlerPreviewView.qml</file>
     </qresource>
 </RCC>

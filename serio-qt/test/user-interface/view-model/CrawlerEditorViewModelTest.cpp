@@ -7,8 +7,9 @@
 
 class CrawlerEditorViewModelTest : public ::testing::Test {
 protected:
+    const std::vector<std::string> previewResults = {"result 1", "result 2"};
     TvShowCrawlerEditorMock editor = TvShowCrawlerEditorMock::create();
-    StackOfViewsMock stack;
+    ::testing::NiceMock<StackOfViewsMock> stack;
     serio::qt::CrawlerEditorViewModel viewModel = serio::qt::CrawlerEditorViewModel(editor, stack);
     QSignalSpy crawlerTypeSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerTypeChanged);
     void expectCrawlerEditorViewToOpen(serio::core::CrawlerType type, int typeNumber, const QString& crawlerType) {
@@ -71,4 +72,37 @@ TEST_F(CrawlerEditorViewModelTest, shouldSaveEditedCrawlerAndPopCurrentViewFromS
 TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
     EXPECT_CALL(stack, pushView(QString("CrawlerEditorHelpView.qml")));
     viewModel.openHelp();
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPreviewViewWithTheResults) {
+    EXPECT_CALL(editor, previewCrawler()).WillOnce(::testing::Return(previewResults));
+    ::testing::InSequence s;
+    EXPECT_CALL(stack, pushView(QString("CrawlingInProgressView.qml")));
+    EXPECT_CALL(stack, replaceCurrentViewWith(QString("CrawlerPreviewView.qml")));
+    QSignalSpy previewResultsSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::previewResultsChanged);
+    viewModel.openCrawlerPreview();
+    QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
+    for (int i = 0; i < previewResults.size(); i++) {
+        EXPECT_EQ(previewResults[i], tiles[i]->getTitle().toStdString());
+        EXPECT_TRUE(tiles[i]->getSubtitle().isEmpty());
+    }
+    EXPECT_EQ(1, previewResultsSpy.count());
+    qDeleteAll(tiles);
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWhenPreviewCrawlerSecondTime) {
+    EXPECT_CALL(editor, previewCrawler()).WillRepeatedly(::testing::Return(previewResults));
+    viewModel.openCrawlerPreview();
+    viewModel.openCrawlerPreview();
+    QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
+    EXPECT_EQ(previewResults.size(), tiles.size());
+    qDeleteAll(tiles);
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPreviewHasFailed) {
+    EXPECT_CALL(editor, previewCrawler()).WillOnce(::testing::Throw(std::runtime_error("expected")));
+    ::testing::InSequence s;
+    EXPECT_CALL(stack, pushView(QString("CrawlingInProgressView.qml")));
+    EXPECT_CALL(stack, popCurrentView());
+    EXPECT_THROW(viewModel.openCrawlerPreview(), std::runtime_error);
 }

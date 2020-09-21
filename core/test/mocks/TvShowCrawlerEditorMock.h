@@ -21,6 +21,7 @@ public:
     MOCK_METHOD(void, removeCrawlerStep, (unsigned int), (override));
     MOCK_METHOD(void, saveCrawler, (), (override));
     MOCK_METHOD(void, saveAndRunTvShowCrawler, (), (override));
+    MOCK_METHOD((std::vector<std::string>), previewCrawler, (), (override));
     MOCK_METHOD(bool, willOverrideExistingTvShow, (), (override));
     MOCK_METHOD(std::string, getTvShowName, (), (const override));
     MOCK_METHOD((std::vector<serio::core::CrawlerStep>), getCrawlerSteps, (), (const override));
