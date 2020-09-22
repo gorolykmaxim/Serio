@@ -317,7 +317,7 @@ TEST_F(TvShowCrawlerEditorTest, shouldFailToPreviewCrawlerIfNoCrawlerIsBeingEdit
 
 TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndReturnResults) {
     std::vector<std::string> results = {"result 1", "result 2", "result 3"};
-    EXPECT_CALL(runtime, executeCrawlerForResult(serio::core::Crawler({value, fetch})))
+    EXPECT_CALL(runtime, executeCrawler(serio::core::Crawler({value, fetch})))
         .Times(crawlerTypes.size())
         .WillRepeatedly(::testing::Return(serio::core::CrawlResult{{}, results}));
     editor.createTvShowCrawler();
@@ -334,7 +334,7 @@ TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndRet
         serio::core::CrawlLogEntry("entry 1"),
         serio::core::CrawlLogEntry("entry 2")
     };
-    EXPECT_CALL(runtime, executeCrawlerForResult(serio::core::Crawler({value, fetch})))
+    EXPECT_CALL(runtime, executeCrawler(serio::core::Crawler({value, fetch})))
         .Times(crawlerTypes.size())
         .WillRepeatedly(::testing::Return(serio::core::CrawlResult{log, {}}));
     editor.createTvShowCrawler();

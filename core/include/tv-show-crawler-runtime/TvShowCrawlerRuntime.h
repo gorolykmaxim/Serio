@@ -20,7 +20,7 @@ public:
     [[nodiscard]] virtual std::vector<CrawlerStepType> getCrawlerStepTypes() const;
     [[nodiscard]] virtual TvShowCrawler deserializeTvShowCrawler(const std::string &rawCrawler) const;
     virtual bool willOverrideExistingTvShow(const TvShowCrawler &crawler);
-    [[nodiscard]] virtual CrawlResult executeCrawlerForResult(const Crawler& crawler);
+    [[nodiscard]] virtual CrawlResult executeCrawler(const Crawler& crawler);
 private:
     TvShowCrawlerStorage& crawlerStorage;
     TvShowStorage& tvShowStorage;

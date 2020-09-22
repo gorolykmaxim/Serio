@@ -57,7 +57,7 @@ void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
 
 serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawlerWithLogs() {
     serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
-    return runtime.executeCrawlerForResult(crawler);
+    return runtime.executeCrawler(crawler);
 }
 
 bool serio::core::TvShowCrawlerEditor::willOverrideExistingTvShow() {

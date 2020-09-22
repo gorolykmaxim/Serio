@@ -313,14 +313,14 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldReturnResultsOfExecutionOfTheSpecifiedCra
     };
     EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
             .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
-    EXPECT_EQ(expectedResults, runtime.executeCrawlerForResult(episodeVideoCrawler).result);
+    EXPECT_EQ(expectedResults, runtime.executeCrawler(episodeVideoCrawler).result);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteSpecifiedCrawlerDueToHttpClientError) {
     EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
             .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
     try {
-        (void)runtime.executeCrawlerForResult(episodeVideoCrawler);
+        (void) runtime.executeCrawler(episodeVideoCrawler);
         FAIL();
     } catch (std::runtime_error& e) {
         EXPECT_STREQ("Failed to execute specified crawler: Failed to execute step #2: Timeout", e.what());
@@ -329,12 +329,12 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteSpecifiedCrawlerDueToHttpCli
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithCrawlerStepOfUnknownType) {
     serio::core::Crawler crawler({serio::core::CrawlerStep("evaporate")});
-    EXPECT_THROW((void)runtime.executeCrawlerForResult(crawler), std::logic_error);
+    EXPECT_THROW((void) runtime.executeCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithValueCrawlerStepNotHavingValueProperty) {
     serio::core::Crawler crawler({serio::core::CrawlerStep("value")});
-    EXPECT_THROW((void)runtime.executeCrawlerForResult(crawler), std::logic_error);
+    EXPECT_THROW((void) runtime.executeCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithTransformStepNotHavingTemplateProperty) {
@@ -342,7 +342,7 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithTransformStepNotH
         serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
         serio::core::CrawlerStep("transform")
     });
-    EXPECT_THROW((void)runtime.executeCrawlerForResult(crawler), std::logic_error);
+    EXPECT_THROW((void) runtime.executeCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithRegExpStepNotHavingRegExpProperty) {
@@ -350,13 +350,13 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithRegExpStepNotHavi
         serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
         serio::core::CrawlerStep("regExp")
     });
-    EXPECT_THROW((void)runtime.executeCrawlerForResult(crawler), std::logic_error);
+    EXPECT_THROW((void) runtime.executeCrawler(crawler), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldReturnExecutionLogOfTheSpecifiedCrawler) {
     EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
         .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
-    std::vector<serio::core::CrawlLogEntry> log = runtime.executeCrawlerForResult(episodeVideoCrawler).log;
+    std::vector<serio::core::CrawlLogEntry> log = runtime.executeCrawler(episodeVideoCrawler).log;
     EXPECT_EQ("Executing value step with properties: 'value: https://tv-show'", log[0].getText());
     EXPECT_EQ("[]", log[0].getStepInputData());
     EXPECT_EQ("[https://tv-show]", log[0].getStepOutputData());

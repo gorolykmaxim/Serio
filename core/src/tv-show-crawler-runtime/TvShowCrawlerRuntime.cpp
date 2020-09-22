@@ -59,6 +59,6 @@ bool serio::core::TvShowCrawlerRuntime::willOverrideExistingTvShow(const serio::
     return tvShowStorage.getTvShowByName(crawler.getTvShowName()).has_value();
 }
 
-serio::core::CrawlResult serio::core::TvShowCrawlerRuntime::executeCrawlerForResult(const serio::core::Crawler &crawler) {
+serio::core::CrawlResult serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::Crawler &crawler) {
     return crawlerExecutor.executeCrawler(crawler, "specified");
 }
