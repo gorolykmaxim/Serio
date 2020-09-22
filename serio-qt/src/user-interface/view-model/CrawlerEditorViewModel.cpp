@@ -100,13 +100,9 @@ void serio::qt::CrawlerEditorViewModel::setPreviewResults(const std::vector<std:
 }
 
 serio::qt::TileModel *serio::qt::CrawlerEditorViewModel::createTileFrom(const serio::core::CrawlerStep &step) const {
-    QString title = QString::fromStdString(step.getType()) + " step";
+    QString title = QString::fromStdString(step.getType() + " step");
     title[0] = title[0].toUpper();
-    std::stringstream subtitleStream;
-    for (const auto& entry: step.getProperties()) {
-        subtitleStream << entry.first << ": " << entry.second << ", ";
-    }
-    QString subtitle = QString::fromStdString(subtitleStream.str()).remove(-2, 2);
+    QString subtitle = QString::fromStdString(step.getPropertiesAsString());
     return new TileModel(title, subtitle);
 }
 
