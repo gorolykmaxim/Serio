@@ -23,6 +23,8 @@ public:
     [[nodiscard]] virtual std::string getTvShowName() const;
     [[nodiscard]] virtual std::vector<CrawlerStep> getCrawlerSteps() const;
     [[nodiscard]] virtual std::vector<CrawlerStepType> getCrawlerStepTypes() const;
+    [[nodiscard]] virtual std::vector<std::string> getPreviewedCrawlerResults() const;
+    [[nodiscard]] virtual std::vector<CrawlLogEntry> getPreviewedCrawlerLog() const;
 private:
     TvShowCrawlerRuntime& runtime;
     std::optional<TvShowCrawlerBuilder> builder;

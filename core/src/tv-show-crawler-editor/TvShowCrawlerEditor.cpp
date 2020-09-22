@@ -57,7 +57,9 @@ void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
 
 serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawler() {
     serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
-    return runtime.executeCrawler(crawler);
+    CrawlResult result = runtime.executeCrawler(crawler);
+    getBuilderOrFail().setPreviewResult(result);
+    return result;
 }
 
 bool serio::core::TvShowCrawlerEditor::willOverrideExistingTvShow() {
@@ -70,6 +72,14 @@ std::vector<serio::core::CrawlerStep> serio::core::TvShowCrawlerEditor::getCrawl
 
 std::vector<serio::core::CrawlerStepType> serio::core::TvShowCrawlerEditor::getCrawlerStepTypes() const {
     return runtime.getCrawlerStepTypes();
+}
+
+std::vector<std::string> serio::core::TvShowCrawlerEditor::getPreviewedCrawlerResults() const {
+    return getBuilderOrFail().getPreviewedCrawlerResults();
+}
+
+std::vector<serio::core::CrawlLogEntry> serio::core::TvShowCrawlerEditor::getPreviewedCrawlerLog() const {
+    return getBuilderOrFail().getPreviewedCrawlerLog();
 }
 
 void serio::core::TvShowCrawlerEditor::assertTvShowCrawlerIsEdited() const {

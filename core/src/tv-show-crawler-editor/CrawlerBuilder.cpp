@@ -19,12 +19,32 @@ void serio::core::CrawlerBuilder::removeCrawlerStep(unsigned int stepIndex) {
     editedCrawlerSteps.erase(editedCrawlerSteps.begin() + stepIndex);
 }
 
+void serio::core::CrawlerBuilder::setPreviewResult(CrawlResult result) {
+    previewResult = std::move(result);
+}
+
 serio::core::CrawlerType serio::core::CrawlerBuilder::getEditedCrawlerType() const {
     return editedCrawlerType;
 }
 
 std::vector<serio::core::CrawlerStep> serio::core::CrawlerBuilder::getCrawlerSteps() const {
     return editedCrawlerSteps;
+}
+
+std::vector<std::string> serio::core::CrawlerBuilder::getPreviewedCrawlerResults() const {
+    assertCrawlerHasBeenPreviewed();
+    return previewResult->result;
+}
+
+std::vector<serio::core::CrawlLogEntry> serio::core::CrawlerBuilder::getPreviewedCrawlerLog() const {
+    assertCrawlerHasBeenPreviewed();
+    return previewResult->log;
+}
+
+void serio::core::CrawlerBuilder::assertCrawlerHasBeenPreviewed() const {
+    if (!previewResult) {
+        throw CrawlerNotPreviewedError();
+    }
 }
 
 void serio::core::CrawlerBuilder::assertCrawlerStepExist(unsigned int stepIndex) const {
@@ -34,4 +54,7 @@ void serio::core::CrawlerBuilder::assertCrawlerStepExist(unsigned int stepIndex)
 }
 
 serio::core::CrawlerStepDoesNotExist::CrawlerStepDoesNotExist(unsigned int stepIndex)
-        : std::out_of_range("Edited crawler does not have a step with index " + std::to_string(stepIndex)) {}
+    : std::out_of_range("Edited crawler does not have a step with index " + std::to_string(stepIndex)) {}
+
+serio::core::CrawlerNotPreviewedError::CrawlerNotPreviewedError()
+    : std::logic_error("Edited crawler has not been previewed yet") {}

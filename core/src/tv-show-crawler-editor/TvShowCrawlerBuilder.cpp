@@ -30,6 +30,10 @@ void serio::core::TvShowCrawlerBuilder::removeCrawlerStep(unsigned int stepIndex
     getBuilderOrFail().removeCrawlerStep(stepIndex);
 }
 
+void serio::core::TvShowCrawlerBuilder::setPreviewResult(const CrawlResult &result) {
+    getBuilderOrFail().setPreviewResult(result);
+}
+
 void serio::core::TvShowCrawlerBuilder::saveCrawler() {
     assertCrawlerIsEdited();
     crawlerTypeToSteps[builder->getEditedCrawlerType()] = builder->getCrawlerSteps();
@@ -47,6 +51,14 @@ serio::core::TvShowCrawler serio::core::TvShowCrawlerBuilder::buildTvShowCrawler
 
 std::vector<serio::core::CrawlerStep> serio::core::TvShowCrawlerBuilder::getCrawlerSteps() const {
     return getBuilderOrFail().getCrawlerSteps();
+}
+
+std::vector<std::string> serio::core::TvShowCrawlerBuilder::getPreviewedCrawlerResults() const {
+    return getBuilderOrFail().getPreviewedCrawlerResults();
+}
+
+std::vector<serio::core::CrawlLogEntry> serio::core::TvShowCrawlerBuilder::getPreviewedCrawlerLog() const {
+    return getBuilderOrFail().getPreviewedCrawlerLog();
 }
 
 void serio::core::TvShowCrawlerBuilder::assertCrawlerIsEdited() const {

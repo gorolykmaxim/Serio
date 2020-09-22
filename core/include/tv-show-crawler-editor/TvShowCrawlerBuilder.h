@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <tv-show-crawler-runtime/model/TvShowCrawler.h>
+#include <tv-show-crawler-runtime/model/CrawlResult.h>
 #include "CrawlerBuilder.h"
 
 namespace serio::core {
@@ -17,9 +18,12 @@ public:
     void replaceCrawlerStep(unsigned int stepIndex, CrawlerStep newStep);
     void removeCrawlerStep(unsigned int stepIndex);
     void saveCrawler();
+    void setPreviewResult(const CrawlResult& result);
     [[nodiscard]] TvShowCrawler buildTvShowCrawler() const;
     [[nodiscard]] std::string getTvShowName() const;
     [[nodiscard]] std::vector<CrawlerStep> getCrawlerSteps() const;
+    [[nodiscard]] std::vector<std::string> getPreviewedCrawlerResults() const;
+    [[nodiscard]] std::vector<CrawlLogEntry> getPreviewedCrawlerLog() const;
 private:
     std::optional<CrawlerBuilder> builder;
     std::string tvShowName;
