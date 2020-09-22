@@ -55,7 +55,7 @@ void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
     }
 }
 
-serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawlerWithLogs() {
+serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawler() {
     serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
     return runtime.executeCrawler(crawler);
 }

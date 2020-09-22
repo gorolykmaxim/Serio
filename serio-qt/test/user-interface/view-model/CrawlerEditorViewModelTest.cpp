@@ -74,7 +74,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPreviewViewWithTheResults) {
-    EXPECT_CALL(editor, previewCrawlerWithLogs())
+    EXPECT_CALL(editor, previewCrawler())
         .WillOnce(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
     ::testing::InSequence s;
     EXPECT_CALL(stack, pushView(QString("CrawlingInProgressView.qml")));
@@ -90,7 +90,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWhenPreviewCrawlerSecondTime) {
-    EXPECT_CALL(editor, previewCrawlerWithLogs())
+    EXPECT_CALL(editor, previewCrawler())
         .WillRepeatedly(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
     viewModel.openCrawlerPreview();
     viewModel.openCrawlerPreview();
@@ -99,7 +99,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWh
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPreviewHasFailed) {
-    EXPECT_CALL(editor, previewCrawlerWithLogs())
+    EXPECT_CALL(editor, previewCrawler())
         .WillOnce(::testing::Throw(std::runtime_error("expected")));
     ::testing::InSequence s;
     EXPECT_CALL(stack, pushView(QString("CrawlingInProgressView.qml")));

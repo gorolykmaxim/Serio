@@ -74,7 +74,7 @@ void serio::qt::CrawlerEditorViewModel::save() {
 void serio::qt::CrawlerEditorViewModel::openCrawlerPreview() {
     try {
         stack.pushView("CrawlingInProgressView.qml");
-        std::vector<std::string> results = editor.previewCrawlerWithLogs().result;
+        std::vector<std::string> results = editor.previewCrawler().result;
         stack.replaceCurrentViewWith("CrawlerPreviewView.qml");
         modifyModel([this, results] { setPreviewResults(results); });
     } catch (std::runtime_error& e) {

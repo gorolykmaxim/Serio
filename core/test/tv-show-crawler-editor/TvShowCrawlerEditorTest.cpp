@@ -307,12 +307,12 @@ TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeNameCrawlerStepsToTheOnesSpecifi
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldFailToPreviewCrawlerIfNoTvShowCrawlerBeingEdited) {
-    EXPECT_THROW((void)editor.previewCrawlerWithLogs(), std::logic_error);
+    EXPECT_THROW((void) editor.previewCrawler(), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldFailToPreviewCrawlerIfNoCrawlerIsBeingEdited) {
     editor.createTvShowCrawler();
-    EXPECT_THROW((void)editor.previewCrawlerWithLogs(), std::logic_error);
+    EXPECT_THROW((void) editor.previewCrawler(), std::logic_error);
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndReturnResults) {
@@ -325,7 +325,7 @@ TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndRet
         editor.editCrawler(type);
         editor.addCrawlerStep(value);
         editor.addCrawlerStep(fetch);
-        EXPECT_EQ(results, editor.previewCrawlerWithLogs().result);
+        EXPECT_EQ(results, editor.previewCrawler().result);
     }
 }
 
@@ -342,6 +342,6 @@ TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndRet
         editor.editCrawler(type);
         editor.addCrawlerStep(value);
         editor.addCrawlerStep(fetch);
-        EXPECT_EQ(log, editor.previewCrawlerWithLogs().log);
+        EXPECT_EQ(log, editor.previewCrawler().log);
     }
 }
