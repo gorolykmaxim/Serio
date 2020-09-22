@@ -45,6 +45,8 @@ add_library(SerioLib STATIC
         src/user-interface/view-model/CrawlerStepEditorViewModel.h
         src/user-interface/view-model/ErrorViewModel.cpp
         src/user-interface/view-model/ErrorViewModel.h
+        src/user-interface/view-model/CrawlLogViewModel.cpp
+        src/user-interface/view-model/CrawlLogViewModel.h
         src/user-interface/view-model/ViewModel.cpp
         src/user-interface/UserInterface.cpp
         src/user-interface/UserInterface.h
@@ -65,6 +67,7 @@ add_executable(SerioTest
         test/user-interface/view-model/CrawlerEditorViewModelTest.cpp
         test/user-interface/view-model/CrawlerStepEditorViewModelTest.cpp
         test/user-interface/view-model/ErrorViewModelTest.cpp
-        test/user-interface/view-model/StackOfViewsTest.cpp)
+        test/user-interface/view-model/StackOfViewsTest.cpp
+        test/user-interface/view-model/CrawlLogViewModelTest.cpp)
 target_include_directories(SerioTest PUBLIC test/mocks)
 target_link_libraries(SerioTest SerioLib CoreTestMocks gtest gmock gtest_main Qt5::Test)

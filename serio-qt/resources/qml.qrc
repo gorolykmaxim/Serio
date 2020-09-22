@@ -56,5 +56,7 @@
         <file>qml/views/AddTvShowView.qml</file>
         <file>qml/views/ImportTvShowCrawlerView.qml</file>
         <file>qml/views/CrawlerPreviewView.qml</file>
+        <file>qml/views/CrawlLogView.qml</file>
+        <file>qml/views/CrawlLogEntryView.qml</file>
     </qresource>
 </RCC>

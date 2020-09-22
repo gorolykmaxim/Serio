@@ -26,6 +26,7 @@ public:
     MOCK_METHOD(std::string, getTvShowName, (), (const override));
     MOCK_METHOD((std::vector<serio::core::CrawlerStep>), getCrawlerSteps, (), (const override));
     MOCK_METHOD((std::vector<serio::core::CrawlerStepType>), getCrawlerStepTypes, (), (const override));
+    MOCK_METHOD((std::vector<serio::core::CrawlLogEntry>), getPreviewedCrawlerLog, (), (const override));
 };
 
 #endif //SERIO_TVSHOWCRAWLEREDITORMOCK_H

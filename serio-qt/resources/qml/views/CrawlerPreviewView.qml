@@ -4,16 +4,30 @@ import Serio 1.0
 import "../widgets"
 
 ViewLayout {
-    onCreated: backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
+    onCreated: {
+        backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
+        viewLogBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_PREVIEWED_CRAWLER_LOG, [crawlerEditorViewModel.crawlerType]))
+    }
     AccentTitle {
         text: crawlerEditorViewModel.crawlerType + " Crawler Preview"
     }
-    SerioButton {
-        id: backBtn
-        text: "back"
-        focus: true
-        KeyNavigation.tab: previewResultsList
-        KeyNavigation.down: previewResultsList
+    Row {
+        Layout.fillWidth: true
+        spacing: globalPadding
+        SerioButton {
+            id: backBtn
+            text: "back"
+            focus: true
+            KeyNavigation.tab: viewLogBtn
+            KeyNavigation.right: viewLogBtn
+            KeyNavigation.down: previewResultsList
+        }
+        SerioButton {
+            id: viewLogBtn
+            text: "view log"
+            KeyNavigation.tab: previewResultsList
+            KeyNavigation.down: previewResultsList
+        }
     }
     VerticalTileList {
         id: previewResultsList
