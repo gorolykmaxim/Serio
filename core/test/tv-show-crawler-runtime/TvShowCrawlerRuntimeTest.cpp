@@ -9,6 +9,7 @@
 #include <HttpClientMock.h>
 #include <TvShowCrawlerStorageMock.h>
 #include <TvShowStorageMock.h>
+#include <tv-show-crawler-runtime/model/CrawlLogEntry.h>
 
 class TvShowCrawlerRuntimeTest : public ::testing::Test {
 protected:
@@ -18,11 +19,12 @@ protected:
     const std::string emptyFriendsCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Friends","thumbnailCrawler":{"steps":[]}})";
     const std::string mandalorianCrawlerWithEpisodeVideoCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})";
     const std::string mandalorianCrawlerWithThumbnailCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]}})";
+    const std::string httpClientResponse = "Tv show image='thumbnail.jpg' is nice. Episodes are: episode-1.mp4, episode-2.mp4 and episode-3.mp4";
     std::promise<std::vector<std::string>> httpClientResponsePromise;
     ::testing::NiceMock<HttpClientMock> httpClient;
     ::testing::NiceMock<TvShowCrawlerStorageMock> crawlerStorage;
     ::testing::NiceMock<TvShowStorageMock> tvShowStorage;
-    serio::core::TvShowCrawlerRuntime runtime = serio::core::TvShowCrawlerRuntime(crawlerStorage, tvShowStorage, httpClient);
+    serio::core::TvShowCrawlerRuntime runtime = serio::core::TvShowCrawlerRuntime(crawlerStorage, tvShowStorage, httpClient, 50);
     serio::core::Crawler emptyCrawler;
     serio::core::Crawler crawlerWithSteps = serio::core::Crawler({
         serio::core::CrawlerStep("value", {{"value", "url"}}),
@@ -35,7 +37,6 @@ protected:
         serio::core::CrawlerStep("transform", {{"template", "https://tv-show/%s"}})
     });
     virtual void SetUp() {
-        std::string httpClientResponse = "Tv show image='thumbnail.jpg' is nice. Episodes are: episode-1.mp4, episode-2.mp4 and episode-3.mp4";
         std::promise<std::vector<std::string>> promise;
         promise.set_value({httpClientResponse});
         ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"url"})))
@@ -350,4 +351,22 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithRegExpStepNotHavi
         serio::core::CrawlerStep("regExp")
     });
     EXPECT_THROW((void)runtime.executeCrawler(crawler), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldReturnExecutionLogOfTheSpecifiedCrawler) {
+    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
+    std::vector<serio::core::CrawlLogEntry> log = runtime.executeCrawlerForResult(episodeVideoCrawler).log;
+    EXPECT_EQ("Executing value step with properties: 'value: https://tv-show'", log[0].getText());
+    EXPECT_EQ("[]", log[0].getStepInputData());
+    EXPECT_EQ("[https://tv-show]", log[0].getStepOutputData());
+    EXPECT_EQ("Executing fetch step with properties: ''", log[1].getText());
+    EXPECT_EQ("[https://tv-show]", log[1].getStepInputData());
+    EXPECT_EQ("[Tv show image='thumbnail.jpg' is nice. Episode...", log[1].getStepOutputData());
+    EXPECT_EQ("Executing regExp step with properties: 'regExp: [a-z\\-0-9]+\\.mp4'", log[2].getText());
+    EXPECT_EQ("[Tv show image='thumbnail.jpg' is nice. Episode...", log[2].getStepInputData());
+    EXPECT_EQ("[episode-1.mp4, episode-2.mp4, episode-3.mp4]", log[2].getStepOutputData());
+    EXPECT_EQ("Executing transform step with properties: 'template: https://tv-show/%s'", log[3].getText());
+    EXPECT_EQ("[episode-1.mp4, episode-2.mp4, episode-3.mp4]", log[3].getStepInputData());
+    EXPECT_EQ("[https://tv-show/episode-1.mp4, https://tv-show...", log[3].getStepOutputData());
 }

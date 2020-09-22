@@ -16,6 +16,8 @@ add_library(Core STATIC
         include/tv-show-crawler-runtime/model/Crawler.h
         include/tv-show-crawler-runtime/model/TvShowCrawler.h
         include/tv-show-crawler-runtime/model/CrawlerStepType.h
+        include/tv-show-crawler-runtime/model/CrawlLogEntry.h
+        include/tv-show-crawler-runtime/model/CrawlResult.h
         include/tv-show-crawler-runtime/executor/RegExpStepExecutor.h
         include/tv-show-crawler-runtime/executor/CrawlerExecutor.h
         include/tv-show-crawler-runtime/executor/CrawlerStepExecutor.h
@@ -28,6 +30,7 @@ add_library(Core STATIC
         src/tv-show-crawler-runtime/model/Crawler.cpp
         src/tv-show-crawler-runtime/model/TvShowCrawler.cpp
         src/tv-show-crawler-runtime/model/CrawlerStepType.cpp
+        src/tv-show-crawler-runtime/model/CrawlLogEntry.cpp
         src/tv-show-crawler-runtime/executor/CrawlerExecutor.cpp
         src/tv-show-crawler-runtime/executor/ValueStepExecutor.cpp
         src/tv-show-crawler-runtime/executor/TransformStepExecutor.cpp
@@ -54,7 +57,8 @@ add_executable(CoreTest
         test/tv-show-crawler-runtime/model/CrawlerStepTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerTest.cpp
         test/tv-show-crawler-runtime/model/TvShowCrawlerTest.cpp
-        test/tv-show-crawler-runtime/TvShowCrawlerRuntimeTest.cpp
+        test/tv-show-crawler-runtime/model/CrawlLogEntryTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerStepTypeTest.cpp
+        test/tv-show-crawler-runtime/TvShowCrawlerRuntimeTest.cpp
         test/tv-show-crawler-editor/TvShowCrawlerEditorTest.cpp)
 target_link_libraries(CoreTest Core CoreTestMocks gtest gmock gtest_main)

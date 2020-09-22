@@ -1,13 +1,15 @@
 #include <tv-show-crawler-runtime/model/TvShowCrawler.h>
 #include "tv-show-crawler-runtime/executor/CrawlerExecutor.h"
 
+serio::core::CrawlerExecutor::CrawlerExecutor(unsigned int maxLogEntryDataSize) : maxLogEntryDataSize(maxLogEntryDataSize) {}
+
 void serio::core::CrawlerExecutor::registerCrawlerStepExecutor(const std::string& type,
                                                                std::unique_ptr<CrawlerStepExecutor> executor) {
     crawlerStepTypeToExecutor[type] = std::move(executor);
 }
 
 std::string serio::core::CrawlerExecutor::executeThumbnailCrawler(const serio::core::Crawler &crawler) const {
-    std::vector<std::string> results = executeCrawler(crawler, "thumbnail");
+    std::vector<std::string> results = executeCrawler(crawler, "thumbnail").result;
     return results.empty() ? "" : results[0];
 }
 
@@ -26,21 +28,27 @@ std::vector<serio::core::Episode> serio::core::CrawlerExecutor::executeEpisodeCr
 }
 
 std::vector<std::string> serio::core::CrawlerExecutor::crawlEpisodeVideos(const serio::core::Crawler &crawler) const {
-    return executeCrawler(crawler, "episode video");
+    return executeCrawler(crawler, "episode video").result;
 }
 
 std::vector<std::string> serio::core::CrawlerExecutor::crawlEpisodeNamesIfNecessary(const serio::core::Crawler &crawler,
                                                                                     const std::vector<std::string>& videoUrls) const {
-    return crawler.hasSteps() ? executeCrawler(crawler, "episode name", videoUrls) : std::vector<std::string>();
+    return crawler.hasSteps() ? executeCrawler(crawler, "episode name", videoUrls).result : std::vector<std::string>();
 }
 
-std::vector<std::string> serio::core::CrawlerExecutor::executeCrawler(const serio::core::Crawler &crawler, const std::string& crawlerType, std::vector<std::string> result) const {
+serio::core::CrawlResult serio::core::CrawlerExecutor::executeCrawler(const serio::core::Crawler &crawler, const std::string& crawlerType, std::vector<std::string> result) const {
     try {
         std::vector<CrawlerStep> steps = crawler.getSteps();
+        std::vector<CrawlLogEntry> log;
+        log.reserve(steps.size());
         for (int i = 0; i < steps.size(); ++i) {
+            CrawlLogEntry entry(steps[i]);
+            entry.setStepInputData(result, maxLogEntryDataSize);
             result = executeCrawlerStep(result, steps[i], i + 1);
+            entry.setStepOutputData(result, maxLogEntryDataSize);
+            log.push_back(std::move(entry));
         }
-        return result;
+        return {log, result};
     } catch (CrawlerStepExecutionError& e) {
         throw CrawlerExecutionError(crawlerType, e);
     }

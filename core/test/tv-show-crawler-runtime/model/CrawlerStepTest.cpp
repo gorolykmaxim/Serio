@@ -44,3 +44,12 @@ TEST(CrawlerStepTest, shouldGetPropertyStepHas) {
     serio::core::CrawlerStep step("regExp", {{"regExp", "(.*)"}});
     EXPECT_EQ("(.*)", step.getPropertyOrFail("regExp"));
 }
+
+TEST(CrawlerStepTest, shouldReturnEmptyStringDueToNoProperties) {
+    EXPECT_TRUE(serio::core::CrawlerStep("fetch").getPropertiesAsString().empty());
+}
+
+TEST(CrawlerStepTest, shouldReturnPropertiesAsString) {
+    serio::core::CrawlerStep step("abc", {{"a", "text"}, {"b", "15"}, {"c", "true"}});
+    EXPECT_EQ("a: text, b: 15, c: true", step.getPropertiesAsString());
+}

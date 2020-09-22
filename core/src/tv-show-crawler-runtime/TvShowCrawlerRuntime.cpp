@@ -4,8 +4,9 @@
 #include <tv-show-crawler-runtime/executor/FetchStepExecutor.h>
 #include <tv-show-crawler-runtime/executor/RegExpStepExecutor.h>
 
-serio::core::TvShowCrawlerRuntime::TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage, HttpClient& httpClient)
-    : crawlerStorage(crawlerStorage), tvShowStorage(tvShowStorage), serializer(crawlerStepTypes) {
+serio::core::TvShowCrawlerRuntime::TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage,
+                                                        HttpClient& httpClient, unsigned int maxCrawlLogEntryDataSize)
+    : crawlerStorage(crawlerStorage), tvShowStorage(tvShowStorage), crawlerExecutor(maxCrawlLogEntryDataSize), serializer(crawlerStepTypes) {
     registerCrawlerStepType(
             "value",
             std::make_unique<ValueStepExecutor>(),
@@ -59,5 +60,9 @@ bool serio::core::TvShowCrawlerRuntime::willOverrideExistingTvShow(const serio::
 }
 
 std::vector<std::string> serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::Crawler &crawler) {
+    return crawlerExecutor.executeCrawler(crawler, "specified").result;
+}
+
+serio::core::CrawlResult serio::core::TvShowCrawlerRuntime::executeCrawlerForResult(const serio::core::Crawler &crawler) {
     return crawlerExecutor.executeCrawler(crawler, "specified");
 }

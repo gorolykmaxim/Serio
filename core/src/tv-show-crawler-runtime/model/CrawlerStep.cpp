@@ -1,5 +1,6 @@
 #include <utility>
 #include <optional>
+#include <sstream>
 #include "tv-show-crawler-runtime/model/CrawlerStep.h"
 
 serio::core::CrawlerStep::CrawlerStep(std::string type, std::map<std::string, std::string> properties)
@@ -29,6 +30,15 @@ std::string serio::core::CrawlerStep::getPropertyOrFail(const std::string &prope
 
 std::map<std::string, std::string> serio::core::CrawlerStep::getProperties() const {
     return properties;
+}
+
+std::string serio::core::CrawlerStep::getPropertiesAsString() const {
+    std::stringstream props;
+    for (const auto& entry: properties) {
+        props << entry.first << ": " << entry.second << ", ";
+    }
+    std::string result = props.str();
+    return result.substr(0, result.size() - 2);
 }
 
 bool serio::core::CrawlerStep::operator==(const serio::core::CrawlerStep &rhs) const {

@@ -15,6 +15,7 @@ public:
     [[nodiscard]] std::optional<std::string> getProperty(const std::string &propertyName) const;
     [[nodiscard]] std::string getPropertyOrFail(const std::string &propertyName) const;
     [[nodiscard]] std::map<std::string, std::string> getProperties() const;
+    [[nodiscard]] std::string getPropertiesAsString() const;
     bool operator==(const CrawlerStep &rhs) const;
     bool operator!=(const CrawlerStep &rhs) const;
 private:
