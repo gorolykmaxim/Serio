@@ -12,8 +12,8 @@ void serio::qt::CrawlLogViewModel::initialize(serio::qt::ActionRouter &router, Q
 
 void serio::qt::CrawlLogViewModel::openCrawlerPreviewLogView(const QVariantList& args) {
     QString crawlerType = args[0].toString();
-    log = editor.getPreviewedCrawlerLog();
-    modifyModel([this, crawlerType] {
+    std::vector<serio::core::CrawlLogEntry> log = editor.getPreviewedCrawlerLog();
+    modifyModel([this, crawlerType, log] {
         setLogTiles(log);
         setTitle(crawlerType);
         stack.pushView("CrawlLogView.qml");
@@ -22,8 +22,9 @@ void serio::qt::CrawlLogViewModel::openCrawlerPreviewLogView(const QVariantList&
 
 void serio::qt::CrawlLogViewModel::openLogEntryView(const QVariantList& args) {
     unsigned int entryIndex = args[0].toUInt();
-    modifyModel([this, entryIndex] {
-        selectedEntry = log.at(entryIndex);
+    serio::core::CrawlLogEntry entry = editor.getPreviewedCrawlerLog().at(entryIndex);
+    modifyModel([this, entry] {
+        selectedEntry = entry;
         emit selectedEntryChanged();
         stack.pushView("CrawlLogEntryView.qml");
     });

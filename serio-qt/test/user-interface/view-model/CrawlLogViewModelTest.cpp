@@ -18,10 +18,6 @@ protected:
         entry.setStepOutputData(stepData, 100);
         expectedLog.push_back(std::move(entry));
     }
-    void expectLogViewToBeOpen() {
-        EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-        viewModel.openCrawlerPreviewLogView(QVariantList({""}));
-    }
 };
 
 TEST_F(CrawlLogViewModelTest, shouldHaveEmptyLogByDefault) {
@@ -81,25 +77,21 @@ TEST_F(CrawlLogViewModelTest, shouldDisplayEmptyEntryIfNoEntryIsSelected) {
     EXPECT_TRUE(viewModel.getSelectedEntryOutputData().isEmpty());
 }
 
-TEST_F(CrawlLogViewModelTest, shouldFailToDisplayEntryThatDoesNotExist) {
-    EXPECT_THROW(viewModel.openLogEntryView(QVariantList({0})), std::out_of_range);
-}
-
 TEST_F(CrawlLogViewModelTest, shouldPushCrawlLogEntryViewToStack) {
-    expectLogViewToBeOpen();
+    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
     EXPECT_CALL(stack, pushView(QString("CrawlLogEntryView.qml")));
     viewModel.openLogEntryView(QVariantList({0}));
 }
 
 TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatSelectedEntryHasChanged) {
-    expectLogViewToBeOpen();
+    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
     QSignalSpy spy(&viewModel, &serio::qt::CrawlLogViewModel::selectedEntryChanged);
     viewModel.openLogEntryView(QVariantList({0}));
     EXPECT_EQ(1, spy.count());
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithoutDataWithTheSpecifiedIndexInTheCurrentLog) {
-    expectLogViewToBeOpen();
+    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
     viewModel.openLogEntryView(QVariantList({0}));
     EXPECT_EQ(expectedLog[0].getText(), viewModel.getSelectedEntryText().toStdString());
     EXPECT_TRUE(viewModel.getSelectedEntryInputData().isEmpty());
@@ -107,7 +99,7 @@ TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithoutDataWithTheSpecifiedIndex
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithDataWithTheSpecifiedIndexInCurrentLog) {
-    expectLogViewToBeOpen();
+    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
     viewModel.openLogEntryView(QVariantList({1}));
     EXPECT_EQ(expectedLog[1].getStepInputData(), viewModel.getSelectedEntryInputData().toStdString());
     EXPECT_EQ(expectedLog[1].getStepOutputData(), viewModel.getSelectedEntryOutputData().toStdString());

@@ -32,7 +32,6 @@ signals:
 private:
     QString title;
     ListModel<TileModel*> logTiles;
-    std::vector<core::CrawlLogEntry> log;
     std::optional<core::CrawlLogEntry> selectedEntry;
     core::TvShowCrawlerEditor& editor;
     StackOfViews& stack;
