@@ -72,3 +72,13 @@ std::string serio::core::CrawlLogEntry::getStepInputData() const {
 std::string serio::core::CrawlLogEntry::getStepOutputData() const {
     return stepOutputData;
 }
+
+bool serio::core::CrawlLogEntry::operator==(const serio::core::CrawlLogEntry &rhs) const {
+    return text == rhs.text &&
+           stepInputData == rhs.stepInputData &&
+           stepOutputData == rhs.stepOutputData;
+}
+
+bool serio::core::CrawlLogEntry::operator!=(const serio::core::CrawlLogEntry &rhs) const {
+    return !(rhs == *this);
+}

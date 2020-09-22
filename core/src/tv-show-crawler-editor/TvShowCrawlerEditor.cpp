@@ -60,6 +60,11 @@ std::vector<std::string> serio::core::TvShowCrawlerEditor::previewCrawler() {
     return runtime.executeCrawler(crawler);
 }
 
+serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawlerWithLogs() {
+    serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
+    return runtime.executeCrawlerForResult(crawler);
+}
+
 bool serio::core::TvShowCrawlerEditor::willOverrideExistingTvShow() {
     return runtime.willOverrideExistingTvShow(getBuilderOrFail().buildTvShowCrawler());
 }

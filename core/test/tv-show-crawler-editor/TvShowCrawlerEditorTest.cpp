@@ -328,3 +328,20 @@ TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndRet
         EXPECT_EQ(results, editor.previewCrawler());
     }
 }
+
+TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndReturnLogs) {
+    std::vector<serio::core::CrawlLogEntry> log = {
+        serio::core::CrawlLogEntry("entry 1"),
+        serio::core::CrawlLogEntry("entry 2")
+    };
+    EXPECT_CALL(runtime, executeCrawlerForResult(serio::core::Crawler({value, fetch})))
+        .Times(crawlerTypes.size())
+        .WillRepeatedly(::testing::Return(serio::core::CrawlResult{log, {}}));
+    editor.createTvShowCrawler();
+    for (auto type: crawlerTypes) {
+        editor.editCrawler(type);
+        editor.addCrawlerStep(value);
+        editor.addCrawlerStep(fetch);
+        EXPECT_EQ(log, editor.previewCrawlerWithLogs().log);
+    }
+}

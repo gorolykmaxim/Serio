@@ -17,6 +17,8 @@ public:
     [[nodiscard]] std::string getText() const;
     [[nodiscard]] std::string getStepInputData() const;
     [[nodiscard]] std::string getStepOutputData() const;
+    bool operator==(const CrawlLogEntry &rhs) const;
+    bool operator!=(const CrawlLogEntry &rhs) const;
 private:
     std::string text;
     std::string stepInputData;
