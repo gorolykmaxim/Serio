@@ -3,9 +3,9 @@
 
 serio::qt::EpisodeListModel::EpisodeListModel(unsigned int pageSize, unsigned int pageCountLimit)
     : AbstractListModel({
-        {Role::NAME, "name"},
-        {Role::VIDEO_URL, "videoUrl"},
-        {Role::LAST_WATCH_DATE, "lastWatchDate"}
+        {Role::TITLE,"title"},
+        {Role::SUBTITLE,"subtitle"},
+        {Role::ICON, "icon"}
     }), servant(pageSize, pageCountLimit, *this) {}
 
 void serio::qt::EpisodeListModel::loadPage(const serio::core::ListPage<serio::core::Episode> &page) {
@@ -28,13 +28,12 @@ QVariant serio::qt::EpisodeListModel::data(const QModelIndex &index, int role) c
 }
 
 QVariant serio::qt::EpisodeListModel::getAttributeOf(const serio::core::Episode &episode, int role) const {
-    if (role == Role::NAME) {
+    if (role == Role::TITLE) {
         return QString::fromStdString(episode.getName());
-    } else if (role == Role::VIDEO_URL) {
+    } else if (role == Role::SUBTITLE) {
         return QString::fromStdString(episode.getVideoUrl());
-    } else if (role == Role::LAST_WATCH_DATE) {
-        std::optional<serio::core::LastWatchDate> lastWatchDate = episode.getLastWatchDate();
-        return lastWatchDate ? QString::fromStdString(episode.getLastWatchDate()->toString()) : QVariant();
+    } else if (role == Role::ICON) {
+        return episode.getLastWatchDate() ? "eye" : QVariant();
     } else {
         throw serio::qt::InvalidListRole(role);
     }

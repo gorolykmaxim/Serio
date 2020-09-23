@@ -26,9 +26,9 @@ protected:
 
 TEST_F(EpisodeListModelTest, shouldReturnHashOfExistingRoles) {
     const QHash<int, QByteArray> rolesNames = model.roleNames();
-    EXPECT_EQ("name", rolesNames[serio::qt::EpisodeListModel::Role::NAME]);
-    EXPECT_EQ("videoUrl", rolesNames[serio::qt::EpisodeListModel::Role::VIDEO_URL]);
-    EXPECT_EQ("lastWatchDate", rolesNames[serio::qt::EpisodeListModel::Role::LAST_WATCH_DATE]);
+    EXPECT_EQ("title", rolesNames[serio::qt::EpisodeListModel::Role::TITLE]);
+    EXPECT_EQ("subtitle", rolesNames[serio::qt::EpisodeListModel::Role::SUBTITLE]);
+    EXPECT_EQ("icon", rolesNames[serio::qt::EpisodeListModel::Role::ICON]);
 }
 
 TEST_F(EpisodeListModelTest, shouldReturnSameCountOfColumnsAsRoleNames) {
@@ -85,28 +85,28 @@ TEST_F(EpisodeListModelTest, shouldChangeDataOnLoadingNewPage) {
 }
 
 TEST_F(EpisodeListModelTest, shouldReturnNullOnInvalidIndex) {
-    EXPECT_TRUE(model.data(index, serio::qt::EpisodeListModel::Role::NAME).isNull());
+    EXPECT_TRUE(model.data(index, serio::qt::EpisodeListModel::Role::TITLE).isNull());
 }
 
-TEST_F(EpisodeListModelTest, shouldReturnNameOfEpisodeWithSpecifiedIndex) {
+TEST_F(EpisodeListModelTest, shouldReturnNameOfEpisodeWithSpecifiedIndexAsTitle) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(0, 10, {episodes[0]}));
     model.loadPage(serio::core::ListPage<serio::core::Episode>(1, 10, {episodes[1]}));
-    EXPECT_EQ(episodes[0].getName(), model.data(model.index(0), serio::qt::EpisodeListModel::NAME).toString().toStdString());
-    EXPECT_EQ(episodes[1].getName(), model.data(model.index(1), serio::qt::EpisodeListModel::NAME).toString().toStdString());
+    EXPECT_EQ(episodes[0].getName(), model.data(model.index(0), serio::qt::EpisodeListModel::TITLE).toString().toStdString());
+    EXPECT_EQ(episodes[1].getName(), model.data(model.index(1), serio::qt::EpisodeListModel::TITLE).toString().toStdString());
 }
 
-TEST_F(EpisodeListModelTest, shouldReturnVideoUrlOfEpisodeWithSpecifiedIndex) {
+TEST_F(EpisodeListModelTest, shouldReturnVideoUrlOfEpisodeWithSpecifiedIndexAsSubtitle) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(0, 10, {episode}));
     model.loadPage(serio::core::ListPage<serio::core::Episode>(1, 10, {episodes[0]}));
-    EXPECT_EQ(episode.getVideoUrl(), model.data(model.index(0), serio::qt::EpisodeListModel::Role::VIDEO_URL).toString().toStdString());
-    EXPECT_EQ(episodes[0].getVideoUrl(), model.data(model.index(1), serio::qt::EpisodeListModel::Role::VIDEO_URL).toString().toStdString());
+    EXPECT_EQ(episode.getVideoUrl(), model.data(model.index(0), serio::qt::EpisodeListModel::Role::SUBTITLE).toString().toStdString());
+    EXPECT_EQ(episodes[0].getVideoUrl(), model.data(model.index(1), serio::qt::EpisodeListModel::Role::SUBTITLE).toString().toStdString());
 }
 
-TEST_F(EpisodeListModelTest, shouldReturnLastWatchDateOfEpisodeWithSpecifiedIndex) {
+TEST_F(EpisodeListModelTest, shouldReturnEyeIconIfEpisodeWithSpecifiedIndexHasBeenWatched) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(0, 10, {episode}));
     model.loadPage(serio::core::ListPage<serio::core::Episode>(1, 10, {episodes[0]}));
-    EXPECT_EQ(episode.getLastWatchDate()->toString(), model.data(model.index(0), serio::qt::EpisodeListModel::Role::LAST_WATCH_DATE).toString().toStdString());
-    EXPECT_TRUE(model.data(model.index(1), serio::qt::EpisodeListModel::Role::LAST_WATCH_DATE).isNull());
+    EXPECT_EQ("eye", model.data(model.index(0), serio::qt::EpisodeListModel::Role::ICON).toString().toStdString());
+    EXPECT_TRUE(model.data(model.index(1), serio::qt::EpisodeListModel::Role::ICON).isNull());
 }
 
 TEST_F(EpisodeListModelTest, shouldFailToGetDataWithUnknownRole) {
@@ -116,14 +116,14 @@ TEST_F(EpisodeListModelTest, shouldFailToGetDataWithUnknownRole) {
 
 TEST_F(EpisodeListModelTest, shouldReturnNullTvShowIfSpecifiedIndexIsNotLoaded) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(0, 10, {episode}));
-    EXPECT_EQ(QString(), model.data(model.index(1), serio::qt::EpisodeListModel::Role::NAME).toString());
+    EXPECT_EQ(QString(), model.data(model.index(1), serio::qt::EpisodeListModel::Role::TITLE).toString());
 }
 
 TEST_F(EpisodeListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(0, 1000, episodes));
     QSignalSpy spy(&model, &serio::qt::EpisodeListModel::requestPageLoad);
-    (void)model.data(model.index(505), serio::qt::EpisodeListModel::Role::NAME);
-    (void)model.data(model.index(649), serio::qt::EpisodeListModel::Role::NAME);
+    (void)model.data(model.index(505), serio::qt::EpisodeListModel::Role::TITLE);
+    (void)model.data(model.index(649), serio::qt::EpisodeListModel::Role::TITLE);
     ASSERT_EQ(2, spy.count());
     QVariantList args = spy.takeFirst();
     EXPECT_EQ(500, args[0].toUInt());
@@ -134,14 +134,14 @@ TEST_F(EpisodeListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
 
 TEST_F(EpisodeListModelTest, shouldNotRequestLoadOfPageOnInvalidIndex) {
     QSignalSpy spy(&model, &serio::qt::EpisodeListModel::requestPageLoad);
-    (void)model.data(index, serio::qt::EpisodeListModel::Role::NAME);
+    (void)model.data(index, serio::qt::EpisodeListModel::Role::TITLE);
     ASSERT_EQ(0, spy.count());
 }
 
 TEST_F(EpisodeListModelTest, shouldNotRequestTheSamePageTwice) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(100, 1000, episodes));
     QSignalSpy spy(&model, &serio::qt::EpisodeListModel::requestPageLoad);
-    (void)model.data(model.index(200), serio::qt::EpisodeListModel::Role::NAME);
-    (void)model.data(model.index(200), serio::qt::EpisodeListModel::Role::VIDEO_URL);
+    (void)model.data(model.index(200), serio::qt::EpisodeListModel::Role::TITLE);
+    (void)model.data(model.index(200), serio::qt::EpisodeListModel::Role::SUBTITLE);
     ASSERT_EQ(1, spy.count());
 }

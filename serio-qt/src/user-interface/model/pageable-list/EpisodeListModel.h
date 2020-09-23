@@ -10,7 +10,7 @@ namespace serio::qt {
 class EpisodeListModel : public AbstractListModel {
 public:
     enum Role {
-        NAME, VIDEO_URL, LAST_WATCH_DATE
+        TITLE, SUBTITLE, ICON
     };
     EpisodeListModel(unsigned int pageSize, unsigned int pageCountLimit);
     void loadPage(const core::ListPage<core::Episode>& page);
