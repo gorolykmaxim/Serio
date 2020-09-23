@@ -76,7 +76,7 @@ TEST_F(CrawlLogEntryTest, shouldCutInputAndOutputOnLargeChunk) {
 }
 
 TEST_F(CrawlLogEntryTest, shouldCutInputAndOutputCompletelyLeavingOnlyDots) {
-    for (int i: {0, 3}) {
+    for (int i = 0; i < 4; i++) {
         serio::core::CrawlLogEntry entry(value);
         entry.setStepInputData(stepData, i);
         entry.setStepOutputData(stepData, i);

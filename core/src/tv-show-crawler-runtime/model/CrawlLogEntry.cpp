@@ -18,7 +18,7 @@ public:
         }
         return stringBuilder.build();
     }
-    explicit SizeConstrainedStringBuilder(unsigned int maxSize) : charsAvailable(maxSize == 0 ? 0 : maxSize - 3) {}
+    explicit SizeConstrainedStringBuilder(unsigned int maxSize) : charsAvailable(maxSize < 3 ? 0 : maxSize - 3) {}
     bool write(const std::string& data) {
         if (charsAvailable > data.size()) {
             stream << data;
