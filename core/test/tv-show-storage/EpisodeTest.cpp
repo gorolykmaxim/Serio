@@ -3,6 +3,7 @@
 
 class EpisodeTest : public ::testing::Test {
 protected:
+    const serio::core::LastWatchDate lastWatchDate = serio::core::LastWatchDate(std::chrono::system_clock::now());
     std::string expectedVideoUrl = "https://tv-show.com/episode-1.mp4";
 };
 
@@ -49,4 +50,15 @@ TEST_F(EpisodeTest, twoEpisodesWithDifferentIdNameOrVideoUrlShouldNotBeEqual) {
     EXPECT_NE(episode, serio::core::Episode(2, expectedVideoUrl));
     EXPECT_NE(episode, serio::core::Episode(1, ""));
     EXPECT_NE(episode, serio::core::Episode(1, expectedVideoUrl, ""));
+    EXPECT_NE(episode, serio::core::Episode(1, expectedVideoUrl, "Episode 1", lastWatchDate));
+}
+
+TEST_F(EpisodeTest, shouldNotHaveLastWatchDateIfNotSpecifiedExplicitly) {
+    serio::core::Episode episode(1, expectedVideoUrl);
+    EXPECT_FALSE(episode.getLastWatchDate());
+}
+
+TEST_F(EpisodeTest, shouldHaveSpecifiedLastWatchDate) {
+    serio::core::Episode episode(2, expectedVideoUrl, "Episode 1", lastWatchDate);
+    EXPECT_EQ(lastWatchDate, *episode.getLastWatchDate());
 }
