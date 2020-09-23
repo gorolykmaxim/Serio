@@ -34,6 +34,9 @@ add_library(SerioLib STATIC
         src/user-interface/model/TextFieldModel.cpp
         src/user-interface/model/TextFieldModel.h
         src/user-interface/model/ListModel.h
+        src/user-interface/model/AbstractListModelServant.h
+        src/user-interface/model/AbstractListModel.cpp
+        src/user-interface/model/AbstractListModel.h
         src/user-interface/view-model/AllTvShowsViewModel.cpp
         src/user-interface/view-model/AllTvShowsViewModel.h
         src/user-interface/view-model/TvShowCrawlerEditorViewModel.cpp
