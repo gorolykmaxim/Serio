@@ -8,6 +8,7 @@
 namespace serio::qt {
 
 class EpisodeListModel : public AbstractListModel {
+    Q_OBJECT
 public:
     enum Role {
         TITLE, SUBTITLE, ICON
