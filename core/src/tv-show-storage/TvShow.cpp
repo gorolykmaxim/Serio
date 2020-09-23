@@ -3,11 +3,8 @@
 #include <utility>
 #include <optional>
 
-serio::core::TvShow::TvShow(std::string name, std::string thumbnailUrl)
-    : name(std::move(name)), thumbnailUrl(std::move(thumbnailUrl)) {}
-
-serio::core::TvShow::TvShow(std::string name, std::string thumbnailUrl, LastWatchDate lastWatchDate)
-    : name(std::move(name)), thumbnailUrl(std::move(thumbnailUrl)), lastWatchDate(lastWatchDate) {}
+serio::core::TvShow::TvShow(std::string name, std::string thumbnailUrl, std::optional<serio::core::LastWatchDate> lastWatchDate)
+    : name(std::move(name)), thumbnailUrl(std::move(thumbnailUrl)), lastWatchDate(std::move(lastWatchDate)) {}
 
 std::string serio::core::TvShow::getName() const {
     return name;

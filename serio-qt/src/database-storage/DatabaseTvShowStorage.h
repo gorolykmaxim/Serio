@@ -28,6 +28,7 @@ private:
     std::vector<core::TvShow> findTvShowsMatchingQuery(const QString& query, unsigned int offset, unsigned int limit, const std::vector<QVariant>& values = {});
     [[nodiscard]] core::TvShow readTvShowFrom(const QSqlQuery& query) const;
     [[nodiscard]] core::Episode readEpisodeFrom(const QSqlQuery& query) const;
+    [[nodiscard]] std::optional<core::LastWatchDate> readLastWatchDate(const QVariant& variant) const;
 };
 
 }

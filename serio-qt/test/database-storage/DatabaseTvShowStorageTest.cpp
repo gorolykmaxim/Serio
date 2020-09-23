@@ -2,21 +2,22 @@
 #include <database-storage/DatabaseStorage.h>
 
 class DatabaseTvShowStorageTest : public ::testing::Test {
-public:
-    DatabaseTvShowStorageTest()
-        : ::testing::Test(),
-            fourthTvShow("How i met your mom", "", serio::core::LastWatchDate(std::chrono::system_clock::now() - std::chrono::hours(32))),
-            thirdTvShow("Mandalorian", "", serio::core::LastWatchDate(std::chrono::system_clock::now())),
-            secondTvShow("Friends"),
-            firstTvShow("Clinic") {
-        storage.initialize(true);
-    }
 protected:
     serio::qt::DatabaseStorage storage;
-    serio::core::TvShow fourthTvShow, thirdTvShow, secondTvShow, firstTvShow;
-    std::vector<serio::core::Episode> firstTvShowEpisodes = {serio::core::Episode(1, "")};
-    std::vector<serio::core::Episode> secondTvShowEpisodes = {serio::core::Episode(1, "", "Pilot episode"), serio::core::Episode(2, "")};
+    const std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    const serio::core::TvShow fourthTvShow = serio::core::TvShow("How i met your mom", "", serio::core::LastWatchDate(now - std::chrono::hours(32)));
+    const serio::core::TvShow thirdTvShow = serio::core::TvShow("Mandalorian", "", serio::core::LastWatchDate(now));
+    const serio::core::TvShow secondTvShow = serio::core::TvShow("Friends");
+    const serio::core::TvShow firstTvShow = serio::core::TvShow("Clinic");
+    const std::vector<serio::core::Episode> firstTvShowEpisodes = {serio::core::Episode(1, "")};
+    const std::vector<serio::core::Episode> secondTvShowEpisodes = {
+        serio::core::Episode(1, "", "Pilot episode", serio::core::LastWatchDate(std::chrono::system_clock::now())),
+        serio::core::Episode(2, "")
+    };
     const unsigned int LIMIT_ONE_ITEM = 1;
+    virtual void SetUp() {
+        storage.initialize(true);
+    }
     void saveShows() {
         storage.saveTvShow(secondTvShow, secondTvShowEpisodes);
         storage.saveTvShow(firstTvShow, firstTvShowEpisodes);

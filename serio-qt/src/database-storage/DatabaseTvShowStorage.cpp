@@ -31,7 +31,7 @@ std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodesO
                                                                                                 unsigned int limit) {
     std::vector<core::Episode> result;
     QSqlQuery findEpisodesOfTvShow(QSqlDatabase::database());
-    findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL FROM EPISODE WHERE TV_SHOW_NAME = ? ORDER BY ID LIMIT ? OFFSET ?");
+    findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE FROM EPISODE WHERE TV_SHOW_NAME = ? ORDER BY ID LIMIT ? OFFSET ?");
     findEpisodesOfTvShow.addBindValue(QString::fromStdString(tvShowName));
     findEpisodesOfTvShow.addBindValue(limit);
     findEpisodesOfTvShow.addBindValue(offset);
@@ -74,6 +74,7 @@ void serio::qt::DatabaseTvShowStorage::createEpisodeTable() {
                                 "TV_SHOW_NAME TEXT NOT NULL, "
                                 "NAME TEXT NOT NULL, "
                                 "VIDEO_URL TEXT NOT NULL, "
+                                "LAST_WATCH_DATE BIGINT, "
                                 "PRIMARY KEY(ID, TV_SHOW_NAME),"
                                 "CONSTRAINT FK_TV_SHOW FOREIGN KEY (TV_SHOW_NAME) REFERENCES TV_SHOW(NAME) ON DELETE CASCADE)");
 }
@@ -100,19 +101,25 @@ void serio::qt::DatabaseTvShowStorage::insertTvShow(const serio::core::TvShow &t
 
 void serio::qt::DatabaseTvShowStorage::insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes) {
     QSqlQuery insertEpisodes(QSqlDatabase::database());
-    insertEpisodes.prepare("INSERT INTO EPISODE VALUES(?, ?, ?, ?)");
+    insertEpisodes.prepare("INSERT INTO EPISODE VALUES(?, ?, ?, ?, ?)");
     QString qTvShowName = QString::fromStdString(tvShowName);
-    QVariantList ids, tvShowNames, names, videoUrls;
+    QVariantList ids, tvShowNames, names, videoUrls, lastWatchDates;
     for (const core::Episode& episode: episodes) {
         ids << QVariant(episode.getId());
         tvShowNames << qTvShowName;
         names << QString::fromStdString(episode.getName());
         videoUrls << QString::fromStdString(episode.getVideoUrl());
+        if (episode.getLastWatchDate()) {
+            lastWatchDates << QVariant(episode.getLastWatchDate()->getSinceEpoch());
+        } else {
+            lastWatchDates << QVariant();
+        }
     }
     insertEpisodes.addBindValue(ids);
     insertEpisodes.addBindValue(tvShowNames);
     insertEpisodes.addBindValue(names);
     insertEpisodes.addBindValue(videoUrls);
+    insertEpisodes.addBindValue(lastWatchDates);
     insertEpisodes.execBatch();
 }
 
@@ -145,17 +152,18 @@ std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::findTvShowsMa
 serio::core::TvShow serio::qt::DatabaseTvShowStorage::readTvShowFrom(const QSqlQuery &query) const {
     std::string name = query.value(0).toString().toStdString();
     std::string thumbnailUrl = query.value(1).toString().toStdString();
-    QVariant lastWatchDate = query.value(2);
-    if (lastWatchDate.isNull()) {
-        return core::TvShow(name, thumbnailUrl);
-    } else {
-        return core::TvShow(name, thumbnailUrl, serio::core::LastWatchDate(lastWatchDate.toLongLong()));
-    }
+    std::optional<serio::core::LastWatchDate> lastWatchDate = readLastWatchDate(query.value(2));
+    return serio::core::TvShow(name, thumbnailUrl, lastWatchDate);
 }
 
 serio::core::Episode serio::qt::DatabaseTvShowStorage::readEpisodeFrom(const QSqlQuery &query) const {
     unsigned int id = query.value(0).toUInt();
     std::string name = query.value(1).toString().toStdString();
     std::string videoUrl = query.value(2).toString().toStdString();
-    return core::Episode(id, videoUrl, name);
+    std::optional<serio::core::LastWatchDate> lastWatchDate = readLastWatchDate(query.value(3));
+    return serio::core::Episode(id, videoUrl, name, lastWatchDate);
+}
+
+std::optional<serio::core::LastWatchDate> serio::qt::DatabaseTvShowStorage::readLastWatchDate(const QVariant &variant) const {
+    return variant.isNull() ? std::optional<serio::core::LastWatchDate>() : serio::core::LastWatchDate(variant.toLongLong());
 }
