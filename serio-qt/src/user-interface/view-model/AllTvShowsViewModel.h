@@ -1,7 +1,7 @@
 #ifndef SERIO_ALLTVSHOWSVIEWMODEL_H
 #define SERIO_ALLTVSHOWSVIEWMODEL_H
 
-#include <user-interface/model/TvShowListModel.h>
+#include <user-interface/model/pageable-list/TvShowListModel.h>
 #include <tv-show-storage/TvShowStorage.h>
 #include <user-interface/action/ActionRouter.h>
 #include <QQmlApplicationEngine>

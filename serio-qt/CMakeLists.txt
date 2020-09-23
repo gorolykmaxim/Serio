@@ -25,12 +25,12 @@ add_library(SerioLib STATIC
         src/user-interface/action/ActionType.h
         src/user-interface/action/ActionRouter.cpp
         src/user-interface/action/ActionRouter.h
-        src/user-interface/model/TvShowListModel.cpp
-        src/user-interface/model/TvShowListModel.h
-        src/user-interface/model/EpisodeListModel.cpp
-        src/user-interface/model/EpisodeListModel.h
-        src/user-interface/model/InvalidListRole.cpp
-        src/user-interface/model/InvalidListRole.h
+        src/user-interface/model/pageable-list/TvShowListModel.cpp
+        src/user-interface/model/pageable-list/TvShowListModel.h
+        src/user-interface/model/pageable-list/EpisodeListModel.cpp
+        src/user-interface/model/pageable-list/EpisodeListModel.h
+        src/user-interface/model/pageable-list/InvalidListRole.cpp
+        src/user-interface/model/pageable-list/InvalidListRole.h
         src/user-interface/model/TileModel.cpp
         src/user-interface/model/TileModel.h
         src/user-interface/model/RadioButtonModel.cpp
@@ -38,9 +38,9 @@ add_library(SerioLib STATIC
         src/user-interface/model/TextFieldModel.cpp
         src/user-interface/model/TextFieldModel.h
         src/user-interface/model/ListModel.h
-        src/user-interface/model/AbstractListModelServant.h
-        src/user-interface/model/AbstractListModel.cpp
-        src/user-interface/model/AbstractListModel.h
+        src/user-interface/model/pageable-list/AbstractListModelServant.h
+        src/user-interface/model/pageable-list/AbstractListModel.cpp
+        src/user-interface/model/pageable-list/AbstractListModel.h
         src/user-interface/view-model/AllTvShowsViewModel.cpp
         src/user-interface/view-model/AllTvShowsViewModel.h
         src/user-interface/view-model/TvShowCrawlerEditorViewModel.cpp
@@ -66,8 +66,8 @@ add_executable(Serio ${RESOURCES} src/main.cpp)
 target_link_libraries(Serio SerioLib)
 
 add_executable(SerioTest
-        test/user-interface/model/TvShowListModelTest.cpp
-        test/user-interface/model/EpisodeListModelTest.cpp
+        test/user-interface/model/pageable-list/TvShowListModelTest.cpp
+        test/user-interface/model/pageable-list/EpisodeListModelTest.cpp
         test/database-storage/DatabaseTvShowStorageTest.cpp
         test/database-storage/DatabaseTvShowCrawlerStorageTest.cpp
         test/user-interface/view-model/AllTvShowsViewModelTest.cpp

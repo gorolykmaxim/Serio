@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <QSignalSpy>
-#include "user-interface/model/TvShowListModel.h"
+#include "user-interface/model/pageable-list/TvShowListModel.h"
 
 class TvShowListModelTest : public ::testing::Test {
 protected:

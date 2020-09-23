@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <user-interface/model/EpisodeListModel.h>
+#include <user-interface/model/pageable-list/EpisodeListModel.h>
 #include <QByteArray>
 #include <tv-show-storage/Episode.h>
 #include <tv-show-storage/ListPage.h>
