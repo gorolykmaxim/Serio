@@ -1,5 +1,5 @@
 #include "TvShowListModel.h"
-#include <stdexcept>
+#include "InvalidListRole.h"
 
 serio::qt::TvShowListModel::TvShowListModel(unsigned int pageSize, unsigned int pageCountLimit)
     : servant(pageSize, pageCountLimit, *this) {}
@@ -40,6 +40,6 @@ QVariant serio::qt::TvShowListModel::getAttributeOf(const serio::core::TvShow &t
         std::optional<core::LastWatchDate> lastWatchDate = tvShow.getLastWatchDate();
         return lastWatchDate ? QString::fromStdString(lastWatchDate->toString()) : QVariant();
     } else {
-        throw std::invalid_argument("Invalid role " + std::to_string(role));
+        throw serio::qt::InvalidListRole(role);
     }
 }

@@ -1,9 +1,6 @@
 #ifndef SERIO_TVSHOWLISTMODEL_H
 #define SERIO_TVSHOWLISTMODEL_H
 
-#include <set>
-#include <QAbstractListModel>
-#include <tv-show-storage/BigListProxy.h>
 #include <tv-show-storage/TvShow.h>
 #include "AbstractListModel.h"
 #include "AbstractListModelServant.h"
@@ -18,10 +15,10 @@ public:
     };
     TvShowListModel(unsigned int pageSize, unsigned int pageCountLimit);
     void loadPage(const core::ListPage<core::TvShow>& page);
-    int rowCount(const QModelIndex &parent) const override;
-    int columnCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
+    [[nodiscard]] int columnCount(const QModelIndex &parent) const override;
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 private:
     AbstractListModelServant<core::TvShow> servant;
     const QHash<int, QByteArray> roleToName = {

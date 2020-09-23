@@ -112,7 +112,7 @@ TEST_F(TvShowListModelTest, shouldReturnLastWatchDateOfTvShowWithSpecifiedIndex)
 
 TEST_F(TvShowListModelTest, shouldFailToGetDataWithUnknownRole) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 10, {serio::core::TvShow("")}));
-    EXPECT_THROW(model.data(model.index(0), -1), std::invalid_argument);
+    EXPECT_THROW((void)model.data(model.index(0), -1), std::invalid_argument);
 }
 
 TEST_F(TvShowListModelTest, shouldReturnNullTvShowIfSpecifiedIndexIsNotLoaded) {
@@ -123,8 +123,8 @@ TEST_F(TvShowListModelTest, shouldReturnNullTvShowIfSpecifiedIndexIsNotLoaded) {
 TEST_F(TvShowListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 1000, tvShows));
     QSignalSpy spy(&model, &serio::qt::TvShowListModel::requestPageLoad);
-    model.data(model.index(505), serio::qt::TvShowListModel::Role::NAME);
-    model.data(model.index(649), serio::qt::TvShowListModel::Role::NAME);
+    (void)model.data(model.index(505), serio::qt::TvShowListModel::Role::NAME);
+    (void)model.data(model.index(649), serio::qt::TvShowListModel::Role::NAME);
     ASSERT_EQ(2, spy.count());
     QVariantList args = spy.takeFirst();
     EXPECT_EQ(500, args[0].toUInt());
@@ -135,14 +135,14 @@ TEST_F(TvShowListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
 
 TEST_F(TvShowListModelTest, shouldNotRequestLoadOfPageOnInvalidIndex) {
     QSignalSpy spy(&model, &serio::qt::TvShowListModel::requestPageLoad);
-    model.data(index, serio::qt::TvShowListModel::Role::NAME);
+    (void)model.data(index, serio::qt::TvShowListModel::Role::NAME);
     ASSERT_EQ(0, spy.count());
 }
 
 TEST_F(TvShowListModelTest, shouldNotRequestTheSamePageTwice) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(100, 1000, tvShows));
     QSignalSpy spy(&model, &serio::qt::TvShowListModel::requestPageLoad);
-    model.data(model.index(200), serio::qt::TvShowListModel::Role::NAME);
-    model.data(model.index(200), serio::qt::TvShowListModel::Role::THUMBNAIL_URL);
+    (void)model.data(model.index(200), serio::qt::TvShowListModel::Role::NAME);
+    (void)model.data(model.index(200), serio::qt::TvShowListModel::Role::THUMBNAIL_URL);
     ASSERT_EQ(1, spy.count());
 }

@@ -27,6 +27,10 @@ add_library(SerioLib STATIC
         src/user-interface/action/ActionRouter.h
         src/user-interface/model/TvShowListModel.cpp
         src/user-interface/model/TvShowListModel.h
+        src/user-interface/model/EpisodeListModel.cpp
+        src/user-interface/model/EpisodeListModel.h
+        src/user-interface/model/InvalidListRole.cpp
+        src/user-interface/model/InvalidListRole.h
         src/user-interface/model/TileModel.cpp
         src/user-interface/model/TileModel.h
         src/user-interface/model/RadioButtonModel.cpp
@@ -63,6 +67,7 @@ target_link_libraries(Serio SerioLib)
 
 add_executable(SerioTest
         test/user-interface/model/TvShowListModelTest.cpp
+        test/user-interface/model/EpisodeListModelTest.cpp
         test/database-storage/DatabaseTvShowStorageTest.cpp
         test/database-storage/DatabaseTvShowCrawlerStorageTest.cpp
         test/user-interface/view-model/AllTvShowsViewModelTest.cpp
