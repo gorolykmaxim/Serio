@@ -24,7 +24,7 @@ public:
     int rowCount(const QModelIndex &parent) const {
         return listProxy.getTotalSize();
     }
-    bool containsItemWIthGlobalIndex(unsigned int index) const {
+    bool containsItemWithGlobalIndex(unsigned int index) const {
         if (!listProxy.containsItemWithGlobalIndex(index)) {
             loadPageWithIndex(index);
             return false;

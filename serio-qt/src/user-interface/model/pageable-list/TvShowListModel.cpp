@@ -2,7 +2,11 @@
 #include "InvalidListRole.h"
 
 serio::qt::TvShowListModel::TvShowListModel(unsigned int pageSize, unsigned int pageCountLimit)
-    : servant(pageSize, pageCountLimit, *this) {}
+    : AbstractListModel({
+        {Role::NAME, "name"},
+        {Role::THUMBNAIL_URL, "thumbnailUrl"},
+        {Role::LAST_WATCH_DATE, "lastWatchDate"}
+    }), servant(pageSize, pageCountLimit, *this) {}
 
 void serio::qt::TvShowListModel::loadPage(const core::ListPage<core::TvShow>& page) {
     servant.loadPage(page);
@@ -12,19 +16,11 @@ int serio::qt::TvShowListModel::rowCount(const QModelIndex &parent) const {
     return servant.rowCount(parent);
 }
 
-int serio::qt::TvShowListModel::columnCount(const QModelIndex &parent) const {
-    return roleToName.count();
-}
-
-QHash<int, QByteArray> serio::qt::TvShowListModel::roleNames() const {
-    return roleToName;
-}
-
 QVariant serio::qt::TvShowListModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid()) {
         return QVariant();
     }
-    if (!servant.containsItemWIthGlobalIndex(index.row())) {
+    if (!servant.containsItemWithGlobalIndex(index.row())) {
         return QString();
     }
     const core::TvShow& tvShow = servant.getItemByGlobalIndex(index.row());

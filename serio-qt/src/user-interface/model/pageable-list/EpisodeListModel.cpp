@@ -2,29 +2,25 @@
 #include "InvalidListRole.h"
 
 serio::qt::EpisodeListModel::EpisodeListModel(unsigned int pageSize, unsigned int pageCountLimit)
-    : servant(pageSize, pageCountLimit, *this) {}
+    : AbstractListModel({
+        {Role::NAME, "name"},
+        {Role::VIDEO_URL, "videoUrl"},
+        {Role::LAST_WATCH_DATE, "lastWatchDate"}
+    }), servant(pageSize, pageCountLimit, *this) {}
 
 void serio::qt::EpisodeListModel::loadPage(const serio::core::ListPage<serio::core::Episode> &page) {
     servant.loadPage(page);
-}
-
-QHash<int, QByteArray> serio::qt::EpisodeListModel::roleNames() const {
-    return roleToName;
 }
 
 int serio::qt::EpisodeListModel::rowCount(const QModelIndex &parent) const {
     return servant.rowCount(parent);
 }
 
-int serio::qt::EpisodeListModel::columnCount(const QModelIndex &parent) const {
-    return roleToName.count();
-}
-
 QVariant serio::qt::EpisodeListModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid()) {
         return QVariant();
     }
-    if (!servant.containsItemWIthGlobalIndex(index.row())) {
+    if (!servant.containsItemWithGlobalIndex(index.row())) {
         return QString();
     }
     const serio::core::Episode& episode = servant.getItemByGlobalIndex(index.row());
