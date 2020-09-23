@@ -9,9 +9,9 @@ serio::core::LastWatchDate::LastWatchDate(long long timeSinceEpoch)
 std::string serio::core::LastWatchDate::toString() const {
     std::chrono::hours hoursSinceLastWatch = std::chrono::duration_cast<std::chrono::hours>(std::chrono::system_clock::now() - date);
     if (hoursSinceLastWatch < std::chrono::hours(24)) {
-        return "Today";
+        return "today";
     } else if (hoursSinceLastWatch < std::chrono::hours(48)) {
-        return "Yesterday";
+        return "yesterday";
     } else if (hoursSinceLastWatch < std::chrono::hours(24 * 30)) {
         return std::to_string(hoursSinceLastWatch.count() / 24) + " days ago";
     } else if (hoursSinceLastWatch < std::chrono::hours(24 * 30 * 12)) {

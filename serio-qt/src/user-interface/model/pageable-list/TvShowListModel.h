@@ -20,6 +20,7 @@ public:
 private:
     AbstractListModelServant<core::TvShow> servant;
     QVariant getAttributeOf(const core::TvShow& tvShow, int role) const;
+    QVariant getLastWatchDate(const std::optional<core::LastWatchDate>& lastWatchDate) const;
 };
 
 }

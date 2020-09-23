@@ -105,8 +105,8 @@ TEST_F(TvShowListModelTest, shouldReturnLastWatchDateOfTvShowWithSpecifiedIndex)
     serio::core::TvShow yesterday("", "", serio::core::LastWatchDate(std::chrono::system_clock::now() - std::chrono::hours(25)));
     serio::core::TvShow notWatched("");
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 10, {today, yesterday, notWatched}));
-    EXPECT_EQ(today.getLastWatchDate()->toString(), model.data(model.index(0), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
-    EXPECT_EQ(yesterday.getLastWatchDate()->toString(), model.data(model.index(1), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
+    EXPECT_EQ("Today", model.data(model.index(0), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
+    EXPECT_EQ("Yesterday", model.data(model.index(1), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
     EXPECT_TRUE(model.data(model.index(2), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).isNull());
 }
 

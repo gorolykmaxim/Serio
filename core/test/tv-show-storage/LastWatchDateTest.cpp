@@ -8,12 +8,12 @@ protected:
 
 TEST_F(LastWatchDateTest, createLastWatchDateThatIsToday) {
     serio::core::LastWatchDate lastWatchDate(now);
-    ASSERT_EQ("Today", lastWatchDate.toString());
+    ASSERT_EQ("today", lastWatchDate.toString());
 }
 
 TEST_F(LastWatchDateTest, createLastWatchDateThatIsYesterday) {
     serio::core::LastWatchDate lastWatchDate(now - std::chrono::hours(24));
-    ASSERT_EQ("Yesterday", lastWatchDate.toString());
+    ASSERT_EQ("yesterday", lastWatchDate.toString());
 }
 
 TEST_F(LastWatchDateTest, createLastWatchDateThatIs2DaysAgo) {
