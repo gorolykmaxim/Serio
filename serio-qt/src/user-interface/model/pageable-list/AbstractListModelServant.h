@@ -42,7 +42,7 @@ private:
     AbstractListModel& model;
     void extendModelIfNecessary(const core::ListPage<T>& page) {
         if (page.getTotalSize() > listProxy.getTotalSize()) {
-            model.insertRows(QModelIndex(), listProxy.getTotalSize(), page.getLastItemIndex());
+            model.insertRows(QModelIndex(), listProxy.getTotalSize(), page.getTotalSize() - 1);
         }
     }
     void shrinkModelIfNecessary(const core::ListPage<T>& page) {
