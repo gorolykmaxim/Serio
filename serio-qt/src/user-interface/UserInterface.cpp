@@ -15,7 +15,8 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           crawlLogViewModel(tvShowCrawlerEditor,stack),
           tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
-          crawlerStepEditorViewModel(tvShowCrawlerEditor, stack) {
+          crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
+          tvShowViewModel(100, 2, storage, stack) {
     httpClient.assignTo(engine);
     stack.initialize(router, engine);
     errorViewModel.initialize(router, engine);
@@ -24,6 +25,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
     tvShowCrawlerEditorViewModel.initialize(router, engine);
     crawlerEditorViewModel.initialize(router, engine);
     crawlerStepEditorViewModel.initialize(router, engine);
+    tvShowViewModel.initialize(router, engine);
     loadFonts();
 }
 

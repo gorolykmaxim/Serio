@@ -10,6 +10,7 @@
 #include <http-client/QHttpClient.h>
 #include <user-interface/view-model/ErrorViewModel.h>
 #include <user-interface/view-model/CrawlLogViewModel.h>
+#include <user-interface/view-model/TvShowViewModel.h>
 
 namespace serio::qt {
 
@@ -29,6 +30,7 @@ private:
     TvShowCrawlerEditorViewModel tvShowCrawlerEditorViewModel;
     CrawlerEditorViewModel crawlerEditorViewModel;
     CrawlerStepEditorViewModel crawlerStepEditorViewModel;
+    TvShowViewModel tvShowViewModel;
     void loadFonts();
     void exitOnUiLoadFailure(const QUrl &url);
 };
