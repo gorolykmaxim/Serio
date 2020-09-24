@@ -1,14 +1,18 @@
 #include <gtest/gtest.h>
 #include <user-interface/view-model/AllTvShowsViewModel.h>
 #include <TvShowStorageMock.h>
+#include <StackOfViewsMock.h>
+#include <TvShowViewerMock.h>
 
 class AllTvShowsViewModelTest : public ::testing::Test {
 protected:
     unsigned int pageSize = 100;
+    TvShowViewerMock viewer = TvShowViewerMock::create();
+    StackOfViewsMock stack;
     TvShowStorageMock storage;
     QModelIndex index;
     serio::core::ListPage<serio::core::TvShow> page = serio::core::ListPage<serio::core::TvShow>(0, 300, {});
-    serio::qt::AllTvShowsViewModel viewModel = serio::qt::AllTvShowsViewModel(pageSize, 2, storage);
+    serio::qt::AllTvShowsViewModel viewModel = serio::qt::AllTvShowsViewModel(pageSize, 2, storage, viewer, stack);
 };
 
 TEST_F(AllTvShowsViewModelTest, shouldHaveSpecifiedPageSize) {
@@ -35,4 +39,11 @@ TEST_F(AllTvShowsViewModelTest, shouldLoadPageOfWatchedTvShowsWithSpecifiedOffse
             .WillOnce(::testing::Return(page));
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
     EXPECT_EQ(page.getTotalSize(), viewModel.getWatchedShows()->rowCount(index));
+}
+
+TEST_F(AllTvShowsViewModelTest, shouldOpenTvShowViewWhileSelectingSpecifiedTvShowInViewer) {
+    std::string tvShowName = "Breaking Bad";
+    EXPECT_CALL(viewer, openTvShowWithName(tvShowName));
+    EXPECT_CALL(stack, pushView(QString("TvShowView.qml")));
+    viewModel.openTvShowView(QVariantList({QString::fromStdString(tvShowName)}));
 }
