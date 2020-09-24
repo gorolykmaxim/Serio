@@ -30,7 +30,7 @@ protected:
         EXPECT_EQ(QString("eye"), episodeList->data(episodeList->index(0), serio::qt::EpisodeListModel::Role::ICON));
         EXPECT_EQ(episodes[1].getName(), episodeList->data(episodeList->index(1), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
         EXPECT_EQ(episodes[1].getVideoUrl(), episodeList->data(episodeList->index(1), serio::qt::EpisodeListModel::Role::SUBTITLE).toString().toStdString());
-        EXPECT_TRUE(episodeList->data(episodeList->index(1), serio::qt::EpisodeListModel::Role::ICON).isNull());
+        EXPECT_EQ(QString("placeholder"), episodeList->data(episodeList->index(1), serio::qt::EpisodeListModel::Role::ICON));
     }
 };
 

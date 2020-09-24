@@ -106,7 +106,7 @@ TEST_F(EpisodeListModelTest, shouldReturnEyeIconIfEpisodeWithSpecifiedIndexHasBe
     model.loadPage(serio::core::ListPage<serio::core::Episode>(0, 10, {episode}));
     model.loadPage(serio::core::ListPage<serio::core::Episode>(1, 10, {episodes[0]}));
     EXPECT_EQ("eye", model.data(model.index(0), serio::qt::EpisodeListModel::Role::ICON).toString().toStdString());
-    EXPECT_TRUE(model.data(model.index(1), serio::qt::EpisodeListModel::Role::ICON).isNull());
+    EXPECT_EQ("placeholder", model.data(model.index(1), serio::qt::EpisodeListModel::Role::ICON).toString().toStdString());
 }
 
 TEST_F(EpisodeListModelTest, shouldFailToGetDataWithUnknownRole) {

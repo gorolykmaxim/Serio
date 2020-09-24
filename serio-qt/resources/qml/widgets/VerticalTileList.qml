@@ -7,8 +7,9 @@ AnimatedList {
     clip: true
     orientation: ListView.Vertical
     delegate: ListTile {
-        title: modelData.title
-        subtitle: modelData.subtitle
+        title: model.modelData ? model.modelData.title : model.title
+        subtitle: model.modelData ? model.modelData.subtitle : model.subtitle
+        tileIcon: model.modelData ? model.modelData.icon : model.icon
         width: root.width
         tilePadding: root.tilePadding
         highlighted: root.activeFocus && ListView.isCurrentItem

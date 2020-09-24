@@ -56,12 +56,15 @@ TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatLogHasBeenResetToTheNewOne
     EXPECT_EQ(2, spy.count());
 }
 
-TEST_F(CrawlLogViewModelTest, shouldDisplayCrawlLogToTheSpecifiedOneAndNotifyWatchers) {
+TEST_F(CrawlLogViewModelTest, shouldDisplayCrawlerPreviewExecutionLogAndNotifyWatchers) {
     EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
     viewModel.openCrawlerPreviewLogView(QVariantList({""}));
     QList<serio::qt::TileModel*> log = viewModel.getLog();
-    EXPECT_EQ(expectedLog[0].getText(), log[0]->getTitle().toStdString());
-    EXPECT_EQ(expectedLog[1].getText(), log[1]->getTitle().toStdString());
+    for (int i = 0; i < 2; i++) {
+        EXPECT_EQ(expectedLog[i].getText(), log[i]->getTitle().toStdString());
+        EXPECT_TRUE(log[i]->getSubtitle().isEmpty());
+        EXPECT_TRUE(log[i]->getIcon().isEmpty());
+    }
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDiscardOldLogAndDisplayNewOne) {

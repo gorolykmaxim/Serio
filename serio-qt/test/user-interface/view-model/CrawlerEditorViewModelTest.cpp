@@ -55,10 +55,13 @@ TEST_F(CrawlerEditorViewModelTest, shouldLoadCrawlerStepsAndDisplayThem) {
     EXPECT_EQ(steps.size(), tiles.size());
     EXPECT_EQ("Value step", tiles[0]->getTitle());
     EXPECT_EQ("value: a", tiles[0]->getSubtitle());
+    EXPECT_TRUE(tiles[0]->getIcon().isEmpty());
     EXPECT_EQ("Fetch step", tiles[1]->getTitle());
     EXPECT_TRUE(tiles[1]->getSubtitle().isEmpty());
+    EXPECT_TRUE(tiles[1]->getIcon().isEmpty());
     EXPECT_EQ("Some other step", tiles[2]->getTitle());
     EXPECT_EQ("a: 1, b: false, c: text", tiles[2]->getSubtitle());
+    EXPECT_TRUE(tiles[2]->getIcon().isEmpty());
     EXPECT_EQ(2, crawlerStepsSpy.count());
 }
 
@@ -85,6 +88,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
     for (int i = 0; i < previewResults.size(); i++) {
         EXPECT_EQ(previewResults[i], tiles[i]->getTitle().toStdString());
         EXPECT_TRUE(tiles[i]->getSubtitle().isEmpty());
+        EXPECT_TRUE(tiles[i]->getIcon().isEmpty());
     }
     EXPECT_EQ(1, previewResultsSpy.count());
 }

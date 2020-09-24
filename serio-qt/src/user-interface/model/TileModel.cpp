@@ -20,3 +20,7 @@ QString serio::qt::TileModel::getTitle() const {
 QString serio::qt::TileModel::getSubtitle() const {
     return subtitle;
 }
+
+QString serio::qt::TileModel::getIcon() const {
+    return QString();
+}
