@@ -1,5 +1,4 @@
 import QtQuick 2.0
-import QtQuick.Window 2.12
 import Serio 1.0
 
 HorizontalCardList {
@@ -12,7 +11,6 @@ HorizontalCardList {
         tvShowName: model.name
         thumbnailUrl: model.thumbnailUrl
         lastWatchDate: model.lastWatchDate
-        thumbnailSourceHeight: Screen.desktopAvailableHeight
         onSelected: tvShowSelected(model.name)
     }
 }

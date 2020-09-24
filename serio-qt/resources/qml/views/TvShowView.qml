@@ -1,6 +1,5 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
-import QtQuick.Window 2.12
 import Serio 1.0
 import "../widgets"
 
@@ -13,7 +12,6 @@ View {
     RoundNullableImage {
         anchors.fill: parent
         imageUrl: tvShowViewModel.thumbnailUrl
-        imageSourceSize: Qt.size(Screen.desktopAvailableWidth, Screen.desktopAvailableHeight)
         borderRadius: 0
     }
     Shade {

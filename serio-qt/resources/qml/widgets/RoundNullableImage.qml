@@ -4,12 +4,10 @@ import QtGraphicalEffects 1.0
 Item {
     property string imageUrl
     property real borderRadius
-    property size imageSourceSize
     Image {
         id: image
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
-        sourceSize: imageSourceSize
         source: imageUrl
         visible: false
     }

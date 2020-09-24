@@ -11,7 +11,6 @@ FocusScope {
     property string thumbnailUrl
     property string tvShowName
     property string lastWatchDate
-    property int thumbnailSourceHeight: height
     property real borderRadius: 4
     signal selected()
     Keys.onReturnPressed: selected()
@@ -20,7 +19,6 @@ FocusScope {
         anchors.fill: parent
         borderRadius: parent.borderRadius
         imageUrl: thumbnailUrl
-        imageSourceSize: Qt.size(root.width, thumbnailSourceHeight)
     }
     BottomShade {
         anchors.fill: parent
