@@ -58,5 +58,8 @@
         <file>qml/views/CrawlerPreviewView.qml</file>
         <file>qml/views/CrawlLogView.qml</file>
         <file>qml/views/CrawlLogEntryView.qml</file>
+        <file>qml/views/TvShowView.qml</file>
+        <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIcon.qml</file>
+        <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIconGlyphs.js</file>
     </qresource>
 </RCC>
