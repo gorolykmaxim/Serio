@@ -107,7 +107,7 @@ TEST_F(TvShowListModelTest, shouldReturnLastWatchDateOfTvShowWithSpecifiedIndex)
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 10, {today, yesterday, notWatched}));
     EXPECT_EQ("Today", model.data(model.index(0), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
     EXPECT_EQ("Yesterday", model.data(model.index(1), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().toStdString());
-    EXPECT_TRUE(model.data(model.index(2), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).isNull());
+    EXPECT_TRUE(model.data(model.index(2), serio::qt::TvShowListModel::Role::LAST_WATCH_DATE).toString().isEmpty());
 }
 
 TEST_F(TvShowListModelTest, shouldFailToGetDataWithUnknownRole) {

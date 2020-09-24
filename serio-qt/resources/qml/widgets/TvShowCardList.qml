@@ -8,9 +8,9 @@ HorizontalCardList {
     model: listModel
     delegate: TvShowCard {
         height: root.height
-        tvShowName: model.name || null
-        thumbnailUrl: model.thumbnailUrl || null
-        lastWatchDate: model.lastWatchDate || null
+        tvShowName: model.name
+        thumbnailUrl: model.thumbnailUrl
+        lastWatchDate: model.lastWatchDate
         thumbnailSourceHeight: Screen.desktopAvailableHeight
     }
 }
