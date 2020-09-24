@@ -23,12 +23,9 @@ View {
         anchors.fill: parent
         anchors.margins: globalPadding
         spacing: globalPadding
-        AccentTitle {
-            text: tvShowViewModel.tvShowName
-        }
-        Subtitle {
-            text: tvShowViewModel.lastWatchDate
-            visible: tvShowViewModel.lastWatchDate
+        AccentTitleAndSubtitle{
+            title: tvShowViewModel.tvShowName
+            subtitle: tvShowViewModel.lastWatchDate
         }
         SerioButton {
             id: backBtn
