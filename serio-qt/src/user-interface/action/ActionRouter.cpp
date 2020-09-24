@@ -3,8 +3,9 @@
 #include <QQmlContext>
 #include <utility>
 
-serio::qt::ActionRouter::ActionRouter(serio::qt::QTaskExecutor &executor, QQmlApplicationEngine& engine)
-    : QObject(), executor(executor) {
+serio::qt::ActionRouter::ActionRouter(serio::qt::QTaskExecutor &executor) : QObject(), executor(executor) {}
+
+void serio::qt::ActionRouter::initialize(QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableMetaObject(serio::qt::staticMetaObject, "Serio", 1, 0, "ActionType", nullptr);
     engine.rootContext()->setContextProperty("actionRouter", this);
 }

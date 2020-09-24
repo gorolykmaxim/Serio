@@ -21,7 +21,6 @@ public:
                   QTaskExecutor& executor);
     void initialize();
 private:
-    QQmlApplicationEngine engine;
     ActionRouter router;
     StackOfViews stack;
     ErrorViewModel errorViewModel;
@@ -31,6 +30,7 @@ private:
     CrawlerEditorViewModel crawlerEditorViewModel;
     CrawlerStepEditorViewModel crawlerStepEditorViewModel;
     TvShowViewModel tvShowViewModel;
+    QQmlApplicationEngine engine;
     void loadFonts();
     void exitOnUiLoadFailure(const QUrl &url);
 };

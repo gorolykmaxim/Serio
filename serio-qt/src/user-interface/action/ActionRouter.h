@@ -12,7 +12,8 @@ namespace serio::qt {
 class ActionRouter : public QObject {
     Q_OBJECT
 public:
-    ActionRouter(QTaskExecutor &executor, QQmlApplicationEngine& engine);
+    explicit ActionRouter(QTaskExecutor &executor);
+    void initialize(QQmlApplicationEngine& engine);
     void setErrorAction(std::function<void(const QVariantList&)> action);
     void registerAction(ActionType type, std::function<void(const QVariantList&)> action);
 public slots:
