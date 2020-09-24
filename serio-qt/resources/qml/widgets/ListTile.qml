@@ -18,7 +18,7 @@ ItemDelegate {
         }
         GreySubtitle {
             text: subtitle
-            visible: subtitle !== null
+            visible: subtitle
         }
     }
 }
