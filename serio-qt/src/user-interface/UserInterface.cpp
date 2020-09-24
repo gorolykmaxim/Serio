@@ -7,7 +7,8 @@
 
 serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
                                         serio::core::TvShowCrawlerEditor &tvShowCrawlerEditor,
-                                        serio::qt::DatabaseStorage &storage, serio::qt::QTaskExecutor &executor)
+                                        serio::qt::DatabaseStorage &storage, serio::core::TvShowViewer& viewer,
+                                        serio::qt::QTaskExecutor &executor)
         : QObject(),
           router(executor),
           errorViewModel(stack),
@@ -16,7 +17,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
-          tvShowViewModel(100, 2, storage, stack) {
+          tvShowViewModel(100, 2, viewer) {
     httpClient.assignTo(engine);
     stack.initialize(router, engine);
     router.initialize(engine);

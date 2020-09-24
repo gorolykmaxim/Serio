@@ -18,7 +18,7 @@ class UserInterface : public QObject {
     Q_OBJECT
 public:
     UserInterface(QHttpClient& httpClient, core::TvShowCrawlerEditor& tvShowCrawlerEditor, DatabaseStorage& storage,
-                  QTaskExecutor& executor);
+                  core::TvShowViewer& viewer, QTaskExecutor& executor);
     void initialize();
 private:
     ActionRouter router;

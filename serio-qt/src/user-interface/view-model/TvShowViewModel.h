@@ -1,8 +1,8 @@
 #ifndef SERIO_TVSHOWVIEWMODEL_H
 #define SERIO_TVSHOWVIEWMODEL_H
 
-#include <tv-show-storage/TvShowStorage.h>
 #include <user-interface/model/pageable-list/EpisodeListModel.h>
+#include <tv-show-viewer/TvShowViewer.h>
 #include "ViewModel.h"
 
 namespace serio::qt {
@@ -14,13 +14,12 @@ class TvShowViewModel : public ViewModel {
     Q_PROPERTY(QString thumbnailUrl READ getThumbnailUrl NOTIFY selectedTvShowChanged)
     Q_PROPERTY(EpisodeListModel* episodeList READ getEpisodeList CONSTANT)
 public:
-    TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowStorage& storage, StackOfViews& stack);
+    TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] QString getLastWatchDate() const;
     [[nodiscard]] QString getThumbnailUrl() const;
     EpisodeListModel* getEpisodeList();
-    void openView(const QList<QVariant> &args);
     void load();
     void loadEpisodes(const QVariantList& args);
 signals:
@@ -28,10 +27,10 @@ signals:
 private:
     const unsigned int pageSize;
     EpisodeListModel episodeListModel;
-    core::TvShowStorage& storage;
-    StackOfViews& stack;
-    std::optional<QString> selectedTvShowName;
-    std::optional<core::TvShow> selectedTvShow;
+    QString tvShowName;
+    QString thumbnailUrl;
+    QString lastWatchDate;
+    core::TvShowViewer& viewer;
     void loadTvShow();
 };
 

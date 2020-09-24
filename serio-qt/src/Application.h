@@ -18,6 +18,7 @@ private:
     core::TvShowCrawlerEditor tvShowCrawlerEditor;
     QTaskExecutor executor;
     DatabaseStorage storage;
+    core::TvShowViewer viewer;
     UserInterface userInterface;
 };
 
