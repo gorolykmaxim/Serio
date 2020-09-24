@@ -44,6 +44,14 @@ public:
     bool operator>=(const ListPage &rhs) const {
         return !(*this < rhs);
     }
+    bool operator==(const ListPage &rhs) const {
+        return offset == rhs.offset &&
+               totalSize == rhs.totalSize &&
+               items == rhs.items;
+    }
+    bool operator!=(const ListPage &rhs) const {
+        return !(rhs == *this);
+    }
 private:
     unsigned int offset, totalSize;
     std::vector<T> items{};

@@ -41,7 +41,9 @@ add_library(Core STATIC
         include/tv-show-crawler-editor/CrawlerBuilder.h
         src/tv-show-crawler-editor/TvShowCrawlerEditor.cpp
         src/tv-show-crawler-editor/TvShowCrawlerBuilder.cpp
-        src/tv-show-crawler-editor/CrawlerBuilder.cpp)
+        src/tv-show-crawler-editor/CrawlerBuilder.cpp
+        include/tv-show-viewer/TvShowViewer.h
+        src/tv-show-viewer/TvShowViewer.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/json)
 
 add_library(CoreTestMocks INTERFACE)
@@ -60,5 +62,6 @@ add_executable(CoreTest
         test/tv-show-crawler-runtime/model/CrawlLogEntryTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerStepTypeTest.cpp
         test/tv-show-crawler-runtime/TvShowCrawlerRuntimeTest.cpp
-        test/tv-show-crawler-editor/TvShowCrawlerEditorTest.cpp)
+        test/tv-show-crawler-editor/TvShowCrawlerEditorTest.cpp
+        test/tv-show-viewer/TvShowViewerTest.cpp)
 target_link_libraries(CoreTest Core CoreTestMocks gtest gmock gtest_main)
