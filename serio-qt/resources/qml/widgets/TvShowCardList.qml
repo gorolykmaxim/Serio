@@ -4,6 +4,7 @@ import Serio 1.0
 
 HorizontalCardList {
     property TvShowListModel listModel
+    signal tvShowSelected(string tvShowName)
     id: root
     model: listModel
     delegate: TvShowCard {
@@ -12,5 +13,6 @@ HorizontalCardList {
         thumbnailUrl: model.thumbnailUrl
         lastWatchDate: model.lastWatchDate
         thumbnailSourceHeight: Screen.desktopAvailableHeight
+        onSelected: tvShowSelected(model.name)
     }
 }

@@ -13,6 +13,9 @@ FocusScope {
     property string lastWatchDate
     property int thumbnailSourceHeight: height
     property real borderRadius: 4
+    signal selected()
+    Keys.onReturnPressed: selected()
+    Keys.onEnterPressed: selected()
     RoundNullableImage {
         anchors.fill: parent
         borderRadius: parent.borderRadius
@@ -45,5 +48,6 @@ FocusScope {
     CursorArea {
         id: cursorArea
         anchors.fill: parent
+        onClicked: selected()
     }
 }
