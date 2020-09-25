@@ -10,6 +10,8 @@ void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQm
     engine.rootContext()->setContextProperty("tvShowViewModel", this);
     router.registerAction(serio::qt::ActionType::LOAD_TV_SHOW, [this] (const QVariantList& args) { load(); });
     router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const QVariantList& args) { loadEpisodes(args); });
+    connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
+            this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
 
 QString serio::qt::TvShowViewModel::getTvShowName() const {

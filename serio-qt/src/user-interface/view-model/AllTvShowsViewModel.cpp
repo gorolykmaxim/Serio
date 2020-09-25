@@ -17,6 +17,10 @@ void serio::qt::AllTvShowsViewModel::initialize(serio::qt::ActionRouter &router,
     router.registerAction(ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadWatchedShows(args); });
     router.registerAction(ActionType::OPEN_TV_SHOW_VIEW, [this] (const QVariantList& args) { openTvShowView(args); });
     router.registerAction(ActionType::LOAD_FIRST_PAGE_OF_TV_SHOWS, [this] (const QVariantList& args) { loadFirstPage(); });
+    connect(&allShowsListModel, &serio::qt::TvShowListModel::requestPageLoad,
+            this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_ALL_TV_SHOWS_LIST_PAGE, QVariantList({offset, limit})); });
+    connect(&watchedShowsListModel, &serio::qt::TvShowListModel::requestPageLoad,
+            this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, QVariantList({offset, limit})); });
 }
 
 serio::qt::TvShowListModel* serio::qt::AllTvShowsViewModel::getAllShows() {

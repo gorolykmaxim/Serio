@@ -6,7 +6,6 @@ import "../widgets"
 View {
     onCreated: {
         backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
-        tvShowViewModel.episodeList.requestPageLoad.connect((offset, limit) => actionRouter.trigger(ActionType.LOAD_EPISODES_LIST_PAGE, [offset, limit]))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
     RoundNullableImage {
