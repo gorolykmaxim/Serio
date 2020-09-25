@@ -34,9 +34,11 @@ signals:
     void canCrawlerBeSavedChanged();
 private:
     QString tvShowName;
+    QString rootEditorView;
     core::TvShowCrawlerEditor& editor;
     StackOfViews& stack;
     void setName(QString name);
+    void openEditorView(QString view);
 };
 
 }

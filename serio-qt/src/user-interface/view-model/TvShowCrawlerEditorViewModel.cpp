@@ -38,11 +38,11 @@ void serio::qt::TvShowCrawlerEditorViewModel::openAddTvShowView() {
 
 void serio::qt::TvShowCrawlerEditorViewModel::openTvShowCrawlerEditorView() {
     editor.createTvShowCrawler();
-    stack.replaceCurrentViewWith(QString("TvShowCrawlerEditorView.qml"));
+    openEditorView("TvShowCrawlerEditorView.qml");
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::openImportTvShowCrawlerView() {
-    stack.replaceCurrentViewWith(QString("ImportTvShowCrawlerView.qml"));
+    openEditorView("ImportTvShowCrawlerView.qml");
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::loadTvShowName() {
@@ -64,7 +64,7 @@ void serio::qt::TvShowCrawlerEditorViewModel::saveWithOverride() {
         editor.saveAndRunTvShowCrawler();
         stack.popAllViews();
     } catch (std::runtime_error& e) {
-        stack.popCurrentView();
+        stack.popAllViewsUntil(rootEditorView);
         throw e;
     }
 }
@@ -73,6 +73,11 @@ void serio::qt::TvShowCrawlerEditorViewModel::setName(QString name) {
     tvShowName = std::move(name);
     emit tvShowNameChanged();
     emit canCrawlerBeSavedChanged();
+}
+
+void serio::qt::TvShowCrawlerEditorViewModel::openEditorView(QString view) {
+    rootEditorView = std::move(view);
+    stack.replaceCurrentViewWith(rootEditorView);
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::importTvShowCrawler(const QVariantList &args) {

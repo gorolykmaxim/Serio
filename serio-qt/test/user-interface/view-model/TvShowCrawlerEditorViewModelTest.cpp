@@ -81,9 +81,18 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOverrideExistingTvShowCrawlerWith
     viewModel.saveWithOverride();
 }
 
-TEST_F(TvShowCrawlerEditorViewModelTest, shouldPopCrawlingInProgressViewEvenIfAnErrorOccursDuringCrawl) {
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldPopAllViewsUntilTvShowCrawlerEditorEvenIfAnErrorOccursDuringCrawl) {
+    EXPECT_CALL(editor, createTvShowCrawler());
     EXPECT_CALL(editor, saveAndRunTvShowCrawler()).WillOnce(::testing::Throw(std::runtime_error("error")));
-    EXPECT_CALL(stack, popCurrentView());
+    EXPECT_CALL(stack, popAllViewsUntil(QString("TvShowCrawlerEditorView.qml")));
+    viewModel.openTvShowCrawlerEditorView();
+    EXPECT_THROW(viewModel.saveWithOverride(), std::runtime_error);
+}
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldPopAllViewsUntilImportTvShowCrawlerEvenIfAnErrorOccursDuringCrawl) {
+    EXPECT_CALL(editor, saveAndRunTvShowCrawler()).WillOnce(::testing::Throw(std::runtime_error("error")));
+    EXPECT_CALL(stack, popAllViewsUntil(QString("ImportTvShowCrawlerView.qml")));
+    viewModel.openImportTvShowCrawlerView();
     EXPECT_THROW(viewModel.saveWithOverride(), std::runtime_error);
 }
 
