@@ -24,6 +24,12 @@ TEST_F(StackOfViewsTest, shouldPopAllViewsFromStack) {
     EXPECT_FALSE(popSpy.takeFirst()[0].toBool());
 }
 
+TEST_F(StackOfViewsTest, shouldPopAllViewsUntilTheSpecifiedOne) {
+    QSignalSpy unwindSpy(&stack, &serio::qt::StackOfViews::unwind);
+    stack.popAllViewsUntil("View2.qml");
+    EXPECT_EQ(QString("views/View2.qml"), unwindSpy.takeFirst()[0].toString());
+}
+
 TEST_F(StackOfViewsTest, shouldReplaceCurrentViewWithTheSpecifiedOne) {
     QSignalSpy replaceSpy(&stack, &serio::qt::StackOfViews::replaceCurrentView);
     stack.replaceCurrentViewWith("View3.qml");

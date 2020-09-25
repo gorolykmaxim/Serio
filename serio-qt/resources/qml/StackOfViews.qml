@@ -16,6 +16,9 @@ StackView {
             else
                 root.pop(null)
         }
+        function onUnwind(targetView) {
+            root.pop(root.find((i) => i.viewUrl === targetView))
+        }
         function onReplaceCurrentView(newView) {
             root.replace(newView, {viewUrl: newView})
         }

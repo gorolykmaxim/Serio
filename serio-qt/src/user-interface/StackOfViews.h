@@ -15,11 +15,13 @@ public:
     virtual void pushView(const QString& view);
     virtual void popCurrentView();
     virtual void popAllViews();
+    virtual void popAllViewsUntil(const QString& view);
     virtual void replaceCurrentViewWith(const QString& newView);
     virtual void replaceSpecifiedViewWith(const QString& targetView, const QString& newView);
 signals:
     void push(QString view);
     void pop(bool currentView);
+    void unwind(QString targetView);
     void replaceCurrentView(QString newView);
     void replaceSpecifiedView(QString targetView, QString newView);
 private:
