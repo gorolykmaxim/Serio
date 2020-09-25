@@ -13,16 +13,14 @@ class StackOfViews : public QObject {
 public:
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     virtual void pushView(const QString& view);
-    virtual void pushViews(const QStringList& views);
     virtual void popCurrentView();
     virtual void popAllViews();
     virtual void replaceCurrentViewWith(const QString& newView);
 signals:
-    void push(QStringList views);
+    void push(QString view);
     void pop(bool currentView);
     void replace(QString newView);
 private:
-    [[nodiscard]] QStringList makePathsToViewsAbsolute(QStringList views) const;
     [[nodiscard]] QString makePathToViewAbsolute(const QString& view) const;
 };
 

@@ -7,11 +7,7 @@ void serio::qt::StackOfViews::initialize(ActionRouter& router, QQmlApplicationEn
 }
 
 void serio::qt::StackOfViews::pushView(const QString &view) {
-    pushViews(QStringList(view));
-}
-
-void serio::qt::StackOfViews::pushViews(const QStringList& views) {
-    emit push(makePathsToViewsAbsolute(views));
+    emit push(makePathToViewAbsolute(view));
 }
 
 void serio::qt::StackOfViews::popCurrentView() {
@@ -24,13 +20,6 @@ void serio::qt::StackOfViews::popAllViews() {
 
 void serio::qt::StackOfViews::replaceCurrentViewWith(const QString& newView) {
     emit replace(makePathToViewAbsolute(newView));
-}
-
-QStringList serio::qt::StackOfViews::makePathsToViewsAbsolute(QStringList views) const {
-    for (QString& view: views) {
-        view = makePathToViewAbsolute(view);
-    }
-    return views;
 }
 
 QString serio::qt::StackOfViews::makePathToViewAbsolute(const QString& view) const {

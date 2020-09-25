@@ -9,14 +9,9 @@ protected:
     QSignalSpy popSpy = QSignalSpy(&stack, &serio::qt::StackOfViews::pop);
 };
 
-TEST_F(StackOfViewsTest, shouldPushMultipleViewsOnStackWithTheirAbsolutePaths) {
-    stack.pushViews(QStringList({"View1.qml", "View2.qml"}));
-    EXPECT_EQ(QStringList({"views/View1.qml", "views/View2.qml"}), pushSpy.takeFirst()[0].toStringList());
-}
-
 TEST_F(StackOfViewsTest, shouldPushSingleViewOnStackWithItsAbsolutePath) {
     stack.pushView("View1.qml");
-    EXPECT_EQ(QStringList({"views/View1.qml"}), pushSpy.takeFirst()[0].toStringList());
+    EXPECT_EQ(QString("views/View1.qml"), pushSpy.takeFirst()[0].toString());
 }
 
 TEST_F(StackOfViewsTest, shouldPopCurrentViewFromStack) {

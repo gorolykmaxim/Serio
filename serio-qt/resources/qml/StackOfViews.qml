@@ -7,8 +7,8 @@ StackView {
     focus: true
     Connections {
         target: stackOfViews
-        function onPush(views) {
-            root.push.apply(root, views)
+        function onPush(view) {
+            root.push(view)
         }
         function onPop(currentView) {
             if (currentView)

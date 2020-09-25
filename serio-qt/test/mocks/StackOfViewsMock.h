@@ -7,7 +7,6 @@
 class StackOfViewsMock : public serio::qt::StackOfViews {
 public:
     MOCK_METHOD(void, pushView, (const QString&), (override));
-    MOCK_METHOD(void, pushViews, (const QStringList&), (override));
     MOCK_METHOD(void, popCurrentView, (), (override));
     MOCK_METHOD(void, popAllViews, (), (override));
     MOCK_METHOD(void, replaceCurrentViewWith, (const QString&), (override));
