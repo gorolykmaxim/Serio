@@ -4,8 +4,7 @@
 serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize, unsigned int listModelPageCountLimit,
                                                     serio::core::TvShowStorage& storage, core::TvShowViewer& viewer,
                                                     serio::qt::StackOfViews& stack)
-    : pageSize(listModelPageSize),
-      allShowsListModel(listModelPageSize, listModelPageCountLimit),
+    : allShowsListModel(listModelPageSize, listModelPageCountLimit),
       watchedShowsListModel(listModelPageSize, listModelPageCountLimit),
       storage(storage),
       viewer(viewer),
@@ -17,10 +16,7 @@ void serio::qt::AllTvShowsViewModel::initialize(serio::qt::ActionRouter &router,
     router.registerAction(ActionType::LOAD_ALL_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadAllShows(args); });
     router.registerAction(ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadWatchedShows(args); });
     router.registerAction(ActionType::OPEN_TV_SHOW_VIEW, [this] (const QVariantList& args) { openTvShowView(args); });
-}
-
-unsigned int serio::qt::AllTvShowsViewModel::getPageSize() const {
-    return pageSize;
+    router.registerAction(ActionType::LOAD_FIRST_PAGE_OF_TV_SHOWS, [this] (const QVariantList& args) { loadFirstPage(); });
 }
 
 serio::qt::TvShowListModel* serio::qt::AllTvShowsViewModel::getAllShows() {
@@ -44,4 +40,11 @@ void serio::qt::AllTvShowsViewModel::loadWatchedShows(const QVariantList& args) 
 void serio::qt::AllTvShowsViewModel::openTvShowView(const QVariantList &args) {
     viewer.openTvShowWithName(args[0].toString().toStdString());
     stack.pushView("TvShowView.qml");
+}
+
+void serio::qt::AllTvShowsViewModel::loadFirstPage() {
+    modifyModel([this] {
+        allShowsListModel.requestFirstPageLoad();
+        watchedShowsListModel.requestFirstPageLoad();
+    });
 }

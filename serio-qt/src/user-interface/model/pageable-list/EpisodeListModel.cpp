@@ -12,6 +12,10 @@ void serio::qt::EpisodeListModel::loadPage(const serio::core::ListPage<serio::co
     servant.loadPage(page);
 }
 
+void serio::qt::EpisodeListModel::requestFirstPageLoad() {
+    servant.requestFirstPageLoad();
+}
+
 int serio::qt::EpisodeListModel::rowCount(const QModelIndex &parent) const {
     return servant.rowCount(parent);
 }

@@ -15,6 +15,7 @@ public:
     };
     EpisodeListModel(unsigned int pageSize, unsigned int pageCountLimit);
     void loadPage(const core::ListPage<core::Episode>& page);
+    void requestFirstPageLoad();
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 private:

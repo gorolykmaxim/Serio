@@ -12,6 +12,10 @@ void serio::qt::TvShowListModel::loadPage(const core::ListPage<core::TvShow>& pa
     servant.loadPage(page);
 }
 
+void serio::qt::TvShowListModel::requestFirstPageLoad() {
+    servant.requestFirstPageLoad();
+}
+
 int serio::qt::TvShowListModel::rowCount(const QModelIndex &parent) const {
     return servant.rowCount(parent);
 }

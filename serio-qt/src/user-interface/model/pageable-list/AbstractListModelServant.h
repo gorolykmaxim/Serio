@@ -21,6 +21,9 @@ public:
         shrinkModelIfNecessary(page);
         pageIsLoaded(page);
     }
+    void requestFirstPageLoad() {
+        emit model.requestPageLoad(0, pageSize);
+    }
     int rowCount(const QModelIndex &parent) const {
         return listProxy.getTotalSize();
     }

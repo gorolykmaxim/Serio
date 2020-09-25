@@ -3,6 +3,7 @@
 #include <TvShowStorageMock.h>
 #include <StackOfViewsMock.h>
 #include <TvShowViewerMock.h>
+#include <QSignalSpy>
 
 class AllTvShowsViewModelTest : public ::testing::Test {
 protected:
@@ -14,10 +15,6 @@ protected:
     serio::core::ListPage<serio::core::TvShow> page = serio::core::ListPage<serio::core::TvShow>(0, 300, {});
     serio::qt::AllTvShowsViewModel viewModel = serio::qt::AllTvShowsViewModel(pageSize, 2, storage, viewer, stack);
 };
-
-TEST_F(AllTvShowsViewModelTest, shouldHaveSpecifiedPageSize) {
-    EXPECT_EQ(pageSize, viewModel.getPageSize());
-}
 
 TEST_F(AllTvShowsViewModelTest, shouldHaveEmptyAllTvShowsListModelOnCreation) {
     EXPECT_EQ(0, viewModel.getAllShows()->rowCount(index));
@@ -46,4 +43,14 @@ TEST_F(AllTvShowsViewModelTest, shouldOpenTvShowViewWhileSelectingSpecifiedTvSho
     EXPECT_CALL(viewer, openTvShowWithName(tvShowName));
     EXPECT_CALL(stack, pushView(QString("TvShowView.qml")));
     viewModel.openTvShowView(QVariantList({QString::fromStdString(tvShowName)}));
+}
+
+TEST_F(AllTvShowsViewModelTest, shouldLoadFirstPageOfWatchShowsAndAllShows) {
+    QSignalSpy allTvShowsSpy(viewModel.getAllShows(), &serio::qt::TvShowListModel::requestPageLoad);
+    QSignalSpy watchedTvShowsSpy(viewModel.getWatchedShows(), &serio::qt::TvShowListModel::requestPageLoad);
+    viewModel.loadFirstPage();
+    for (const auto& args: {allTvShowsSpy.takeFirst(), watchedTvShowsSpy.takeFirst()}) {
+        EXPECT_EQ(0, args[0].toUInt());
+        EXPECT_EQ(pageSize, args[1].toUInt());
+    }
 }

@@ -12,21 +12,19 @@ namespace serio::qt {
 
 class AllTvShowsViewModel : public ViewModel {
     Q_OBJECT
-    Q_PROPERTY(unsigned int pageSize READ getPageSize CONSTANT)
     Q_PROPERTY(TvShowListModel* allShowsList READ getAllShows CONSTANT)
     Q_PROPERTY(TvShowListModel* watchedShowsList READ getWatchedShows CONSTANT)
 public:
     AllTvShowsViewModel(unsigned int listModelPageSize, unsigned int listModelPageCountLimit, core::TvShowStorage& storage,
                         core::TvShowViewer& viewer, StackOfViews& stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
-    unsigned int getPageSize() const;
     TvShowListModel* getAllShows();
     TvShowListModel* getWatchedShows();
     void loadAllShows(const QVariantList& args);
     void loadWatchedShows(const QVariantList& args);
     void openTvShowView(const QVariantList& args);
+    void loadFirstPage();
 private:
-    unsigned int pageSize;
     TvShowListModel allShowsListModel, watchedShowsListModel;
     core::TvShowStorage& storage;
     core::TvShowViewer& viewer;

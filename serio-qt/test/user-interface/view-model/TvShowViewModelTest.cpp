@@ -15,11 +15,6 @@ protected:
     };
     TvShowViewerMock viewer = TvShowViewerMock::create();
     serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer);
-    void expectTvShowAndItsEpisodesToBeLoaded(const serio::core::TvShow& tvShow) {
-        serio::core::ListPage<serio::core::Episode> page(0, 100, episodes);
-        EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(tvShow));
-        EXPECT_CALL(viewer, getTvShowEpisodes(0, pageSize)).WillOnce(::testing::Return(page));
-    }
     void expectEpisodesToBeLoaded() {
         serio::qt::EpisodeListModel* episodeList = viewModel.getEpisodeList();
         EXPECT_EQ(episodes[0].getName(), episodeList->data(episodeList->index(0), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
@@ -47,35 +42,39 @@ TEST_F(TvShowViewModelTest, shouldHaveEmptyListOfEpisodesByDefault) {
     EXPECT_EQ(0, viewModel.getEpisodeList()->rowCount(QModelIndex()));
 }
 
-TEST_F(TvShowViewModelTest, shouldLoadCurrentlyDisplayedTvShowAndItsEpisodes) {
-    expectTvShowAndItsEpisodesToBeLoaded(scrubs);
-    QSignalSpy spy(&viewModel, &serio::qt::TvShowViewModel::selectedTvShowChanged);
+TEST_F(TvShowViewModelTest, shouldLoadCurrentlyDisplayedTvShowAndRequestFirstPageOfItsEpisodes) {
+    EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(scrubs));
+    QSignalSpy tvShowChangedSpy(&viewModel, &serio::qt::TvShowViewModel::selectedTvShowChanged);
+    QSignalSpy requestEpisodePageSpy(viewModel.getEpisodeList(), &serio::qt::EpisodeListModel::requestPageLoad);
     viewModel.load();
     EXPECT_EQ(scrubs.getName(), viewModel.getTvShowName().toStdString());
     EXPECT_EQ(scrubs.getThumbnailUrl(), viewModel.getThumbnailUrl().toStdString());
-    EXPECT_EQ(1, spy.count());
-    expectEpisodesToBeLoaded();
+    EXPECT_EQ(1, tvShowChangedSpy.count());
+    QVariantList args = requestEpisodePageSpy.takeFirst();
+    EXPECT_EQ(0, args[0].toUInt());
+    EXPECT_EQ(pageSize, args[1].toUInt());
 }
 
 TEST_F(TvShowViewModelTest, shouldHaveLastWatchDateSetToToday) {
     serio::core::TvShow friends("Friends", scrubs.getThumbnailUrl(), serio::core::LastWatchDate(now));
-    expectTvShowAndItsEpisodesToBeLoaded(friends);
+    EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(friends));
     viewModel.load();
     EXPECT_EQ(QString("Last watched today"), viewModel.getLastWatchDate());
 }
 
 TEST_F(TvShowViewModelTest, shouldHaveLastWatchDateSetToYesterday) {
     serio::core::TvShow mandalorian("Mandalorian", scrubs.getThumbnailUrl(), serio::core::LastWatchDate(now - std::chrono::hours(24)));
-    expectTvShowAndItsEpisodesToBeLoaded(mandalorian);
+    EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(mandalorian));
     viewModel.load();
     EXPECT_EQ(QString("Last watched yesterday"), viewModel.getLastWatchDate());
 }
 
 TEST_F(TvShowViewModelTest, shouldLoadSpecifiedPageOfEpisodes) {
-    expectTvShowAndItsEpisodesToBeLoaded(scrubs);
+    EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(scrubs));
     viewModel.load();
     unsigned int offset = 100;
     serio::core::ListPage<serio::core::Episode> page(0, 100, episodes);
     EXPECT_CALL(viewer, getTvShowEpisodes(offset, pageSize)).WillOnce(::testing::Return(page));
     viewModel.loadEpisodes(QVariantList({offset, pageSize}));
+    expectEpisodesToBeLoaded();
 }

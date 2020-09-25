@@ -8,6 +8,7 @@ protected:
     const unsigned int pageSize = 100;
     serio::qt::TvShowListModel model;
     std::vector<serio::core::TvShow> tvShows;
+    QSignalSpy requestPageLoadSpy = QSignalSpy(&model, &serio::qt::TvShowListModel::requestPageLoad);
 public:
     TvShowListModelTest() : model(pageSize, 2) {
         tvShows.reserve(pageSize);
@@ -122,27 +123,31 @@ TEST_F(TvShowListModelTest, shouldReturnNullTvShowIfSpecifiedIndexIsNotLoaded) {
 
 TEST_F(TvShowListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 1000, tvShows));
-    QSignalSpy spy(&model, &serio::qt::TvShowListModel::requestPageLoad);
     (void)model.data(model.index(505), serio::qt::TvShowListModel::Role::NAME);
     (void)model.data(model.index(649), serio::qt::TvShowListModel::Role::NAME);
-    ASSERT_EQ(2, spy.count());
-    QVariantList args = spy.takeFirst();
+    ASSERT_EQ(2, requestPageLoadSpy.count());
+    QVariantList args = requestPageLoadSpy.takeFirst();
     EXPECT_EQ(500, args[0].toUInt());
     EXPECT_EQ(pageSize, args[1].toUInt());
-    args = spy.takeLast();
+    args = requestPageLoadSpy.takeLast();
     EXPECT_EQ(600, args[0].toUInt());
 }
 
 TEST_F(TvShowListModelTest, shouldNotRequestLoadOfPageOnInvalidIndex) {
-    QSignalSpy spy(&model, &serio::qt::TvShowListModel::requestPageLoad);
     (void)model.data(index, serio::qt::TvShowListModel::Role::NAME);
-    ASSERT_EQ(0, spy.count());
+    ASSERT_EQ(0, requestPageLoadSpy.count());
 }
 
 TEST_F(TvShowListModelTest, shouldNotRequestTheSamePageTwice) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(100, 1000, tvShows));
-    QSignalSpy spy(&model, &serio::qt::TvShowListModel::requestPageLoad);
     (void)model.data(model.index(200), serio::qt::TvShowListModel::Role::NAME);
     (void)model.data(model.index(200), serio::qt::TvShowListModel::Role::THUMBNAIL_URL);
-    ASSERT_EQ(1, spy.count());
+    ASSERT_EQ(1, requestPageLoadSpy.count());
+}
+
+TEST_F(TvShowListModelTest, shouldRequestLoadOfTheFirstPage) {
+    model.requestFirstPageLoad();
+    QVariantList args = requestPageLoadSpy.takeFirst();
+    EXPECT_EQ(0, args[0].toUInt());
+    EXPECT_EQ(pageSize, args[1].toUInt());
 }

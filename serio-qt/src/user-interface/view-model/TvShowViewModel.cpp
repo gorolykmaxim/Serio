@@ -3,7 +3,7 @@
 
 serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
                                             serio::core::TvShowViewer &viewer)
-    : pageSize(pageSize), episodeListModel(pageSize, pageCountLimit), viewer(viewer) {}
+    : episodeListModel(pageSize, pageCountLimit), viewer(viewer) {}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
@@ -30,7 +30,7 @@ serio::qt::EpisodeListModel* serio::qt::TvShowViewModel::getEpisodeList() {
 
 void serio::qt::TvShowViewModel::load() {
     loadTvShow();
-    loadEpisodes(QVariantList({0, pageSize}));
+    modifyModel([this] { episodeListModel.requestFirstPageLoad(); });
 }
 
 void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {

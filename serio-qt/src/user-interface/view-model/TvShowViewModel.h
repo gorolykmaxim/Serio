@@ -25,7 +25,6 @@ public:
 signals:
     void selectedTvShowChanged();
 private:
-    const unsigned int pageSize;
     EpisodeListModel episodeListModel;
     QString tvShowName;
     QString thumbnailUrl;
