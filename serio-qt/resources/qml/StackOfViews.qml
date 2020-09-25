@@ -8,7 +8,7 @@ StackView {
     Connections {
         target: stackOfViews
         function onPush(view) {
-            root.push(view)
+            root.push(view, {viewUrl: view})
         }
         function onPop(currentView) {
             if (currentView)
@@ -16,8 +16,11 @@ StackView {
             else
                 root.pop(null)
         }
-        function onReplace(newView) {
-            root.replace(newView)
+        function onReplaceCurrentView(newView) {
+            root.replace(newView, {viewUrl: newView})
+        }
+        function onReplaceSpecifiedView(targetView, newView) {
+            root.replace(root.find((i) => i.viewUrl === targetView), newView, {viewUrl: newView})
         }
     }
 }

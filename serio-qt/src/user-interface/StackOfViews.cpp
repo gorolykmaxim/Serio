@@ -19,7 +19,11 @@ void serio::qt::StackOfViews::popAllViews() {
 }
 
 void serio::qt::StackOfViews::replaceCurrentViewWith(const QString& newView) {
-    emit replace(makePathToViewAbsolute(newView));
+    emit replaceCurrentView(makePathToViewAbsolute(newView));
+}
+
+void serio::qt::StackOfViews::replaceSpecifiedViewWith(const QString &targetView, const QString &newView) {
+    emit replaceSpecifiedView(makePathToViewAbsolute(targetView), makePathToViewAbsolute(newView));
 }
 
 QString serio::qt::StackOfViews::makePathToViewAbsolute(const QString& view) const {
