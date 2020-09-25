@@ -14,7 +14,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           errorViewModel(stack),
           allTvShowsViewModel(100, 2, storage, viewer, stack),
           crawlLogViewModel(tvShowCrawlerEditor,stack),
-          tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, stack),
+          tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, viewer, stack),
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
           tvShowViewModel(100, 2, viewer) {

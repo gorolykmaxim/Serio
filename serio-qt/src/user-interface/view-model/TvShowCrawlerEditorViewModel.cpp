@@ -3,8 +3,9 @@
 #include <utility>
 
 serio::qt::TvShowCrawlerEditorViewModel::TvShowCrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor,
+                                                                      serio::core::TvShowViewer& viewer,
                                                                       serio::qt::StackOfViews &stack)
-    : editor(editor), stack(stack) {}
+    : editor(editor), viewer(viewer), stack(stack) {}
 
 void serio::qt::TvShowCrawlerEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("tvShowCrawlerEditorViewModel", this);
@@ -61,8 +62,10 @@ void serio::qt::TvShowCrawlerEditorViewModel::save() {
 void serio::qt::TvShowCrawlerEditorViewModel::saveWithOverride() {
     try {
         stack.pushView("CrawlingInProgressView.qml");
+        std::string name = editor.getTvShowName();
         editor.saveAndRunTvShowCrawler();
-        stack.popAllViews();
+        viewer.openTvShowWithName(name);
+        stack.replaceSpecifiedViewWith(rootEditorView, "TvShowView.qml");
     } catch (std::runtime_error& e) {
         stack.popAllViewsUntil(rootEditorView);
         throw e;
