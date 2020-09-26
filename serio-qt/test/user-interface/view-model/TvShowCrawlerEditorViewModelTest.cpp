@@ -144,7 +144,6 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowOverrideConfirmationDia
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldImportNewTvShowCrawler) {
     expectToReplaceTheRootViewWithTvShowViewAfterDisplayingCrawlingInProgress("ImportTvShowCrawlerView.qml");
     expectTvShowCrawlerToBeImported(true);
-    expectTvShowNameSet();
 }
 
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowCrawlerEditorViewToEditCurrentlyViewedTvShow) {
