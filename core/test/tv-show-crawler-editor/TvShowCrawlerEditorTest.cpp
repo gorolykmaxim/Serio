@@ -39,6 +39,13 @@ protected:
         editor.editCrawler(type);
         EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
     }
+    void expectCrawlerStepsToBeEdited(serio::core::CrawlerType type) {
+        EXPECT_CALL(runtime, getTvShowCrawlerByTvShowName(mandalorian))
+                .WillOnce(::testing::Return(std::optional(tvShowCrawler)));
+        editor.editTvShowCrawler(mandalorian);
+        editor.editCrawler(type);
+        EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
+    }
 };
 
 TEST_F(TvShowCrawlerEditorTest, shouldFailToChangeTvShowNameWhenNoTvShowCrawlerBeingEdited) {
@@ -427,4 +434,31 @@ TEST_F(TvShowCrawlerEditorTest, shouldResetCrawlerPreviewLogAfterChangingEditedC
     editor.previewCrawler();
     editor.editCrawler(crawlerTypes[1]);
     EXPECT_THROW((void)editor.getPreviewedCrawlerLog(), std::logic_error);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetTvShowNameToOneSpecifiedInEditedTvShowCrawler) {
+    EXPECT_CALL(runtime, getTvShowCrawlerByTvShowName(mandalorian))
+        .WillOnce(::testing::Return(std::optional(tvShowCrawler)));
+    editor.editTvShowCrawler(mandalorian);
+    EXPECT_EQ(mandalorian, editor.getTvShowName());
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeVideoCrawlerStepsToTheOneSpecifiedInEditedTvShowCrawler) {
+    expectCrawlerStepsToBeEdited(serio::core::CrawlerType::episodeVideoCrawler);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetThumbnailCrawlerStepsToTheOneSpecifiedInEditedTvShowCrawler) {
+    tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler(), serio::core::Crawler({value}));
+    expectCrawlerStepsToBeEdited(serio::core::CrawlerType::thumbnailCrawler);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeNameCrawlerStepsToTheOneSpecifiedInEditedTvShowCrawler) {
+    tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler(), serio::core::Crawler(), serio::core::Crawler({value}));
+    expectCrawlerStepsToBeEdited(serio::core::CrawlerType::episodeNameCrawler);
+}
+
+TEST_F(TvShowCrawlerEditorTest, shouldFailToEditTvShowCrawlerThatDoesNotExist) {
+    EXPECT_CALL(runtime, getTvShowCrawlerByTvShowName(mandalorian))
+        .WillOnce(::testing::Return(std::optional<serio::core::TvShowCrawler>()));
+    EXPECT_THROW(editor.editTvShowCrawler(mandalorian), std::logic_error);
 }

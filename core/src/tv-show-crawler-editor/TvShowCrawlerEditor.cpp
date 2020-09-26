@@ -10,11 +10,15 @@ void serio::core::TvShowCrawlerEditor::createTvShowCrawler() {
 
 void serio::core::TvShowCrawlerEditor::importTvShowCrawler(const std::string &rawCrawler) {
     TvShowCrawler crawler = runtime.deserializeTvShowCrawler(rawCrawler);
-    createTvShowCrawler();
-    setTvShowName(crawler.getTvShowName());
-    addCrawlerStepsFrom(CrawlerType::episodeVideoCrawler, crawler);
-    addCrawlerStepsFrom(CrawlerType::thumbnailCrawler, crawler);
-    addCrawlerStepsFrom(CrawlerType::episodeNameCrawler, crawler);
+    setTvShowCrawler(crawler);
+}
+
+void serio::core::TvShowCrawlerEditor::editTvShowCrawler(const std::string &tvShowName) {
+    std::optional<serio::core::TvShowCrawler> crawler = runtime.getTvShowCrawlerByTvShowName(tvShowName);
+    if (!crawler) {
+        throw TvShowCrawlerDoesNotExistError(tvShowName);
+    }
+    setTvShowCrawler(*crawler);
 }
 
 void serio::core::TvShowCrawlerEditor::setTvShowName(std::string name) {
@@ -107,8 +111,19 @@ void serio::core::TvShowCrawlerEditor::addCrawlerStepsFrom(serio::core::CrawlerT
     saveCrawler();
 }
 
+void serio::core::TvShowCrawlerEditor::setTvShowCrawler(const serio::core::TvShowCrawler &crawler) {
+    createTvShowCrawler();
+    setTvShowName(crawler.getTvShowName());
+    addCrawlerStepsFrom(CrawlerType::episodeVideoCrawler, crawler);
+    addCrawlerStepsFrom(CrawlerType::thumbnailCrawler, crawler);
+    addCrawlerStepsFrom(CrawlerType::episodeNameCrawler, crawler);
+}
+
 serio::core::NoTvShowCrawlerEditedError::NoTvShowCrawlerEditedError()
     : std::logic_error("No tv-show crawler is being edited right now") {}
 
 serio::core::TvShowCrawlerEditorError::TvShowCrawlerEditorError(const std::runtime_error &cause)
-        : runtime_error(std::string("Failed to save and run edited tv-show crawler: ") + cause.what()) {}
+    : runtime_error(std::string("Failed to save and run edited tv-show crawler: ") + cause.what()) {}
+
+serio::core::TvShowCrawlerDoesNotExistError::TvShowCrawlerDoesNotExistError(const std::string &tvShowName)
+    : logic_error("Crawler of tv show " + tvShowName + " does not exist") {}

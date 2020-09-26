@@ -14,6 +14,7 @@ public:
     explicit TvShowCrawlerEditorMock(serio::core::TvShowCrawlerRuntime& runtime) : TvShowCrawlerEditor(runtime) {}
     MOCK_METHOD(void, createTvShowCrawler, (), (override));
     MOCK_METHOD(void, importTvShowCrawler, (const std::string&), (override));
+    MOCK_METHOD(void, editTvShowCrawler, (const std::string&), (override));
     MOCK_METHOD(void, setTvShowName, (std::string), (override));
     MOCK_METHOD(void, editCrawler, (serio::core::CrawlerType), (override));
     MOCK_METHOD(void, addCrawlerStep, (serio::core::CrawlerStep), (override));

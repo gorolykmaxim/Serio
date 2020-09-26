@@ -11,6 +11,7 @@ public:
     explicit TvShowCrawlerEditor(TvShowCrawlerRuntime& runtime);
     virtual void createTvShowCrawler();
     virtual void importTvShowCrawler(const std::string &rawCrawler);
+    virtual void editTvShowCrawler(const std::string& tvShowName);
     virtual void setTvShowName(std::string name);
     virtual void editCrawler(CrawlerType type);
     virtual void addCrawlerStep(CrawlerStep step);
@@ -32,6 +33,7 @@ private:
     TvShowCrawlerBuilder& getBuilderOrFail();
     [[nodiscard]] const TvShowCrawlerBuilder& getBuilderOrFail() const;
     void addCrawlerStepsFrom(CrawlerType type, const TvShowCrawler &crawler);
+    void setTvShowCrawler(const TvShowCrawler& crawler);
 };
 
 class NoTvShowCrawlerEditedError : public std::logic_error {
@@ -42,6 +44,11 @@ public:
 class TvShowCrawlerEditorError : public std::runtime_error {
 public:
     explicit TvShowCrawlerEditorError(const std::runtime_error& cause);
+};
+
+class TvShowCrawlerDoesNotExistError : public std::logic_error {
+public:
+    explicit TvShowCrawlerDoesNotExistError(const std::string& tvShowName);
 };
 
 }
