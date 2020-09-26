@@ -21,6 +21,7 @@ public:
     [[nodiscard]] virtual TvShowCrawler deserializeTvShowCrawler(const std::string &rawCrawler) const;
     virtual bool willOverrideExistingTvShow(const TvShowCrawler &crawler);
     [[nodiscard]] virtual CrawlResult executeCrawler(const Crawler& crawler);
+    [[nodiscard]] virtual std::optional<TvShowCrawler> getTvShowCrawlerByTvShowName(const std::string& tvShowName);
 private:
     TvShowCrawlerStorage& crawlerStorage;
     TvShowStorage& tvShowStorage;

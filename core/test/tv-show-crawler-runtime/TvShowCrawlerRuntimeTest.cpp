@@ -370,3 +370,16 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldReturnExecutionLogOfTheSpecifiedCrawler) 
     EXPECT_EQ("[episode-1.mp4, episode-2.mp4, episode-3.mp4]", log[3].getStepInputData());
     EXPECT_EQ("[https://tv-show/episode-1.mp4, https://tv-show...", log[3].getStepOutputData());
 }
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldReturnCrawlerOfSpecifiedTvShowFromStorage) {
+    serio::core::TvShowCrawler crawler(mandalorian, crawlerWithSteps);
+    EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(mandalorian))
+        .WillOnce(::testing::Return(std::optional(mandalorianCrawlerWithEpisodeVideoCrawler)));
+    EXPECT_EQ(crawler, *runtime.getTvShowCrawlerByTvShowName(mandalorian));
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldReturnEmptyOptionalSinceThereIsNoCrawlerForSpecifiedTvShowInStorage) {
+    EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(friends))
+        .WillOnce(::testing::Return(std::optional<std::string>()));
+    EXPECT_FALSE(runtime.getTvShowCrawlerByTvShowName(friends));
+}
