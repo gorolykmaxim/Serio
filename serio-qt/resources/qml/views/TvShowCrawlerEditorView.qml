@@ -22,7 +22,8 @@ CenteredViewLayout {
     TextField {
         id: tvShowNameEdt
         Layout.fillWidth: true
-        focus: true
+        focus: tvShowCrawlerEditorViewModel.canTvShowNameBeChanged
+        enabled: tvShowCrawlerEditorViewModel.canTvShowNameBeChanged
         text: tvShowCrawlerEditorViewModel.tvShowName
         placeholderText: "TV Show name"
         KeyNavigation.tab: configureEpisodeVideoCrawlerBtn
@@ -62,6 +63,7 @@ CenteredViewLayout {
         SerioButton {
             id: cancelBtn
             text: "cancel"
+            focus: !tvShowCrawlerEditorViewModel.canTvShowNameBeChanged
             KeyNavigation.tab: saveBtn
             KeyNavigation.right: saveBtn
         }

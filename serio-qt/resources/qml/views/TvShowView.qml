@@ -6,6 +6,7 @@ import "../widgets"
 View {
     onCreated: {
         backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
+        editBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_CURRENT_TV_SHOW_CRAWLER_EDITOR_VIEW, []))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
     RoundNullableImage {
@@ -24,12 +25,24 @@ View {
             title: tvShowViewModel.tvShowName
             subtitle: tvShowViewModel.lastWatchDate
         }
-        SerioButton {
-            id: backBtn
-            text: "back"
-            focus: true
-            KeyNavigation.down: episodeList
-            KeyNavigation.tab: episodeList
+        Row {
+            Layout.fillWidth: true
+            spacing: globalPadding
+            SerioButton {
+                id: backBtn
+                text: "back"
+                focus: episodeList.count > 0
+                KeyNavigation.down: episodeList
+                KeyNavigation.right: editBtn
+                KeyNavigation.tab: editBtn
+            }
+            SerioButton {
+                id: editBtn
+                text: "edit"
+                focus: episodeList.count === 0
+                KeyNavigation.down: episodeList
+                KeyNavigation.tab: episodeList
+            }
         }
         VerticalTileList {
             id: episodeList

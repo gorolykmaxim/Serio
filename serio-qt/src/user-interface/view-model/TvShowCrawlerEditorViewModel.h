@@ -17,30 +17,37 @@ class TvShowCrawlerEditorViewModel : public ViewModel {
     Q_OBJECT
     Q_PROPERTY(QString tvShowName READ getTvShowName NOTIFY tvShowNameChanged)
     Q_PROPERTY(bool canCrawlerBeSaved READ canCrawlerBeSaved NOTIFY canCrawlerBeSavedChanged)
+    Q_PROPERTY(bool canTvShowNameBeChanged READ canTvShowNameBeChanged NOTIFY canTvShowNameBeChangedChanged)
 public:
     TvShowCrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor, core::TvShowViewer& viewer, StackOfViews &stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] bool canCrawlerBeSaved() const;
+    [[nodiscard]] bool canTvShowNameBeChanged() const;
     void openAddTvShowView();
     void openTvShowCrawlerEditorView();
     void setTvShowName(const QVariantList& args);
     void importTvShowCrawler(const QVariantList &args);
     void openImportTvShowCrawlerView();
+    void openCurrentTvShowCrawlerEditorView();
     void loadTvShowName();
     void save();
     void saveWithOverride();
 signals:
     void tvShowNameChanged();
     void canCrawlerBeSavedChanged();
+    void canTvShowNameBeChangedChanged();
 private:
+    bool isEditingExistingTvShow;
     QString tvShowName;
     QString rootEditorView;
     core::TvShowCrawlerEditor& editor;
     core::TvShowViewer& viewer;
     StackOfViews& stack;
     void setName(QString name);
-    void openEditorView(QString view);
+    void openNewTvShowCrawlerEditorView(const QString& view);
+    void openExistingTvShowCrawlerEditorView();
+    void setEditingExistingTvShow(bool editingExistingTvShow);
 };
 
 }

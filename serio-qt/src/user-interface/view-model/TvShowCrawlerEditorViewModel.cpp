@@ -1,6 +1,5 @@
 #include "TvShowCrawlerEditorViewModel.h"
 #include <QQmlContext>
-#include <utility>
 
 serio::qt::TvShowCrawlerEditorViewModel::TvShowCrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor,
                                                                       serio::core::TvShowViewer& viewer,
@@ -17,6 +16,7 @@ void serio::qt::TvShowCrawlerEditorViewModel::initialize(serio::qt::ActionRouter
     router.registerAction(ActionType::LOAD_TV_SHOW_CRAWLER_EDITOR_TV_SHOW_NAME, [this] (const QVariantList& args) { loadTvShowName(); });
     router.registerAction(ActionType::SAVE_TV_SHOW_CRAWLER, [this] (const QVariantList& args) { save(); });
     router.registerAction(ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE, [this] (const QVariantList& args) { saveWithOverride(); });
+    router.registerAction(ActionType::OPEN_CURRENT_TV_SHOW_CRAWLER_EDITOR_VIEW, [this] (const QVariantList& args) { openCurrentTvShowCrawlerEditorView(); });
 }
 
 QString serio::qt::TvShowCrawlerEditorViewModel::getTvShowName() const {
@@ -25,6 +25,10 @@ QString serio::qt::TvShowCrawlerEditorViewModel::getTvShowName() const {
 
 bool serio::qt::TvShowCrawlerEditorViewModel::canCrawlerBeSaved() const {
     return !tvShowName.isEmpty();
+}
+
+bool serio::qt::TvShowCrawlerEditorViewModel::canTvShowNameBeChanged() const {
+    return !isEditingExistingTvShow;
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::setTvShowName(const QVariantList& args) {
@@ -39,11 +43,11 @@ void serio::qt::TvShowCrawlerEditorViewModel::openAddTvShowView() {
 
 void serio::qt::TvShowCrawlerEditorViewModel::openTvShowCrawlerEditorView() {
     editor.createTvShowCrawler();
-    openEditorView("TvShowCrawlerEditorView.qml");
+    openNewTvShowCrawlerEditorView("TvShowCrawlerEditorView.qml");
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::openImportTvShowCrawlerView() {
-    openEditorView("ImportTvShowCrawlerView.qml");
+    openNewTvShowCrawlerEditorView("ImportTvShowCrawlerView.qml");
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::loadTvShowName() {
@@ -51,8 +55,14 @@ void serio::qt::TvShowCrawlerEditorViewModel::loadTvShowName() {
     modifyModel([name, this] { setName(name); });
 }
 
+void serio::qt::TvShowCrawlerEditorViewModel::openCurrentTvShowCrawlerEditorView() {
+    serio::core::TvShow currentTvShow = viewer.getSelectedTvShow();
+    editor.editTvShowCrawler(currentTvShow.getName());
+    openExistingTvShowCrawlerEditorView();
+}
+
 void serio::qt::TvShowCrawlerEditorViewModel::save() {
-    if (editor.willOverrideExistingTvShow()) {
+    if (!isEditingExistingTvShow && editor.willOverrideExistingTvShow()) {
         stack.pushView("TvShowCrawlerOverrideDialogView.qml");
     } else {
         saveWithOverride();
@@ -65,7 +75,8 @@ void serio::qt::TvShowCrawlerEditorViewModel::saveWithOverride() {
         std::string name = editor.getTvShowName();
         editor.saveAndRunTvShowCrawler();
         viewer.openTvShowWithName(name);
-        stack.replaceSpecifiedViewWith(rootEditorView, "TvShowView.qml");
+        QString rootViewToReplace = isEditingExistingTvShow ? "TvShowView.qml" : rootEditorView;
+        stack.replaceSpecifiedViewWith(rootViewToReplace, "TvShowView.qml");
     } catch (std::runtime_error& e) {
         stack.popAllViewsUntil(rootEditorView);
         throw e;
@@ -78,13 +89,29 @@ void serio::qt::TvShowCrawlerEditorViewModel::setName(QString name) {
     emit canCrawlerBeSavedChanged();
 }
 
-void serio::qt::TvShowCrawlerEditorViewModel::openEditorView(QString view) {
-    rootEditorView = std::move(view);
-    stack.replaceCurrentViewWith(rootEditorView);
+void serio::qt::TvShowCrawlerEditorViewModel::openNewTvShowCrawlerEditorView(const QString& view) {
+    modifyModel([this, view] {
+        rootEditorView = view;
+        setEditingExistingTvShow(false);
+        stack.replaceCurrentViewWith(rootEditorView);
+    });
+}
+
+void serio::qt::TvShowCrawlerEditorViewModel::openExistingTvShowCrawlerEditorView() {
+    modifyModel([this] {
+        rootEditorView = "TvShowCrawlerEditorView.qml";
+        setEditingExistingTvShow(true);
+        stack.pushView(rootEditorView);
+    });
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::importTvShowCrawler(const QVariantList &args) {
     editor.importTvShowCrawler(args[0].toString().toStdString());
     loadTvShowName();
     save();
+}
+
+void serio::qt::TvShowCrawlerEditorViewModel::setEditingExistingTvShow(bool editingExistingTvShow) {
+    isEditingExistingTvShow = editingExistingTvShow;
+    emit canTvShowNameBeChangedChanged();
 }
