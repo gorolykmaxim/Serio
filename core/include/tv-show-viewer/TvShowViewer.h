@@ -2,6 +2,7 @@
 #define SERIO_TVSHOWVIEWER_H
 
 #include <tv-show-storage/TvShowStorage.h>
+#include <stdexcept>
 
 namespace serio::core {
 
