@@ -61,7 +61,6 @@
         <file>qml/views/TvShowView.qml</file>
         <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIcon.qml</file>
         <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIconGlyphs.js</file>
-        <file>qml/widgets/Shade.qml</file>
         <file>qml/widgets/AccentTitleAndSubtitle.qml</file>
     </qresource>
 </RCC>

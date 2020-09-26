@@ -13,9 +13,7 @@ View {
         anchors.fill: parent
         imageUrl: tvShowViewModel.thumbnailUrl
         borderRadius: 0
-    }
-    Shade {
-        anchors.fill: parent
+        opacity: 0.2
     }
     ColumnLayout {
         anchors.fill: parent
