@@ -35,7 +35,6 @@ signals:
     void descriptionChanged();
     void propertiesChanged();
 private:
-    const QString viewName = "CrawlerStepEditorView.qml";
     std::optional<unsigned int> editedStepIndex;
     std::optional<core::CrawlerStepType> selectedType;
     QString description;

@@ -1,5 +1,6 @@
 #include "ErrorViewModel.h"
 #include <QQmlContext>
+#include <user-interface/ViewNames.h>
 
 serio::qt::ErrorViewModel::ErrorViewModel(serio::qt::StackOfViews &stack) : stack(stack) {}
 
@@ -12,7 +13,7 @@ void serio::qt::ErrorViewModel::displayError(const QVariantList& args) {
     modifyModel([this, args] {
         errorText = args[0].toString();
         emit errorTextChanged();
-        stack.pushView("ErrorView.qml");
+        stack.pushView(errorView);
     });
 }
 

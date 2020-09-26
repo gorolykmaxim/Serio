@@ -4,6 +4,7 @@
 #include <StackOfViewsMock.h>
 #include <TvShowViewerMock.h>
 #include <QSignalSpy>
+#include <user-interface/ViewNames.h>
 
 class AllTvShowsViewModelTest : public ::testing::Test {
 protected:
@@ -41,7 +42,7 @@ TEST_F(AllTvShowsViewModelTest, shouldLoadPageOfWatchedTvShowsWithSpecifiedOffse
 TEST_F(AllTvShowsViewModelTest, shouldOpenTvShowViewWhileSelectingSpecifiedTvShowInViewer) {
     std::string tvShowName = "Breaking Bad";
     EXPECT_CALL(viewer, openTvShowWithName(tvShowName));
-    EXPECT_CALL(stack, pushView(QString("TvShowView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::tvShowView));
     viewModel.openTvShowView(QVariantList({QString::fromStdString(tvShowName)}));
 }
 

@@ -1,5 +1,6 @@
 #include "AllTvShowsViewModel.h"
 #include <QQmlContext>
+#include <user-interface/ViewNames.h>
 
 serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize, unsigned int listModelPageCountLimit,
                                                     serio::core::TvShowStorage& storage, core::TvShowViewer& viewer,
@@ -43,7 +44,7 @@ void serio::qt::AllTvShowsViewModel::loadWatchedShows(const QVariantList& args) 
 
 void serio::qt::AllTvShowsViewModel::openTvShowView(const QVariantList &args) {
     viewer.openTvShowWithName(args[0].toString().toStdString());
-    stack.pushView("TvShowView.qml");
+    stack.pushView(tvShowView);
 }
 
 void serio::qt::AllTvShowsViewModel::loadFirstPage() {

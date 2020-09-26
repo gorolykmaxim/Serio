@@ -3,6 +3,7 @@
 #include <user-interface/view-model/ErrorViewModel.h>
 #include <QSignalSpy>
 #include <StackOfViewsMock.h>
+#include <user-interface/ViewNames.h>
 
 class ErrorViewModelTest : public ::testing::Test {
 protected:
@@ -11,7 +12,7 @@ protected:
 };
 
 TEST_F(ErrorViewModelTest, shouldPushErrorViewToStack) {
-    EXPECT_CALL(stack, pushView(QString("ErrorView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::errorView));
     viewModel.displayError(QVariantList({""}));
 }
 

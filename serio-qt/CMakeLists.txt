@@ -60,7 +60,8 @@ add_library(SerioLib STATIC
         src/user-interface/UserInterface.cpp
         src/user-interface/UserInterface.h
         src/user-interface/StackOfViews.cpp
-        src/user-interface/StackOfViews.h)
+        src/user-interface/StackOfViews.h
+        src/user-interface/ViewNames.h)
 target_include_directories(SerioLib PUBLIC src)
 target_link_libraries(SerioLib Qt5::Quick Qt5::Concurrent Qt5::Sql Qt5::Network Core)
 

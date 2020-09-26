@@ -1,6 +1,6 @@
 #include "CrawlerEditorViewModel.h"
 #include <QQmlContext>
-#include <sstream>
+#include <user-interface/ViewNames.h>
 
 serio::qt::CrawlerEditorViewModel::CrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor,
                                                           serio::qt::StackOfViews &stack)
@@ -53,12 +53,12 @@ void serio::qt::CrawlerEditorViewModel::openCrawlerEditor(serio::core::CrawlerTy
     modifyModel([this, type] {
         crawlerType = type;
         emit crawlerTypeChanged();
-        stack.pushView("CrawlerEditorView.qml");
+        stack.pushView(crawlerEditorView);
     });
 }
 
 void serio::qt::CrawlerEditorViewModel::openHelp() {
-    stack.pushView("CrawlerEditorHelpView.qml");
+    stack.pushView(crawlerEditorHelpView);
 }
 
 void serio::qt::CrawlerEditorViewModel::loadCrawlerSteps() {
@@ -73,9 +73,9 @@ void serio::qt::CrawlerEditorViewModel::save() {
 
 void serio::qt::CrawlerEditorViewModel::openCrawlerPreview() {
     try {
-        stack.pushView("CrawlingInProgressView.qml");
+        stack.pushView(crawlingInProgressView);
         std::vector<std::string> results = editor.previewCrawler().result;
-        stack.replaceCurrentViewWith("CrawlerPreviewView.qml");
+        stack.replaceCurrentViewWith(crawlerPreviewView);
         modifyModel([this, results] { setPreviewResults(results); });
     } catch (std::runtime_error& e) {
         stack.popCurrentView();

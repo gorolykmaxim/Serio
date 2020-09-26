@@ -4,6 +4,7 @@
 #include <user-interface/view-model/CrawlerEditorViewModel.h>
 #include <QSignalSpy>
 #include <StackOfViewsMock.h>
+#include <user-interface/ViewNames.h>
 
 class CrawlerEditorViewModelTest : public ::testing::Test {
 protected:
@@ -14,7 +15,7 @@ protected:
     QSignalSpy crawlerTypeSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerTypeChanged);
     void expectCrawlerEditorViewToOpen(serio::core::CrawlerType type, int typeNumber, const QString& crawlerType) {
         EXPECT_CALL(editor, editCrawler(type));
-        EXPECT_CALL(stack, pushView(QString("CrawlerEditorView.qml")));
+        EXPECT_CALL(stack, pushView(serio::qt::crawlerEditorView));
         viewModel.openCrawlerEditor(static_cast<serio::core::CrawlerType>(typeNumber));
         EXPECT_EQ(crawlerType, viewModel.getCrawlerType());
         EXPECT_EQ(1, crawlerTypeSpy.count());
@@ -72,7 +73,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldSaveEditedCrawlerAndPopCurrentViewFromS
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
-    EXPECT_CALL(stack, pushView(QString("CrawlerEditorHelpView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlerEditorHelpView));
     viewModel.openHelp();
 }
 
@@ -80,8 +81,8 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
     EXPECT_CALL(editor, previewCrawler())
         .WillOnce(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
     ::testing::InSequence s;
-    EXPECT_CALL(stack, pushView(QString("CrawlingInProgressView.qml")));
-    EXPECT_CALL(stack, replaceCurrentViewWith(QString("CrawlerPreviewView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
+    EXPECT_CALL(stack, replaceCurrentViewWith(serio::qt::crawlerPreviewView));
     QSignalSpy previewResultsSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::previewResultsChanged);
     viewModel.openCrawlerPreview();
     QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
@@ -106,7 +107,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPrev
     EXPECT_CALL(editor, previewCrawler())
         .WillOnce(::testing::Throw(std::runtime_error("expected")));
     ::testing::InSequence s;
-    EXPECT_CALL(stack, pushView(QString("CrawlingInProgressView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
     EXPECT_CALL(stack, popCurrentView());
     EXPECT_THROW(viewModel.openCrawlerPreview(), std::runtime_error);
 }

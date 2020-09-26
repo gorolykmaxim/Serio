@@ -4,6 +4,7 @@
 #include <user-interface/view-model/CrawlerStepEditorViewModel.h>
 #include <QSignalSpy>
 #include <StackOfViewsMock.h>
+#include <user-interface/ViewNames.h>
 
 class CrawlerStepEditorViewModelTest : public ::testing::Test {
 protected:
@@ -59,7 +60,7 @@ TEST_F(CrawlerStepEditorViewModelTest, newStepEditorShouldNotBeEditingExistingSt
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldOpenViewWhenEditingNewStep) {
-    EXPECT_CALL(stack, pushView(QString("CrawlerStepEditorView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlerStepEditorView));
     viewModel.openNew();
     EXPECT_EQ(1, existingStepSpy.count());
 }
@@ -91,7 +92,7 @@ TEST_F(CrawlerStepEditorViewModelTest, existingStepEditorShouldBeEditingExisting
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldOpenViewWhenEditingExistingStep) {
-    EXPECT_CALL(stack, pushView(QString("CrawlerStepEditorView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlerStepEditorView));
     viewModel.openExisting(QVariantList({1}));
     EXPECT_EQ(1, existingStepSpy.count());
 }

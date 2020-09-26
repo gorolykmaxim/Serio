@@ -4,6 +4,7 @@
 #include <user-interface/view-model/CrawlLogViewModel.h>
 #include <user-interface/model/TileModel.h>
 #include <QSignalSpy>
+#include <user-interface/ViewNames.h>
 
 class CrawlLogViewModelTest : public ::testing::Test {
 protected:
@@ -45,7 +46,7 @@ TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersAboutTitleChange) {
 
 TEST_F(CrawlLogViewModelTest, shouldPushCrawlLogViewToStack) {
     EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-    EXPECT_CALL(stack, pushView(QString("CrawlLogView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlLogView));
     viewModel.openCrawlerPreviewLogView(QVariantList({""}));
 }
 
@@ -82,7 +83,7 @@ TEST_F(CrawlLogViewModelTest, shouldDisplayEmptyEntryIfNoEntryIsSelected) {
 
 TEST_F(CrawlLogViewModelTest, shouldPushCrawlLogEntryViewToStack) {
     EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-    EXPECT_CALL(stack, pushView(QString("CrawlLogEntryView.qml")));
+    EXPECT_CALL(stack, pushView(serio::qt::crawlLogEntryView));
     viewModel.openLogEntryView(QVariantList({0}));
 }
 

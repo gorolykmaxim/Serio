@@ -1,5 +1,6 @@
 #include "CrawlerStepEditorViewModel.h"
 #include <QQmlContext>
+#include <user-interface/ViewNames.h>
 
 serio::qt::CrawlerStepEditorViewModel::CrawlerStepEditorViewModel(core::TvShowCrawlerEditor &editor,
                                                                   StackOfViews &stackOfViewsController)
@@ -36,7 +37,7 @@ void serio::qt::CrawlerStepEditorViewModel::openNew() {
         editedStepIndex.reset();
         emit isExistingStepChanged();
         selectedType.reset();
-        stackOfViewsController.pushView(viewName);
+        stackOfViewsController.pushView(crawlerStepEditorView);
     });
 }
 
@@ -46,7 +47,7 @@ void serio::qt::CrawlerStepEditorViewModel::openExisting(const QVariantList& arg
         editedStepIndex = stepIndex;
         emit isExistingStepChanged();
         selectedType.reset();
-        stackOfViewsController.pushView(viewName);
+        stackOfViewsController.pushView(crawlerStepEditorView);
     });
 }
 

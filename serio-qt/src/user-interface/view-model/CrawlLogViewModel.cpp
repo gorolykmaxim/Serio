@@ -1,5 +1,6 @@
 #include "CrawlLogViewModel.h"
 #include <QQmlContext>
+#include <user-interface/ViewNames.h>
 
 serio::qt::CrawlLogViewModel::CrawlLogViewModel(serio::core::TvShowCrawlerEditor& editor,
                                                 serio::qt::StackOfViews &stack) : editor(editor), stack(stack) {}
@@ -16,7 +17,7 @@ void serio::qt::CrawlLogViewModel::openCrawlerPreviewLogView(const QVariantList&
     modifyModel([this, crawlerType, log] {
         setLogTiles(log);
         setTitle(crawlerType);
-        stack.pushView("CrawlLogView.qml");
+        stack.pushView(crawlLogView);
     });
 }
 
@@ -26,7 +27,7 @@ void serio::qt::CrawlLogViewModel::openLogEntryView(const QVariantList& args) {
     modifyModel([this, entry] {
         selectedEntry = entry;
         emit selectedEntryChanged();
-        stack.pushView("CrawlLogEntryView.qml");
+        stack.pushView(crawlLogEntryView);
     });
 }
 
