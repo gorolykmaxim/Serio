@@ -16,13 +16,17 @@ Subtitle {
     bottomPadding: outerPadding / 1.6
     leftPadding: outerPadding * 2.4
     rightPadding: outerPadding * 2.4
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: outerPadding
-    opacity: snackbarViewModel.displayed ? 1 : 0
     text: snackbarViewModel.text
-    Behavior on opacity {
-        SerioNumberAnimation {}
+    anchors {
+        horizontalCenter: parent.horizontalCenter
+        bottom: parent.bottom
+        bottomMargin: snackbarViewModel.displayed ? outerPadding : -height
+        Behavior on bottomMargin {
+            NumberAnimation {
+                duration: 400
+                easing.type: Easing.InBack
+            }
+        }
     }
     Timer {
         id: stopTimer
