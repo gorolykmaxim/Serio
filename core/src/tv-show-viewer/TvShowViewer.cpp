@@ -1,7 +1,9 @@
 #include <tv-show-viewer/TvShowViewer.h>
 
-serio::core::TvShowViewer::TvShowViewer(serio::core::TvShowStorage &tvShowStorage, serio::core::TvShowCrawlerStorage& crawlerStorage)
-    : tvShowStorage(tvShowStorage), crawlerStorage(crawlerStorage) {}
+serio::core::TvShowViewer::TvShowViewer(serio::core::TvShowStorage &tvShowStorage,
+                                        serio::core::TvShowCrawlerStorage& crawlerStorage,
+                                        serio::core::TvShowCrawlerRuntime& runtime)
+    : tvShowStorage(tvShowStorage), crawlerStorage(crawlerStorage), runtime(runtime) {}
 
 serio::core::TvShow serio::core::TvShowViewer::getSelectedTvShow() const {
     std::string tvShowName = getSelectedTvShowNameOrFail();
@@ -39,6 +41,10 @@ std::string serio::core::TvShowViewer::getSelectedTvShowNameOrFail() const {
         throw NoTvShowSelectedError();
     }
     return *selectedTvShow;
+}
+
+void serio::core::TvShowViewer::crawlSelectedTvShow() {
+    runtime.crawlTvShow(getSelectedTvShowNameOrFail());
 }
 
 serio::core::NoTvShowSelectedError::NoTvShowSelectedError() : std::logic_error("No tv show selected") {}

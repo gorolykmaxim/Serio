@@ -2,13 +2,15 @@
 #include <TvShowStorageMock.h>
 #include <tv-show-viewer/TvShowViewer.h>
 #include <TvShowCrawlerStorageMock.h>
+#include <TvShowCrawlerRuntimeMock.h>
 
 class TvShowViewerTest : public ::testing::Test {
 protected:
     serio::core::TvShow tvShow = serio::core::TvShow("Modern Family");
     TvShowStorageMock tvShowStorage;
     TvShowCrawlerStorageMock crawlerStorage;
-    serio::core::TvShowViewer viewer = serio::core::TvShowViewer(tvShowStorage, crawlerStorage);
+    TvShowCrawlerRuntimeMock runtime = TvShowCrawlerRuntimeMock::create();
+    serio::core::TvShowViewer viewer = serio::core::TvShowViewer(tvShowStorage, crawlerStorage, runtime);
 };
 
 TEST_F(TvShowViewerTest, shouldFailToReturnSelectedTvShowSinceNoTvShowIsSelected) {
@@ -72,4 +74,16 @@ TEST_F(TvShowViewerTest, shouldReturnfCrawlerOfSelectedTvShow) {
             .WillOnce(::testing::Return(std::optional(tvShow)));
     viewer.openTvShowWithName(tvShow.getName());
     EXPECT_EQ(rawCrawler, viewer.getRawCrawlerOfSelectedTvShow());
+}
+
+TEST_F(TvShowViewerTest, shouldFailToRecrawlSelectedTvShowSinceNoTvShowIsSelected) {
+    EXPECT_THROW(viewer.crawlSelectedTvShow(), std::logic_error);
+}
+
+TEST_F(TvShowViewerTest, shouldCrawlSelectedTvShow) {
+    EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
+        .WillOnce(::testing::Return(std::optional(tvShow)));
+    viewer.openTvShowWithName(tvShow.getName());
+    EXPECT_CALL(runtime, crawlTvShow(tvShow.getName()));
+    viewer.crawlSelectedTvShow();
 }
