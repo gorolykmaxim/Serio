@@ -16,7 +16,8 @@ class TvShowViewModel : public ViewModel {
     Q_PROPERTY(QString thumbnailUrl READ getThumbnailUrl NOTIFY selectedTvShowChanged)
     Q_PROPERTY(EpisodeListModel* episodeList READ getEpisodeList CONSTANT)
 public:
-    TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer, SnackbarViewModel& snackbar);
+    TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer,
+                    SnackbarViewModel& snackbar, StackOfViews& stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] QString getLastWatchDate() const;
@@ -25,6 +26,7 @@ public:
     void load();
     void loadEpisodes(const QVariantList& args);
     void shareCrawler();
+    void crawl();
 signals:
     void selectedTvShowChanged();
 private:
@@ -34,6 +36,7 @@ private:
     QString lastWatchDate;
     core::TvShowViewer& viewer;
     SnackbarViewModel& snackbar;
+    StackOfViews& stack;
     void loadTvShow();
 };
 

@@ -8,6 +8,7 @@ View {
         backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
         editBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_CURRENT_TV_SHOW_CRAWLER_EDITOR_VIEW, []))
         shareBtn.clicked.connect(() => actionRouter.trigger(ActionType.SHARE_CRAWLER_OF_CURRENT_TV_SHOW, []))
+        crawlBtn.clicked.connect(() => actionRouter.trigger(ActionType.CRAWL_CURRENT_TV_SHOW, []))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
     RoundNullableImage {
@@ -46,6 +47,13 @@ View {
             SerioButton {
                 id: shareBtn
                 text: "share crawler"
+                KeyNavigation.down: episodeList
+                KeyNavigation.right: crawlBtn
+                KeyNavigation.tab: crawlBtn
+            }
+            SerioButton {
+                id: crawlBtn
+                text: "crawl"
                 KeyNavigation.down: episodeList
                 KeyNavigation.tab: episodeList
             }

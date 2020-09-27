@@ -4,6 +4,8 @@
 #include <QSignalSpy>
 #include <TvShowViewerMock.h>
 #include <user-interface/view-model/SnackbarViewModel.h>
+#include <StackOfViewsMock.h>
+#include <user-interface/ViewNames.h>
 
 class TvShowViewModelTest : public ::testing::Test {
 protected:
@@ -16,7 +18,8 @@ protected:
     };
     TvShowViewerMock viewer = TvShowViewerMock::create();
     serio::qt::SnackbarViewModel snackbarViewModel;
-    serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, snackbarViewModel);
+    ::testing::NiceMock<StackOfViewsMock> stack;
+    serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, snackbarViewModel, stack);
     void expectEpisodesToBeLoaded() {
         serio::qt::EpisodeListModel* episodeList = viewModel.getEpisodeList();
         EXPECT_EQ(episodes[0].getName(), episodeList->data(episodeList->index(0), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
@@ -79,4 +82,18 @@ TEST_F(TvShowViewModelTest, shouldLoadSpecifiedPageOfEpisodes) {
     EXPECT_CALL(viewer, getTvShowEpisodes(offset, pageSize)).WillOnce(::testing::Return(page));
     viewModel.loadEpisodes(QVariantList({offset, pageSize}));
     expectEpisodesToBeLoaded();
+}
+
+TEST_F(TvShowViewModelTest, shouldCrawlSelectedTvShow) {
+    ::testing::InSequence s;
+    EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
+    EXPECT_CALL(viewer, crawlSelectedTvShow());
+    EXPECT_CALL(stack, popCurrentView());
+    viewModel.crawl();
+}
+
+TEST_F(TvShowViewModelTest, shouldPopCrawlingInProgressViewEvenIfCrawlFails) {
+    EXPECT_CALL(viewer, crawlSelectedTvShow()).WillOnce(::testing::Throw(std::runtime_error("expected")));
+    EXPECT_CALL(stack, popCurrentView());
+    EXPECT_THROW(viewModel.crawl(), std::runtime_error);
 }

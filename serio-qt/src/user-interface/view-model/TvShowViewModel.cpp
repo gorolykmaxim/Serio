@@ -2,10 +2,12 @@
 #include <QQmlContext>
 #include <QGuiApplication>
 #include <QClipboard>
+#include <user-interface/ViewNames.h>
 
 serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
-                                            serio::core::TvShowViewer &viewer, serio::qt::SnackbarViewModel& snackbar)
-    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), snackbar(snackbar) {}
+                                            serio::core::TvShowViewer &viewer, serio::qt::SnackbarViewModel& snackbar,
+                                            StackOfViews& stack)
+    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), snackbar(snackbar), stack(stack) {}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
@@ -13,6 +15,7 @@ void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQm
     router.registerAction(serio::qt::ActionType::LOAD_TV_SHOW, [this] (const QVariantList& args) { load(); });
     router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const QVariantList& args) { loadEpisodes(args); });
     router.registerAction(serio::qt::ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const QVariantList& args) { shareCrawler(); });
+    router.registerAction(serio::qt::ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const QVariantList& args) { crawl(); });
     connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
@@ -58,4 +61,15 @@ void serio::qt::TvShowViewModel::loadTvShow() {
         lastWatchDate = QString::fromStdString(date ? "Last watched " + date->toString() : "");
         emit selectedTvShowChanged();
     });
+}
+
+void serio::qt::TvShowViewModel::crawl() {
+    try {
+        stack.pushView(crawlingInProgressView);
+        viewer.crawlSelectedTvShow();
+        stack.popCurrentView();
+    } catch (std::runtime_error& e) {
+        stack.popCurrentView();
+        throw e;
+    }
 }
