@@ -40,8 +40,8 @@ protected:
         EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
     }
     void expectCrawlerStepsToBeEdited(serio::core::CrawlerType type) {
-        EXPECT_CALL(runtime, getTvShowCrawlerByTvShowName(mandalorian))
-                .WillOnce(::testing::Return(std::optional(tvShowCrawler)));
+        EXPECT_CALL(runtime, getTvShowCrawlerByTvShowNameOrFail(mandalorian))
+                .WillOnce(::testing::Return(tvShowCrawler));
         editor.editTvShowCrawler(mandalorian);
         editor.editCrawler(type);
         EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
@@ -437,8 +437,8 @@ TEST_F(TvShowCrawlerEditorTest, shouldResetCrawlerPreviewLogAfterChangingEditedC
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldSetTvShowNameToOneSpecifiedInEditedTvShowCrawler) {
-    EXPECT_CALL(runtime, getTvShowCrawlerByTvShowName(mandalorian))
-        .WillOnce(::testing::Return(std::optional(tvShowCrawler)));
+    EXPECT_CALL(runtime, getTvShowCrawlerByTvShowNameOrFail(mandalorian))
+        .WillOnce(::testing::Return(tvShowCrawler));
     editor.editTvShowCrawler(mandalorian);
     EXPECT_EQ(mandalorian, editor.getTvShowName());
 }
@@ -455,10 +455,4 @@ TEST_F(TvShowCrawlerEditorTest, shouldSetThumbnailCrawlerStepsToTheOneSpecifiedI
 TEST_F(TvShowCrawlerEditorTest, shouldSetEpisodeNameCrawlerStepsToTheOneSpecifiedInEditedTvShowCrawler) {
     tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler(), serio::core::Crawler(), serio::core::Crawler({value}));
     expectCrawlerStepsToBeEdited(serio::core::CrawlerType::episodeNameCrawler);
-}
-
-TEST_F(TvShowCrawlerEditorTest, shouldFailToEditTvShowCrawlerThatDoesNotExist) {
-    EXPECT_CALL(runtime, getTvShowCrawlerByTvShowName(mandalorian))
-        .WillOnce(::testing::Return(std::optional<serio::core::TvShowCrawler>()));
-    EXPECT_THROW(editor.editTvShowCrawler(mandalorian), std::logic_error);
 }

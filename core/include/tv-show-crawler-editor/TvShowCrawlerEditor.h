@@ -46,11 +46,6 @@ public:
     explicit TvShowCrawlerEditorError(const std::runtime_error& cause);
 };
 
-class TvShowCrawlerDoesNotExistError : public std::logic_error {
-public:
-    explicit TvShowCrawlerDoesNotExistError(const std::string& tvShowName);
-};
-
 }
 
 #endif //SERIO_TVSHOWCRAWLEREDITOR_H

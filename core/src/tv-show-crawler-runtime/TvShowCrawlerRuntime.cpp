@@ -30,9 +30,7 @@ serio::core::TvShowCrawlerRuntime::TvShowCrawlerRuntime(TvShowCrawlerStorage& cr
 
 void serio::core::TvShowCrawlerRuntime::crawlTvShowAndSaveCrawler(const TvShowCrawler &crawler) {
     try {
-        TvShow tvShow(crawler.getTvShowName(), crawlerExecutor.executeThumbnailCrawler(crawler.getCrawler(CrawlerType::thumbnailCrawler)));
-        std::vector<Episode> episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler));
-        tvShowStorage.saveTvShow(tvShow, episodes);
+        executeCrawler(crawler);
         crawlerStorage.saveTvShowCrawler(crawler.getTvShowName(), serializer.serialize(crawler));
     } catch (std::runtime_error& e) {
         throw TvShowCrawlerExecutionError(crawler.getTvShowName(), e);
@@ -71,3 +69,25 @@ std::optional<serio::core::TvShowCrawler> serio::core::TvShowCrawlerRuntime::get
         return std::optional<serio::core::TvShowCrawler>();
     }
 }
+
+void serio::core::TvShowCrawlerRuntime::crawlTvShow(const std::string &tvShowName) {
+    executeCrawler(getTvShowCrawlerByTvShowNameOrFail(tvShowName));
+}
+
+void serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::TvShowCrawler &crawler) {
+    TvShow tvShow(crawler.getTvShowName(), crawlerExecutor.executeThumbnailCrawler(crawler.getCrawler(CrawlerType::thumbnailCrawler)));
+    std::vector<Episode> episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler));
+    tvShowStorage.saveTvShow(tvShow, episodes);
+}
+
+serio::core::TvShowCrawler serio::core::TvShowCrawlerRuntime::getTvShowCrawlerByTvShowNameOrFail(const std::string &tvShowName) {
+    std::optional<serio::core::TvShowCrawler> crawler = getTvShowCrawlerByTvShowName(tvShowName);
+    if (crawler) {
+        return *crawler;
+    } else {
+        throw TvShowCrawlerDoesNotExistError(tvShowName);
+    }
+}
+
+serio::core::TvShowCrawlerDoesNotExistError::TvShowCrawlerDoesNotExistError(const std::string &tvShowName)
+    : logic_error("Crawler of tv show " + tvShowName + " does not exist") {}

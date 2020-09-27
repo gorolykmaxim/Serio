@@ -22,6 +22,8 @@ public:
     virtual bool willOverrideExistingTvShow(const TvShowCrawler &crawler);
     [[nodiscard]] virtual CrawlResult executeCrawler(const Crawler& crawler);
     [[nodiscard]] virtual std::optional<TvShowCrawler> getTvShowCrawlerByTvShowName(const std::string& tvShowName);
+    virtual void crawlTvShow(const std::string& tvShowName);
+    [[nodiscard]] virtual TvShowCrawler getTvShowCrawlerByTvShowNameOrFail(const std::string& tvShowName);
 private:
     TvShowCrawlerStorage& crawlerStorage;
     TvShowStorage& tvShowStorage;
@@ -29,6 +31,12 @@ private:
     CrawlerSerializer serializer;
     std::vector<CrawlerStepType> crawlerStepTypes;
     void registerCrawlerStepType(const std::string& type, std::unique_ptr<CrawlerStepExecutor> executor, const std::string& description, const std::vector<std::string>& mandatoryProperties = {});
+    void executeCrawler(const TvShowCrawler& crawler);
+};
+
+class TvShowCrawlerDoesNotExistError : public std::logic_error {
+public:
+    explicit TvShowCrawlerDoesNotExistError(const std::string& tvShowName);
 };
 
 }

@@ -14,11 +14,7 @@ void serio::core::TvShowCrawlerEditor::importTvShowCrawler(const std::string &ra
 }
 
 void serio::core::TvShowCrawlerEditor::editTvShowCrawler(const std::string &tvShowName) {
-    std::optional<serio::core::TvShowCrawler> crawler = runtime.getTvShowCrawlerByTvShowName(tvShowName);
-    if (!crawler) {
-        throw TvShowCrawlerDoesNotExistError(tvShowName);
-    }
-    setTvShowCrawler(*crawler);
+    setTvShowCrawler(runtime.getTvShowCrawlerByTvShowNameOrFail(tvShowName));
 }
 
 void serio::core::TvShowCrawlerEditor::setTvShowName(std::string name) {
@@ -125,5 +121,3 @@ serio::core::NoTvShowCrawlerEditedError::NoTvShowCrawlerEditedError()
 serio::core::TvShowCrawlerEditorError::TvShowCrawlerEditorError(const std::runtime_error &cause)
     : runtime_error(std::string("Failed to save and run edited tv-show crawler: ") + cause.what()) {}
 
-serio::core::TvShowCrawlerDoesNotExistError::TvShowCrawlerDoesNotExistError(const std::string &tvShowName)
-    : logic_error("Crawler of tv show " + tvShowName + " does not exist") {}
