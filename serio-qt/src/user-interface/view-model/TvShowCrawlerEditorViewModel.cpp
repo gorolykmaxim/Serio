@@ -75,9 +75,12 @@ void serio::qt::TvShowCrawlerEditorViewModel::saveWithOverride() {
         stack.pushView(crawlingInProgressView);
         std::string name = editor.getTvShowName();
         editor.saveAndRunTvShowCrawler();
-        viewer.openTvShowWithName(name);
-        QString rootViewToReplace = isEditingExistingTvShow ? tvShowView : rootEditorView;
-        stack.replaceSpecifiedViewWith(rootViewToReplace, tvShowView);
+        if (isEditingExistingTvShow) {
+            stack.popAllViewsUntil(tvShowView);
+        } else {
+            viewer.openTvShowWithName(name);
+            stack.replaceSpecifiedViewWith(rootEditorView, tvShowView);
+        }
     } catch (std::runtime_error& e) {
         stack.popAllViewsUntil(rootEditorView);
         throw e;

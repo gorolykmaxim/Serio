@@ -33,15 +33,20 @@ protected:
         viewModel.openImportTvShowCrawlerView();
         viewModel.importTvShowCrawler(QVariantList({rawCrawler}));
     }
-    void expectTvShowToBeSavedAndOpenedInViewer() {
+    void expectTvShowToBeSavedAndOpenedInViewer(bool isNewTvShow) {
         ::testing::InSequence s;
         EXPECT_CALL(editor, saveAndRunTvShowCrawler());
-        EXPECT_CALL(viewer, openTvShowWithName(tvShowName.toStdString()));
+        EXPECT_CALL(viewer, openTvShowWithName(tvShowName.toStdString())).Times(isNewTvShow ? 1 : 0);
     }
     void expectToReplaceTheRootViewWithTvShowViewAfterDisplayingCrawlingInProgress(const QString& rootView) {
         ::testing::InSequence s;
         EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
         EXPECT_CALL(stack, replaceSpecifiedViewWith(rootView, serio::qt::tvShowView));
+    }
+    void expectToPopAllViewsUntilTvShowViewAfterDisplayingCrawlingInProgress() {
+        ::testing::InSequence s;
+        EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
+        EXPECT_CALL(stack, popAllViewsUntil(serio::qt::tvShowView));
     }
     void expectSelectedTvShowToBeEdited() {
         EXPECT_CALL(viewer, getSelectedTvShow())
@@ -102,7 +107,7 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowOverrideConfirmationDia
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldSaveNewTvShowCrawler) {
     EXPECT_CALL(editor, getTvShowName()).WillOnce(::testing::Return(tvShowName.toStdString()));
     EXPECT_CALL(editor, willOverrideExistingTvShow()).WillOnce(::testing::Return(false));
-    expectTvShowToBeSavedAndOpenedInViewer();
+    expectTvShowToBeSavedAndOpenedInViewer(true);
     expectToReplaceTheRootViewWithTvShowViewAfterDisplayingCrawlingInProgress(serio::qt::tvShowCrawlerEditorView);
     expectNewTvShowCrawlerEditorViewToBeOpened();
     viewModel.save();
@@ -110,7 +115,7 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldSaveNewTvShowCrawler) {
 
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldOverrideExistingTvShowCrawlerWithNewOne) {
     EXPECT_CALL(editor, getTvShowName()).WillOnce(::testing::Return(tvShowName.toStdString()));
-    expectTvShowToBeSavedAndOpenedInViewer();
+    expectTvShowToBeSavedAndOpenedInViewer(true);
     expectToReplaceTheRootViewWithTvShowViewAfterDisplayingCrawlingInProgress(serio::qt::tvShowCrawlerEditorView);
     expectNewTvShowCrawlerEditorViewToBeOpened();
     viewModel.saveWithOverride();
@@ -156,8 +161,8 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOverrideExistingTvShowCrawlerWith
     expectSelectedTvShowToBeEdited();
     ON_CALL(editor, willOverrideExistingTvShow()).WillByDefault(::testing::Return(true));
     EXPECT_CALL(editor, getTvShowName()).WillOnce(::testing::Return(tvShowName.toStdString()));
-    expectTvShowToBeSavedAndOpenedInViewer();
-    expectToReplaceTheRootViewWithTvShowViewAfterDisplayingCrawlingInProgress(serio::qt::tvShowView);
+    expectTvShowToBeSavedAndOpenedInViewer(false);
+    expectToPopAllViewsUntilTvShowViewAfterDisplayingCrawlingInProgress();
     viewModel.save();
 }
 
