@@ -48,8 +48,10 @@ void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
 
 void serio::qt::TvShowViewModel::shareCrawler() {
     std::string rawTvShowCrawler = viewer.getRawCrawlerOfSelectedTvShow();
-    QGuiApplication::clipboard()->setText(QString::fromStdString(rawTvShowCrawler));
-    snackbar.displayText("Crawler copied to your clipboard");
+    modifyModel([this, rawTvShowCrawler] {
+        QGuiApplication::clipboard()->setText(QString::fromStdString(rawTvShowCrawler));
+        snackbar.displayText("Crawler copied to your clipboard");
+    });
 }
 
 void serio::qt::TvShowViewModel::loadTvShow() {
