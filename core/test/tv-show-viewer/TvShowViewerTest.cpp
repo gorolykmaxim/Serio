@@ -13,11 +13,26 @@ TEST_F(TvShowViewerTest, shouldFailToReturnSelectedTvShowSinceNoTvShowIsSelected
     EXPECT_THROW((void)viewer.getSelectedTvShow(), std::logic_error);
 }
 
+TEST_F(TvShowViewerTest, shouldFailToSelectTvShowThatDoesNotExist) {
+    EXPECT_CALL(storage, getTvShowByName(tvShow.getName()))
+        .WillOnce(::testing::Return(std::optional<serio::core::TvShow>()));
+    EXPECT_THROW(viewer.openTvShowWithName(tvShow.getName()), std::logic_error);
+    EXPECT_THROW((void)viewer.getSelectedTvShow(), std::logic_error);
+}
+
 TEST_F(TvShowViewerTest, shouldViewTvShowWithSpecifiedName) {
     EXPECT_CALL(storage, getTvShowByName(tvShow.getName()))
-        .WillOnce(::testing::Return(std::optional(tvShow)));
+        .WillRepeatedly(::testing::Return(std::optional(tvShow)));
     viewer.openTvShowWithName(tvShow.getName());
     EXPECT_EQ(tvShow, viewer.getSelectedTvShow());
+}
+
+TEST_F(TvShowViewerTest, shouldFailToGetSelectedTvShowIfItWasDeleted) {
+    EXPECT_CALL(storage, getTvShowByName(tvShow.getName()))
+        .WillOnce(::testing::Return(std::optional(tvShow)))
+        .WillOnce(::testing::Return(std::optional<serio::core::TvShow>()));
+    viewer.openTvShowWithName(tvShow.getName());
+    EXPECT_THROW((void)viewer.getSelectedTvShow(), std::logic_error);
 }
 
 TEST_F(TvShowViewerTest, shouldFailToGetEpisodesOfCurrentlySelectedTvShowSinceNoTvShowIsSelected) {

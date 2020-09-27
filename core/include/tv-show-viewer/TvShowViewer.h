@@ -13,13 +13,24 @@ public:
     [[nodiscard]] virtual ListPage<Episode> getTvShowEpisodes(unsigned int offset, unsigned int limit);
     virtual void openTvShowWithName(const std::string& tvShowName);
 private:
-    std::optional<TvShow> selectedTvShow;
+    std::optional<std::string> selectedTvShow;
     TvShowStorage& storage;
+    [[nodiscard]] std::string getSelectedTvShowNameOrFail() const;
 };
 
 class NoTvShowSelectedError : public std::logic_error {
 public:
     NoTvShowSelectedError();
+};
+
+class TvShowDoesNotExistError : public std::logic_error {
+public:
+    explicit TvShowDoesNotExistError(const std::string& tvShowName);
+};
+
+class DeletedTvShowStillSelectedError : public std::logic_error {
+public:
+    explicit DeletedTvShowStillSelectedError(const std::string& tvShowName);
 };
 
 }
