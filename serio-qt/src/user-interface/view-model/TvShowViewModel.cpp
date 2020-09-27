@@ -4,9 +4,8 @@
 #include <QClipboard>
 
 serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
-                                            serio::core::TvShowViewer &viewer, serio::core::TvShowCrawlerStorage& storage,
-                                            serio::qt::SnackbarViewModel& snackbar)
-    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), storage(storage), snackbar(snackbar) {}
+                                            serio::core::TvShowViewer &viewer, serio::qt::SnackbarViewModel& snackbar)
+    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), snackbar(snackbar) {}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
@@ -45,8 +44,7 @@ void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
 }
 
 void serio::qt::TvShowViewModel::shareCrawler() {
-    serio::core::TvShow selectedTvShow = viewer.getSelectedTvShow();
-    std::string rawTvShowCrawler = *storage.getTvShowCrawlerByTvShowName(selectedTvShow.getName());
+    std::string rawTvShowCrawler = viewer.getRawCrawlerOfSelectedTvShow();
     QGuiApplication::clipboard()->setText(QString::fromStdString(rawTvShowCrawler));
     snackbar.displayText("Crawler copied to your clipboard");
 }

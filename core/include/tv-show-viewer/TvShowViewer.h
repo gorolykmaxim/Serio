@@ -3,18 +3,21 @@
 
 #include <tv-show-storage/TvShowStorage.h>
 #include <stdexcept>
+#include <tv-show-crawler-storage/TvShowCrawlerStorage.h>
 
 namespace serio::core {
 
 class TvShowViewer {
 public:
-    explicit TvShowViewer(TvShowStorage& storage);
+    TvShowViewer(TvShowStorage& tvShowStorage, TvShowCrawlerStorage& crawlerStorage);
     [[nodiscard]] virtual TvShow getSelectedTvShow() const;
     [[nodiscard]] virtual ListPage<Episode> getTvShowEpisodes(unsigned int offset, unsigned int limit);
     virtual void openTvShowWithName(const std::string& tvShowName);
+    virtual std::string getRawCrawlerOfSelectedTvShow();
 private:
     std::optional<std::string> selectedTvShow;
-    TvShowStorage& storage;
+    TvShowStorage& tvShowStorage;
+    TvShowCrawlerStorage& crawlerStorage;
     [[nodiscard]] std::string getSelectedTvShowNameOrFail() const;
 };
 
