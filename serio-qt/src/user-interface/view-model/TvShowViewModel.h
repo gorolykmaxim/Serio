@@ -3,7 +3,9 @@
 
 #include <user-interface/model/pageable-list/EpisodeListModel.h>
 #include <tv-show-viewer/TvShowViewer.h>
+#include <tv-show-crawler-storage/TvShowCrawlerStorage.h>
 #include "ViewModel.h"
+#include "SnackbarViewModel.h"
 
 namespace serio::qt {
 
@@ -14,7 +16,8 @@ class TvShowViewModel : public ViewModel {
     Q_PROPERTY(QString thumbnailUrl READ getThumbnailUrl NOTIFY selectedTvShowChanged)
     Q_PROPERTY(EpisodeListModel* episodeList READ getEpisodeList CONSTANT)
 public:
-    TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer);
+    TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer,
+                    core::TvShowCrawlerStorage& storage, SnackbarViewModel& snackbar);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] QString getLastWatchDate() const;
@@ -22,6 +25,7 @@ public:
     EpisodeListModel* getEpisodeList();
     void load();
     void loadEpisodes(const QVariantList& args);
+    void shareCrawler();
 signals:
     void selectedTvShowChanged();
 private:
@@ -30,6 +34,8 @@ private:
     QString thumbnailUrl;
     QString lastWatchDate;
     core::TvShowViewer& viewer;
+    core::TvShowCrawlerStorage& storage;
+    SnackbarViewModel& snackbar;
     void loadTvShow();
 };
 

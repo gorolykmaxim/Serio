@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import 'widgets'
 
 ApplicationWindow {
     visible: true
@@ -11,5 +12,8 @@ ApplicationWindow {
     StackOfViews {
         id: viewStack
         initialItem: "views/AllShowsView.qml"
+    }
+    Snackbar {
+        outerPadding: 16
     }
 }

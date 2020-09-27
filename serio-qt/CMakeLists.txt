@@ -56,6 +56,8 @@ add_library(SerioLib STATIC
         src/user-interface/view-model/CrawlLogViewModel.h
         src/user-interface/view-model/TvShowViewModel.cpp
         src/user-interface/view-model/TvShowViewModel.h
+        src/user-interface/view-model/SnackbarViewModel.cpp
+        src/user-interface/view-model/SnackbarViewModel.h
         src/user-interface/view-model/ViewModel.cpp
         src/user-interface/UserInterface.cpp
         src/user-interface/UserInterface.h
@@ -80,6 +82,7 @@ add_executable(SerioTest
         test/user-interface/view-model/ErrorViewModelTest.cpp
         test/user-interface/view-model/StackOfViewsTest.cpp
         test/user-interface/view-model/CrawlLogViewModelTest.cpp
-        test/user-interface/view-model/TvShowViewModelTest.cpp)
+        test/user-interface/view-model/TvShowViewModelTest.cpp
+        test/user-interface/view-model/SnackbarViewModelTest.cpp)
 target_include_directories(SerioTest PUBLIC test/mocks)
 target_link_libraries(SerioTest SerioLib CoreTestMocks gtest gmock gtest_main Qt5::Test)

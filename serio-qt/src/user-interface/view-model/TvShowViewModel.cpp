@@ -1,15 +1,19 @@
 #include "TvShowViewModel.h"
 #include <QQmlContext>
+#include <QGuiApplication>
+#include <QClipboard>
 
 serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
-                                            serio::core::TvShowViewer &viewer)
-    : episodeListModel(pageSize, pageCountLimit), viewer(viewer) {}
+                                            serio::core::TvShowViewer &viewer, serio::core::TvShowCrawlerStorage& storage,
+                                            serio::qt::SnackbarViewModel& snackbar)
+    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), storage(storage), snackbar(snackbar) {}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
     engine.rootContext()->setContextProperty("tvShowViewModel", this);
     router.registerAction(serio::qt::ActionType::LOAD_TV_SHOW, [this] (const QVariantList& args) { load(); });
     router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const QVariantList& args) { loadEpisodes(args); });
+    router.registerAction(serio::qt::ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const QVariantList& args) { shareCrawler(); });
     connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
@@ -38,6 +42,13 @@ void serio::qt::TvShowViewModel::load() {
 void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
     serio::core::ListPage<serio::core::Episode> episodes = viewer.getTvShowEpisodes(args[0].toUInt(),args[1].toUInt());
     modifyModel([this, episodes] { episodeListModel.loadPage(episodes); });
+}
+
+void serio::qt::TvShowViewModel::shareCrawler() {
+    serio::core::TvShow selectedTvShow = viewer.getSelectedTvShow();
+    std::string rawTvShowCrawler = *storage.getTvShowCrawlerByTvShowName(selectedTvShow.getName());
+    QGuiApplication::clipboard()->setText(QString::fromStdString(rawTvShowCrawler));
+    snackbar.displayText("Crawler copied to your clipboard");
 }
 
 void serio::qt::TvShowViewModel::loadTvShow() {

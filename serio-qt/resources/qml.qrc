@@ -62,5 +62,6 @@
         <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIcon.qml</file>
         <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIconGlyphs.js</file>
         <file>qml/widgets/AccentTitleAndSubtitle.qml</file>
+        <file>qml/widgets/Snackbar.qml</file>
     </qresource>
 </RCC>

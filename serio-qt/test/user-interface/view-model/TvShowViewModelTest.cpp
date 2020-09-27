@@ -3,6 +3,8 @@
 #include <user-interface/view-model/TvShowViewModel.h>
 #include <QSignalSpy>
 #include <TvShowViewerMock.h>
+#include <TvShowCrawlerStorageMock.h>
+#include <user-interface/view-model/SnackbarViewModel.h>
 
 class TvShowViewModelTest : public ::testing::Test {
 protected:
@@ -14,7 +16,9 @@ protected:
             serio::core::Episode(2, "https://tv-show.com/episodes/episode-2.mp4")
     };
     TvShowViewerMock viewer = TvShowViewerMock::create();
-    serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer);
+    TvShowCrawlerStorageMock storage;
+    serio::qt::SnackbarViewModel snackbarViewModel;
+    serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, storage, snackbarViewModel);
     void expectEpisodesToBeLoaded() {
         serio::qt::EpisodeListModel* episodeList = viewModel.getEpisodeList();
         EXPECT_EQ(episodes[0].getName(), episodeList->data(episodeList->index(0), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
