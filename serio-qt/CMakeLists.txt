@@ -14,6 +14,8 @@ add_library(SerioLib STATIC
         src/database-storage/DatabaseTvShowStorage.h
         src/database-storage/DatabaseTvShowCrawlerStorage.cpp
         src/database-storage/DatabaseTvShowCrawlerStorage.h
+        src/database-storage/DatabaseTvShowCrawlerLogStorage.cpp
+        src/database-storage/DatabaseTvShowCrawlerLogStorage.h
         src/task-executor/QTaskExecutor.h
         src/task-executor/QTaskExecutor.cpp
         src/http-client/QHttpClient.cpp
@@ -75,6 +77,7 @@ add_executable(SerioTest
         test/user-interface/model/pageable-list/EpisodeListModelTest.cpp
         test/database-storage/DatabaseTvShowStorageTest.cpp
         test/database-storage/DatabaseTvShowCrawlerStorageTest.cpp
+        test/database-storage/DatabaseTvShowCrawlerLogStorageTest.cpp
         test/user-interface/view-model/AllTvShowsViewModelTest.cpp
         test/user-interface/view-model/TvShowCrawlerEditorViewModelTest.cpp
         test/user-interface/view-model/CrawlerEditorViewModelTest.cpp

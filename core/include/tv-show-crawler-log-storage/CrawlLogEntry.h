@@ -11,6 +11,7 @@ class CrawlLogEntry {
 public:
     explicit CrawlLogEntry(std::string text);
     explicit CrawlLogEntry(const serio::core::CrawlerStep& executedStep);
+    CrawlLogEntry(std::string text, std::string stepInputData, std::string stepOutputData);
     void setStepInputData(const std::vector<std::string>& data, unsigned int maxSize);
     void setStepOutputData(const std::vector<std::string>& data, unsigned int maxSize);
     [[nodiscard]] bool hasData() const;

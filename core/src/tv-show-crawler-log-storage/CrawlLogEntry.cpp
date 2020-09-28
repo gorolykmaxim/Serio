@@ -49,6 +49,9 @@ serio::core::CrawlLogEntry::CrawlLogEntry(std::string text) : text(std::move(tex
 serio::core::CrawlLogEntry::CrawlLogEntry(const serio::core::CrawlerStep& executedStep)
     : text("Executing " + executedStep.getType() + " step with properties: '" + executedStep.getPropertiesAsString() + "'") {}
 
+serio::core::CrawlLogEntry::CrawlLogEntry(std::string text, std::string stepInputData, std::string stepOutputData)
+    : text(std::move(text)), stepInputData(std::move(stepInputData)), stepOutputData(std::move(stepOutputData)) {}
+
 void serio::core::CrawlLogEntry::setStepInputData(const std::vector<std::string>& data, unsigned int maxSize) {
     stepInputData = SizeConstrainedStringBuilder::join(data, maxSize);
 }

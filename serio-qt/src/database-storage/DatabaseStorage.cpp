@@ -11,6 +11,7 @@ void serio::qt::DatabaseStorage::initialize(bool inMemory) {
     enableForeignKeys();
     tvShowStorage.initialize();
     tvShowCrawlerStorage.initialize();
+    tvShowCrawlerLogStorage.initialize();
 }
 
 std::optional<serio::core::TvShow> serio::qt::DatabaseStorage::getTvShowByName(const std::string &tvShowName) {
@@ -69,6 +70,14 @@ void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& stora
 void serio::qt::DatabaseStorage::enableForeignKeys() {
     QSqlQuery enableForeignKeys(QSqlDatabase::database());
     enableForeignKeys.exec("PRAGMA foreign_keys=ON");
+}
+
+void serio::qt::DatabaseStorage::saveCrawlLog(const std::string &tvShowName, const std::vector<serio::core::CrawlLogEntry> &log) {
+    tvShowCrawlerLogStorage.saveCrawlLog(tvShowName, log);
+}
+
+std::vector<serio::core::CrawlLogEntry> serio::qt::DatabaseStorage::getLastCrawlLogOfTvShow(const std::string &tvShowName) {
+    return tvShowCrawlerLogStorage.getLastCrawlLogOfTvShow(tvShowName);
 }
 
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)

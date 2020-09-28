@@ -84,3 +84,10 @@ TEST_F(CrawlLogEntryTest, shouldCutInputAndOutputCompletelyLeavingOnlyDots) {
         EXPECT_EQ("...", entry.getStepInputData());
     }
 }
+
+TEST_F(CrawlLogEntryTest, shouldHaveSpecifiedTextStepInputAndOutputData) {
+    serio::core::CrawlLogEntry entry("text", "step input data", "step output data");
+    EXPECT_EQ("text", entry.getText());
+    EXPECT_EQ("step input data", entry.getStepInputData());
+    EXPECT_EQ("step output data", entry.getStepOutputData());
+}

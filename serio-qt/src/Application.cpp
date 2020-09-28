@@ -2,7 +2,7 @@
 
 serio::qt::Application::Application(int &argc, char **argv)
     : QGuiApplication(argc, argv),
-      tvShowCrawlerRuntime(storage, storage, httpClient),
+      tvShowCrawlerRuntime(storage, storage, storage, httpClient),
       tvShowCrawlerEditor(tvShowCrawlerRuntime),
       viewer(storage, storage, tvShowCrawlerRuntime),
       userInterface(httpClient, tvShowCrawlerEditor, storage, viewer, executor) {
