@@ -407,6 +407,21 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldRecrawlTvShow) {
     runtime.crawlTvShow(mandalorian);
 }
 
+TEST_F(TvShowCrawlerRuntimeTest, shouldFailToRecrawlTvShowDueToHttpClientError) {
+    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"url"})))
+            .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
+    EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(mandalorian))
+            .WillOnce(::testing::Return(std::optional(mandalorianCrawlerWithEpisodeVideoCrawler)));
+    EXPECT_CALL(tvShowStorage, saveTvShow(::testing::_, ::testing::_)).Times(0);
+    try {
+        runtime.crawlTvShow(mandalorian);
+        FAIL();
+    } catch (std::runtime_error& e) {
+        EXPECT_STREQ("Failed to crawl 'Mandalorian': Failed to execute episode video crawler: "
+                     "Failed to execute step #2: Timeout", e.what());
+    }
+}
+
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveLogsOfExecutedTvShowCrawlerInStorage) {
     serio::core::CrawlerStep step("value", {{"value", "url"}});
     serio::core::Crawler crawler({step});

@@ -76,7 +76,11 @@ std::optional<serio::core::TvShowCrawler> serio::core::TvShowCrawlerRuntime::get
 }
 
 void serio::core::TvShowCrawlerRuntime::crawlTvShow(const std::string &tvShowName) {
-    executeCrawler(getTvShowCrawlerByTvShowNameOrFail(tvShowName));
+    try {
+        executeCrawler(getTvShowCrawlerByTvShowNameOrFail(tvShowName));
+    } catch (std::runtime_error& e) {
+        throw TvShowCrawlerExecutionError(tvShowName, e);
+    }
 }
 
 void serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::TvShowCrawler &crawler) {
