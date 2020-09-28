@@ -20,10 +20,10 @@ public:
     unsigned int countWatchedTvShows();
     unsigned int countEpisodesOfTvShowWithName(const std::string& tvShowName);
     void clearTvShowWatchHistory(const std::string &tvShowName);
+    void deleteTvShowWithName(const std::string& name);
 private:
     void createTvShowTable();
     void createEpisodeTable();
-    void deleteTvShowWithName(const std::string& name);
     void insertTvShow(const core::TvShow& tvShow);
     void insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes);
     unsigned int countTvShowsMatchingQuery(const QString& query = "");

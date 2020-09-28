@@ -84,5 +84,9 @@ void serio::qt::DatabaseStorage::clearTvShowWatchHistory(const std::string &tvSh
     tvShowStorage.clearTvShowWatchHistory(tvShowName);
 }
 
+void serio::qt::DatabaseStorage::deleteTvShow(const std::string &tvShowName) {
+    tvShowStorage.deleteTvShowWithName(tvShowName);
+}
+
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)
     : std::runtime_error("Failed to open database '" + databaseName + "'. Reason: " + reason) {}

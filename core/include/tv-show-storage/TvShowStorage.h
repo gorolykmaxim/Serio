@@ -15,6 +15,7 @@ public:
     virtual ListPage<Episode> getEpisodesOfTvShowWithName(const std::string& tvShowName, unsigned int offset, unsigned int limit) = 0;
     virtual void saveTvShow(const TvShow& tvShow, const std::vector<Episode>& episodes) = 0;
     virtual void clearTvShowWatchHistory(const std::string& tvShowName) = 0;
+    virtual void deleteTvShow(const std::string& tvShowName) = 0;
 };
 
 }
