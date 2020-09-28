@@ -25,6 +25,7 @@ public:
     void saveTvShowCrawler(const std::string &tvShowName, const std::string &serializedCrawler) override;
     void saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log) override;
     std::vector<core::CrawlLogEntry> getLastCrawlLogOfTvShow(const std::string &tvShowName) override;
+    void clearTvShowWatchHistory(const std::string &tvShowName) override;
 private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;

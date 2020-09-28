@@ -16,6 +16,8 @@ add_library(SerioLib STATIC
         src/database-storage/DatabaseTvShowCrawlerStorage.h
         src/database-storage/DatabaseTvShowCrawlerLogStorage.cpp
         src/database-storage/DatabaseTvShowCrawlerLogStorage.h
+        src/database-storage/BaseDatabaseStorage.cpp
+        src/database-storage/BaseDatabaseStorage.h
         src/task-executor/QTaskExecutor.h
         src/task-executor/QTaskExecutor.cpp
         src/http-client/QHttpClient.cpp

@@ -9,10 +9,8 @@ void serio::qt::DatabaseTvShowCrawlerStorage::initialize() {
 }
 
 std::optional<std::string> serio::qt::DatabaseTvShowCrawlerStorage::getTvShowCrawlerByTvShowName(const std::string &tvShowName) {
-    QSqlQuery findTvShowCrawler(QSqlDatabase::database());
-    findTvShowCrawler.prepare("SELECT CRAWLER FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?");
-    findTvShowCrawler.addBindValue(QString::fromStdString(tvShowName));
-    findTvShowCrawler.exec();
+    QSqlQuery findTvShowCrawler = createAndExec("SELECT CRAWLER FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?",
+                                                QString::fromStdString(tvShowName));
     if (findTvShowCrawler.next()) {
         return findTvShowCrawler.value(0).toString().toStdString();
     } else {
@@ -21,10 +19,7 @@ std::optional<std::string> serio::qt::DatabaseTvShowCrawlerStorage::getTvShowCra
 }
 
 void serio::qt::DatabaseTvShowCrawlerStorage::deleteTvShowCrawlerOfTvShow(const std::string &tvShowName) {
-    QSqlQuery deleteTvShowCrawler(QSqlDatabase::database());
-    deleteTvShowCrawler.prepare("DELETE FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?");
-    deleteTvShowCrawler.addBindValue(QString::fromStdString(tvShowName));
-    deleteTvShowCrawler.exec();
+    createAndExec("DELETE FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?", QString::fromStdString(tvShowName));
 }
 
 void serio::qt::DatabaseTvShowCrawlerStorage::insertTvShowCrawler(const std::string &tvShowName, const std::string &serializedCrawler) {

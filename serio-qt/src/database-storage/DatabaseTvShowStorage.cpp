@@ -51,10 +51,8 @@ unsigned int serio::qt::DatabaseTvShowStorage::countWatchedTvShows() {
 }
 
 unsigned int serio::qt::DatabaseTvShowStorage::countEpisodesOfTvShowWithName(const std::string &tvShowName) {
-    QSqlQuery countEpisodes(QSqlDatabase::database());
-    countEpisodes.prepare("SELECT COUNT() FROM EPISODE WHERE TV_SHOW_NAME = ?");
-    countEpisodes.addBindValue(QString::fromStdString(tvShowName));
-    countEpisodes.exec();
+    QSqlQuery countEpisodes = createAndExec("SELECT COUNT() FROM EPISODE WHERE TV_SHOW_NAME = ?",
+                                            QString::fromStdString(tvShowName));
     countEpisodes.next();
     return countEpisodes.value(0).toUInt();
 }
@@ -80,10 +78,7 @@ void serio::qt::DatabaseTvShowStorage::createEpisodeTable() {
 }
 
 void serio::qt::DatabaseTvShowStorage::deleteTvShowWithName(const std::string &name) {
-    QSqlQuery removeShow(QSqlDatabase::database());
-    removeShow.prepare("DELETE FROM TV_SHOW WHERE NAME = ?");
-    removeShow.addBindValue(QString::fromStdString(name));
-    removeShow.exec();
+    createAndExec("DELETE FROM TV_SHOW WHERE NAME = ?", QString::fromStdString(name));
 }
 
 void serio::qt::DatabaseTvShowStorage::insertTvShow(const serio::core::TvShow &tvShow) {
@@ -166,4 +161,10 @@ serio::core::Episode serio::qt::DatabaseTvShowStorage::readEpisodeFrom(const QSq
 
 std::optional<serio::core::LastWatchDate> serio::qt::DatabaseTvShowStorage::readLastWatchDate(const QVariant &variant) const {
     return variant.isNull() ? std::optional<serio::core::LastWatchDate>() : serio::core::LastWatchDate(variant.toLongLong());
+}
+
+void serio::qt::DatabaseTvShowStorage::clearTvShowWatchHistory(const std::string &tvShowName) {
+    QString name = QString::fromStdString(tvShowName);
+    createAndExec("UPDATE TV_SHOW SET LAST_WATCH_DATE = NULL WHERE NAME = ?", name);
+    createAndExec("UPDATE EPISODE SET LAST_WATCH_DATE = NULL WHERE TV_SHOW_NAME = ?", name);
 }

@@ -3,10 +3,11 @@
 
 #include <string>
 #include <optional>
+#include "BaseDatabaseStorage.h"
 
 namespace serio::qt {
 
-class DatabaseTvShowCrawlerStorage {
+class DatabaseTvShowCrawlerStorage : public BaseDatabaseStorage {
 public:
     void initialize();
     std::optional<std::string> getTvShowCrawlerByTvShowName(const std::string &tvShowName);

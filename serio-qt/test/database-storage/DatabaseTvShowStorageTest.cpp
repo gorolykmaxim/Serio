@@ -153,3 +153,20 @@ TEST_F(DatabaseTvShowStorageTest, shouldFindTvShowWithName) {
     saveShows();
     EXPECT_EQ(firstTvShow, *storage.getTvShowByName(firstTvShow.getName()));
 }
+
+TEST_F(DatabaseTvShowStorageTest, shouldClearLastWatchDatesOfSpecifiedTvShow) {
+    saveWatchedShows();
+    storage.clearTvShowWatchHistory(thirdTvShow.getName());
+    EXPECT_FALSE(storage.getTvShowByName(thirdTvShow.getName())->getLastWatchDate());
+    EXPECT_TRUE(storage.getTvShowByName(fourthTvShow.getName())->getLastWatchDate());
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldClearLastWatchDatesOfEpisodesOfSpecifiedTvShow) {
+    storage.saveTvShow(secondTvShow, secondTvShowEpisodes);
+    storage.saveTvShow(firstTvShow, secondTvShowEpisodes);
+    storage.clearTvShowWatchHistory(secondTvShow.getName());
+    serio::core::ListPage<serio::core::Episode> affectedEpisodes = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
+    EXPECT_FALSE(affectedEpisodes.getItemByGlobalIndex(0).getLastWatchDate());
+    serio::core::ListPage<serio::core::Episode> unaffectedEpisodes = storage.getEpisodesOfTvShowWithName(firstTvShow.getName(), 0, 10);
+    EXPECT_TRUE(unaffectedEpisodes.getItemByGlobalIndex(0).getLastWatchDate());
+}

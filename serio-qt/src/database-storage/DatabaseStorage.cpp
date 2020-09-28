@@ -80,5 +80,9 @@ std::vector<serio::core::CrawlLogEntry> serio::qt::DatabaseStorage::getLastCrawl
     return tvShowCrawlerLogStorage.getLastCrawlLogOfTvShow(tvShowName);
 }
 
+void serio::qt::DatabaseStorage::clearTvShowWatchHistory(const std::string &tvShowName) {
+    tvShowStorage.clearTvShowWatchHistory(tvShowName);
+}
+
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)
     : std::runtime_error("Failed to open database '" + databaseName + "'. Reason: " + reason) {}

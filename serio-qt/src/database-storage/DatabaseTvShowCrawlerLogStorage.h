@@ -4,16 +4,16 @@
 #include <string>
 #include <vector>
 #include <tv-show-crawler-log-storage/CrawlLogEntry.h>
+#include "BaseDatabaseStorage.h"
 
 namespace serio::qt {
 
-class DatabaseTvShowCrawlerLogStorage {
+class DatabaseTvShowCrawlerLogStorage : public BaseDatabaseStorage {
 public:
     void initialize();
     void saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log);
     std::vector<core::CrawlLogEntry> getLastCrawlLogOfTvShow(const std::string &tvShowName);
 private:
-    void deleteCrawlLogOfTvShow(const std::string& tvShowName);
     void insertCrawlLogEntries(const std::string& tvShowName, const std::vector<core::CrawlLogEntry>& entries);
     [[nodiscard]] core::CrawlLogEntry readCrawlLogEntryFrom(const QSqlQuery& query) const;
 };

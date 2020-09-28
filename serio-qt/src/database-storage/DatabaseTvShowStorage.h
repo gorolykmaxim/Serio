@@ -4,10 +4,11 @@
 #include <QSqlQuery>
 #include <tv-show-storage/TvShow.h>
 #include <tv-show-storage/Episode.h>
+#include "BaseDatabaseStorage.h"
 
 namespace serio::qt {
 
-class DatabaseTvShowStorage {
+class DatabaseTvShowStorage : public BaseDatabaseStorage {
 public:
     void initialize();
     void saveTvShow(const core::TvShow& tvShow, const std::vector<core::Episode>& episodes);
@@ -18,6 +19,7 @@ public:
     unsigned int countAllTvShows();
     unsigned int countWatchedTvShows();
     unsigned int countEpisodesOfTvShowWithName(const std::string& tvShowName);
+    void clearTvShowWatchHistory(const std::string &tvShowName);
 private:
     void createTvShowTable();
     void createEpisodeTable();

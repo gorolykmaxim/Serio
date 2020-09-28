@@ -16,27 +16,19 @@ void serio::qt::DatabaseTvShowCrawlerLogStorage::initialize() {
 }
 
 void serio::qt::DatabaseTvShowCrawlerLogStorage::saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log) {
-    deleteCrawlLogOfTvShow(tvShowName);
+    createAndExec("DELETE FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ?", QString::fromStdString(tvShowName));
     insertCrawlLogEntries(tvShowName, log);
 }
 
 std::vector<serio::core::CrawlLogEntry> serio::qt::DatabaseTvShowCrawlerLogStorage::getLastCrawlLogOfTvShow(const std::string &tvShowName) {
     std::vector<serio::core::CrawlLogEntry> result;
-    QSqlQuery findLastCrawlLogOfTvShow(QSqlDatabase::database());
-    findLastCrawlLogOfTvShow.prepare("SELECT TEXT, STEP_INPUT_DATA, STEP_OUTPUT_DATA FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ? ORDER BY ID");
-    findLastCrawlLogOfTvShow.addBindValue(QString::fromStdString(tvShowName));
-    findLastCrawlLogOfTvShow.exec();
+    QSqlQuery findLastCrawlLogOfTvShow = createAndExec(
+            "SELECT TEXT, STEP_INPUT_DATA, STEP_OUTPUT_DATA FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ? ORDER BY ID",
+            QString::fromStdString(tvShowName));
     while (findLastCrawlLogOfTvShow.next()) {
         result.push_back(readCrawlLogEntryFrom(findLastCrawlLogOfTvShow));
     }
     return result;
-}
-
-void serio::qt::DatabaseTvShowCrawlerLogStorage::deleteCrawlLogOfTvShow(const std::string &tvShowName) {
-    QSqlQuery deleteLastCrawlLog(QSqlDatabase::database());
-    deleteLastCrawlLog.prepare("DELETE FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ?");
-    deleteLastCrawlLog.addBindValue(QString::fromStdString(tvShowName));
-    deleteLastCrawlLog.exec();
 }
 
 void serio::qt::DatabaseTvShowCrawlerLogStorage::insertCrawlLogEntries(const std::string &tvShowName,
