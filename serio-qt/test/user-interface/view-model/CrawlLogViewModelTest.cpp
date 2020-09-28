@@ -99,22 +99,14 @@ TEST_F(CrawlLogViewModelTest, shouldDisplayEmptyEntryIfNoEntryIsSelected) {
 TEST_F(CrawlLogViewModelTest, shouldPushCrawlLogEntryViewToStack) {
     expectCrawlerPreviewLogViewOpened();
     EXPECT_CALL(stack, pushView(serio::qt::crawlLogEntryView));
-    viewModel.openLogEntryView(QVariantList({0}));
+    viewModel.openLogEntryView(QVariantList({1}));
 }
 
 TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatSelectedEntryHasChanged) {
     expectCrawlerPreviewLogViewOpened();
     QSignalSpy spy(&viewModel, &serio::qt::CrawlLogViewModel::selectedEntryChanged);
-    viewModel.openLogEntryView(QVariantList({0}));
+    viewModel.openLogEntryView(QVariantList({1}));
     EXPECT_EQ(1, spy.count());
-}
-
-TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithoutDataWithTheSpecifiedIndexInTheCurrentLog) {
-    expectCrawlerPreviewLogViewOpened();
-    viewModel.openLogEntryView(QVariantList({0}));
-    EXPECT_EQ(expectedLog[0].getText(), viewModel.getSelectedEntryText().toStdString());
-    EXPECT_TRUE(viewModel.getSelectedEntryInputData().isEmpty());
-    EXPECT_TRUE(viewModel.getSelectedEntryOutputData().isEmpty());
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithDataWithTheSpecifiedIndexInCurrentLog) {
@@ -158,4 +150,13 @@ TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatLastCrawlLogHasBeenResetTo
 TEST_F(CrawlLogViewModelTest, shouldDisplayEntryFromLastCrawlLogWithDataWithTheSpecifiedIndexInCurrentLog) {
     expectLastCrawlLogViewOpened();
     expectLogEntryToBeDisplayed(1);
+}
+
+TEST_F(CrawlLogViewModelTest, shouldNotDisplayEntryFromLastCrawlLogWithoutData) {
+    expectLastCrawlLogViewOpened();
+    EXPECT_CALL(stack, pushView(serio::qt::crawlLogEntryView)).Times(0);
+    viewModel.openLogEntryView(QVariantList({0}));
+    EXPECT_TRUE(viewModel.getSelectedEntryText().isEmpty());
+    EXPECT_TRUE(viewModel.getSelectedEntryInputData().isEmpty());
+    EXPECT_TRUE(viewModel.getSelectedEntryOutputData().isEmpty());
 }

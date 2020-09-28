@@ -28,6 +28,9 @@ void serio::qt::CrawlLogViewModel::openLastCrawlLogOfTvShow(const QVariantList &
 void serio::qt::CrawlLogViewModel::openLogEntryView(const QVariantList& args) {
     unsigned int entryIndex = args[0].toUInt();
     serio::core::CrawlLogEntry entry = logEntries.at(entryIndex);
+    if (!entry.hasData()) {
+        return;
+    }
     modifyModel([this, entry] {
         setSelectedEntry(entry);
         stack.pushView(crawlLogEntryView);
