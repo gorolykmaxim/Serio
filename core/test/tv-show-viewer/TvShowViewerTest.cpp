@@ -11,6 +11,11 @@ protected:
     TvShowCrawlerStorageMock crawlerStorage;
     TvShowCrawlerRuntimeMock runtime = TvShowCrawlerRuntimeMock::create();
     serio::core::TvShowViewer viewer = serio::core::TvShowViewer(tvShowStorage, crawlerStorage, runtime);
+    void expectTvShowToBeSelected() {
+        EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
+            .WillOnce(::testing::Return(std::optional(tvShow)));
+        viewer.openTvShowWithName(tvShow.getName());
+    }
 };
 
 TEST_F(TvShowViewerTest, shouldFailToReturnSelectedTvShowSinceNoTvShowIsSelected) {
@@ -32,10 +37,9 @@ TEST_F(TvShowViewerTest, shouldViewTvShowWithSpecifiedName) {
 }
 
 TEST_F(TvShowViewerTest, shouldFailToGetSelectedTvShowIfItWasDeleted) {
+    expectTvShowToBeSelected();
     EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
-        .WillOnce(::testing::Return(std::optional(tvShow)))
         .WillOnce(::testing::Return(std::optional<serio::core::TvShow>()));
-    viewer.openTvShowWithName(tvShow.getName());
     EXPECT_THROW((void)viewer.getSelectedTvShow(), std::logic_error);
 }
 
@@ -44,12 +48,10 @@ TEST_F(TvShowViewerTest, shouldFailToGetEpisodesOfCurrentlySelectedTvShowSinceNo
 }
 
 TEST_F(TvShowViewerTest, shouldReturnSpecifiedListPageOfEpisodesOfCurrentlySelectedTvShow) {
+    expectTvShowToBeSelected();
     serio::core::ListPage<serio::core::Episode> page(0, 10, {serio::core::Episode(1, "")});
-    EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
-        .WillOnce(::testing::Return(std::optional(tvShow)));
     EXPECT_CALL(tvShowStorage, getEpisodesOfTvShowWithName(tvShow.getName(), 0, 1))
         .WillOnce(::testing::Return(page));
-    viewer.openTvShowWithName(tvShow.getName());
     EXPECT_EQ(page, viewer.getTvShowEpisodes(0, 1));
 }
 
@@ -58,21 +60,17 @@ TEST_F(TvShowViewerTest, shouldFailToGetCrawlerOfSelectedTvShowSinceNoTvShowIsSe
 }
 
 TEST_F(TvShowViewerTest, shouldFailToGetCrawlerOfSelectedTvShowThatHasBeenAlreadyDeleted) {
-    EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
-        .WillOnce(::testing::Return(std::optional(tvShow)));
+    expectTvShowToBeSelected();
     EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(tvShow.getName()))
         .WillOnce(::testing::Return(std::optional<std::string>()));
-    viewer.openTvShowWithName(tvShow.getName());
     EXPECT_THROW(viewer.getRawCrawlerOfSelectedTvShow(), std::logic_error);
 }
 
 TEST_F(TvShowViewerTest, shouldReturnfCrawlerOfSelectedTvShow) {
+    expectTvShowToBeSelected();
     std::string rawCrawler = "raw crawler";
     EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(tvShow.getName()))
         .WillOnce(::testing::Return(std::optional(rawCrawler)));
-    EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
-            .WillOnce(::testing::Return(std::optional(tvShow)));
-    viewer.openTvShowWithName(tvShow.getName());
     EXPECT_EQ(rawCrawler, viewer.getRawCrawlerOfSelectedTvShow());
 }
 
@@ -81,9 +79,17 @@ TEST_F(TvShowViewerTest, shouldFailToRecrawlSelectedTvShowSinceNoTvShowIsSelecte
 }
 
 TEST_F(TvShowViewerTest, shouldCrawlSelectedTvShow) {
-    EXPECT_CALL(tvShowStorage, getTvShowByName(tvShow.getName()))
-        .WillOnce(::testing::Return(std::optional(tvShow)));
-    viewer.openTvShowWithName(tvShow.getName());
+    expectTvShowToBeSelected();
     EXPECT_CALL(runtime, crawlTvShow(tvShow.getName()));
     viewer.crawlSelectedTvShow();
+}
+
+TEST_F(TvShowViewerTest, shouldFailToClearWatchHistorySinceNoTvShowIsSelected) {
+    EXPECT_THROW(viewer.clearSelectedTvShowWatchHistory(), std::logic_error);
+}
+
+TEST_F(TvShowViewerTest, shouldClearWatchHistoryOfSelectedTvShow) {
+    expectTvShowToBeSelected();
+    EXPECT_CALL(tvShowStorage, clearTvShowWatchHistory(tvShow.getName()));
+    viewer.clearSelectedTvShowWatchHistory();
 }

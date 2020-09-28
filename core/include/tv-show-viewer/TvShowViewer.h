@@ -16,6 +16,7 @@ public:
     virtual void openTvShowWithName(const std::string& tvShowName);
     virtual std::string getRawCrawlerOfSelectedTvShow();
     virtual void crawlSelectedTvShow();
+    virtual void clearSelectedTvShowWatchHistory();
 private:
     std::optional<std::string> selectedTvShow;
     TvShowStorage& tvShowStorage;
