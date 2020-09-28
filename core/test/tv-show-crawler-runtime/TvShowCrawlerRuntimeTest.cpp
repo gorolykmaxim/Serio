@@ -10,6 +10,7 @@
 #include <TvShowCrawlerStorageMock.h>
 #include <TvShowStorageMock.h>
 #include <tv-show-crawler-log-storage/CrawlLogEntry.h>
+#include <TvShowCrawlerLogStorageMock.h>
 
 class TvShowCrawlerRuntimeTest : public ::testing::Test {
 protected:
@@ -20,11 +21,13 @@ protected:
     const std::string mandalorianCrawlerWithEpisodeVideoCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})";
     const std::string mandalorianCrawlerWithThumbnailCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]}})";
     const std::string httpClientResponse = "Tv show image='thumbnail.jpg' is nice. Episodes are: episode-1.mp4, episode-2.mp4 and episode-3.mp4";
+    const unsigned int maxCrawlLogEntryDataSize = 50;
     std::promise<std::vector<std::string>> httpClientResponsePromise;
     ::testing::NiceMock<HttpClientMock> httpClient;
     ::testing::NiceMock<TvShowCrawlerStorageMock> crawlerStorage;
     ::testing::NiceMock<TvShowStorageMock> tvShowStorage;
-    serio::core::TvShowCrawlerRuntime runtime = serio::core::TvShowCrawlerRuntime(crawlerStorage, tvShowStorage, httpClient, 50);
+    ::testing::NiceMock<TvShowCrawlerLogStorageMock> logStorage;
+    serio::core::TvShowCrawlerRuntime runtime = serio::core::TvShowCrawlerRuntime(crawlerStorage, tvShowStorage, logStorage, httpClient, maxCrawlLogEntryDataSize);
     serio::core::Crawler emptyCrawler;
     serio::core::Crawler crawlerWithSteps = serio::core::Crawler({
         serio::core::CrawlerStep("value", {{"value", "url"}}),
@@ -402,4 +405,22 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldRecrawlTvShow) {
     std::vector<serio::core::Episode> episodes = {serio::core::Episode(1, episodeVideoUrl)};
     EXPECT_CALL(tvShowStorage, saveTvShow(tvShow, episodes));
     runtime.crawlTvShow(mandalorian);
+}
+
+TEST_F(TvShowCrawlerRuntimeTest, shouldSaveLogsOfExecutedTvShowCrawlerInStorage) {
+    serio::core::CrawlerStep step("value", {{"value", "url"}});
+    serio::core::Crawler crawler({step});
+    serio::core::TvShowCrawler tvShowCrawler(friends, crawler, crawler, crawler);
+    std::vector<std::string> logSections = {"Crawling thumbnail", "Crawling episode videos", "Crawling episode names"};
+    std::vector<std::string> stepInputData = {};
+    std::vector<std::string> stepOutputData = {"url"};
+    std::vector<serio::core::CrawlLogEntry> log;
+    for (int i = 0; i < logSections.size(); i++) {
+        log.emplace_back(logSections[i]);
+        log.emplace_back(step);
+        log.back().setStepInputData(i + 1 == logSections.size() ? stepOutputData : stepInputData, maxCrawlLogEntryDataSize);
+        log.back().setStepOutputData(stepOutputData, maxCrawlLogEntryDataSize);
+    }
+    EXPECT_CALL(logStorage, saveCrawlLog(friends, log));
+    runtime.crawlTvShowAndSaveCrawler(tvShowCrawler);
 }

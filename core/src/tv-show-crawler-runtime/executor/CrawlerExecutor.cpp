@@ -8,14 +8,14 @@ void serio::core::CrawlerExecutor::registerCrawlerStepExecutor(const std::string
     crawlerStepTypeToExecutor[type] = std::move(executor);
 }
 
-std::string serio::core::CrawlerExecutor::executeThumbnailCrawler(const serio::core::Crawler &crawler) const {
-    std::vector<std::string> results = executeCrawler(crawler, "thumbnail").result;
+std::string serio::core::CrawlerExecutor::executeThumbnailCrawler(const serio::core::Crawler &crawler, std::vector<serio::core::CrawlLogEntry>& crawlLog) const {
+    std::vector<std::string> results = executeCrawlerAndSaveLog(crawler, "thumbnail", "Crawling thumbnail", crawlLog);
     return results.empty() ? "" : results[0];
 }
 
-std::vector<serio::core::Episode> serio::core::CrawlerExecutor::executeEpisodeCrawler(const Crawler& videoCrawler, const Crawler& nameCrawler) const {
-    std::vector<std::string> videoUrls = crawlEpisodeVideos(videoCrawler);
-    std::vector<std::string> names = crawlEpisodeNamesIfNecessary(nameCrawler, videoUrls);
+std::vector<serio::core::Episode> serio::core::CrawlerExecutor::executeEpisodeCrawler(const Crawler& videoCrawler, const Crawler& nameCrawler, std::vector<serio::core::CrawlLogEntry>& crawlLog) const {
+    std::vector<std::string> videoUrls = crawlEpisodeVideos(videoCrawler, crawlLog);
+    std::vector<std::string> names = crawlEpisodeNamesIfNecessary(nameCrawler, videoUrls, crawlLog);
     std::vector<Episode> episodes;
     episodes.reserve(videoUrls.size());
     if (!names.empty() && videoUrls.size() != names.size()) {
@@ -27,13 +27,18 @@ std::vector<serio::core::Episode> serio::core::CrawlerExecutor::executeEpisodeCr
     return episodes;
 }
 
-std::vector<std::string> serio::core::CrawlerExecutor::crawlEpisodeVideos(const serio::core::Crawler &crawler) const {
-    return executeCrawler(crawler, "episode video").result;
+std::vector<std::string> serio::core::CrawlerExecutor::crawlEpisodeVideos(const serio::core::Crawler &crawler, std::vector<CrawlLogEntry>& crawlLog) const {
+    return executeCrawlerAndSaveLog(crawler, "episode video", "Crawling episode videos", crawlLog);
 }
 
 std::vector<std::string> serio::core::CrawlerExecutor::crawlEpisodeNamesIfNecessary(const serio::core::Crawler &crawler,
-                                                                                    const std::vector<std::string>& videoUrls) const {
-    return crawler.hasSteps() ? executeCrawler(crawler, "episode name", videoUrls).result : std::vector<std::string>();
+                                                                                    const std::vector<std::string>& videoUrls,
+                                                                                    std::vector<CrawlLogEntry>& crawlLog) const {
+    if (crawler.hasSteps()) {
+        return executeCrawlerAndSaveLog(crawler, "episode name", "Crawling episode names", crawlLog, videoUrls);
+    } else {
+        return std::vector<std::string>();
+    }
 }
 
 serio::core::CrawlResult serio::core::CrawlerExecutor::executeCrawler(const serio::core::Crawler &crawler, const std::string& crawlerType, std::vector<std::string> result) const {
@@ -66,4 +71,18 @@ std::vector<std::string> serio::core::CrawlerExecutor::executeCrawlerStep(const 
     } catch (std::runtime_error& e) {
         throw CrawlerStepExecutionError(stepNumber, e);
     }
+}
+
+std::vector<std::string> serio::core::CrawlerExecutor::executeCrawlerAndSaveLog(const serio::core::Crawler &crawler,
+                                                                                const std::string &crawlerType,
+                                                                                const std::string &logSectionName,
+                                                                                std::vector<CrawlLogEntry> &crawlLog,
+                                                                                const std::vector<std::string>& result) const {
+    serio::core::CrawlResult execution = executeCrawler(crawler, crawlerType, result);
+    crawlLog.reserve(execution.log.size() + crawlLog.capacity());
+    crawlLog.emplace_back(logSectionName);
+    for (const auto& entry: execution.log) {
+        crawlLog.push_back(entry);
+    }
+    return execution.result;
 }

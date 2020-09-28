@@ -5,6 +5,7 @@
 #include <tv-show-storage/TvShowStorage.h>
 #include <http-client/HttpClient.h>
 #include <tv-show-crawler-runtime/model/CrawlResult.h>
+#include <tv-show-crawler-log-storage/TvShowCrawlerLogStorage.h>
 #include "tv-show-crawler-runtime/model/TvShowCrawler.h"
 #include "tv-show-crawler-runtime/model/CrawlerStepType.h"
 #include "tv-show-crawler-runtime/executor/CrawlerExecutor.h"
@@ -14,7 +15,8 @@ namespace serio::core {
 
 class TvShowCrawlerRuntime {
 public:
-    TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage, HttpClient& httpClient,
+    TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage,
+                         TvShowCrawlerLogStorage& logStorage, HttpClient& httpClient,
                          unsigned int maxCrawlLogEntryDataSize = 500);
     virtual void crawlTvShowAndSaveCrawler(const TvShowCrawler &crawler);
     [[nodiscard]] virtual std::vector<CrawlerStepType> getCrawlerStepTypes() const;
@@ -27,6 +29,7 @@ public:
 private:
     TvShowCrawlerStorage& crawlerStorage;
     TvShowStorage& tvShowStorage;
+    TvShowCrawlerLogStorage& logStorage;
     CrawlerExecutor crawlerExecutor;
     CrawlerSerializer serializer;
     std::vector<CrawlerStepType> crawlerStepTypes;

@@ -5,8 +5,13 @@
 #include <tv-show-crawler-runtime/executor/RegExpStepExecutor.h>
 
 serio::core::TvShowCrawlerRuntime::TvShowCrawlerRuntime(TvShowCrawlerStorage& crawlerStorage, TvShowStorage& tvShowStorage,
-                                                        HttpClient& httpClient, unsigned int maxCrawlLogEntryDataSize)
-    : crawlerStorage(crawlerStorage), tvShowStorage(tvShowStorage), crawlerExecutor(maxCrawlLogEntryDataSize), serializer(crawlerStepTypes) {
+                                                        TvShowCrawlerLogStorage& logStorage, HttpClient& httpClient,
+                                                        unsigned int maxCrawlLogEntryDataSize)
+    : crawlerStorage(crawlerStorage),
+      tvShowStorage(tvShowStorage),
+      logStorage(logStorage),
+      crawlerExecutor(maxCrawlLogEntryDataSize),
+      serializer(crawlerStepTypes) {
     registerCrawlerStepType(
             "value",
             std::make_unique<ValueStepExecutor>(),
@@ -75,9 +80,11 @@ void serio::core::TvShowCrawlerRuntime::crawlTvShow(const std::string &tvShowNam
 }
 
 void serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::TvShowCrawler &crawler) {
-    TvShow tvShow(crawler.getTvShowName(), crawlerExecutor.executeThumbnailCrawler(crawler.getCrawler(CrawlerType::thumbnailCrawler)));
-    std::vector<Episode> episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler));
+    std::vector<serio::core::CrawlLogEntry> crawlLog;
+    TvShow tvShow(crawler.getTvShowName(), crawlerExecutor.executeThumbnailCrawler(crawler.getCrawler(CrawlerType::thumbnailCrawler), crawlLog));
+    std::vector<Episode> episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler), crawlLog);
     tvShowStorage.saveTvShow(tvShow, episodes);
+    logStorage.saveCrawlLog(tvShow.getName(), crawlLog);
 }
 
 serio::core::TvShowCrawler serio::core::TvShowCrawlerRuntime::getTvShowCrawlerByTvShowNameOrFail(const std::string &tvShowName) {
