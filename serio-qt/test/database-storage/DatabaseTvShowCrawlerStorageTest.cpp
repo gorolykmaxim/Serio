@@ -3,6 +3,8 @@
 
 class DatabaseTvShowCrawlerStorageTest : public ::testing::Test {
 protected:
+    const std::string tvShowName = "Friends";
+    const std::string dummyCrawler = "{}";
     serio::qt::DatabaseStorage storage;
     virtual void SetUp() {
         storage.initialize(true);
@@ -10,12 +12,18 @@ protected:
 };
 
 TEST_F(DatabaseTvShowCrawlerStorageTest, shouldNotFindCrawlerOfTvShowThatDoesNotExist) {
-    EXPECT_FALSE(storage.getTvShowCrawlerByTvShowName("Friends"));
+    EXPECT_FALSE(storage.getTvShowCrawlerByTvShowName(tvShowName));
 }
 
 TEST_F(DatabaseTvShowCrawlerStorageTest, shouldOverrideExistingTvShowCrawlerWithNewOne) {
-    std::string expectedCrawler = "{\"showName\":\"Friends\",\"episodeVideoCrawler\":{}}";
-    storage.saveTvShowCrawler("Friends", "{}");
-    storage.saveTvShowCrawler("Friends", expectedCrawler);
-    EXPECT_EQ(expectedCrawler, *storage.getTvShowCrawlerByTvShowName("Friends"));
+    std::string expectedCrawler = R"({"showName":"Friends","episodeVideoCrawler":{}})";
+    storage.saveTvShowCrawler(tvShowName, dummyCrawler);
+    storage.saveTvShowCrawler(tvShowName, expectedCrawler);
+    EXPECT_EQ(expectedCrawler, *storage.getTvShowCrawlerByTvShowName(tvShowName));
+}
+
+TEST_F(DatabaseTvShowCrawlerStorageTest, shouldDeleteCrawlerOfTvShow) {
+    storage.saveTvShowCrawler(tvShowName, dummyCrawler);
+    storage.deleteCrawlerOfTvShow(tvShowName);
+    EXPECT_FALSE(storage.getTvShowCrawlerByTvShowName(tvShowName));
 }

@@ -27,6 +27,7 @@ public:
     std::vector<core::CrawlLogEntry> getLastCrawlLogOfTvShow(const std::string &tvShowName) override;
     void clearTvShowWatchHistory(const std::string &tvShowName) override;
     void deleteTvShow(const std::string &tvShowName) override;
+    void deleteCrawlerOfTvShow(const std::string &tvShowName) override;
 private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
