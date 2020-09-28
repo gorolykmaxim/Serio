@@ -93,3 +93,14 @@ TEST_F(TvShowViewerTest, shouldClearWatchHistoryOfSelectedTvShow) {
     EXPECT_CALL(tvShowStorage, clearTvShowWatchHistory(tvShow.getName()));
     viewer.clearSelectedTvShowWatchHistory();
 }
+
+TEST_F(TvShowViewerTest, shouldFailToDeleteTvShowSinceNoTvShowIsSelected) {
+    EXPECT_THROW(viewer.deleteSelectedTvShow(), std::logic_error);
+}
+
+TEST_F(TvShowViewerTest, shouldDeleteSelectedTvShowAndItsCrawler) {
+    expectTvShowToBeSelected();
+    EXPECT_CALL(tvShowStorage, deleteTvShow(tvShow.getName()));
+    EXPECT_CALL(crawlerStorage, deleteCrawlerOfTvShow(tvShow.getName()));
+    viewer.deleteSelectedTvShow();
+}

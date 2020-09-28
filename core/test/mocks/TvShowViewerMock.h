@@ -23,6 +23,7 @@ public:
     MOCK_METHOD(void, openTvShowWithName, (const std::string&), (override));
     MOCK_METHOD(void, crawlSelectedTvShow, (), (override));
     MOCK_METHOD(void, clearSelectedTvShowWatchHistory, (), (override));
+    MOCK_METHOD(void, deleteSelectedTvShow, (), (override));
 };
 
 #endif //SERIO_TVSHOWVIEWERMOCK_H

@@ -51,6 +51,12 @@ void serio::core::TvShowViewer::clearSelectedTvShowWatchHistory() {
     tvShowStorage.clearTvShowWatchHistory(getSelectedTvShowNameOrFail());
 }
 
+void serio::core::TvShowViewer::deleteSelectedTvShow() {
+    std::string tvShowName = getSelectedTvShowNameOrFail();
+    tvShowStorage.deleteTvShow(tvShowName);
+    crawlerStorage.deleteCrawlerOfTvShow(tvShowName);
+}
+
 serio::core::NoTvShowSelectedError::NoTvShowSelectedError() : std::logic_error("No tv show selected") {}
 
 serio::core::TvShowDoesNotExistError::TvShowDoesNotExistError(const std::string &tvShowName)
