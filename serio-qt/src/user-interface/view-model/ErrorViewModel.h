@@ -4,22 +4,17 @@
 #include <user-interface/StackOfViews.h>
 #include <QQmlApplicationEngine>
 #include "ViewModel.h"
+#include "DialogViewModel.h"
 
 namespace serio::qt {
 
 class ErrorViewModel : public ViewModel {
-    Q_OBJECT
-    Q_PROPERTY(QString errorText READ getErrorText NOTIFY errorTextChanged)
 public:
-    explicit ErrorViewModel(StackOfViews& stack);
-    void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
-    void displayError(const QVariantList& list);
-    [[nodiscard]] QString getErrorText() const;
-signals:
-    void errorTextChanged();
+    explicit ErrorViewModel(DialogViewModel& dialog);
+    void initialize(ActionRouter& router);
+    void displayError(const QVariantList& args);
 private:
-    QString errorText;
-    StackOfViews& stack;
+    DialogViewModel& dialog;
 };
 
 }

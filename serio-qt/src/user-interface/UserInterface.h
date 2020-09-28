@@ -12,6 +12,7 @@
 #include <user-interface/view-model/CrawlLogViewModel.h>
 #include <user-interface/view-model/TvShowViewModel.h>
 #include <user-interface/view-model/SnackbarViewModel.h>
+#include <user-interface/view-model/DialogViewModel.h>
 
 namespace serio::qt {
 
@@ -24,6 +25,7 @@ public:
 private:
     ActionRouter router;
     StackOfViews stack;
+    DialogViewModel dialog;
     SnackbarViewModel snackbar;
     ErrorViewModel errorViewModel;
     AllTvShowsViewModel allTvShowsViewModel;

@@ -11,7 +11,8 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
                                         serio::qt::QTaskExecutor &executor)
         : QObject(),
           router(executor),
-          errorViewModel(stack),
+          dialog(stack),
+          errorViewModel(dialog),
           allTvShowsViewModel(100, 2, storage, viewer, stack),
           crawlLogViewModel(tvShowCrawlerEditor, storage, stack),
           tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, viewer, stack),
@@ -20,9 +21,10 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           tvShowViewModel(100, 2, viewer, snackbar, stack) {
     httpClient.assignTo(engine);
     stack.initialize(router, engine);
+    dialog.initialize(engine);
     snackbar.initialize(engine);
     router.initialize(engine);
-    errorViewModel.initialize(router, engine);
+    errorViewModel.initialize(router);
     allTvShowsViewModel.initialize(router, engine);
     crawlLogViewModel.initialize(router, engine);
     tvShowCrawlerEditorViewModel.initialize(router, engine);

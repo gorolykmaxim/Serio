@@ -1,29 +1,14 @@
 #include <gtest/gtest.h>
-#include <user-interface/StackOfViews.h>
 #include <user-interface/view-model/ErrorViewModel.h>
-#include <QSignalSpy>
-#include <StackOfViewsMock.h>
-#include <user-interface/ViewNames.h>
+#include <DialogViewModelMock.h>
 
-class ErrorViewModelTest : public ::testing::Test {
-protected:
-    ::testing::NiceMock<StackOfViewsMock> stack;
-    serio::qt::ErrorViewModel viewModel = serio::qt::ErrorViewModel(stack);
-};
-
-TEST_F(ErrorViewModelTest, shouldPushErrorViewToStack) {
-    EXPECT_CALL(stack, pushView(serio::qt::errorView));
-    viewModel.displayError(QVariantList({""}));
-}
-
-TEST_F(ErrorViewModelTest, shouldDisplayErrorMessage) {
-    QString errorText = "expected error message to be displayed";
-    viewModel.displayError(QVariantList({errorText}));
-    EXPECT_EQ(errorText, viewModel.getErrorText());
-}
-
-TEST_F(ErrorViewModelTest, shouldNotifyAboutChangedErrorText) {
-    QSignalSpy spy(&viewModel, &serio::qt::ErrorViewModel::errorTextChanged);
-    viewModel.displayError(QVariantList({""}));
-    EXPECT_EQ(1, spy.count());
+TEST(ErrorViewModelTest, shouldDisplayErrorMessage) {
+    DialogViewModelMock dialog;
+    serio::qt::ErrorViewModel viewModel(dialog);
+    QString error = "expected error";
+    serio::qt::DialogModel model("Whoops...", error);
+    model.hideLeftButton();
+    model.setRightButtonText("understand");
+    EXPECT_CALL(dialog, display(model));
+    viewModel.displayError(QVariantList({error}));
 }

@@ -11,7 +11,6 @@ const QString crawlerEditorHelpView = "CrawlerEditorHelpView.qml";
 const QString crawlingInProgressView = "CrawlingInProgressView.qml";
 const QString crawlerPreviewView = "CrawlerPreviewView.qml";
 const QString crawlLogView = "CrawlLogView.qml";
-const QString errorView = "ErrorView.qml";
 const QString addTvShowView = "AddTvShowView.qml";
 const QString tvShowCrawlerEditorView = "TvShowCrawlerEditorView.qml";
 const QString importTvShowCrawlerView = "ImportTvShowCrawlerView.qml";
