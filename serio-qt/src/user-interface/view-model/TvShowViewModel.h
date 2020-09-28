@@ -30,6 +30,8 @@ public:
     void crawl();
     void confirmClearWatchHistory();
     void clearWatchHistory();
+    void confirmDeleteTvShow();
+    void deleteTvShow();
 signals:
     void selectedTvShowChanged();
 private:

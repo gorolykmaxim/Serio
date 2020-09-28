@@ -116,3 +116,18 @@ TEST_F(TvShowViewModelTest, shouldClearWatchHistoryOfSelectedTvShow) {
     EXPECT_CALL(stack, popCurrentView());
     viewModel.clearWatchHistory();
 }
+
+TEST_F(TvShowViewModelTest, shouldConfirmIfUserWantsToDeleteSelectedTvShow) {
+    expectTvShowToBeLoaded(scrubs);
+    serio::qt::DialogModel model("Delete TV Show",
+                                 "You are about to delete '" + QString::fromStdString(scrubs.getName()) + "'");
+    model.setRightButtonAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW);
+    EXPECT_CALL(dialog, display(model));
+    viewModel.confirmDeleteTvShow();
+}
+
+TEST_F(TvShowViewModelTest, shouldDeleteSelectedTvShow) {
+    EXPECT_CALL(viewer, deleteSelectedTvShow());
+    EXPECT_CALL(stack, popAllViews());
+    viewModel.deleteTvShow();
+}

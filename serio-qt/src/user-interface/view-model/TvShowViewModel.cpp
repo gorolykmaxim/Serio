@@ -18,6 +18,8 @@ void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQm
     router.registerAction(serio::qt::ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const QVariantList& args) { crawl(); });
     router.registerAction(serio::qt::ActionType::CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { confirmClearWatchHistory(); });
     router.registerAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { clearWatchHistory(); });
+    router.registerAction(serio::qt::ActionType::CONFIRM_DELETE_CURRENT_TV_SHOW, [this] (const QVariantList& args) { confirmDeleteTvShow(); });
+    router.registerAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW, [this] (const QVariantList& args) { deleteTvShow(); });
     connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
@@ -79,8 +81,8 @@ void serio::qt::TvShowViewModel::crawl() {
 }
 
 void serio::qt::TvShowViewModel::confirmClearWatchHistory() {
-    serio::qt::DialogModel model("Clear Watch History",
-                                 "You are about to clear your watch history of '" + tvShowName + "'.");
+    DialogModel model("Clear Watch History",
+                      "You are about to clear your watch history of '" + tvShowName + "'.");
     model.setRightButtonAction(ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY);
     dialog.display(model);
 }
@@ -88,4 +90,16 @@ void serio::qt::TvShowViewModel::confirmClearWatchHistory() {
 void serio::qt::TvShowViewModel::clearWatchHistory() {
     viewer.clearSelectedTvShowWatchHistory();
     stack.popCurrentView();
+}
+
+void serio::qt::TvShowViewModel::confirmDeleteTvShow() {
+    DialogModel model("Delete TV Show",
+                      "You are about to delete '" + tvShowName + "'");
+    model.setRightButtonAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW);
+    dialog.display(model);
+}
+
+void serio::qt::TvShowViewModel::deleteTvShow() {
+    viewer.deleteSelectedTvShow();
+    stack.popAllViews();
 }
