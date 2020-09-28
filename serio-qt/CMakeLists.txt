@@ -45,6 +45,8 @@ add_library(SerioLib STATIC
         src/user-interface/model/TextFieldModel.cpp
         src/user-interface/model/TextFieldModel.h
         src/user-interface/model/ListModel.h
+        src/user-interface/model/DialogModel.cpp
+        src/user-interface/model/DialogModel.h
         src/user-interface/view-model/AllTvShowsViewModel.cpp
         src/user-interface/view-model/AllTvShowsViewModel.h
         src/user-interface/view-model/TvShowCrawlerEditorViewModel.cpp
@@ -62,6 +64,8 @@ add_library(SerioLib STATIC
         src/user-interface/view-model/TvShowViewModel.h
         src/user-interface/view-model/SnackbarViewModel.cpp
         src/user-interface/view-model/SnackbarViewModel.h
+        src/user-interface/view-model/DialogViewModel.cpp
+        src/user-interface/view-model/DialogViewModel.h
         src/user-interface/view-model/ViewModel.cpp
         src/user-interface/UserInterface.cpp
         src/user-interface/UserInterface.h
@@ -88,6 +92,7 @@ add_executable(SerioTest
         test/user-interface/view-model/StackOfViewsTest.cpp
         test/user-interface/view-model/CrawlLogViewModelTest.cpp
         test/user-interface/view-model/TvShowViewModelTest.cpp
-        test/user-interface/view-model/SnackbarViewModelTest.cpp)
+        test/user-interface/view-model/SnackbarViewModelTest.cpp
+        test/user-interface/view-model/DialogViewModelTest.cpp)
 target_include_directories(SerioTest PUBLIC test/mocks)
 target_link_libraries(SerioTest SerioLib CoreTestMocks gtest gmock gtest_main Qt5::Test)

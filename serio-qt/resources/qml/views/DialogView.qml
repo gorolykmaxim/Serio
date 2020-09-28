@@ -3,38 +3,31 @@ import QtQuick.Layouts 1.12
 import "../widgets"
 
 CenteredViewLayout {
-    property string dialogTitle
-    property string dialogMessage
-    property string rightButtonText: "confirm"
-    property string leftButtonText: "cancel"
-    property bool hideLeftButton: false
-    signal rightButtonClicked()
-    signal leftButtonClicked()
     layoutSpacing: globalPadding
     AccentTitle {
         Layout.fillWidth: true
-        text: dialogTitle
+        text: dialogViewModel.title
     }
     Paragraph {
         Layout.maximumWidth: 400
-        text: dialogMessage
+        text: dialogViewModel.message
     }
     RightToLeftButtonRow {
         Layout.fillWidth: true
         spacing: globalPadding
         SerioButton {
             id: rightBtn
-            text: rightButtonText
-            focus: hideLeftButton
-            onClicked: rightButtonClicked()
+            text: dialogViewModel.rightButtonText
+            focus: dialogViewModel.leftButtonHidden
+            onClicked: actionRouter.trigger(dialogViewModel.rightButtonAction, [])
             KeyNavigation.tab: leftBtn
         }
         SerioButton {
             id: leftBtn
-            text: leftButtonText
-            focus: !hideLeftButton
-            onClicked: leftButtonClicked()
-            visible: !hideLeftButton
+            text: dialogViewModel.leftButtonText
+            focus: !dialogViewModel.leftButtonHidden
+            onClicked: actionRouter.trigger(dialogViewModel.leftButtonAction, [])
+            visible: !dialogViewModel.leftButtonHidden
             KeyNavigation.tab: rightBtn
             KeyNavigation.right: rightBtn
         }
