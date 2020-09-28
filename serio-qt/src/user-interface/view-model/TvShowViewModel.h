@@ -2,6 +2,7 @@
 #define SERIO_TVSHOWVIEWMODEL_H
 
 #include <user-interface/model/pageable-list/EpisodeListModel.h>
+#include <user-interface/view-model/DialogViewModel.h>
 #include <tv-show-viewer/TvShowViewer.h>
 #include <tv-show-crawler-storage/TvShowCrawlerStorage.h>
 #include "ViewModel.h"
@@ -17,7 +18,7 @@ class TvShowViewModel : public ViewModel {
     Q_PROPERTY(EpisodeListModel* episodeList READ getEpisodeList CONSTANT)
 public:
     TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer,
-                    SnackbarViewModel& snackbar, StackOfViews& stack);
+                    DialogViewModel& dialog, SnackbarViewModel& snackbar, StackOfViews& stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] QString getLastWatchDate() const;
@@ -27,6 +28,8 @@ public:
     void loadEpisodes(const QVariantList& args);
     void shareCrawler();
     void crawl();
+    void confirmClearWatchHistory();
+    void clearWatchHistory();
 signals:
     void selectedTvShowChanged();
 private:
@@ -35,6 +38,7 @@ private:
     QString thumbnailUrl;
     QString lastWatchDate;
     core::TvShowViewer& viewer;
+    DialogViewModel& dialog;
     SnackbarViewModel& snackbar;
     StackOfViews& stack;
     void loadTvShow();

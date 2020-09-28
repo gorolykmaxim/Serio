@@ -10,6 +10,7 @@ View {
         shareBtn.clicked.connect(() => actionRouter.trigger(ActionType.SHARE_CRAWLER_OF_CURRENT_TV_SHOW, []))
         crawlBtn.clicked.connect(() => actionRouter.trigger(ActionType.CRAWL_CURRENT_TV_SHOW, []))
         viewCrawlLogBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_LAST_TV_SHOW_CRAWL_LOG, [tvShowViewModel.tvShowName]))
+        clearWatchHistoryBtn.clicked.connect(() => actionRouter.trigger(ActionType.CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, []))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
     RoundNullableImage {
@@ -62,6 +63,13 @@ View {
             SerioButton {
                 id: viewCrawlLogBtn
                 text: "view crawl log"
+                KeyNavigation.down: episodeList
+                KeyNavigation.right: clearWatchHistoryBtn
+                KeyNavigation.tab: clearWatchHistoryBtn
+            }
+            SerioButton {
+                id: clearWatchHistoryBtn
+                text: "clear watch history"
                 KeyNavigation.down: episodeList
                 KeyNavigation.tab: episodeList
             }

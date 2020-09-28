@@ -18,7 +18,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, viewer, dialog, stack),
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
-          tvShowViewModel(100, 2, viewer, snackbar, stack) {
+          tvShowViewModel(100, 2, viewer, dialog, snackbar, stack) {
     httpClient.assignTo(engine);
     stack.initialize(router, engine);
     dialog.initialize(engine);

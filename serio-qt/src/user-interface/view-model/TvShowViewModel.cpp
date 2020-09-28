@@ -5,9 +5,9 @@
 #include <user-interface/ViewNames.h>
 
 serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
-                                            serio::core::TvShowViewer &viewer, serio::qt::SnackbarViewModel& snackbar,
-                                            StackOfViews& stack)
-    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), snackbar(snackbar), stack(stack) {}
+                                            serio::core::TvShowViewer &viewer, serio::qt::DialogViewModel& dialog,
+                                            serio::qt::SnackbarViewModel& snackbar, StackOfViews& stack)
+    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), dialog(dialog), snackbar(snackbar), stack(stack) {}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
@@ -16,6 +16,8 @@ void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQm
     router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const QVariantList& args) { loadEpisodes(args); });
     router.registerAction(serio::qt::ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const QVariantList& args) { shareCrawler(); });
     router.registerAction(serio::qt::ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const QVariantList& args) { crawl(); });
+    router.registerAction(serio::qt::ActionType::CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { confirmClearWatchHistory(); });
+    router.registerAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { clearWatchHistory(); });
     connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
@@ -74,4 +76,16 @@ void serio::qt::TvShowViewModel::crawl() {
         stack.popCurrentView();
         throw e;
     }
+}
+
+void serio::qt::TvShowViewModel::confirmClearWatchHistory() {
+    serio::qt::DialogModel model("Clear Watch History",
+                                 "You are about to clear your watch history of '" + tvShowName + "'.");
+    model.setRightButtonAction(ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY);
+    dialog.display(model);
+}
+
+void serio::qt::TvShowViewModel::clearWatchHistory() {
+    viewer.clearSelectedTvShowWatchHistory();
+    stack.popCurrentView();
 }
