@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "CrawlerStep.h"
+#include "tv-show-crawler-runtime/model/CrawlerStep.h"
 
 namespace serio::core {
 

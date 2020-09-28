@@ -10,13 +10,15 @@ add_library(Core STATIC
         src/tv-show-storage/LastWatchDate.cpp
         include/http-client/HttpClient.h
         include/tv-show-crawler-storage/TvShowCrawlerStorage.h
+        include/tv-show-crawler-log-storage/TvShowCrawlerLogStorage.h
+        include/tv-show-crawler-log-storage/CrawlLogEntry.h
+        src/tv-show-crawler-log-storage/CrawlLogEntry.cpp
         include/tv-show-crawler-runtime/TvShowCrawlerRuntime.h
         include/tv-show-crawler-runtime/CrawlerSerializer.h
         include/tv-show-crawler-runtime/model/CrawlerStep.h
         include/tv-show-crawler-runtime/model/Crawler.h
         include/tv-show-crawler-runtime/model/TvShowCrawler.h
         include/tv-show-crawler-runtime/model/CrawlerStepType.h
-        include/tv-show-crawler-runtime/model/CrawlLogEntry.h
         include/tv-show-crawler-runtime/model/CrawlResult.h
         include/tv-show-crawler-runtime/executor/RegExpStepExecutor.h
         include/tv-show-crawler-runtime/executor/CrawlerExecutor.h
@@ -30,7 +32,6 @@ add_library(Core STATIC
         src/tv-show-crawler-runtime/model/Crawler.cpp
         src/tv-show-crawler-runtime/model/TvShowCrawler.cpp
         src/tv-show-crawler-runtime/model/CrawlerStepType.cpp
-        src/tv-show-crawler-runtime/model/CrawlLogEntry.cpp
         src/tv-show-crawler-runtime/executor/CrawlerExecutor.cpp
         src/tv-show-crawler-runtime/executor/ValueStepExecutor.cpp
         src/tv-show-crawler-runtime/executor/TransformStepExecutor.cpp
@@ -56,10 +57,10 @@ add_executable(CoreTest
         test/tv-show-storage/ListPageTest.cpp
         test/tv-show-storage/BigListProxyTest.cpp
         test/tv-show-storage/EpisodeTest.cpp
+        test/tv-show-crawler-log-storage/CrawlLogEntryTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerStepTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerTest.cpp
         test/tv-show-crawler-runtime/model/TvShowCrawlerTest.cpp
-        test/tv-show-crawler-runtime/model/CrawlLogEntryTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerStepTypeTest.cpp
         test/tv-show-crawler-runtime/TvShowCrawlerRuntimeTest.cpp
         test/tv-show-crawler-editor/TvShowCrawlerEditorTest.cpp

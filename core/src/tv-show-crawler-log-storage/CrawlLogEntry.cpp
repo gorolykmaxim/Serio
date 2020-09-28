@@ -1,5 +1,5 @@
 #include <sstream>
-#include "tv-show-crawler-runtime/model/CrawlLogEntry.h"
+#include "tv-show-crawler-log-storage/CrawlLogEntry.h"
 
 namespace serio::core {
 

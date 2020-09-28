@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <tv-show-crawler-runtime/model/CrawlLogEntry.h>
+#include <tv-show-crawler-log-storage/CrawlLogEntry.h>
 #include <tv-show-crawler-runtime/model/CrawlerStep.h>
 
 class CrawlLogEntryTest : public ::testing::Test {

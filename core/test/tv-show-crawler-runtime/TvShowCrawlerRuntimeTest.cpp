@@ -9,7 +9,7 @@
 #include <HttpClientMock.h>
 #include <TvShowCrawlerStorageMock.h>
 #include <TvShowStorageMock.h>
-#include <tv-show-crawler-runtime/model/CrawlLogEntry.h>
+#include <tv-show-crawler-log-storage/CrawlLogEntry.h>
 
 class TvShowCrawlerRuntimeTest : public ::testing::Test {
 protected:

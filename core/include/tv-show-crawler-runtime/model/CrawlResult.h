@@ -1,7 +1,7 @@
 #ifndef SERIO_CRAWLRESULT_H
 #define SERIO_CRAWLRESULT_H
 
-#include <tv-show-crawler-runtime/model/CrawlLogEntry.h>
+#include <tv-show-crawler-log-storage/CrawlLogEntry.h>
 #include <vector>
 
 namespace serio::core {
