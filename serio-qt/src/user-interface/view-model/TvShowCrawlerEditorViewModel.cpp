@@ -4,8 +4,9 @@
 
 serio::qt::TvShowCrawlerEditorViewModel::TvShowCrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor,
                                                                       serio::core::TvShowViewer& viewer,
+                                                                      serio::qt::DialogViewModel& dialog,
                                                                       serio::qt::StackOfViews &stack)
-    : editor(editor), viewer(viewer), stack(stack) {}
+    : editor(editor), viewer(viewer), dialog(dialog), stack(stack) {}
 
 void serio::qt::TvShowCrawlerEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("tvShowCrawlerEditorViewModel", this);
@@ -64,7 +65,7 @@ void serio::qt::TvShowCrawlerEditorViewModel::openCurrentTvShowCrawlerEditorView
 
 void serio::qt::TvShowCrawlerEditorViewModel::save() {
     if (!isEditingExistingTvShow && editor.willOverrideExistingTvShow()) {
-        stack.pushView(tvShowCrawlerOverrideDialogView);
+        displayTvShowOverrideConfirmationDialog();
     } else {
         saveWithOverride();
     }
@@ -118,4 +119,12 @@ void serio::qt::TvShowCrawlerEditorViewModel::importTvShowCrawler(const QVariant
 void serio::qt::TvShowCrawlerEditorViewModel::setEditingExistingTvShow(bool editingExistingTvShow) {
     isEditingExistingTvShow = editingExistingTvShow;
     emit canTvShowNameBeChangedChanged();
+}
+
+void serio::qt::TvShowCrawlerEditorViewModel::displayTvShowOverrideConfirmationDialog() {
+    serio::qt::DialogModel dialogModel(
+            "TV Show '" + tvShowName + "' already exists",
+            "Are you sure you want to override the existing crawler and the show with the new ones?");
+    dialogModel.setRightButtonAction(serio::qt::ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE);
+    dialog.display(dialogModel);
 }

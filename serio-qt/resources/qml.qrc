@@ -46,7 +46,6 @@
         <file>qml/views/CrawlingInProgressView.qml</file>
         <file>qml/widgets/NonDeterministicCircularProgressBar.qml</file>
         <file>qml/StackOfViews.qml</file>
-        <file>qml/views/TvShowCrawlerOverrideDialogView.qml</file>
         <file>qml/views/DialogView.qml</file>
         <file>qml/views/CenteredViewLayout.qml</file>
         <file>qml/views/ViewLayout.qml</file>

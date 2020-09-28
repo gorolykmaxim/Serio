@@ -10,6 +10,7 @@
 #include <user-interface/action/ActionRouter.h>
 #include <tv-show-viewer/TvShowViewer.h>
 #include "ViewModel.h"
+#include "DialogViewModel.h"
 
 namespace serio::qt {
 
@@ -19,7 +20,8 @@ class TvShowCrawlerEditorViewModel : public ViewModel {
     Q_PROPERTY(bool canCrawlerBeSaved READ canCrawlerBeSaved NOTIFY canCrawlerBeSavedChanged)
     Q_PROPERTY(bool canTvShowNameBeChanged READ canTvShowNameBeChanged NOTIFY canTvShowNameBeChangedChanged)
 public:
-    TvShowCrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor, core::TvShowViewer& viewer, StackOfViews &stack);
+    TvShowCrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor, core::TvShowViewer& viewer,
+                                 DialogViewModel& dialog, StackOfViews &stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] bool canCrawlerBeSaved() const;
@@ -43,11 +45,13 @@ private:
     QString rootEditorView;
     core::TvShowCrawlerEditor& editor;
     core::TvShowViewer& viewer;
+    DialogViewModel& dialog;
     StackOfViews& stack;
     void setName(QString name);
     void openNewTvShowCrawlerEditorView(const QString& view);
     void openExistingTvShowCrawlerEditorView();
     void setEditingExistingTvShow(bool editingExistingTvShow);
+    void displayTvShowOverrideConfirmationDialog();
 };
 
 }
