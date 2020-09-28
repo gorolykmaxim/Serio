@@ -8,16 +8,42 @@
 
 class CrawlLogViewModelTest : public ::testing::Test {
 protected:
+    const QString tvShowName = "How i met your mom";
     std::vector<serio::core::CrawlLogEntry> expectedLog = {serio::core::CrawlLogEntry("entry 1")};
     ::testing::NiceMock<StackOfViewsMock> stack;
     TvShowCrawlerEditorMock editor = TvShowCrawlerEditorMock::create();
-    serio::qt::CrawlLogViewModel viewModel = serio::qt::CrawlLogViewModel(editor, stack);
+    TvShowCrawlerLogStorageMock logStorage;
+    serio::qt::CrawlLogViewModel viewModel = serio::qt::CrawlLogViewModel(editor, logStorage, stack);
+    QSignalSpy titleSpy = QSignalSpy(&viewModel, &serio::qt::CrawlLogViewModel::titleChanged);
+    QSignalSpy logSpy = QSignalSpy(&viewModel, &serio::qt::CrawlLogViewModel::logChanged);
     virtual void SetUp() {
         serio::core::CrawlLogEntry entry("entry 2");
         const std::vector<std::string> stepData = {"step data 1", "step data 2"};
         entry.setStepInputData(stepData, 100);
         entry.setStepOutputData(stepData, 100);
         expectedLog.push_back(std::move(entry));
+    }
+    void expectCrawlerPreviewLogViewOpened() {
+        EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
+        viewModel.openCrawlerPreviewLogView(QVariantList({""}));
+    }
+    void expectLastCrawlLogViewOpened() {
+        EXPECT_CALL(logStorage, getLastCrawlLogOfTvShow(tvShowName.toStdString()))
+            .WillOnce(::testing::Return(expectedLog));
+        viewModel.openLastCrawlLogOfTvShow(QVariantList({tvShowName}));
+    }
+    void expectSpecifiedLogDisplayed() {
+        QList<serio::qt::TileModel*> log = viewModel.getLog();
+        for (int i = 0; i < 2; i++) {
+            EXPECT_EQ(expectedLog[i].getText(), log[i]->getTitle().toStdString());
+            EXPECT_TRUE(log[i]->getSubtitle().isEmpty());
+            EXPECT_TRUE(log[i]->getIcon().isEmpty());
+        }
+    }
+    void expectLogEntryToBeDisplayed(unsigned int logEntryIndex) {
+        viewModel.openLogEntryView(QVariantList({logEntryIndex}));
+        EXPECT_EQ(expectedLog[logEntryIndex].getStepInputData(), viewModel.getSelectedEntryInputData().toStdString());
+        EXPECT_EQ(expectedLog[logEntryIndex].getStepOutputData(), viewModel.getSelectedEntryOutputData().toStdString());
     }
 };
 
@@ -38,34 +64,23 @@ TEST_F(CrawlLogViewModelTest, shouldSetTitleAccordingToTypeOfCrawlerLogsOfWhichA
 }
 
 TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersAboutTitleChange) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-    QSignalSpy spy(&viewModel, &serio::qt::CrawlLogViewModel::titleChanged);
-    viewModel.openCrawlerPreviewLogView(QVariantList({""}));
-    EXPECT_EQ(1, spy.count());
+    expectCrawlerPreviewLogViewOpened();
+    EXPECT_EQ(1, titleSpy.count());
 }
 
 TEST_F(CrawlLogViewModelTest, shouldPushCrawlLogViewToStack) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
     EXPECT_CALL(stack, pushView(serio::qt::crawlLogView));
-    viewModel.openCrawlerPreviewLogView(QVariantList({""}));
+    expectCrawlerPreviewLogViewOpened();
 }
 
 TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatLogHasBeenResetToTheNewOne) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-    QSignalSpy spy(&viewModel, &serio::qt::CrawlLogViewModel::logChanged);
-    viewModel.openCrawlerPreviewLogView(QVariantList({""}));
-    EXPECT_EQ(2, spy.count());
+    expectCrawlerPreviewLogViewOpened();
+    EXPECT_EQ(2, logSpy.count());
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDisplayCrawlerPreviewExecutionLogAndNotifyWatchers) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-    viewModel.openCrawlerPreviewLogView(QVariantList({""}));
-    QList<serio::qt::TileModel*> log = viewModel.getLog();
-    for (int i = 0; i < 2; i++) {
-        EXPECT_EQ(expectedLog[i].getText(), log[i]->getTitle().toStdString());
-        EXPECT_TRUE(log[i]->getSubtitle().isEmpty());
-        EXPECT_TRUE(log[i]->getIcon().isEmpty());
-    }
+    expectCrawlerPreviewLogViewOpened();
+    expectSpecifiedLogDisplayed();
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDiscardOldLogAndDisplayNewOne) {
@@ -82,20 +97,20 @@ TEST_F(CrawlLogViewModelTest, shouldDisplayEmptyEntryIfNoEntryIsSelected) {
 }
 
 TEST_F(CrawlLogViewModelTest, shouldPushCrawlLogEntryViewToStack) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
+    expectCrawlerPreviewLogViewOpened();
     EXPECT_CALL(stack, pushView(serio::qt::crawlLogEntryView));
     viewModel.openLogEntryView(QVariantList({0}));
 }
 
 TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatSelectedEntryHasChanged) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
+    expectCrawlerPreviewLogViewOpened();
     QSignalSpy spy(&viewModel, &serio::qt::CrawlLogViewModel::selectedEntryChanged);
     viewModel.openLogEntryView(QVariantList({0}));
     EXPECT_EQ(1, spy.count());
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithoutDataWithTheSpecifiedIndexInTheCurrentLog) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
+    expectCrawlerPreviewLogViewOpened();
     viewModel.openLogEntryView(QVariantList({0}));
     EXPECT_EQ(expectedLog[0].getText(), viewModel.getSelectedEntryText().toStdString());
     EXPECT_TRUE(viewModel.getSelectedEntryInputData().isEmpty());
@@ -103,8 +118,44 @@ TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithoutDataWithTheSpecifiedIndex
 }
 
 TEST_F(CrawlLogViewModelTest, shouldDisplayEntryWithDataWithTheSpecifiedIndexInCurrentLog) {
-    EXPECT_CALL(editor, getPreviewedCrawlerLog()).WillOnce(::testing::Return(expectedLog));
-    viewModel.openLogEntryView(QVariantList({1}));
-    EXPECT_EQ(expectedLog[1].getStepInputData(), viewModel.getSelectedEntryInputData().toStdString());
-    EXPECT_EQ(expectedLog[1].getStepOutputData(), viewModel.getSelectedEntryOutputData().toStdString());
+    expectCrawlerPreviewLogViewOpened();
+    expectLogEntryToBeDisplayed(1);
+}
+
+TEST_F(CrawlLogViewModelTest, shouldOpenLastCrawlLogOfSpecifiedTvShow) {
+    EXPECT_CALL(stack, pushView(serio::qt::crawlLogView));
+    expectLastCrawlLogViewOpened();
+}
+
+TEST_F(CrawlLogViewModelTest, shouldSetTitleToLastCrawlLog) {
+    expectLastCrawlLogViewOpened();
+    EXPECT_EQ(QString("Last Crawl Log"), viewModel.getTitle());
+}
+
+TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatTitleChangedToLastCrawlLog) {
+    expectLastCrawlLogViewOpened();
+    EXPECT_EQ(1, titleSpy.count());
+}
+
+TEST_F(CrawlLogViewModelTest, shouldDisplayLastCrawlLog) {
+    expectLastCrawlLogViewOpened();
+    expectSpecifiedLogDisplayed();
+}
+
+TEST_F(CrawlLogViewModelTest, shouldDiscardOldLastCrawlLogAndDisplayNewOne) {
+    EXPECT_CALL(logStorage, getLastCrawlLogOfTvShow(tvShowName.toStdString()))
+        .WillRepeatedly(::testing::Return(expectedLog));
+    viewModel.openLastCrawlLogOfTvShow(QVariantList({tvShowName}));
+    viewModel.openLastCrawlLogOfTvShow(QVariantList({tvShowName}));
+    EXPECT_EQ(expectedLog.size(), viewModel.getLog().size());
+}
+
+TEST_F(CrawlLogViewModelTest, shouldNotifyWatchersThatLastCrawlLogHasBeenResetToTheNewOne) {
+    expectLastCrawlLogViewOpened();
+    EXPECT_EQ(2, logSpy.count());
+}
+
+TEST_F(CrawlLogViewModelTest, shouldDisplayEntryFromLastCrawlLogWithDataWithTheSpecifiedIndexInCurrentLog) {
+    expectLastCrawlLogViewOpened();
+    expectLogEntryToBeDisplayed(1);
 }
