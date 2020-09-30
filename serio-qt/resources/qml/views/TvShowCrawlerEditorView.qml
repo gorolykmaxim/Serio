@@ -15,10 +15,7 @@ CenteredViewLayout {
         configureEpisodeNamesCrawlerBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_CRAWLER_EDITOR, [crawlerEditorViewModel.episodeNameCrawlerType]))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW_CRAWLER_EDITOR_TV_SHOW_NAME, [])
-    AccentTitle {
-        Layout.fillWidth: true
-        text: "Configure TV Show Crawler"
-    }
+    titleText: "Edit TV Show Crawler"
     TextField {
         id: tvShowNameEdt
         Layout.fillWidth: true
