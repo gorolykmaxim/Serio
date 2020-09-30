@@ -19,11 +19,11 @@ protected:
     serio::core::ListPage<serio::core::TvShow> smallPage = serio::core::ListPage<serio::core::TvShow>(0, 15, {});
     serio::core::ListPage<serio::core::TvShow> emptyPage = serio::core::ListPage<serio::core::TvShow>(0, 0, {});
     serio::qt::AllTvShowsViewModel viewModel = serio::qt::AllTvShowsViewModel(pageSize, 2, storage, viewer, stack);
-    void expectActionsToNotHaveWatchedAction() {
+    void expectActionsToNotHaveWatchedAction(bool isAllTvShowsActionHighlighted = false) {
         QList<serio::qt::ButtonModel*> actions = viewModel.getActions();
         ASSERT_EQ(2, actions.size());
         serio::qt::ButtonModel allTvShowsButton(serio::qt::AllTvShowsViewModel::allTvShowsAction, serio::qt::ActionType::DISPLAY_ALL_TV_SHOWS);
-        allTvShowsButton.setHighlighted(true);
+        allTvShowsButton.setHighlighted(isAllTvShowsActionHighlighted);
         EXPECT_EQ(*actions[0], allTvShowsButton);
         EXPECT_EQ(*actions[1], serio::qt::ButtonModel(serio::qt::AllTvShowsViewModel::addTvShowAction, serio::qt::ActionType::OPEN_ADD_TV_SHOW_VIEW));
     }
@@ -77,7 +77,7 @@ TEST_F(AllTvShowsViewModelTest, shouldLoadFirstPageOfWatchShowsAndAllShows) {
     }
 }
 
-TEST_F(AllTvShowsViewModelTest, shouldReturnListOfAllActionsWithAllTvShowsActionSelectedByDefault) {
+TEST_F(AllTvShowsViewModelTest, shouldReturnListOfAllActionsWithWatchedActionSelectedByDefault) {
     expectActionsToNotHaveWatchedAction();
 }
 
@@ -109,7 +109,7 @@ TEST_F(AllTvShowsViewModelTest, shouldHaveWatchedActionRemovedFromActionsListAft
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
-    expectActionsToNotHaveWatchedAction();
+    expectActionsToNotHaveWatchedAction(true);
 }
 
 TEST_F(AllTvShowsViewModelTest, shouldNotifyWatchersAboutActionsListChangeWhenWatchedActionGetsRemovedFromTheList) {
@@ -131,9 +131,11 @@ TEST_F(AllTvShowsViewModelTest, shouldHighlightSelectedAction) {
     }
 }
 
-TEST_F(AllTvShowsViewModelTest, shouldReturnEmptyTvShowListByDefault) {
-    serio::qt::TvShowListModel* list = viewModel.getTvShowList();
-    EXPECT_EQ(0, list->rowCount(index));
+TEST_F(AllTvShowsViewModelTest, shouldReturnEmptyWatchedTvShowListByDefault) {
+    serio::qt::TvShowListModel* defaultList = viewModel.getTvShowList();
+    EXPECT_EQ(0, defaultList->rowCount(index));
+    viewModel.selectAction(serio::qt::AllTvShowsViewModel::watchedAction);
+    EXPECT_EQ(defaultList, viewModel.getTvShowList());
 }
 
 TEST_F(AllTvShowsViewModelTest, shouldReturnTvShowListAccordingToSelectedAction) {
@@ -167,4 +169,11 @@ TEST_F(AllTvShowsViewModelTest, shouldHighlightWatchedActionWhenNonEmptyWatchedT
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
     expectActionToBeHighlighted(serio::qt::AllTvShowsViewModel::watchedAction);
+}
+
+TEST_F(AllTvShowsViewModelTest, shouldHightlightAllTvShowsActionWhenEmptyPageOfWatchedTvShowsGetsLoadedInitially) {
+    EXPECT_CALL(storage, getWatchedTvShows(0, pageSize))
+        .WillOnce(::testing::Return(emptyPage));
+    viewModel.loadWatchedShows(QVariantList({0, pageSize}));
+    expectActionToBeHighlighted(serio::qt::AllTvShowsViewModel::allTvShowsAction);
 }
