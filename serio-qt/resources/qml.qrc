@@ -63,5 +63,6 @@
         <file>qml/views/AllTvShowsView.qml</file>
         <file>qml/widgets/NavButton.qml</file>
         <file>qml/widgets/NavButtonList.qml</file>
+        <file>qml/widgets/ButtonList.qml</file>
     </qresource>
 </RCC>
