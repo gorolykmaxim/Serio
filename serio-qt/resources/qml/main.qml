@@ -11,7 +11,7 @@ ApplicationWindow {
     title: qsTr("Serio")
     StackOfViews {
         id: viewStack
-        initialItem: "views/AllShowsView.qml"
+        initialItem: "views/AllTvShowsView.qml"
     }
     Snackbar {
         outerPadding: 16

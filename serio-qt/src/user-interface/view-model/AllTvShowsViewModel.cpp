@@ -5,41 +5,42 @@
 serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSize, unsigned int listModelPageCountLimit,
                                                     serio::core::TvShowStorage& storage, core::TvShowViewer& viewer,
                                                     serio::qt::StackOfViews& stack)
-    : allShowsListModel(listModelPageSize, listModelPageCountLimit),
-      watchedShowsListModel(listModelPageSize, listModelPageCountLimit),
-      storage(storage),
+    : storage(storage),
       viewer(viewer),
-      stack(stack) {}
+      stack(stack) {
+    listTypeToListModel.emplace(allTvShowsAction, std::make_unique<serio::qt::TvShowListModel>(listModelPageSize, listModelPageCountLimit));
+    listTypeToListModel.emplace(watchedAction, std::make_unique<serio::qt::TvShowListModel>(listModelPageSize, listModelPageCountLimit));
+    actions << new serio::qt::ButtonModel(allTvShowsAction, serio::qt::ActionType::DISPLAY_ALL_TV_SHOWS);
+    actions << new serio::qt::ButtonModel(addTvShowAction, serio::qt::ActionType::OPEN_ADD_TV_SHOW_VIEW);
+    selectAction(allTvShowsAction);
+}
 
 void serio::qt::AllTvShowsViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<TvShowListModel>("Serio", 1, 0, "TvShowListModel", nullptr);
     engine.rootContext()->setContextProperty("allTvShowsViewModel", this);
+    router.registerAction(ActionType::DISPLAY_ALL_TV_SHOWS, [this] (const QVariantList& args) { selectAction(allTvShowsAction); });
+    router.registerAction(ActionType::DISPLAY_WATCHED_TV_SHOWS, [this] (const QVariantList& args) { selectAction(watchedAction); });
     router.registerAction(ActionType::LOAD_ALL_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadAllShows(args); });
     router.registerAction(ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, [this] (const QVariantList& args) { loadWatchedShows(args); });
     router.registerAction(ActionType::OPEN_TV_SHOW_VIEW, [this] (const QVariantList& args) { openTvShowView(args); });
     router.registerAction(ActionType::LOAD_FIRST_PAGE_OF_TV_SHOWS, [this] (const QVariantList& args) { loadFirstPage(); });
-    connect(&allShowsListModel, &serio::qt::TvShowListModel::requestPageLoad,
+    connect(getTvShowList(allTvShowsAction), &serio::qt::TvShowListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_ALL_TV_SHOWS_LIST_PAGE, QVariantList({offset, limit})); });
-    connect(&watchedShowsListModel, &serio::qt::TvShowListModel::requestPageLoad,
+    connect(getTvShowList(watchedAction), &serio::qt::TvShowListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, QVariantList({offset, limit})); });
-}
-
-serio::qt::TvShowListModel* serio::qt::AllTvShowsViewModel::getAllShows() {
-    return &allShowsListModel;
-}
-
-serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getWatchedShows() {
-    return &watchedShowsListModel;
 }
 
 void serio::qt::AllTvShowsViewModel::loadAllShows(const QVariantList& args) {
     core::ListPage<core::TvShow> page = storage.getAllTvShows(args[0].toUInt(), args[1].toUInt());
-    modifyModel([page, this] { allShowsListModel.loadPage(page); });
+    modifyModel([page, this] { getTvShowList(allTvShowsAction)->loadPage(page); });
 }
 
 void serio::qt::AllTvShowsViewModel::loadWatchedShows(const QVariantList& args) {
     core::ListPage<core::TvShow> page = storage.getWatchedTvShows(args[0].toUInt(), args[1].toUInt());
-    modifyModel([page, this] { watchedShowsListModel.loadPage(page); });
+    modifyModel([page, this] {
+        addOrRemoveWatchedActionIfWatchedListSizeChanged(page);
+        getTvShowList(watchedAction)->loadPage(page);
+    });
 }
 
 void serio::qt::AllTvShowsViewModel::openTvShowView(const QVariantList &args) {
@@ -49,7 +50,52 @@ void serio::qt::AllTvShowsViewModel::openTvShowView(const QVariantList &args) {
 
 void serio::qt::AllTvShowsViewModel::loadFirstPage() {
     modifyModel([this] {
-        allShowsListModel.requestFirstPageLoad();
-        watchedShowsListModel.requestFirstPageLoad();
+        getTvShowList(allTvShowsAction)->requestFirstPageLoad();
+        getTvShowList(watchedAction)->requestFirstPageLoad();
     });
+}
+
+QList<serio::qt::ButtonModel*> serio::qt::AllTvShowsViewModel::getActions() {
+    return actions;
+}
+
+void serio::qt::AllTvShowsViewModel::addOrRemoveWatchedActionIfWatchedListSizeChanged(const core::ListPage<core::TvShow> &page) {
+    bool isFirstActionWatched = actions[0]->getText() == watchedAction;
+    if (page.getTotalSize() > 0 && !isFirstActionWatched) {
+        addWatchedAction();
+    } else if (page.getTotalSize() == 0 && isFirstActionWatched) {
+        removeWatchedAction();
+    }
+}
+
+void serio::qt::AllTvShowsViewModel::addWatchedAction() {
+    actions.insert(0, new serio::qt::ButtonModel(watchedAction, serio::qt::ActionType::DISPLAY_WATCHED_TV_SHOWS));
+    selectAction(watchedAction);
+    emit actionsChanged();
+}
+
+void serio::qt::AllTvShowsViewModel::removeWatchedAction() {
+    actions.removeAndDelete(0);
+    selectAction(allTvShowsAction);
+    emit actionsChanged();
+}
+
+void serio::qt::AllTvShowsViewModel::selectAction(const QString& actionName) {
+    changeActionsHighlightment(actionName);
+    selectedTvShowList = listTypeToListModel[actionName].get();
+    emit selectedListChanged();
+}
+
+void serio::qt::AllTvShowsViewModel::changeActionsHighlightment(const QString &selectedAction) {
+    for (auto* action: actions) {
+        action->setHighlighted(action->getText() == selectedAction);
+    }
+}
+
+serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getTvShowList() {
+    return selectedTvShowList;
+}
+
+serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getTvShowList(const QString &listType) {
+    return listTypeToListModel[listType].get();
 }

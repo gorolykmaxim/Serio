@@ -47,6 +47,8 @@ add_library(SerioLib STATIC
         src/user-interface/model/ListModel.h
         src/user-interface/model/DialogModel.cpp
         src/user-interface/model/DialogModel.h
+        src/user-interface/model/ButtonModel.cpp
+        src/user-interface/model/ButtonModel.h
         src/user-interface/view-model/AllTvShowsViewModel.cpp
         src/user-interface/view-model/AllTvShowsViewModel.h
         src/user-interface/view-model/TvShowCrawlerEditorViewModel.cpp
@@ -79,11 +81,12 @@ add_executable(Serio ${RESOURCES} src/main.cpp)
 target_link_libraries(Serio SerioLib)
 
 add_executable(SerioTest
-        test/user-interface/model/pageable-list/TvShowListModelTest.cpp
-        test/user-interface/model/pageable-list/EpisodeListModelTest.cpp
         test/database-storage/DatabaseTvShowStorageTest.cpp
         test/database-storage/DatabaseTvShowCrawlerStorageTest.cpp
         test/database-storage/DatabaseTvShowCrawlerLogStorageTest.cpp
+        test/user-interface/model/pageable-list/TvShowListModelTest.cpp
+        test/user-interface/model/pageable-list/EpisodeListModelTest.cpp
+        test/user-interface/model/ButtonModelTest.cpp
         test/user-interface/view-model/AllTvShowsViewModelTest.cpp
         test/user-interface/view-model/TvShowCrawlerEditorViewModelTest.cpp
         test/user-interface/view-model/CrawlerEditorViewModelTest.cpp
