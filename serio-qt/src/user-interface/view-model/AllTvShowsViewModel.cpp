@@ -83,7 +83,7 @@ void serio::qt::AllTvShowsViewModel::removeWatchedAction() {
 
 void serio::qt::AllTvShowsViewModel::selectAction(const QString& actionName) {
     changeActionsHighlightment(actionName);
-    selectedTvShowList = listTypeToListModel[actionName].get();
+    selectedTvShowList = getTvShowList(actionName);
     emit selectedListChanged();
 }
 
