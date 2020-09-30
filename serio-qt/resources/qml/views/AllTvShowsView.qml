@@ -10,11 +10,13 @@ ViewLayout {
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_FIRST_PAGE_OF_TV_SHOWS, [])
     NavButtonList {
+        id: actionsList
         Layout.fillWidth: true
         spacing: globalPadding
         focus: true
         model: allTvShowsViewModel.actions
         KeyNavigation.down: tvShowsList
+        KeyNavigation.tab: tvShowsList
     }
     TvShowCardList {
         id: tvShowsList
@@ -23,5 +25,6 @@ ViewLayout {
         Layout.fillWidth: true
         cardSpacing: globalPadding
         listModel: allTvShowsViewModel.tvShowsList
+        KeyNavigation.tab: actionsList
     }
 }
