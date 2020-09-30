@@ -20,17 +20,6 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
           tvShowViewModel(100, 2, viewer, dialog, snackbar, stack) {
     httpClient.assignTo(engine);
-    stack.initialize(router, engine);
-    dialog.initialize(engine);
-    snackbar.initialize(engine);
-    router.initialize(engine);
-    errorViewModel.initialize(router);
-    allTvShowsViewModel.initialize(router, engine);
-    crawlLogViewModel.initialize(router, engine);
-    tvShowCrawlerEditorViewModel.initialize(router, engine);
-    crawlerEditorViewModel.initialize(router, engine);
-    crawlerStepEditorViewModel.initialize(router, engine);
-    tvShowViewModel.initialize(router, engine);
     loadFonts();
 }
 
@@ -42,6 +31,17 @@ void serio::qt::UserInterface::loadFonts() {
 }
 
 void serio::qt::UserInterface::initialize() {
+    stack.initialize(router, engine);
+    dialog.initialize(engine);
+    snackbar.initialize(engine);
+    router.initialize(engine);
+    errorViewModel.initialize(router);
+    allTvShowsViewModel.initialize(router, engine);
+    crawlLogViewModel.initialize(router, engine);
+    tvShowCrawlerEditorViewModel.initialize(router, engine);
+    crawlerEditorViewModel.initialize(router, engine);
+    crawlerStepEditorViewModel.initialize(router, engine);
+    tvShowViewModel.initialize(router, engine);
     const QUrl rootUrl(QStringLiteral("qrc:/qml/main.qml"));
     exitOnUiLoadFailure(rootUrl);
     engine.load(rootUrl);
