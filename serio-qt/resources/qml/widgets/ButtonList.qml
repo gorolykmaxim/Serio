@@ -5,7 +5,7 @@ ListView {
     height: currentItem !== null ? currentItem.height : 0
     orientation: ListView.Horizontal
     delegate: SerioButton {
-        text: model.text
-        onClicked: actionRouter.trigger(model.clickAction, [])
+        text: model.modelData.text
+        onClicked: actionRouter.trigger(model.modelData.clickAction, [])
     }
 }

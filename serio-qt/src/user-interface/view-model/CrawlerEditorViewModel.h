@@ -21,6 +21,7 @@ class CrawlerEditorViewModel : public ViewModel {
     Q_PROPERTY(int thumbnailCrawlerType READ getThumbnailCrawlerType CONSTANT)
     Q_PROPERTY(int episodeNameCrawlerType READ getEpisodeNameCrawlerType CONSTANT)
     Q_PROPERTY(QList<TileModel*> previewResults READ getPreviewResults NOTIFY previewResultsChanged)
+    Q_PROPERTY(QList<ButtonModel*> crawlerEditorActions READ getCrawlerEditorActions CONSTANT)
 public:
     CrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor, StackOfViews &stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
@@ -35,12 +36,14 @@ public:
     void loadCrawlerSteps();
     void save();
     void openCrawlerPreview();
+    [[nodiscard]] QList<ButtonModel*> getCrawlerEditorActions() const;
 signals:
     void crawlerTypeChanged();
     void crawlerStepsChanged();
     void previewResultsChanged();
 private:
     std::optional<core::CrawlerType> crawlerType;
+    ListModel<ButtonModel*> crawlerEditorActions;
     ListModel<TileModel*> crawlerSteps;
     ListModel<TileModel*> previewResults;
     core::TvShowCrawlerEditor& editor;

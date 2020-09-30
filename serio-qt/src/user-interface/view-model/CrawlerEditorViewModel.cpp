@@ -4,7 +4,13 @@
 
 serio::qt::CrawlerEditorViewModel::CrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor,
                                                           serio::qt::StackOfViews &stack)
-    : editor(editor), stack(stack) {}
+    : editor(editor), stack(stack) {
+    crawlerEditorActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
+    crawlerEditorActions << new serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP);
+    crawlerEditorActions << new serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER);
+    crawlerEditorActions << new serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR);
+    crawlerEditorActions << new serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER);
+}
 
 void serio::qt::CrawlerEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("crawlerEditorViewModel", this);
@@ -104,6 +110,10 @@ serio::qt::TileModel *serio::qt::CrawlerEditorViewModel::createTileFrom(const se
     title[0] = title[0].toUpper();
     QString subtitle = QString::fromStdString(step.getPropertiesAsString());
     return new TileModel(title, subtitle);
+}
+
+QList<serio::qt::ButtonModel*> serio::qt::CrawlerEditorViewModel::getCrawlerEditorActions() const {
+    return crawlerEditorActions;
 }
 
 serio::qt::CrawlerEditorViewNotOpenedError::CrawlerEditorViewNotOpenedError()
