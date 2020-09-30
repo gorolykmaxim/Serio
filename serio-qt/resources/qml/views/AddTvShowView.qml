@@ -10,10 +10,7 @@ CenteredViewLayout {
         importTvShowBtn.clicked.connect(() => actionRouter.trigger(ActionType.OPEN_IMPORT_TV_SHOW_VIEW, []))
         cancelBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
     }
-    AccentTitle {
-        Layout.fillWidth: true
-        text: "Add TV Show Options"
-    }
+    titleText: "Add TV Show Options"
     SerioButton {
         id: addTvShowBtn
         Layout.fillWidth: true
@@ -25,7 +22,7 @@ CenteredViewLayout {
     SerioButton {
         id: importTvShowBtn
         Layout.fillWidth: true
-        text: "import tv show"
+        text: "import tv show from json"
         KeyNavigation.tab: cancelBtn
         KeyNavigation.down: cancelBtn
     }
