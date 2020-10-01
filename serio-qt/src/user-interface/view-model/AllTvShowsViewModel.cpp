@@ -10,6 +10,7 @@ serio::qt::AllTvShowsViewModel::AllTvShowsViewModel(unsigned int listModelPageSi
       stack(stack) {
     listTypeToListModel.emplace(allTvShowsAction, std::make_unique<serio::qt::TvShowListModel>(listModelPageSize, listModelPageCountLimit));
     listTypeToListModel.emplace(watchedAction, std::make_unique<serio::qt::TvShowListModel>(listModelPageSize, listModelPageCountLimit));
+    actions << new serio::qt::ButtonModel(watchedAction, serio::qt::ActionType::DISPLAY_WATCHED_TV_SHOWS);
     actions << new serio::qt::ButtonModel(allTvShowsAction, serio::qt::ActionType::DISPLAY_ALL_TV_SHOWS);
     actions << new serio::qt::ButtonModel(addTvShowAction, serio::qt::ActionType::OPEN_ADD_TV_SHOW_VIEW);
     selectAction(watchedAction);
@@ -40,7 +41,6 @@ void serio::qt::AllTvShowsViewModel::loadWatchedShows(const QVariantList& args) 
     core::ListPage<core::TvShow> page = storage.getWatchedTvShows(args[0].toUInt(), args[1].toUInt());
     modifyModel([page, this] {
         addOrRemoveWatchedActionIfWatchedListSizeChanged(page);
-        selectAction(page.getTotalSize() > 0 ? watchedAction : allTvShowsAction);
         getTvShowList(watchedAction)->loadPage(page);
     });
 }
@@ -72,11 +72,13 @@ void serio::qt::AllTvShowsViewModel::addOrRemoveWatchedActionIfWatchedListSizeCh
 
 void serio::qt::AllTvShowsViewModel::addWatchedAction() {
     actions.insert(0, new serio::qt::ButtonModel(watchedAction, serio::qt::ActionType::DISPLAY_WATCHED_TV_SHOWS));
+    selectAction(watchedAction);
     emit actionsChanged();
 }
 
 void serio::qt::AllTvShowsViewModel::removeWatchedAction() {
     actions.removeAndDelete(0);
+    selectAction(allTvShowsAction);
     emit actionsChanged();
 }
 
