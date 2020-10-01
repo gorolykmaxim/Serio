@@ -81,8 +81,11 @@ void serio::qt::CrawlerEditorViewModel::openCrawlerPreview() {
     try {
         stack.pushView(crawlingInProgressView);
         std::vector<std::string> results = editor.previewCrawler().result;
-        stack.replaceCurrentViewWith(crawlerPreviewView);
-        modifyModel([this, results] { setPreviewResults(results); });
+        modifyModel([this, results] {
+            populateCrawlerPreviewActions();
+            setPreviewResults(results);
+            stack.replaceCurrentViewWith(crawlerPreviewView);
+        });
     } catch (std::runtime_error& e) {
         stack.popCurrentView();
         throw e;
@@ -114,6 +117,19 @@ serio::qt::TileModel *serio::qt::CrawlerEditorViewModel::createTileFrom(const se
 
 QList<serio::qt::ButtonModel*> serio::qt::CrawlerEditorViewModel::getCrawlerEditorActions() const {
     return crawlerEditorActions;
+}
+
+QList<serio::qt::ButtonModel*> serio::qt::CrawlerEditorViewModel::getCrawlerPreviewActions() const {
+    return crawlerPreviewActions;
+}
+
+void serio::qt::CrawlerEditorViewModel::populateCrawlerPreviewActions() {
+    crawlerPreviewActions.clearAndDelete();
+    emit crawlerPreviewActionsChanged();
+    crawlerPreviewActions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK);
+    crawlerPreviewActions << new serio::qt::ButtonModel("view log", serio::qt::ActionType::OPEN_PREVIEWED_CRAWLER_LOG,
+                                                        QVariantList({getCrawlerType()}));
+    emit crawlerPreviewActionsChanged();
 }
 
 serio::qt::CrawlerEditorViewNotOpenedError::CrawlerEditorViewNotOpenedError()

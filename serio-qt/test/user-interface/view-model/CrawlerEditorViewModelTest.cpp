@@ -21,6 +21,10 @@ protected:
         EXPECT_EQ(crawlerType, viewModel.getCrawlerType());
         EXPECT_EQ(1, crawlerTypeSpy.count());
     }
+    void expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType type) {
+        EXPECT_CALL(editor, editCrawler(type));
+        viewModel.openCrawlerEditor(type);
+    }
 };
 
 TEST_F(CrawlerEditorViewModelTest, shouldFailToGetCrawlerTypeSinceTheViewWasNotProperlyOpened) {
@@ -79,6 +83,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPreviewViewWithTheResults) {
+    expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType::episodeVideoCrawler);
     EXPECT_CALL(editor, previewCrawler())
         .WillOnce(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
     ::testing::InSequence s;
@@ -96,6 +101,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWhenPreviewCrawlerSecondTime) {
+    expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType::thumbnailCrawler);
     EXPECT_CALL(editor, previewCrawler())
         .WillRepeatedly(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
     viewModel.openCrawlerPreview();
@@ -120,4 +126,23 @@ TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerEditorActions) {
     EXPECT_EQ(*actions[2], serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER));
     EXPECT_EQ(*actions[3], serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER));
     EXPECT_EQ(*actions[4], serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP));
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerPreviewActions) {
+    for (auto type: {serio::core::CrawlerType::episodeVideoCrawler, serio::core::CrawlerType::thumbnailCrawler}) {
+        EXPECT_CALL(editor, previewCrawler()).WillOnce(::testing::Return(serio::core::CrawlResult{{}, {}}));
+        expectCrawlerEditorViewToBeOpened(type);
+        viewModel.openCrawlerPreview();
+        QList<serio::qt::ButtonModel*> actions = viewModel.getCrawlerPreviewActions();
+        EXPECT_EQ(*actions[0], serio::qt::ButtonModel("back", serio::qt::ActionType::BACK));
+        EXPECT_EQ(*actions[1], serio::qt::ButtonModel("view log", serio::qt::ActionType::OPEN_PREVIEWED_CRAWLER_LOG, QVariantList({viewModel.getCrawlerType()})));
+    }
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldNotifyWatchersAboutChangedCrawlerPreviewActionsList) {
+    EXPECT_CALL(editor, previewCrawler()).WillOnce(::testing::Return(serio::core::CrawlResult{{}, {}}));
+    expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType::thumbnailCrawler);
+    QSignalSpy spy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerPreviewActionsChanged);
+    viewModel.openCrawlerPreview();
+    EXPECT_EQ(2, spy.count());
 }

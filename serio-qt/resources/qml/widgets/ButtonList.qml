@@ -6,6 +6,6 @@ ListView {
     orientation: ListView.Horizontal
     delegate: SerioButton {
         text: model.modelData.text
-        onClicked: actionRouter.trigger(model.modelData.clickAction, [])
+        onClicked: actionRouter.trigger(model.modelData.clickAction, model.modelData.clickArguments)
     }
 }

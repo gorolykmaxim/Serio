@@ -23,6 +23,7 @@ class CrawlerEditorViewModel : public ViewModel {
     Q_PROPERTY(int episodeNameCrawlerType READ getEpisodeNameCrawlerType CONSTANT)
     Q_PROPERTY(QList<TileModel*> previewResults READ getPreviewResults NOTIFY previewResultsChanged)
     Q_PROPERTY(QList<ButtonModel*> crawlerEditorActions READ getCrawlerEditorActions CONSTANT)
+    Q_PROPERTY(QList<ButtonModel*> crawlerPreviewActions READ getCrawlerPreviewActions NOTIFY crawlerPreviewActionsChanged)
 public:
     CrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor, StackOfViews &stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
@@ -38,13 +39,16 @@ public:
     void save();
     void openCrawlerPreview();
     [[nodiscard]] QList<ButtonModel*> getCrawlerEditorActions() const;
+    [[nodiscard]] QList<ButtonModel*> getCrawlerPreviewActions() const;
 signals:
     void crawlerTypeChanged();
     void crawlerStepsChanged();
     void previewResultsChanged();
+    void crawlerPreviewActionsChanged();
 private:
     std::optional<core::CrawlerType> crawlerType;
     ListModel<ButtonModel*> crawlerEditorActions;
+    ListModel<ButtonModel*> crawlerPreviewActions;
     ListModel<TileModel*> crawlerSteps;
     ListModel<TileModel*> previewResults;
     core::TvShowCrawlerEditor& editor;
@@ -52,6 +56,7 @@ private:
     void setCrawlerSteps(const std::vector<core::CrawlerStep>& steps);
     void setPreviewResults(const std::vector<std::string>& results);
     [[nodiscard]] TileModel* createTileFrom(const core::CrawlerStep& step) const;
+    void populateCrawlerPreviewActions();
 };
 
 class CrawlerEditorViewNotOpenedError : public std::logic_error {

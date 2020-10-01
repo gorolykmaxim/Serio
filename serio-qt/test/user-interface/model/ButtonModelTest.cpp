@@ -40,7 +40,18 @@ TEST_F(ButtonModelTest, twoButtonsWithSameNameActionAndHighlightmentShouldBeEqua
 
 TEST_F(ButtonModelTest, twoButtonsShouldNotBeEqualIfASingleAttributeDiffers) {
     EXPECT_NE(button, serio::qt::ButtonModel("", button.getClickAction()));
+    EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), button.getClickAction(), {1, 2}));
     EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), serio::qt::ActionType::LOAD_TV_SHOW_CRAWLER_EDITOR_TV_SHOW_NAME));
     button.setHighlighted(true);
     EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), button.getClickAction()));
+}
+
+TEST_F(ButtonModelTest, shouldHaveEmptyListOfClickArgumentsByDefault) {
+    EXPECT_TRUE(button.getClickArguments().isEmpty());
+}
+
+TEST_F(ButtonModelTest, shouldReturnSpecifiedListOfClickArguments) {
+    QVariantList arguments = {1, "text", true};
+    serio::qt::ButtonModel button(text, serio::qt::ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, arguments);
+    EXPECT_EQ(arguments, button.getClickArguments());
 }
