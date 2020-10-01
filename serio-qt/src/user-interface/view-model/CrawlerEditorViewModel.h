@@ -4,6 +4,7 @@
 #include <user-interface/model/TileModel.h>
 #include <tv-show-crawler-runtime/model/TvShowCrawler.h>
 #include <tv-show-crawler-editor/TvShowCrawlerEditor.h>
+#include <user-interface/model/ButtonModel.h>
 #include <task-executor/QTaskExecutor.h>
 #include <user-interface/StackOfViews.h>
 #include <user-interface/model/ListModel.h>
