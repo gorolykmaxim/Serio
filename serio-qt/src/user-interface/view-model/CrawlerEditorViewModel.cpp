@@ -6,10 +6,10 @@ serio::qt::CrawlerEditorViewModel::CrawlerEditorViewModel(serio::core::TvShowCra
                                                           serio::qt::StackOfViews &stack)
     : editor(editor), stack(stack) {
     crawlerEditorActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
-    crawlerEditorActions << new serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP);
-    crawlerEditorActions << new serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER);
     crawlerEditorActions << new serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR);
     crawlerEditorActions << new serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER);
+    crawlerEditorActions << new serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER);
+    crawlerEditorActions << new serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP);
 }
 
 void serio::qt::CrawlerEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {

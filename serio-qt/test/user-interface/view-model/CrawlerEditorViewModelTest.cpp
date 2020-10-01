@@ -116,8 +116,8 @@ TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPrev
 TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerEditorActions) {
     QList<serio::qt::ButtonModel*> actions = viewModel.getCrawlerEditorActions();
     EXPECT_EQ(*actions[0], serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK));
-    EXPECT_EQ(*actions[1], serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP));
-    EXPECT_EQ(*actions[2], serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER));
-    EXPECT_EQ(*actions[3], serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR));
-    EXPECT_EQ(*actions[4], serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER));
+    EXPECT_EQ(*actions[1], serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR));
+    EXPECT_EQ(*actions[2], serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER));
+    EXPECT_EQ(*actions[3], serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER));
+    EXPECT_EQ(*actions[4], serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP));
 }
