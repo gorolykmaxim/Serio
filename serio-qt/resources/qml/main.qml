@@ -13,7 +13,5 @@ ApplicationWindow {
         id: viewStack
         initialItem: "views/AllTvShowsView.qml"
     }
-    Snackbar {
-        outerPadding: 16
-    }
+    Snackbar {}
 }
