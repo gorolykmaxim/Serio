@@ -9,6 +9,7 @@ CenteredViewLayout {
     }
     AccentTitle {
         Layout.fillWidth: true
-        text: "Crawling in progress. Please stand by."
+        horizontalAlignment: Text.AlignHCenter
+        text: "Crawling in progress.\nPlease stand by..."
     }
 }
