@@ -6,12 +6,16 @@ serio::qt::TvShowCrawlerEditorViewModel::TvShowCrawlerEditorViewModel(serio::cor
                                                                       serio::core::TvShowViewer& viewer,
                                                                       serio::qt::DialogViewModel& dialog,
                                                                       serio::qt::StackOfViews &stack)
-    : editor(editor), viewer(viewer), dialog(dialog), stack(stack) {}
+    : editor(editor), viewer(viewer), dialog(dialog), stack(stack) {
+    importTvShowCrawlerActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
+    importTvShowCrawlerActions << new serio::qt::ButtonModel("import", serio::qt::ActionType::IMPORT_TV_SHOW_CRAWLER);
+}
 
 void serio::qt::TvShowCrawlerEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("tvShowCrawlerEditorViewModel", this);
     router.registerAction(ActionType::SET_TV_SHOW_NAME, [this] (const QVariantList& args) { setTvShowName(args); });
-    router.registerAction(ActionType::IMPORT_TV_SHOW_CRAWLER, [this] (const QVariantList& args) { importTvShowCrawler(args); });
+    router.registerAction(ActionType::SET_RAW_TV_SHOW_CRAWLER_TO_IMPORT, [this] (const QVariantList& args) { setRawCrawlerToImport(args[0].toString()); });
+    router.registerAction(ActionType::IMPORT_TV_SHOW_CRAWLER, [this] (const QVariantList& args) { importTvShowCrawler(); });
     router.registerAction(ActionType::OPEN_ADD_TV_SHOW_VIEW, [this] (const QVariantList& args) { openAddTvShowView(); });
     router.registerAction(ActionType::OPEN_TV_SHOW_CRAWLER_EDITOR_VIEW, [this] (const QVariantList& args) { openTvShowCrawlerEditorView(); });
     router.registerAction(ActionType::OPEN_IMPORT_TV_SHOW_VIEW, [this] (const QVariantList& args) { openImportTvShowCrawlerView(); });
@@ -97,6 +101,7 @@ void serio::qt::TvShowCrawlerEditorViewModel::setName(QString name) {
 void serio::qt::TvShowCrawlerEditorViewModel::openNewTvShowCrawlerEditorView(const QString& view) {
     modifyModel([this, view] {
         rootEditorView = view;
+        rawCrawlerToImport.clear();
         setEditingExistingTvShow(false);
         stack.replaceCurrentViewWith(rootEditorView);
     });
@@ -110,8 +115,12 @@ void serio::qt::TvShowCrawlerEditorViewModel::openExistingTvShowCrawlerEditorVie
     });
 }
 
-void serio::qt::TvShowCrawlerEditorViewModel::importTvShowCrawler(const QVariantList &args) {
-    editor.importTvShowCrawler(args[0].toString().toStdString());
+void serio::qt::TvShowCrawlerEditorViewModel::setRawCrawlerToImport(QString rawCrawler) {
+    rawCrawlerToImport = std::move(rawCrawler);
+}
+
+void serio::qt::TvShowCrawlerEditorViewModel::importTvShowCrawler() {
+    editor.importTvShowCrawler(rawCrawlerToImport.toStdString());
     loadTvShowName();
     save();
 }
@@ -127,4 +136,8 @@ void serio::qt::TvShowCrawlerEditorViewModel::displayTvShowOverrideConfirmationD
             "Are you sure you want to override the existing crawler and the show with the new ones?");
     dialogModel.setRightButtonAction(serio::qt::ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE);
     dialog.display(dialogModel);
+}
+
+QList<serio::qt::ButtonModel*> serio::qt::TvShowCrawlerEditorViewModel::getImportTvShowCrawlerActions() const {
+    return importTvShowCrawlerActions;
 }

@@ -7,6 +7,7 @@
 #include <TvShowViewerMock.h>
 #include <user-interface/ViewNames.h>
 #include <DialogViewModelMock.h>
+#include <user-interface/model/ButtonModel.h>
 
 class TvShowCrawlerEditorViewModelTest : public ::testing::Test {
 protected:
@@ -39,7 +40,8 @@ protected:
         EXPECT_CALL(dialog, display(dialogModel)).Times(isImported ? 0 : 1);
         EXPECT_CALL(viewer, openTvShowWithName(tvShowName.toStdString())).Times(isImported ? 1 : 0);
         viewModel.openImportTvShowCrawlerView();
-        viewModel.importTvShowCrawler(QVariantList({rawCrawler}));
+        viewModel.setRawCrawlerToImport(rawCrawler);
+        viewModel.importTvShowCrawler();
     }
     void expectTvShowToBeSavedAndOpenedInViewer(bool isNewTvShow) {
         ::testing::InSequence s;
@@ -198,4 +200,17 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowOverrideDialogIfUserEdi
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldOpenTvShowOverrideDialogIfUserEditsExistingShowAndThenAttemptsToImportNewOneWithTheSameName) {
     expectSelectedTvShowToBeEdited();
     expectTvShowCrawlerToBeImported(false);
+}
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldResetRawCrawlerToImportAfterReopeningImportCrawlerView) {
+    EXPECT_CALL(editor, importTvShowCrawler("")).WillOnce(::testing::Throw(std::runtime_error("")));
+    viewModel.setRawCrawlerToImport(rawCrawler);
+    viewModel.openImportTvShowCrawlerView();
+    EXPECT_THROW(viewModel.importTvShowCrawler(), std::runtime_error);
+}
+
+TEST_F(TvShowCrawlerEditorViewModelTest, shouldReturnListOfImportCrawlerActions) {
+    QList<serio::qt::ButtonModel*> actions = viewModel.getImportTvShowCrawlerActions();
+    EXPECT_EQ(*actions[0], serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK));
+    EXPECT_EQ(*actions[1], serio::qt::ButtonModel("import", serio::qt::ActionType::IMPORT_TV_SHOW_CRAWLER));
 }

@@ -5,29 +5,18 @@ import Serio 1.0
 import "../widgets"
 
 ViewLayout {
-    onCreated: {
-        cancelBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
-        importBtn.clicked.connect(() => actionRouter.trigger(ActionType.IMPORT_TV_SHOW_CRAWLER, [textArea.text]))
-    }
+    onCreated: textArea.editingFinished.connect(() => actionRouter.trigger(ActionType.SET_RAW_TV_SHOW_CRAWLER_TO_IMPORT, [textArea.text]))
     AccentTitle {
         text: "Import TV Show Crawler"
     }
-    Row {
+    ButtonList {
+        id: actionsList
         Layout.fillWidth: true
         spacing: globalPadding
-        SerioButton {
-            id: cancelBtn
-            text: "cancel"
-            KeyNavigation.right: importBtn
-            KeyNavigation.down: textArea
-            KeyNavigation.tab: importBtn
-        }
-        SerioButton {
-            id: importBtn
-            text: "import"
-            KeyNavigation.down: textArea
-            KeyNavigation.tab: textArea
-        }
+        focus: true
+        model: tvShowCrawlerEditorViewModel.importTvShowCrawlerActions
+        KeyNavigation.down: textArea
+        KeyNavigation.tab: textArea
     }
     Flickable {
         Layout.fillWidth: true
@@ -37,7 +26,7 @@ ViewLayout {
             focus: true
             placeholderText: "Paste configuration of a tv show crawler here"
             KeyNavigation.priority: KeyNavigation.BeforeItem
-            KeyNavigation.tab: cancelBtn
+            KeyNavigation.tab: actionsList
         }
         ScrollBar.vertical: ScrollBar {}
     }
