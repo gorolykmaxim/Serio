@@ -64,5 +64,6 @@
         <file>qml/widgets/NavButton.qml</file>
         <file>qml/widgets/NavButtonList.qml</file>
         <file>qml/widgets/ButtonList.qml</file>
+        <file>qml/widgets/ScrollableColumn.qml</file>
     </qresource>
 </RCC>
