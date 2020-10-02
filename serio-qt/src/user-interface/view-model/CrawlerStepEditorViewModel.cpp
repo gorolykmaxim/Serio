@@ -36,6 +36,7 @@ void serio::qt::CrawlerStepEditorViewModel::openNew() {
     modifyModel([this] {
         editedStepIndex.reset();
         emit isExistingStepChanged();
+        populateActions(false);
         selectedType.reset();
         stackOfViewsController.pushView(crawlerStepEditorView);
     });
@@ -46,6 +47,7 @@ void serio::qt::CrawlerStepEditorViewModel::openExisting(const QVariantList& arg
     modifyModel([this, stepIndex] {
         editedStepIndex = stepIndex;
         emit isExistingStepChanged();
+        populateActions(true);
         selectedType.reset();
         stackOfViewsController.pushView(crawlerStepEditorView);
     });
@@ -148,4 +150,19 @@ serio::core::CrawlerStep serio::qt::CrawlerStepEditorViewModel::createCrawlerSte
         props[property->getName().toStdString()] = property->getValue().toStdString();
     }
     return core::CrawlerStep(selectedType->getName(), props);
+}
+
+QList<serio::qt::ButtonModel*> serio::qt::CrawlerStepEditorViewModel::getActions() const {
+    return actions;
+}
+
+void serio::qt::CrawlerStepEditorViewModel::populateActions(bool isDeleteEnabled) {
+    actions.clearAndDelete();
+    emit actionsChanged();
+    actions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
+    actions << new serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER_STEP);
+    if (isDeleteEnabled) {
+        actions << new serio::qt::ButtonModel("delete", serio::qt::ActionType::REMOVE_CRAWLER_STEP);
+    }
+    emit actionsChanged();
 }

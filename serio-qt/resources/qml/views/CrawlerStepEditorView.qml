@@ -6,39 +6,19 @@ import Serio 1.0
 import '../widgets'
 
 ViewLayout {
-    onCreated: {
-        cancelBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
-        saveBtn.clicked.connect(() => actionRouter.trigger(ActionType.SAVE_CRAWLER_STEP, []))
-        deleteBtn.clicked.connect(() => actionRouter.trigger(ActionType.REMOVE_CRAWLER_STEP, []))
-        typeList.itemSelected.connect((name) => actionRouter.trigger(ActionType.SELECT_CRAWLER_STEP_TYPE, [name]))
-    }
+    onCreated: typeList.itemSelected.connect((name) => actionRouter.trigger(ActionType.SELECT_CRAWLER_STEP_TYPE, [name]))
     onDisplayed: actionRouter.trigger(ActionType.LOAD_CRAWLER_STEP, [])
     AccentTitle {
         text: "Crawler Step"
     }
-    Row {
+    ButtonList {
+        id: actionsList
         Layout.fillWidth: true
         spacing: globalPadding
-        SerioButton {
-            id: cancelBtn
-            text: "cancel"
-            KeyNavigation.tab: saveBtn
-            KeyNavigation.right: saveBtn
-        }
-        SerioButton {
-            id: saveBtn
-            text: "save"
-            KeyNavigation.tab: deleteBtn
-            KeyNavigation.right: deleteBtn
-            KeyNavigation.down: typeList
-        }
-        SerioButton {
-            id: deleteBtn
-            text: "delete"
-            enabled: crawlerStepEditorViewModel.isExistingStep
-            KeyNavigation.tab: typeList
-            KeyNavigation.down: typeList
-        }
+        focus: true
+        model: crawlerStepEditorViewModel.actions
+        KeyNavigation.down: typeList
+        KeyNavigation.tab: typeList
     }
     ItemWithTitle {
         title: "Type:"
@@ -51,7 +31,7 @@ ViewLayout {
             model: crawlerStepEditorViewModel.crawlerStepTypes
             KeyNavigation.tab: propertiesList
             KeyNavigation.down: propertiesList
-            KeyNavigation.up: cancelBtn
+            KeyNavigation.up: actionsList
         }
     }
     ItemWithTitle {
@@ -73,7 +53,7 @@ ViewLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
             model: crawlerStepEditorViewModel.properties
-            KeyNavigation.tab: cancelBtn
+            KeyNavigation.tab: actionsList
         }
     }
 }

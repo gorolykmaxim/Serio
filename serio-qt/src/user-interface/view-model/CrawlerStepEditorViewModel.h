@@ -6,6 +6,7 @@
 #include <user-interface/model/TextFieldModel.h>
 #include <user-interface/model/ListModel.h>
 #include <user-interface/action/ActionRouter.h>
+#include <user-interface/model/ButtonModel.h>
 #include "ViewModel.h"
 
 namespace serio::qt {
@@ -16,6 +17,7 @@ class CrawlerStepEditorViewModel : public ViewModel {
     Q_PROPERTY(QList<RadioButtonModel*> crawlerStepTypes READ getCrawlerStepTypes NOTIFY crawlerStepTypesChanged)
     Q_PROPERTY(QString description READ getDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QList<TextFieldModel*> properties READ getProperties NOTIFY propertiesChanged)
+    Q_PROPERTY(QList<ButtonModel*> actions READ getActions NOTIFY actionsChanged)
 public:
     CrawlerStepEditorViewModel(core::TvShowCrawlerEditor &editor, StackOfViews &stackOfViewsController);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
@@ -29,11 +31,13 @@ public:
     void selectType(const QVariantList& args);
     void save();
     void remove();
+    [[nodiscard]] QList<ButtonModel*> getActions() const;
 signals:
     void isExistingStepChanged();
     void crawlerStepTypesChanged();
     void descriptionChanged();
     void propertiesChanged();
+    void actionsChanged();
 private:
     std::optional<unsigned int> editedStepIndex;
     std::optional<core::CrawlerStepType> selectedType;
@@ -41,6 +45,7 @@ private:
     std::vector<core::CrawlerStepType> types;
     ListModel<RadioButtonModel*> typeOptions;
     ListModel<TextFieldModel*> properties;
+    ListModel<ButtonModel*> actions;
     core::TvShowCrawlerEditor& editor;
     StackOfViews& stackOfViewsController;
     void initializeCrawlerStepTypes();
@@ -49,6 +54,7 @@ private:
     void setSelectedType(const core::CrawlerStepType& type);
     void setSelectedType(const std::function<bool(const core::CrawlerStepType&)>& predicate);
     [[nodiscard]] core::CrawlerStep createCrawlerStep() const;
+    void populateActions(bool isDeleteEnabled);
 };
 
 }

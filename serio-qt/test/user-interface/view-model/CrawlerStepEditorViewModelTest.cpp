@@ -5,6 +5,7 @@
 #include <QSignalSpy>
 #include <StackOfViewsMock.h>
 #include <user-interface/ViewNames.h>
+#include <user-interface/model/ButtonModel.h>
 
 class CrawlerStepEditorViewModelTest : public ::testing::Test {
 protected:
@@ -44,6 +45,15 @@ protected:
             EXPECT_EQ(QString::fromStdString(selectedStep.getPropertyOrFail(property)), properties[i]->getValue());
         }
         EXPECT_EQ(2, propertiesSpy.count());
+    }
+    void expectActionsToBeDefined(bool isDeleteEnabled) {
+        QList<serio::qt::ButtonModel*> actions = viewModel.getActions();
+        ASSERT_EQ(isDeleteEnabled ? 3 : 2, actions.size());
+        EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK), *actions[0]);
+        EXPECT_EQ(serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER_STEP), *actions[1]);
+        if (isDeleteEnabled) {
+            EXPECT_EQ(serio::qt::ButtonModel("delete", serio::qt::ActionType::REMOVE_CRAWLER_STEP), *actions[2]);
+        }
     }
 };
 
@@ -194,4 +204,32 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldRemoveExistingStep) {
     viewModel.openExisting(QVariantList({0}));
     viewModel.load();
     viewModel.remove();
+}
+
+TEST_F(CrawlerStepEditorViewModelTest, shouldReturnListOfActionsForEditingNewStep) {
+    viewModel.openNew();
+    expectActionsToBeDefined(false);
+}
+
+TEST_F(CrawlerStepEditorViewModelTest, shouldRepopulateListOfActionsEveryTimeNewStepGetsEdited) {
+    viewModel.openNew();
+    viewModel.openNew();
+    EXPECT_EQ(2, viewModel.getActions().size());
+}
+
+TEST_F(CrawlerStepEditorViewModelTest, shouldNotifyWatchersAboutActionsChange) {
+    QSignalSpy spy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::actionsChanged);
+    viewModel.openNew();
+    EXPECT_EQ(2, spy.count());
+}
+
+TEST_F(CrawlerStepEditorViewModelTest, shouldReturnListOfActionsForEditingExistingStep) {
+    viewModel.openExisting(QVariantList({0}));
+    expectActionsToBeDefined(true);
+}
+
+TEST_F(CrawlerStepEditorViewModelTest, shouldRepopulateListOfActionsEveryTimeExistingtepGetsEdited) {
+    viewModel.openExisting(QVariantList({0}));
+    viewModel.openExisting(QVariantList({0}));
+    EXPECT_EQ(3, viewModel.getActions().size());
 }
