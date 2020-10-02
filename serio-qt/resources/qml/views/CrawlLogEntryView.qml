@@ -13,30 +13,34 @@ ViewLayout {
         text: "back"
         focus: true
     }
-    ItemWithTitle {
-        title: "Step"
-        Layout.fillWidth: true
-        Paragraph {
-            Layout.fillWidth: true
-            text: crawlLogViewModel.selectedEntryText
-        }
-    }
-    ItemWithTitle {
-        title: "Input"
-        Layout.fillWidth: true
-        Paragraph {
-            Layout.fillWidth: true
-            text: crawlLogViewModel.selectedEntryInputData
-        }
-    }
-    ItemWithTitle {
-        title: "Output"
+    ScrollableColumn {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        Paragraph {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: crawlLogViewModel.selectedEntryOutputData
+        spacing: globalPadding
+        ItemWithTitle {
+            title: "Step"
+            width: parent.width
+            Paragraph {
+                Layout.fillWidth: true
+                text: crawlLogViewModel.selectedEntryText
+            }
+        }
+        ItemWithTitle {
+            title: "Input"
+            width: parent.width
+            Paragraph {
+                Layout.fillWidth: true
+                text: crawlLogViewModel.selectedEntryInputData
+            }
+        }
+        ItemWithTitle {
+            title: "Output"
+            width: parent.width
+            Paragraph {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: crawlLogViewModel.selectedEntryOutputData
+            }
         }
     }
 }
