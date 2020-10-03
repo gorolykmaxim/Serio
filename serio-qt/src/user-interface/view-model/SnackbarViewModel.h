@@ -13,7 +13,7 @@ class SnackbarViewModel : public ViewModel {
 public:
     [[nodiscard]] bool isDisplayed() const;
     void initialize(QQmlApplicationEngine& engine);
-    void displayText(const QString& textToDisplay);
+    virtual void displayText(const QString& textToDisplay);
     [[nodiscard]] QString getText() const;
 public slots:
     void hide();

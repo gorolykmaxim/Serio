@@ -101,6 +101,7 @@ void serio::qt::TvShowViewModel::confirmClearWatchHistory() {
 void serio::qt::TvShowViewModel::clearWatchHistory() {
     viewer.clearSelectedTvShowWatchHistory();
     stack.popCurrentView();
+    snackbar.displayText("Watch history cleared");
 }
 
 void serio::qt::TvShowViewModel::confirmDeleteTvShow() {

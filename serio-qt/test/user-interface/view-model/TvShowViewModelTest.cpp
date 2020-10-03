@@ -9,6 +9,7 @@
 #include <DialogViewModelMock.h>
 #include <BackgroundViewModelMock.h>
 #include <user-interface/model/ButtonModel.h>
+#include <SnackbarViewModelMock.h>
 
 class TvShowViewModelTest : public ::testing::Test {
 protected:
@@ -21,11 +22,11 @@ protected:
     };
     TvShowViewerMock viewer = TvShowViewerMock::create();
     DialogViewModelMock dialog;
-    serio::qt::SnackbarViewModel snackbarViewModel;
+    SnackbarViewModelMock snackbar;
     ::testing::NiceMock<StackOfViewsMock> stack;
     ::testing::NiceMock<BackgroundViewModelMock> background;
     serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, dialog, background,
-                                                                      snackbarViewModel, stack);
+                                                                      snackbar, stack);
     void expectTvShowToBeLoaded(const serio::core::TvShow& tvShow) {
         EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(tvShow));
         viewModel.load();
@@ -117,6 +118,7 @@ TEST_F(TvShowViewModelTest, shouldConfirmIfUserWantsToClearWatchHistoryOfSelecte
 
 TEST_F(TvShowViewModelTest, shouldClearWatchHistoryOfSelectedTvShow) {
     EXPECT_CALL(viewer, clearSelectedTvShowWatchHistory());
+    EXPECT_CALL(snackbar, displayText(QString("Watch history cleared")));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.clearWatchHistory();
 }
