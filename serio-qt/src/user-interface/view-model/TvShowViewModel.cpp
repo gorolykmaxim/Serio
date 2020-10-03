@@ -13,7 +13,10 @@ serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int 
       dialog(dialog),
       background(background),
       snackbar(snackbar),
-      stack(stack) {}
+      stack(stack) {
+    actions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK);
+    actions << new serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW);
+}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
@@ -114,4 +117,8 @@ void serio::qt::TvShowViewModel::deleteTvShow() {
 
 void serio::qt::TvShowViewModel::openTvShowDetails() {
     stack.pushView(tvShowDetailsView);
+}
+
+QList<serio::qt::ButtonModel*> serio::qt::TvShowViewModel::getActions() const {
+    return actions;
 }
