@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 #include <QQmlContext>
 #include "UserInterface.h"
+#include "ViewNames.h"
 
 serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
                                         serio::core::TvShowCrawlerEditor &tvShowCrawlerEditor,
@@ -11,6 +12,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
                                         serio::qt::QTaskExecutor &executor)
         : QObject(),
           router(executor),
+          background({tvShowView}),
           dialog(stack),
           errorViewModel(dialog),
           allTvShowsViewModel(100, 2, storage, viewer, stack),
@@ -18,7 +20,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           tvShowCrawlerEditorViewModel(tvShowCrawlerEditor, viewer, dialog, stack),
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
-          tvShowViewModel(100, 2, viewer, dialog, snackbar, stack) {
+          tvShowViewModel(100, 2, viewer, dialog, background, snackbar, stack) {
     httpClient.assignTo(engine);
     loadFonts();
 }

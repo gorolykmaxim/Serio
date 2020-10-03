@@ -14,12 +14,6 @@ View {
         deleteBtn.clicked.connect(() => actionRouter.trigger(ActionType.CONFIRM_DELETE_CURRENT_TV_SHOW, []))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
-    RoundNullableImage {
-        anchors.fill: parent
-        imageUrl: tvShowViewModel.thumbnailUrl
-        borderRadius: 0
-        opacity: 0.2
-    }
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: globalPadding

@@ -7,6 +7,7 @@
 #include <StackOfViewsMock.h>
 #include <user-interface/ViewNames.h>
 #include <DialogViewModelMock.h>
+#include <BackgroundViewModelMock.h>
 
 class TvShowViewModelTest : public ::testing::Test {
 protected:
@@ -21,7 +22,8 @@ protected:
     DialogViewModelMock dialog;
     serio::qt::SnackbarViewModel snackbarViewModel;
     ::testing::NiceMock<StackOfViewsMock> stack;
-    serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, dialog,
+    ::testing::NiceMock<BackgroundViewModelMock> background;
+    serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, dialog, background,
                                                                       snackbarViewModel, stack);
     void expectTvShowToBeLoaded(const serio::core::TvShow& tvShow) {
         EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(tvShow));
@@ -56,6 +58,7 @@ TEST_F(TvShowViewModelTest, shouldHaveEmptyListOfEpisodesByDefault) {
 
 TEST_F(TvShowViewModelTest, shouldLoadCurrentlyDisplayedTvShowAndRequestFirstPageOfItsEpisodes) {
     EXPECT_CALL(viewer, getSelectedTvShow()).WillOnce(::testing::Return(scrubs));
+    EXPECT_CALL(background, setImage(QString::fromStdString(scrubs.getThumbnailUrl())));
     QSignalSpy tvShowChangedSpy(&viewModel, &serio::qt::TvShowViewModel::selectedTvShowChanged);
     QSignalSpy requestEpisodePageSpy(viewModel.getEpisodeList(), &serio::qt::EpisodeListModel::requestPageLoad);
     viewModel.load();

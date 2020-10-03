@@ -6,8 +6,14 @@
 
 serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
                                             serio::core::TvShowViewer &viewer, serio::qt::DialogViewModel& dialog,
+                                            serio::qt::BackgroundViewModel& background,
                                             serio::qt::SnackbarViewModel& snackbar, StackOfViews& stack)
-    : episodeListModel(pageSize, pageCountLimit), viewer(viewer), dialog(dialog), snackbar(snackbar), stack(stack) {}
+    : episodeListModel(pageSize, pageCountLimit),
+      viewer(viewer),
+      dialog(dialog),
+      background(background),
+      snackbar(snackbar),
+      stack(stack) {}
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
@@ -63,6 +69,7 @@ void serio::qt::TvShowViewModel::loadTvShow() {
     modifyModel([this, tvShow] {
         tvShowName = QString::fromStdString(tvShow.getName());
         thumbnailUrl = QString::fromStdString(tvShow.getThumbnailUrl());
+        background.setImage(thumbnailUrl);
         std::optional<serio::core::LastWatchDate> date = tvShow.getLastWatchDate();
         lastWatchDate = QString::fromStdString(date ? "Last watched " + date->toString() : "");
         emit selectedTvShowChanged();

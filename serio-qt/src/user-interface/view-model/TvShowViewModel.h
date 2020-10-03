@@ -7,6 +7,7 @@
 #include <tv-show-crawler-storage/TvShowCrawlerStorage.h>
 #include "ViewModel.h"
 #include "SnackbarViewModel.h"
+#include "BackgroundViewModel.h"
 
 namespace serio::qt {
 
@@ -18,7 +19,8 @@ class TvShowViewModel : public ViewModel {
     Q_PROPERTY(EpisodeListModel* episodeList READ getEpisodeList CONSTANT)
 public:
     TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer,
-                    DialogViewModel& dialog, SnackbarViewModel& snackbar, StackOfViews& stack);
+                    DialogViewModel& dialog, BackgroundViewModel& background, SnackbarViewModel& snackbar,
+                    StackOfViews& stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] QString getLastWatchDate() const;
@@ -41,6 +43,7 @@ private:
     QString lastWatchDate;
     core::TvShowViewer& viewer;
     DialogViewModel& dialog;
+    BackgroundViewModel& background;
     SnackbarViewModel& snackbar;
     StackOfViews& stack;
     void loadTvShow();
