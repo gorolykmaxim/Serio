@@ -18,12 +18,15 @@ public:
     virtual void popAllViewsUntil(const QString& view);
     virtual void replaceCurrentViewWith(const QString& newView);
     virtual void replaceSpecifiedViewWith(const QString& targetView, const QString& newView);
+public slots:
+    void setCurrentView(QString currentView);
 signals:
     void push(QString view);
     void pop(bool currentView);
     void unwind(QString targetView);
     void replaceCurrentView(QString newView);
     void replaceSpecifiedView(QString targetView, QString newView);
+    void currentViewChanged(QString currentView);
 private:
     [[nodiscard]] QString makePathToViewAbsolute(const QString& view) const;
 };

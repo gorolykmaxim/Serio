@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <user-interface/StackOfViews.h>
 #include <QSignalSpy>
+#include <user-interface/ViewNames.h>
 
 class StackOfViewsTest : public ::testing::Test {
 protected:
@@ -42,4 +43,12 @@ TEST_F(StackOfViewsTest, shouldReplaceSpecifiedViewWithTheSpecifiedNewOne) {
     QVariantList args = replaceSpy.takeFirst();
     EXPECT_EQ(QString("views/View1.qml"), args[0].toString());
     EXPECT_EQ(QString("views/View3.qml"), args[1].toString());
+}
+
+TEST_F(StackOfViewsTest, shouldNotifyWatchersAboutNewViewBeingDisplayed) {
+    QString specifiedView = serio::qt::tvShowView;
+    QSignalSpy currentViewSpy(&stack, &serio::qt::StackOfViews::currentViewChanged);
+    stack.setCurrentView("views/" + specifiedView);
+    ASSERT_EQ(1, currentViewSpy.count());
+    EXPECT_EQ(specifiedView, currentViewSpy.takeFirst()[0].toString());
 }

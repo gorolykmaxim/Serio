@@ -33,3 +33,7 @@ void serio::qt::StackOfViews::replaceSpecifiedViewWith(const QString &targetView
 QString serio::qt::StackOfViews::makePathToViewAbsolute(const QString& view) const {
     return "views/" + view;
 }
+
+void serio::qt::StackOfViews::setCurrentView(QString currentView) {
+    emit currentViewChanged(currentView.replace("views/", ""));
+}

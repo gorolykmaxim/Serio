@@ -92,7 +92,7 @@ add_executable(SerioTest
         test/user-interface/view-model/CrawlerEditorViewModelTest.cpp
         test/user-interface/view-model/CrawlerStepEditorViewModelTest.cpp
         test/user-interface/view-model/ErrorViewModelTest.cpp
-        test/user-interface/view-model/StackOfViewsTest.cpp
+        test/user-interface/StackOfViewsTest.cpp
         test/user-interface/view-model/CrawlLogViewModelTest.cpp
         test/user-interface/view-model/TvShowViewModelTest.cpp
         test/user-interface/view-model/SnackbarViewModelTest.cpp

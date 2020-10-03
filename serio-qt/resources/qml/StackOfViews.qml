@@ -5,6 +5,7 @@ StackView {
     id: root
     anchors.fill: parent
     focus: true
+    onCurrentItemChanged: stackOfViews.setCurrentView(currentItem.viewUrl)
     Connections {
         target: stackOfViews
         function onPush(view) {
