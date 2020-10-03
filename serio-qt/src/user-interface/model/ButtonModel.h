@@ -13,13 +13,15 @@ class ButtonModel : public QObject {
     Q_PROPERTY(int clickAction READ getClickAction CONSTANT)
     Q_PROPERTY(bool highlighted READ isHighlighted NOTIFY highlightedChanged)
     Q_PROPERTY(QVariantList clickArguments READ getClickArguments CONSTANT)
+    Q_PROPERTY(bool primary READ isPrimary CONSTANT)
 public:
-    ButtonModel(QString text, ActionType clickAction, QVariantList arguments = {});
+    ButtonModel(QString text, ActionType clickAction, QVariantList arguments = {}, bool isPrimary = true);
     [[nodiscard]] QString getText() const;
     [[nodiscard]] ActionType getClickAction() const;
     [[nodiscard]] bool isHighlighted() const;
     ButtonModel& setHighlighted(bool isHighlighted);
     [[nodiscard]] QVariantList getClickArguments() const;
+    [[nodiscard]] bool isPrimary() const;
     bool operator==(const ButtonModel &rhs) const;
     bool operator!=(const ButtonModel &rhs) const;
 signals:
@@ -29,6 +31,7 @@ private:
     ActionType clickAction;
     bool highlighted;
     QVariantList clickArguments;
+    bool primary;
 };
 
 }

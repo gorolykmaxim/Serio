@@ -6,6 +6,7 @@ ListView {
     orientation: ListView.Horizontal
     delegate: RaisedButton {
         text: model.modelData.text
+        primary: model.modelData.primary
         onClicked: actionRouter.trigger(model.modelData.clickAction, model.modelData.clickArguments)
     }
 }

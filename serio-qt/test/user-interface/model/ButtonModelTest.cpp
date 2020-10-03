@@ -42,6 +42,7 @@ TEST_F(ButtonModelTest, twoButtonsShouldNotBeEqualIfASingleAttributeDiffers) {
     EXPECT_NE(button, serio::qt::ButtonModel("", button.getClickAction()));
     EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), button.getClickAction(), {1, 2}));
     EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), serio::qt::ActionType::LOAD_TV_SHOW_CRAWLER_EDITOR_TV_SHOW_NAME));
+    EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), button.getClickAction(), {}, false));
     button.setHighlighted(true);
     EXPECT_NE(button, serio::qt::ButtonModel(button.getText(), button.getClickAction()));
 }
@@ -54,4 +55,13 @@ TEST_F(ButtonModelTest, shouldReturnSpecifiedListOfClickArguments) {
     QVariantList arguments = {1, "text", true};
     serio::qt::ButtonModel button(text, serio::qt::ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, arguments);
     EXPECT_EQ(arguments, button.getClickArguments());
+}
+
+TEST_F(ButtonModelTest, shouldCreatePrimaryButtonByDefault) {
+    EXPECT_TRUE(button.isPrimary());
+}
+
+TEST_F(ButtonModelTest, shouldCreateSecondaryButton) {
+    serio::qt::ButtonModel button(text, serio::qt::ActionType::SAVE_CRAWLER_STEP, {}, false);
+    EXPECT_FALSE(button.isPrimary());
 }

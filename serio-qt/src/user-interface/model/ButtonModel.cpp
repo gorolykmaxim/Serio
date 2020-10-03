@@ -1,7 +1,12 @@
 #include "ButtonModel.h"
 
-serio::qt::ButtonModel::ButtonModel(QString text, serio::qt::ActionType clickAction, QVariantList arguments)
-    : QObject(), text(std::move(text)), clickAction(clickAction), highlighted(false), clickArguments(std::move(arguments)) {}
+serio::qt::ButtonModel::ButtonModel(QString text, serio::qt::ActionType clickAction, QVariantList arguments, bool isPrimary)
+    : QObject(),
+      text(std::move(text)),
+      clickAction(clickAction),
+      highlighted(false),
+      clickArguments(std::move(arguments)),
+      primary(isPrimary) {}
 
 QString serio::qt::ButtonModel::getText() const {
     return text;
@@ -25,11 +30,16 @@ QVariantList serio::qt::ButtonModel::getClickArguments() const {
     return clickArguments;
 }
 
+bool serio::qt::ButtonModel::isPrimary() const {
+    return primary;
+}
+
 bool serio::qt::ButtonModel::operator==(const serio::qt::ButtonModel &rhs) const {
     return text == rhs.text &&
            clickAction == rhs.clickAction &&
            highlighted == rhs.highlighted &&
-           clickArguments == rhs.clickArguments;
+           clickArguments == rhs.clickArguments &&
+           primary == rhs.primary;
 }
 
 bool serio::qt::ButtonModel::operator!=(const serio::qt::ButtonModel &rhs) const {
