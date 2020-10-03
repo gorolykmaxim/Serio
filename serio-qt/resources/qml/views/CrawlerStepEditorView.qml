@@ -8,9 +8,7 @@ import '../widgets'
 ViewLayout {
     onCreated: typeList.itemSelected.connect((name) => actionRouter.trigger(ActionType.SELECT_CRAWLER_STEP_TYPE, [name]))
     onDisplayed: actionRouter.trigger(ActionType.LOAD_CRAWLER_STEP, [])
-    AccentTitle {
-        text: "Crawler Step"
-    }
+    titleText: "Crawler Step"
     ButtonList {
         id: actionsList
         Layout.fillWidth: true

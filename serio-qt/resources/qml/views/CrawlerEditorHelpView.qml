@@ -5,9 +5,7 @@ import "../widgets"
 
 ViewLayout {
     onCreated: backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
-    AccentTitle {
-        text: "Help"
-    }
+    titleText: "Help"
     RaisedButton {
         id: backBtn
         focus: true

@@ -4,9 +4,7 @@ import Serio 1.0
 import "../widgets"
 
 ViewLayout {
-    AccentTitle {
-        text: crawlerEditorViewModel.crawlerType + " Preview"
-    }
+    titleText: crawlerEditorViewModel.crawlerType + " Preview"
     ButtonList {
         id: actionsList
         Layout.fillWidth: true

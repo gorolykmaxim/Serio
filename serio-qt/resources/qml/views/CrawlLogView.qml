@@ -8,9 +8,7 @@ ViewLayout {
         backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
         logList.itemClicked.connect((index) => actionRouter.trigger(ActionType.OPEN_CRAWL_LOG_ENTRY_VIEW, [index]))
     }
-    AccentTitle {
-        text: crawlLogViewModel.title
-    }
+    titleText: crawlLogViewModel.title
     RaisedButton {
         id: backBtn
         text: "back"

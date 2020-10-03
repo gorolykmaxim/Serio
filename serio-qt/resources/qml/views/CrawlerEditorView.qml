@@ -10,9 +10,7 @@ ViewLayout {
         crawlerStepList.itemClicked.connect((index) => actionRouter.trigger(ActionType.OPEN_EXISTING_CRAWLER_STEP_EDITOR, [index]))
     }
     onDisplayed: actionRouter.trigger(ActionType.LOAD_CRAWLER_STEPS, [])
-    AccentTitle {
-        text: crawlerEditorViewModel.crawlerType + " Crawler"
-    }
+    titleText: crawlerEditorViewModel.crawlerType + " Crawler"
     ButtonList {
         id: actionsList
         Layout.fillWidth: true

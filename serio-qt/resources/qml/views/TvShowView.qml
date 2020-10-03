@@ -3,32 +3,25 @@ import QtQuick.Layouts 1.12
 import Serio 1.0
 import "../widgets"
 
-View {
+ViewLayout {
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: globalPadding
+    titleText: tvShowViewModel.tvShowName
+    subtitleText: tvShowViewModel.lastWatchDate
+    ButtonList {
+        id: actionsList
+        Layout.fillWidth: true
         spacing: globalPadding
-        AccentTitleAndSubtitle{
-            title: tvShowViewModel.tvShowName
-            subtitle: tvShowViewModel.lastWatchDate
-        }
-        ButtonList {
-            id: actionsList
-            Layout.fillWidth: true
-            spacing: globalPadding
-            focus: true
-            model: tvShowViewModel.actions
-            KeyNavigation.down: episodeList
-            KeyNavigation.tab: episodeList
-        }
-        VerticalTileList {
-            id: episodeList
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: tvShowViewModel.episodeList
-            tilePadding: globalPadding / 2
-            KeyNavigation.tab: actionsList
-        }
+        focus: true
+        model: tvShowViewModel.actions
+        KeyNavigation.down: episodeList
+        KeyNavigation.tab: episodeList
+    }
+    VerticalTileList {
+        id: episodeList
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        model: tvShowViewModel.episodeList
+        tilePadding: globalPadding / 2
+        KeyNavigation.tab: actionsList
     }
 }

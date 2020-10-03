@@ -6,9 +6,7 @@ import "../widgets"
 
 ViewLayout {
     onCreated: textArea.editingFinished.connect(() => actionRouter.trigger(ActionType.SET_RAW_TV_SHOW_CRAWLER_TO_IMPORT, [textArea.text]))
-    AccentTitle {
-        text: "Import TV Show Crawler"
-    }
+    titleText: "Import TV Show Crawler"
     ButtonList {
         id: actionsList
         Layout.fillWidth: true

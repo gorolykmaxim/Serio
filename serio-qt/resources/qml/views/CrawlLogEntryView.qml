@@ -5,9 +5,7 @@ import "../widgets"
 
 ViewLayout {
     onCreated: backBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
-    AccentTitle {
-        text: "Crawl Log Entry Details"
-    }
+    titleText: "Crawl Log Entry Details"
     RaisedButton {
         id: backBtn
         text: "back"
