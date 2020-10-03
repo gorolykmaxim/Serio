@@ -13,6 +13,7 @@
 #include <user-interface/view-model/TvShowViewModel.h>
 #include <user-interface/view-model/SnackbarViewModel.h>
 #include <user-interface/view-model/DialogViewModel.h>
+#include <user-interface/view-model/BackgroundViewModel.h>
 
 namespace serio::qt {
 
@@ -25,6 +26,7 @@ public:
 private:
     ActionRouter router;
     StackOfViews stack;
+    BackgroundViewModel background;
     DialogViewModel dialog;
     SnackbarViewModel snackbar;
     ErrorViewModel errorViewModel;

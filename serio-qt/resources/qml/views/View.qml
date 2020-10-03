@@ -7,6 +7,7 @@ Page {
     property string viewUrl
     signal created()
     signal displayed()
+    background: null
     Component.onCompleted: created()
     StackView.onStatusChanged: {
         if (StackView.status == StackView.Activating) {

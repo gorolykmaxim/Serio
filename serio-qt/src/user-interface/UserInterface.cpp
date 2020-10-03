@@ -32,6 +32,7 @@ void serio::qt::UserInterface::loadFonts() {
 
 void serio::qt::UserInterface::initialize() {
     stack.initialize(router, engine);
+    background.initialize(stack, engine);
     dialog.initialize(engine);
     snackbar.initialize(engine);
     router.initialize(engine);

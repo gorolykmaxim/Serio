@@ -9,6 +9,9 @@ ApplicationWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("Serio")
+    Background {
+        anchors.fill: parent
+    }
     StackOfViews {
         id: viewStack
         initialItem: "views/AllTvShowsView.qml"

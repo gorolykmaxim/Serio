@@ -65,5 +65,7 @@
         <file>qml/widgets/NavButtonList.qml</file>
         <file>qml/widgets/ButtonList.qml</file>
         <file>qml/widgets/ScrollableColumn.qml</file>
+        <file>qml/widgets/Background.qml</file>
+        <file>qml/animations/SlowNumberAnimation.qml</file>
     </qresource>
 </RCC>
