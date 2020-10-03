@@ -60,6 +60,7 @@ CenteredViewLayout {
         RaisedButton {
             id: cancelBtn
             text: "cancel"
+            primary: false
             focus: !tvShowCrawlerEditorViewModel.canTvShowNameBeChanged
             KeyNavigation.tab: saveBtn
             KeyNavigation.right: saveBtn

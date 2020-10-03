@@ -145,6 +145,6 @@ TEST_F(TvShowViewModelTest, shouldOpenTvShowDetailsView) {
 
 TEST_F(TvShowViewModelTest, shouldReturnListOfActions) {
     QList<serio::qt::ButtonModel*> actions = viewModel.getActions();
-    EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK), *actions[0]);
+    EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false), *actions[0]);
     EXPECT_EQ(serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW), *actions[1]);
 }

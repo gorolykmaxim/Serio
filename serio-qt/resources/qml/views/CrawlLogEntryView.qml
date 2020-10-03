@@ -11,6 +11,7 @@ ViewLayout {
     RaisedButton {
         id: backBtn
         text: "back"
+        primary: false
         focus: true
     }
     ScrollableColumn {

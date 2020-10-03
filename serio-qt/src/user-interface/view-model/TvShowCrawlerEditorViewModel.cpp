@@ -7,7 +7,7 @@ serio::qt::TvShowCrawlerEditorViewModel::TvShowCrawlerEditorViewModel(serio::cor
                                                                       serio::qt::DialogViewModel& dialog,
                                                                       serio::qt::StackOfViews &stack)
     : editor(editor), viewer(viewer), dialog(dialog), stack(stack) {
-    importTvShowCrawlerActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
+    importTvShowCrawlerActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false);
     importTvShowCrawlerActions << new serio::qt::ButtonModel("import", serio::qt::ActionType::IMPORT_TV_SHOW_CRAWLER);
 }
 

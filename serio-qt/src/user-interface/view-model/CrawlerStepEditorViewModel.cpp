@@ -159,7 +159,7 @@ QList<serio::qt::ButtonModel*> serio::qt::CrawlerStepEditorViewModel::getActions
 void serio::qt::CrawlerStepEditorViewModel::populateActions(bool isDeleteEnabled) {
     actions.clearAndDelete();
     emit actionsChanged();
-    actions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
+    actions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false);
     actions << new serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER_STEP);
     if (isDeleteEnabled) {
         actions << new serio::qt::ButtonModel("delete", serio::qt::ActionType::REMOVE_CRAWLER_STEP);

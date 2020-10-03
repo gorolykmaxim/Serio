@@ -14,7 +14,7 @@ serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int 
       background(background),
       snackbar(snackbar),
       stack(stack) {
-    actions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK);
+    actions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false);
     actions << new serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW);
 }
 

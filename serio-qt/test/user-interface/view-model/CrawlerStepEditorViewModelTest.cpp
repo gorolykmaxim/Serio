@@ -49,7 +49,7 @@ protected:
     void expectActionsToBeDefined(bool isDeleteEnabled) {
         QList<serio::qt::ButtonModel*> actions = viewModel.getActions();
         ASSERT_EQ(isDeleteEnabled ? 3 : 2, actions.size());
-        EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK), *actions[0]);
+        EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false), *actions[0]);
         EXPECT_EQ(serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER_STEP), *actions[1]);
         if (isDeleteEnabled) {
             EXPECT_EQ(serio::qt::ButtonModel("delete", serio::qt::ActionType::REMOVE_CRAWLER_STEP), *actions[2]);

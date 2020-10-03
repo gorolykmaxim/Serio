@@ -5,7 +5,7 @@
 serio::qt::CrawlerEditorViewModel::CrawlerEditorViewModel(serio::core::TvShowCrawlerEditor &editor,
                                                           serio::qt::StackOfViews &stack)
     : editor(editor), stack(stack) {
-    crawlerEditorActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK);
+    crawlerEditorActions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false);
     crawlerEditorActions << new serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR);
     crawlerEditorActions << new serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER);
     crawlerEditorActions << new serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER);
@@ -126,7 +126,7 @@ QList<serio::qt::ButtonModel*> serio::qt::CrawlerEditorViewModel::getCrawlerPrev
 void serio::qt::CrawlerEditorViewModel::populateCrawlerPreviewActions() {
     crawlerPreviewActions.clearAndDelete();
     emit crawlerPreviewActionsChanged();
-    crawlerPreviewActions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK);
+    crawlerPreviewActions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false);
     crawlerPreviewActions << new serio::qt::ButtonModel("view log", serio::qt::ActionType::OPEN_PREVIEWED_CRAWLER_LOG,
                                                         QVariantList({getCrawlerType()}));
     emit crawlerPreviewActionsChanged();

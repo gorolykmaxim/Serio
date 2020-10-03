@@ -15,6 +15,7 @@ ViewLayout {
         id: backBtn
         text: "back"
         focus: true
+        primary: false
         KeyNavigation.tab: logList
         KeyNavigation.down: logList
     }

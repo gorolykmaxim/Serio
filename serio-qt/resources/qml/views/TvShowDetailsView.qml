@@ -61,6 +61,7 @@ CenteredViewLayout {
     RaisedButton {
         id: backBtn
         text: "back"
+        primary: false
         Layout.fillWidth: true
         focus: true
         KeyNavigation.tab: editBtn

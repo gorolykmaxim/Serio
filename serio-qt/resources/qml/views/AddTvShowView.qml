@@ -28,6 +28,7 @@ CenteredViewLayout {
     }
     RaisedButton {
         id: cancelBtn
+        primary: false
         Layout.fillWidth: true
         text: "cancel"
         KeyNavigation.tab: addTvShowBtn
