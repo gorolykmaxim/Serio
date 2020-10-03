@@ -6,12 +6,14 @@ import '../widgets'
 View {
     property real layoutSpacing: 0
     property string titleText: ""
+    property string subtitleText: ""
     default property alias contents: placeholder.children
-    AccentTitle {
+    AccentTitleAndSubtitle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.margins: globalPadding
-        text: titleText
+        title: titleText
+        subtitle: subtitleText
     }
     ColumnLayout {
         id: placeholder

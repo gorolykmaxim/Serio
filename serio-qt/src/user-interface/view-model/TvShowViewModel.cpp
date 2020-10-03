@@ -26,6 +26,7 @@ void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQm
     router.registerAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { clearWatchHistory(); });
     router.registerAction(serio::qt::ActionType::CONFIRM_DELETE_CURRENT_TV_SHOW, [this] (const QVariantList& args) { confirmDeleteTvShow(); });
     router.registerAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW, [this] (const QVariantList& args) { deleteTvShow(); });
+    router.registerAction(serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW, [this] (const QVariantList& args) { openTvShowDetails(); });
     connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
             this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
@@ -109,4 +110,8 @@ void serio::qt::TvShowViewModel::confirmDeleteTvShow() {
 void serio::qt::TvShowViewModel::deleteTvShow() {
     viewer.deleteSelectedTvShow();
     stack.popAllViews();
+}
+
+void serio::qt::TvShowViewModel::openTvShowDetails() {
+    stack.pushView(tvShowDetailsView);
 }

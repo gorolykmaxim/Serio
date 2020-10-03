@@ -134,3 +134,8 @@ TEST_F(TvShowViewModelTest, shouldDeleteSelectedTvShow) {
     EXPECT_CALL(stack, popAllViews());
     viewModel.deleteTvShow();
 }
+
+TEST_F(TvShowViewModelTest, shouldOpenTvShowDetailsView) {
+    EXPECT_CALL(stack, pushView(serio::qt::tvShowDetailsView));
+    viewModel.openTvShowDetails();
+}

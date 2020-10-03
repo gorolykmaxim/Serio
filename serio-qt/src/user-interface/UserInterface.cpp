@@ -12,7 +12,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
                                         serio::qt::QTaskExecutor &executor)
         : QObject(),
           router(executor),
-          background({tvShowView}),
+          background({tvShowView, tvShowDetailsView}),
           dialog(stack),
           errorViewModel(dialog),
           allTvShowsViewModel(100, 2, storage, viewer, stack),

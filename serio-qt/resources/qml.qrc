@@ -67,5 +67,6 @@
         <file>qml/widgets/ScrollableColumn.qml</file>
         <file>qml/widgets/Background.qml</file>
         <file>qml/animations/SlowNumberAnimation.qml</file>
+        <file>qml/views/TvShowDetailsView.qml</file>
     </qresource>
 </RCC>

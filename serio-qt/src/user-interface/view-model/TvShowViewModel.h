@@ -34,6 +34,7 @@ public:
     void clearWatchHistory();
     void confirmDeleteTvShow();
     void deleteTvShow();
+    void openTvShowDetails();
 signals:
     void selectedTvShowChanged();
 private:
