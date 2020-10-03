@@ -8,7 +8,7 @@ ViewLayout {
     AccentTitle {
         text: "Help"
     }
-    SerioButton {
+    RaisedButton {
         id: backBtn
         focus: true
         text: "back"

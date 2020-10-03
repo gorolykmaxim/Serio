@@ -26,7 +26,7 @@
         <file>qml/widgets/CursorArea.qml</file>
         <file>qml/widgets/TvShowCardList.qml</file>
         <file>qml/widgets/AccentTitle.qml</file>
-        <file>qml/widgets/SerioButton.qml</file>
+        <file>qml/widgets/RaisedButton.qml</file>
         <file>qml/views/TvShowCrawlerEditorView.qml</file>
         <file>qml/views/CrawlerEditorView.qml</file>
         <file>qml/widgets/VerticalTileList.qml</file>

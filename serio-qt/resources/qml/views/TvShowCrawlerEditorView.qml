@@ -26,21 +26,21 @@ CenteredViewLayout {
         KeyNavigation.tab: configureEpisodeVideoCrawlerBtn
         KeyNavigation.down: configureEpisodeVideoCrawlerBtn
     }
-    SerioButton {
+    RaisedButton {
         id: configureEpisodeVideoCrawlerBtn
         Layout.fillWidth: true
         text: "configure episode video crawler"
         KeyNavigation.tab: configureThumbnailCrawlerBtn
         KeyNavigation.down: configureThumbnailCrawlerBtn
     }
-    SerioButton {
+    RaisedButton {
         id: configureThumbnailCrawlerBtn
         Layout.fillWidth: true
         text: "configure thumbnail crawler"
         KeyNavigation.tab: configureEpisodeNamesCrawlerBtn
         KeyNavigation.down: configureEpisodeNamesCrawlerBtn
     }
-    SerioButton {
+    RaisedButton {
         id: configureEpisodeNamesCrawlerBtn
         Layout.fillWidth: true
         text: "configure episode name crawler"
@@ -50,14 +50,14 @@ CenteredViewLayout {
     RightToLeftButtonRow {
         Layout.fillWidth: true
         spacing: globalPadding
-        SerioButton {
+        RaisedButton {
             id: saveBtn
             enabled: tvShowCrawlerEditorViewModel.canCrawlerBeSaved
             text: "save"
             KeyNavigation.tab: tvShowNameEdt
             KeyNavigation.up: configureEpisodeNamesCrawlerBtn
         }
-        SerioButton {
+        RaisedButton {
             id: cancelBtn
             text: "cancel"
             focus: !tvShowCrawlerEditorViewModel.canTvShowNameBeChanged

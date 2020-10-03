@@ -25,7 +25,7 @@ View {
         Row {
             Layout.fillWidth: true
             spacing: globalPadding
-            SerioButton {
+            RaisedButton {
                 id: backBtn
                 text: "back"
                 focus: episodeList.count > 0
@@ -33,7 +33,7 @@ View {
                 KeyNavigation.right: editBtn
                 KeyNavigation.tab: editBtn
             }
-            SerioButton {
+            RaisedButton {
                 id: editBtn
                 text: "edit"
                 focus: episodeList.count === 0
@@ -41,35 +41,35 @@ View {
                 KeyNavigation.right: shareBtn
                 KeyNavigation.tab: shareBtn
             }
-            SerioButton {
+            RaisedButton {
                 id: shareBtn
                 text: "share crawler"
                 KeyNavigation.down: episodeList
                 KeyNavigation.right: crawlBtn
                 KeyNavigation.tab: crawlBtn
             }
-            SerioButton {
+            RaisedButton {
                 id: crawlBtn
                 text: "crawl"
                 KeyNavigation.down: episodeList
                 KeyNavigation.right: viewCrawlLogBtn
                 KeyNavigation.tab: viewCrawlLogBtn
             }
-            SerioButton {
+            RaisedButton {
                 id: viewCrawlLogBtn
                 text: "view crawl log"
                 KeyNavigation.down: episodeList
                 KeyNavigation.right: clearWatchHistoryBtn
                 KeyNavigation.tab: clearWatchHistoryBtn
             }
-            SerioButton {
+            RaisedButton {
                 id: clearWatchHistoryBtn
                 text: "clear watch history"
                 KeyNavigation.down: episodeList
                 KeyNavigation.right: deleteBtn
                 KeyNavigation.tab: deleteBtn
             }
-            SerioButton {
+            RaisedButton {
                 id: deleteBtn
                 text: "delete"
                 KeyNavigation.down: episodeList

@@ -16,7 +16,7 @@ CenteredViewLayout {
     ColumnLayout {
         Layout.fillWidth: true
         spacing: 0
-        SerioButton {
+        RaisedButton {
             id: topBtn
             Layout.fillWidth: true
             text: dialogViewModel.topButtonText
@@ -25,7 +25,7 @@ CenteredViewLayout {
             KeyNavigation.tab: bottomBtn
             KeyNavigation.down: bottomBtn
         }
-        SerioButton {
+        RaisedButton {
             id: bottomBtn
             Layout.fillWidth: true
             text: dialogViewModel.bottomButtonText

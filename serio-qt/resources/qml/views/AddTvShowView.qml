@@ -11,7 +11,7 @@ CenteredViewLayout {
         cancelBtn.clicked.connect(() => actionRouter.trigger(ActionType.BACK, []))
     }
     titleText: "Add TV Show Options"
-    SerioButton {
+    RaisedButton {
         id: addTvShowBtn
         Layout.fillWidth: true
         focus: true
@@ -19,14 +19,14 @@ CenteredViewLayout {
         KeyNavigation.tab: importTvShowBtn
         KeyNavigation.down: importTvShowBtn
     }
-    SerioButton {
+    RaisedButton {
         id: importTvShowBtn
         Layout.fillWidth: true
         text: "import tv show"
         KeyNavigation.tab: cancelBtn
         KeyNavigation.down: cancelBtn
     }
-    SerioButton {
+    RaisedButton {
         id: cancelBtn
         Layout.fillWidth: true
         text: "cancel"

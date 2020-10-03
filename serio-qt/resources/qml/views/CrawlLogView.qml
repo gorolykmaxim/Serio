@@ -11,7 +11,7 @@ ViewLayout {
     AccentTitle {
         text: crawlLogViewModel.title
     }
-    SerioButton {
+    RaisedButton {
         id: backBtn
         text: "back"
         focus: true

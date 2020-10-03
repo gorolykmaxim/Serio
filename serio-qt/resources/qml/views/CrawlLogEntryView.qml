@@ -8,7 +8,7 @@ ViewLayout {
     AccentTitle {
         text: "Crawl Log Entry Details"
     }
-    SerioButton {
+    RaisedButton {
         id: backBtn
         text: "back"
         focus: true
