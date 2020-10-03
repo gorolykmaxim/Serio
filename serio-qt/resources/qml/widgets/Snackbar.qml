@@ -24,7 +24,7 @@ Paragraph {
     anchors.bottomMargin: outerPadding
     opacity: snackbarViewModel.displayed ? 1 : 0
     Behavior on opacity {
-        SerioNumberAnimation {}
+        FastNumberAnimation {}
     }
     Timer {
         id: stopTimer

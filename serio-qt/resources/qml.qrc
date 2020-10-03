@@ -16,7 +16,7 @@
         <file>lib/circular-progressbar/CircularProgressBar.qml</file>
         <file>qml/main.qml</file>
         <file>qml/widgets/TvShowCard.qml</file>
-        <file>qml/animations/SerioNumberAnimation.qml</file>
+        <file>qml/animations/FastNumberAnimation.qml</file>
         <file>qml/widgets/ElideRightLabel.qml</file>
         <file>qml/widgets/Title.qml</file>
         <file>qml/widgets/Subtitle.qml</file>

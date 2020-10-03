@@ -25,7 +25,7 @@ FocusScope {
         display: root.activeFocus || cursorArea.containsMouse
         radius: borderRadius
         Behavior on opacity {
-            SerioNumberAnimation {}
+            FastNumberAnimation {}
         }
     }
     BottomColumnLayout {
@@ -40,7 +40,7 @@ FocusScope {
             visible: lastWatchDate
         }
         Behavior on height {
-            SerioNumberAnimation {}
+            FastNumberAnimation {}
         }
     }
     CursorArea {
