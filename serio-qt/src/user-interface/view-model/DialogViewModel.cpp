@@ -24,22 +24,22 @@ QString serio::qt::DialogViewModel::getMessage() const {
     return dialogModel.getMessage();
 }
 
-QString serio::qt::DialogViewModel::getRightButtonText() const {
-    return dialogModel.getRightButtonText();
+QString serio::qt::DialogViewModel::getTopButtonText() const {
+    return dialogModel.getTopButtonText();
 }
 
-serio::qt::ActionType serio::qt::DialogViewModel::getRightButtonAction() const {
-    return dialogModel.getRightButtonAction();
+serio::qt::ActionType serio::qt::DialogViewModel::getTopButtonAction() const {
+    return dialogModel.getTopButtonAction();
 }
 
-bool serio::qt::DialogViewModel::isLeftButtonHidden() const {
-    return dialogModel.isLeftButtonHidden();
+bool serio::qt::DialogViewModel::isBottomButtonHidden() const {
+    return dialogModel.isBottomButtonHidden();
 }
 
-QString serio::qt::DialogViewModel::getLeftButtonText() const {
-    return dialogModel.getLeftButtonText();
+QString serio::qt::DialogViewModel::getBottomButtonText() const {
+    return dialogModel.getBottomButtonText();
 }
 
-serio::qt::ActionType serio::qt::DialogViewModel::getLeftButtonAction() const {
-    return dialogModel.getLeftButtonAction();
+serio::qt::ActionType serio::qt::DialogViewModel::getBottomButtonAction() const {
+    return dialogModel.getBottomButtonAction();
 }

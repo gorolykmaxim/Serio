@@ -7,8 +7,8 @@ TEST(ErrorViewModelTest, shouldDisplayErrorMessage) {
     serio::qt::ErrorViewModel viewModel(dialog);
     QString error = "expected error";
     serio::qt::DialogModel model("Whoops...", error);
-    model.hideLeftButton();
-    model.setRightButtonText("understand");
+    model.hideBottomButton();
+    model.setTopButtonText("understand");
     EXPECT_CALL(dialog, display(model));
     viewModel.displayError(QVariantList({error}));
 }

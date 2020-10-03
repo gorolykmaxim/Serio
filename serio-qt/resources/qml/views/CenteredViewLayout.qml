@@ -16,6 +16,7 @@ View {
     ColumnLayout {
         id: placeholder
         spacing: layoutSpacing
+        width: 300 - globalPadding
         anchors.centerIn: parent
     }
 }

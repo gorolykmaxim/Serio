@@ -6,30 +6,33 @@ CenteredViewLayout {
     layoutSpacing: globalPadding
     AccentTitle {
         Layout.fillWidth: true
+        horizontalAlignment: Text.AlignHCenter
         text: dialogViewModel.title
     }
     Paragraph {
-        Layout.maximumWidth: 400
+        Layout.fillWidth: true
         text: dialogViewModel.message
     }
-    RightToLeftButtonRow {
+    ColumnLayout {
         Layout.fillWidth: true
-        spacing: globalPadding
+        spacing: 0
         SerioButton {
-            id: rightBtn
-            text: dialogViewModel.rightButtonText
-            focus: dialogViewModel.leftButtonHidden
-            onClicked: actionRouter.trigger(dialogViewModel.rightButtonAction, [])
-            KeyNavigation.tab: leftBtn
+            id: topBtn
+            Layout.fillWidth: true
+            text: dialogViewModel.topButtonText
+            focus: dialogViewModel.bottomButtonHidden
+            onClicked: actionRouter.trigger(dialogViewModel.topButtonAction, [])
+            KeyNavigation.tab: bottomBtn
+            KeyNavigation.down: bottomBtn
         }
         SerioButton {
-            id: leftBtn
-            text: dialogViewModel.leftButtonText
-            focus: !dialogViewModel.leftButtonHidden
-            onClicked: actionRouter.trigger(dialogViewModel.leftButtonAction, [])
-            visible: !dialogViewModel.leftButtonHidden
-            KeyNavigation.tab: rightBtn
-            KeyNavigation.right: rightBtn
+            id: bottomBtn
+            Layout.fillWidth: true
+            text: dialogViewModel.bottomButtonText
+            focus: !dialogViewModel.bottomButtonHidden
+            onClicked: actionRouter.trigger(dialogViewModel.bottomButtonAction, [])
+            visible: !dialogViewModel.bottomButtonHidden
+            KeyNavigation.tab: topBtn
         }
     }
 }

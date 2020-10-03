@@ -10,22 +10,22 @@ class DialogViewModel : public ViewModel {
     Q_OBJECT
     Q_PROPERTY(QString title READ getTitle NOTIFY dialogChanged)
     Q_PROPERTY(QString message READ getMessage NOTIFY dialogChanged)
-    Q_PROPERTY(QString rightButtonText READ getRightButtonText NOTIFY dialogChanged)
-    Q_PROPERTY(int rightButtonAction READ getRightButtonAction NOTIFY dialogChanged)
-    Q_PROPERTY(QString leftButtonText READ getLeftButtonText NOTIFY dialogChanged)
-    Q_PROPERTY(int leftButtonAction READ getLeftButtonAction NOTIFY dialogChanged)
-    Q_PROPERTY(bool leftButtonHidden READ isLeftButtonHidden NOTIFY dialogChanged)
+    Q_PROPERTY(QString topButtonText READ getTopButtonText NOTIFY dialogChanged)
+    Q_PROPERTY(int topButtonAction READ getTopButtonAction NOTIFY dialogChanged)
+    Q_PROPERTY(QString bottomButtonText READ getBottomButtonText NOTIFY dialogChanged)
+    Q_PROPERTY(int bottomButtonAction READ getBottomButtonAction NOTIFY dialogChanged)
+    Q_PROPERTY(bool bottomButtonHidden READ isBottomButtonHidden NOTIFY dialogChanged)
 public:
     explicit DialogViewModel(StackOfViews& stack);
     void initialize(QQmlApplicationEngine& engine);
     virtual void display(const DialogModel& model);
     [[nodiscard]] QString getTitle() const;
     [[nodiscard]] QString getMessage() const;
-    [[nodiscard]] QString getRightButtonText() const;
-    [[nodiscard]] ActionType getRightButtonAction() const;
-    [[nodiscard]] bool isLeftButtonHidden() const;
-    [[nodiscard]] QString getLeftButtonText() const;
-    [[nodiscard]] ActionType getLeftButtonAction() const;
+    [[nodiscard]] QString getTopButtonText() const;
+    [[nodiscard]] ActionType getTopButtonAction() const;
+    [[nodiscard]] bool isBottomButtonHidden() const;
+    [[nodiscard]] QString getBottomButtonText() const;
+    [[nodiscard]] ActionType getBottomButtonAction() const;
 signals:
     void dialogChanged();
 private:

@@ -16,7 +16,7 @@ Paragraph {
     bottomPadding: outerPadding - 4
     leftPadding: outerPadding
     rightPadding: outerPadding
-    width: 300
+    width: 300 - outerPadding
     horizontalAlignment: Text.AlignHCenter
     text: snackbarViewModel.text
     anchors.horizontalCenter: parent.horizontalCenter

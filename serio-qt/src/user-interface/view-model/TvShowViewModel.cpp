@@ -83,7 +83,7 @@ void serio::qt::TvShowViewModel::crawl() {
 void serio::qt::TvShowViewModel::confirmClearWatchHistory() {
     DialogModel model("Clear Watch History",
                       "You are about to clear your watch history of '" + tvShowName + "'.");
-    model.setRightButtonAction(ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY);
+    model.setTopButtonAction(ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY);
     dialog.display(model);
 }
 
@@ -95,7 +95,7 @@ void serio::qt::TvShowViewModel::clearWatchHistory() {
 void serio::qt::TvShowViewModel::confirmDeleteTvShow() {
     DialogModel model("Delete TV Show",
                       "You are about to delete '" + tvShowName + "'");
-    model.setRightButtonAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW);
+    model.setTopButtonAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW);
     dialog.display(model);
 }
 

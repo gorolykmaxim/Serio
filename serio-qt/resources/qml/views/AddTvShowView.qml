@@ -22,7 +22,7 @@ CenteredViewLayout {
     SerioButton {
         id: importTvShowBtn
         Layout.fillWidth: true
-        text: "import tv show from json"
+        text: "import tv show"
         KeyNavigation.tab: cancelBtn
         KeyNavigation.down: cancelBtn
     }

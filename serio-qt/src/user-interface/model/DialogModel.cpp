@@ -3,11 +3,11 @@
 serio::qt::DialogModel::DialogModel(QString title, QString message)
     : title(std::move(title)),
       message(std::move(message)),
-      rightButtonText("confirm"),
-      rightButtonAction(serio::qt::ActionType::BACK),
-      leftButtonHidden(false),
-      leftButtonText("cancel"),
-      leftButtonAction(serio::qt::ActionType::BACK) {}
+      topButtonText("confirm"),
+      topButtonAction(serio::qt::ActionType::BACK),
+      bottomButtonHidden(false),
+      bottomButtonText("cancel"),
+      bottomButtonAction(serio::qt::ActionType::BACK) {}
 
 QString serio::qt::DialogModel::getTitle() const {
     return title;
@@ -17,54 +17,54 @@ QString serio::qt::DialogModel::getMessage() const {
     return message;
 }
 
-void serio::qt::DialogModel::setRightButtonText(QString newRightButtonText) {
-    rightButtonText = std::move(newRightButtonText);
+void serio::qt::DialogModel::setTopButtonText(QString newTopButtonText) {
+    topButtonText = std::move(newTopButtonText);
 }
 
-void serio::qt::DialogModel::setRightButtonAction(serio::qt::ActionType actionType) {
-    rightButtonAction = actionType;
+void serio::qt::DialogModel::setTopButtonAction(serio::qt::ActionType actionType) {
+    topButtonAction = actionType;
 }
 
-QString serio::qt::DialogModel::getRightButtonText() const {
-    return rightButtonText;
+QString serio::qt::DialogModel::getTopButtonText() const {
+    return topButtonText;
 }
 
-serio::qt::ActionType serio::qt::DialogModel::getRightButtonAction() const {
-    return rightButtonAction;
+serio::qt::ActionType serio::qt::DialogModel::getTopButtonAction() const {
+    return topButtonAction;
 }
 
-void serio::qt::DialogModel::hideLeftButton() {
-    leftButtonHidden = true;
+void serio::qt::DialogModel::hideBottomButton() {
+    bottomButtonHidden = true;
 }
 
-bool serio::qt::DialogModel::isLeftButtonHidden() const {
-    return leftButtonHidden;
+bool serio::qt::DialogModel::isBottomButtonHidden() const {
+    return bottomButtonHidden;
 }
 
-void serio::qt::DialogModel::setLeftButtonText(QString newLeftButtonText) {
-    leftButtonText = std::move(newLeftButtonText);
+void serio::qt::DialogModel::setBottomButtonText(QString newBottomButtonText) {
+    bottomButtonText = std::move(newBottomButtonText);
 }
 
-QString serio::qt::DialogModel::getLeftButtonText() const {
-    return leftButtonText;
+QString serio::qt::DialogModel::getBottomButtonText() const {
+    return bottomButtonText;
 }
 
-void serio::qt::DialogModel::setLeftButtonAction(serio::qt::ActionType actionType) {
-    leftButtonAction = actionType;
+void serio::qt::DialogModel::setBottomButtonAction(serio::qt::ActionType actionType) {
+    bottomButtonAction = actionType;
 }
 
-serio::qt::ActionType serio::qt::DialogModel::getLeftButtonAction() const {
-    return leftButtonAction;
+serio::qt::ActionType serio::qt::DialogModel::getBottomButtonAction() const {
+    return bottomButtonAction;
 }
 
 bool serio::qt::DialogModel::operator==(const serio::qt::DialogModel &rhs) const {
     return title == rhs.title &&
            message == rhs.message &&
-           rightButtonText == rhs.rightButtonText &&
-           rightButtonAction == rhs.rightButtonAction &&
-           leftButtonHidden == rhs.leftButtonHidden &&
-           leftButtonText == rhs.leftButtonText &&
-           leftButtonAction == rhs.leftButtonAction;
+           topButtonText == rhs.topButtonText &&
+           topButtonAction == rhs.topButtonAction &&
+           bottomButtonHidden == rhs.bottomButtonHidden &&
+           bottomButtonText == rhs.bottomButtonText &&
+           bottomButtonAction == rhs.bottomButtonAction;
 }
 
 bool serio::qt::DialogModel::operator!=(const serio::qt::DialogModel &rhs) const {

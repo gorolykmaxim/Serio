@@ -8,7 +8,7 @@ void serio::qt::ErrorViewModel::initialize(serio::qt::ActionRouter &router) {
 
 void serio::qt::ErrorViewModel::displayError(const QVariantList& args) {
     DialogModel model("Whoops...", args[0].toString());
-    model.hideLeftButton();
-    model.setRightButtonText("understand");
+    model.hideBottomButton();
+    model.setTopButtonText("understand");
     dialog.display(model);
 }

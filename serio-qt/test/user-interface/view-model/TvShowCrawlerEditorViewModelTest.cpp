@@ -18,13 +18,13 @@ protected:
     ::testing::NiceMock<StackOfViewsMock> stack;
     DialogViewModelMock dialog;
     serio::qt::DialogModel dialogModel = serio::qt::DialogModel(
-            "TV Show '" + tvShowName + "' already exists",
-            "Are you sure you want to override the existing crawler and the show with the new ones?");
+            "TV Show Already Exists",
+            "Are you sure you want to override crawler of the '" + tvShowName + "' with the new one?");
     serio::qt::TvShowCrawlerEditorViewModel viewModel = serio::qt::TvShowCrawlerEditorViewModel(editor, viewer, dialog, stack);
     QSignalSpy tvShowNameSpy = QSignalSpy(&viewModel, &serio::qt::TvShowCrawlerEditorViewModel::tvShowNameChanged);
     QSignalSpy canCrawlerBeSavedSpy = QSignalSpy(&viewModel, &serio::qt::TvShowCrawlerEditorViewModel::canCrawlerBeSavedChanged);
     void SetUp() override {
-        dialogModel.setRightButtonAction(serio::qt::ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE);
+        dialogModel.setTopButtonAction(serio::qt::ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE);
     }
     void expectTvShowNameSet() {
         EXPECT_EQ(tvShowName, viewModel.getTvShowName());

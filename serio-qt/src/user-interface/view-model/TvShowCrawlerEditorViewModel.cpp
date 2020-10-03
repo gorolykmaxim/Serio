@@ -131,10 +131,9 @@ void serio::qt::TvShowCrawlerEditorViewModel::setEditingExistingTvShow(bool edit
 }
 
 void serio::qt::TvShowCrawlerEditorViewModel::displayTvShowOverrideConfirmationDialog() {
-    serio::qt::DialogModel dialogModel(
-            "TV Show '" + tvShowName + "' already exists",
-            "Are you sure you want to override the existing crawler and the show with the new ones?");
-    dialogModel.setRightButtonAction(serio::qt::ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE);
+    serio::qt::DialogModel dialogModel("TV Show Already Exists",
+                                       "Are you sure you want to override crawler of the '" + tvShowName + "' with the new one?");
+    dialogModel.setTopButtonAction(serio::qt::ActionType::SAVE_TV_SHOW_CRAWLER_WITH_OVERRIDE);
     dialog.display(dialogModel);
 }
 

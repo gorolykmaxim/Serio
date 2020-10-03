@@ -37,58 +37,58 @@ TEST_F(DialogViewModelTest, shouldSetMessageToTheSpecifiedOne) {
     EXPECT_EQ(message, dialog.getMessage());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveConfirmAsRightButtonTextByDefault) {
-    EXPECT_EQ("confirm", dialog.getRightButtonText());
+TEST_F(DialogViewModelTest, shouldHaveConfirmAsTopButtonTextByDefault) {
+    EXPECT_EQ("confirm", dialog.getTopButtonText());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveSpecifiedRightButtonText) {
+TEST_F(DialogViewModelTest, shouldHaveSpecifiedTopButtonText) {
     QString rightButtonText = "right button text";
-    model.setRightButtonText(rightButtonText);
+    model.setTopButtonText(rightButtonText);
     dialog.display(model);
-    EXPECT_EQ(rightButtonText, dialog.getRightButtonText());
+    EXPECT_EQ(rightButtonText, dialog.getTopButtonText());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveBackAsDefaultRightButtonAction) {
-    EXPECT_EQ(serio::qt::ActionType::BACK, dialog.getRightButtonAction());
+TEST_F(DialogViewModelTest, shouldHaveBackAsDefaultTopButtonAction) {
+    EXPECT_EQ(serio::qt::ActionType::BACK, dialog.getTopButtonAction());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveSpecifiedActionSetAsRightButtonAction) {
+TEST_F(DialogViewModelTest, shouldHaveSpecifiedActionSetAsTopButtonAction) {
     serio::qt::ActionType action = serio::qt::ActionType::OPEN_CURRENT_TV_SHOW_CRAWLER_EDITOR_VIEW;
-    model.setRightButtonAction(action);
+    model.setTopButtonAction(action);
     dialog.display(model);
-    EXPECT_EQ(action, dialog.getRightButtonAction());
+    EXPECT_EQ(action, dialog.getTopButtonAction());
 }
 
-TEST_F(DialogViewModelTest, shouldDisplayLeftButtonByDefault) {
-    EXPECT_FALSE(dialog.isLeftButtonHidden());
+TEST_F(DialogViewModelTest, shouldDisplayBottomButtonByDefault) {
+    EXPECT_FALSE(dialog.isBottomButtonHidden());
 }
 
-TEST_F(DialogViewModelTest, shouldHideLeftButton) {
-    model.hideLeftButton();
+TEST_F(DialogViewModelTest, shouldHideBottomButton) {
+    model.hideBottomButton();
     dialog.display(model);
-    EXPECT_TRUE(dialog.isLeftButtonHidden());
+    EXPECT_TRUE(dialog.isBottomButtonHidden());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveCancelAsLeftButtonTextByDefault) {
-    EXPECT_EQ("cancel", dialog.getLeftButtonText());
+TEST_F(DialogViewModelTest, shouldHaveCancelAsBottomButtonTextByDefault) {
+    EXPECT_EQ("cancel", dialog.getBottomButtonText());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveSpecifiedLeftButtonText) {
+TEST_F(DialogViewModelTest, shouldHaveSpecifiedBottomButtonText) {
     QString leftButtonText = "left button text";
-    model.setLeftButtonText(leftButtonText);
+    model.setBottomButtonText(leftButtonText);
     dialog.display(model);
-    EXPECT_EQ(leftButtonText, dialog.getLeftButtonText());
+    EXPECT_EQ(leftButtonText, dialog.getBottomButtonText());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveBackAsDefaultLeftButtonAction) {
-    EXPECT_EQ(serio::qt::ActionType::BACK, dialog.getLeftButtonAction());
+TEST_F(DialogViewModelTest, shouldHaveBackAsDefaultBottomButtonAction) {
+    EXPECT_EQ(serio::qt::ActionType::BACK, dialog.getBottomButtonAction());
 }
 
-TEST_F(DialogViewModelTest, shouldHaveSpecifiedActionAsLeftButtonAction) {
+TEST_F(DialogViewModelTest, shouldHaveSpecifiedActionAsBottomButtonAction) {
     serio::qt::ActionType action = serio::qt::ActionType::PREVIEW_CRAWLER;
-    model.setLeftButtonAction(action);
+    model.setBottomButtonAction(action);
     dialog.display(model);
-    EXPECT_EQ(action, dialog.getLeftButtonAction());
+    EXPECT_EQ(action, dialog.getBottomButtonAction());
 }
 
 TEST_F(DialogViewModelTest, shouldNotifyWatchersAboutChangesInDialogView) {
