@@ -41,10 +41,10 @@ public:
     [[nodiscard]] QList<ButtonModel*> getCrawlerEditorActions() const;
     [[nodiscard]] QList<ButtonModel*> getCrawlerPreviewActions() const;
 signals:
-    void crawlerTypeChanged();
-    void crawlerStepsChanged();
-    void previewResultsChanged();
-    void crawlerPreviewActionsChanged();
+    void crawlerTypeChanged() const;
+    void crawlerStepsChanged() const;
+    void previewResultsChanged() const;
+    void crawlerPreviewActionsChanged() const;
 private:
     std::optional<core::CrawlerType> crawlerType;
     ListModel<ButtonModel*> crawlerEditorActions;

@@ -12,7 +12,7 @@ void serio::qt::EpisodeListModel::loadPage(const serio::core::ListPage<serio::co
     servant.loadPage(page);
 }
 
-void serio::qt::EpisodeListModel::requestFirstPageLoad() {
+void serio::qt::EpisodeListModel::requestFirstPageLoad() const {
     servant.requestFirstPageLoad();
 }
 

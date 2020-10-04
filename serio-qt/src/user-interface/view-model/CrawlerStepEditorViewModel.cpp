@@ -20,7 +20,7 @@ bool serio::qt::CrawlerStepEditorViewModel::isExistingStep() const {
     return editedStepIndex.has_value();
 }
 
-QList<serio::qt::RadioButtonModel*> serio::qt::CrawlerStepEditorViewModel::getCrawlerStepTypes() {
+QList<serio::qt::RadioButtonModel*> serio::qt::CrawlerStepEditorViewModel::getCrawlerStepTypes() const {
     return typeOptions;
 }
 

@@ -2,33 +2,33 @@
 #include <QVariant>
 #include "DatabaseTvShowStorage.h"
 
-void serio::qt::DatabaseTvShowStorage::initialize() {
+void serio::qt::DatabaseTvShowStorage::initialize() const {
     createTvShowTable();
     createEpisodeTable();
 }
 
-void serio::qt::DatabaseTvShowStorage::saveTvShow(const serio::core::TvShow &tvShow, const std::vector<core::Episode> &episodes) {
+void serio::qt::DatabaseTvShowStorage::saveTvShow(const serio::core::TvShow &tvShow, const std::vector<core::Episode> &episodes) const {
     deleteTvShowWithName(tvShow.getName());
     insertTvShow(tvShow);
     insertEpisodes(tvShow.getName(), episodes);
 }
 
-std::optional<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getTvShowByName(const std::string &tvShowName) {
+std::optional<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getTvShowByName(const std::string &tvShowName) const {
     std::vector<serio::core::TvShow> tvShows = findTvShowsMatchingQuery("WHERE NAME = ?", 0, 1, {QString::fromStdString(tvShowName)});
     return tvShows.empty() ? std::optional<serio::core::TvShow>() : tvShows[0];
 }
 
-std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getAllTvShowsInAlphabeticOrder(unsigned int offset, unsigned int limit) {
+std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getAllTvShowsInAlphabeticOrder(unsigned int offset, unsigned int limit) const {
     return findTvShowsMatchingQuery("ORDER BY NAME", offset, limit);
 }
 
-std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getWatchedTvShows(unsigned int offset, unsigned int limit) {
+std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getWatchedTvShows(unsigned int offset, unsigned int limit) const {
     return findTvShowsMatchingQuery("WHERE LAST_WATCH_DATE IS NOT NULL ORDER BY LAST_WATCH_DATE DESC", offset, limit);
 }
 
 std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodesOfTvShowWithName(const std::string &tvShowName,
                                                                                                 unsigned int offset,
-                                                                                                unsigned int limit) {
+                                                                                                unsigned int limit) const {
     std::vector<core::Episode> result;
     QSqlQuery findEpisodesOfTvShow(QSqlDatabase::database());
     findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE FROM EPISODE WHERE TV_SHOW_NAME = ? ORDER BY ID LIMIT ? OFFSET ?");
@@ -42,22 +42,22 @@ std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodesO
     return result;
 }
 
-unsigned int serio::qt::DatabaseTvShowStorage::countAllTvShows() {
+unsigned int serio::qt::DatabaseTvShowStorage::countAllTvShows() const {
     return countTvShowsMatchingQuery();
 }
 
-unsigned int serio::qt::DatabaseTvShowStorage::countWatchedTvShows() {
+unsigned int serio::qt::DatabaseTvShowStorage::countWatchedTvShows() const {
     return countTvShowsMatchingQuery("WHERE LAST_WATCH_DATE IS NOT NULL");
 }
 
-unsigned int serio::qt::DatabaseTvShowStorage::countEpisodesOfTvShowWithName(const std::string &tvShowName) {
+unsigned int serio::qt::DatabaseTvShowStorage::countEpisodesOfTvShowWithName(const std::string &tvShowName) const {
     QSqlQuery countEpisodes = createAndExec("SELECT COUNT() FROM EPISODE WHERE TV_SHOW_NAME = ?",
                                             QString::fromStdString(tvShowName));
     countEpisodes.next();
     return countEpisodes.value(0).toUInt();
 }
 
-void serio::qt::DatabaseTvShowStorage::createTvShowTable() {
+void serio::qt::DatabaseTvShowStorage::createTvShowTable() const {
     QSqlQuery createTvShows(QSqlDatabase::database());
     createTvShows.exec("CREATE TABLE IF NOT EXISTS TV_SHOW("
                                 "NAME TEXT PRIMARY KEY, "
@@ -65,7 +65,7 @@ void serio::qt::DatabaseTvShowStorage::createTvShowTable() {
                                 "LAST_WATCH_DATE BIGINT)");
 }
 
-void serio::qt::DatabaseTvShowStorage::createEpisodeTable() {
+void serio::qt::DatabaseTvShowStorage::createEpisodeTable() const {
     QSqlQuery createEpisodes(QSqlDatabase::database());
     createEpisodes.exec("CREATE TABLE IF NOT EXISTS EPISODE("
                                 "ID UNSIGNED BIG INT NOT NULL, "
@@ -77,11 +77,11 @@ void serio::qt::DatabaseTvShowStorage::createEpisodeTable() {
                                 "CONSTRAINT FK_TV_SHOW FOREIGN KEY (TV_SHOW_NAME) REFERENCES TV_SHOW(NAME) ON DELETE CASCADE)");
 }
 
-void serio::qt::DatabaseTvShowStorage::deleteTvShowWithName(const std::string &name) {
+void serio::qt::DatabaseTvShowStorage::deleteTvShowWithName(const std::string &name) const {
     createAndExec("DELETE FROM TV_SHOW WHERE NAME = ?", QString::fromStdString(name));
 }
 
-void serio::qt::DatabaseTvShowStorage::insertTvShow(const serio::core::TvShow &tvShow) {
+void serio::qt::DatabaseTvShowStorage::insertTvShow(const serio::core::TvShow &tvShow) const {
     QSqlQuery addShow(QSqlDatabase::database());
     addShow.prepare("INSERT INTO TV_SHOW VALUES(?, ?, ?)");
     addShow.addBindValue(QString::fromStdString(tvShow.getName()));
@@ -94,7 +94,7 @@ void serio::qt::DatabaseTvShowStorage::insertTvShow(const serio::core::TvShow &t
     addShow.exec();
 }
 
-void serio::qt::DatabaseTvShowStorage::insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes) {
+void serio::qt::DatabaseTvShowStorage::insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes) const {
     QSqlQuery insertEpisodes(QSqlDatabase::database());
     insertEpisodes.prepare("INSERT INTO EPISODE VALUES(?, ?, ?, ?, ?)");
     QString qTvShowName = QString::fromStdString(tvShowName);
@@ -118,7 +118,7 @@ void serio::qt::DatabaseTvShowStorage::insertEpisodes(const std::string& tvShowN
     insertEpisodes.execBatch();
 }
 
-unsigned int serio::qt::DatabaseTvShowStorage::countTvShowsMatchingQuery(const QString &query) {
+unsigned int serio::qt::DatabaseTvShowStorage::countTvShowsMatchingQuery(const QString &query) const {
     QSqlQuery countTvShows(QSqlDatabase::database());
     countTvShows.exec("SELECT COUNT() FROM TV_SHOW " + query);
     countTvShows.next();
@@ -128,7 +128,7 @@ unsigned int serio::qt::DatabaseTvShowStorage::countTvShowsMatchingQuery(const Q
 std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::findTvShowsMatchingQuery(const QString &query,
                                                                                             unsigned int offset,
                                                                                             unsigned int limit,
-                                                                                            const std::vector<QVariant>& values) {
+                                                                                            const std::vector<QVariant>& values) const {
     std::vector<core::TvShow> result;
     QSqlQuery findAllTvShows(QSqlDatabase::database());
     findAllTvShows.prepare("SELECT NAME, THUMBNAIL_URL, LAST_WATCH_DATE FROM TV_SHOW " + query + " LIMIT ? OFFSET ?");
@@ -163,7 +163,7 @@ std::optional<serio::core::LastWatchDate> serio::qt::DatabaseTvShowStorage::read
     return variant.isNull() ? std::optional<serio::core::LastWatchDate>() : serio::core::LastWatchDate(variant.toLongLong());
 }
 
-void serio::qt::DatabaseTvShowStorage::clearTvShowWatchHistory(const std::string &tvShowName) {
+void serio::qt::DatabaseTvShowStorage::clearTvShowWatchHistory(const std::string &tvShowName) const {
     QString name = QString::fromStdString(tvShowName);
     createAndExec("UPDATE TV_SHOW SET LAST_WATCH_DATE = NULL WHERE NAME = ?", name);
     createAndExec("UPDATE EPISODE SET LAST_WATCH_DATE = NULL WHERE TV_SHOW_NAME = ?", name);

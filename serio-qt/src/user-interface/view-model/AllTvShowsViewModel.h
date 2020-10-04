@@ -32,8 +32,8 @@ public:
     void selectAction(const QString& actionName);
     TvShowListModel* getTvShowList();
 signals:
-    void actionsChanged();
-    void selectedListChanged();
+    void actionsChanged() const;
+    void selectedListChanged() const;
 private:
     std::map<QString, std::unique_ptr<TvShowListModel>> listTypeToListModel;
     TvShowListModel* selectedTvShowList;

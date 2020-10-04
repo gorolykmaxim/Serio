@@ -27,9 +27,9 @@ public:
     [[nodiscard]] QString getSelectedEntryOutputData() const;
     [[nodiscard]] QString getTitle() const;
 signals:
-    void logChanged();
-    void selectedEntryChanged();
-    void titleChanged();
+    void logChanged() const;
+    void selectedEntryChanged() const;
+    void titleChanged() const;
 private:
     QString title;
     std::vector<core::CrawlLogEntry> logEntries;

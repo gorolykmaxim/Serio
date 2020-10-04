@@ -15,7 +15,7 @@ public:
     };
     TvShowListModel(unsigned int pageSize, unsigned int pageCountLimit);
     void loadPage(const core::ListPage<core::TvShow>& page);
-    void requestFirstPageLoad();
+    void requestFirstPageLoad() const;
     [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
 private:

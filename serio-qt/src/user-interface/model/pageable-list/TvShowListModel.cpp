@@ -12,7 +12,7 @@ void serio::qt::TvShowListModel::loadPage(const core::ListPage<core::TvShow>& pa
     servant.loadPage(page);
 }
 
-void serio::qt::TvShowListModel::requestFirstPageLoad() {
+void serio::qt::TvShowListModel::requestFirstPageLoad() const {
     servant.requestFirstPageLoad();
 }
 

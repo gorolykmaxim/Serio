@@ -9,10 +9,10 @@ namespace serio::qt {
 
 class DatabaseTvShowCrawlerStorage : public BaseDatabaseStorage {
 public:
-    void initialize();
-    std::optional<std::string> getTvShowCrawlerByTvShowName(const std::string &tvShowName);
-    void deleteTvShowCrawlerOfTvShow(const std::string& tvShowName);
-    void insertTvShowCrawler(const std::string& tvShowName, const std::string& serializedCrawler);
+    void initialize() const;
+    [[nodiscard]] std::optional<std::string> getTvShowCrawlerByTvShowName(const std::string &tvShowName) const;
+    void deleteTvShowCrawlerOfTvShow(const std::string& tvShowName) const;
+    void insertTvShowCrawler(const std::string& tvShowName, const std::string& serializedCrawler) const;
 };
 
 }

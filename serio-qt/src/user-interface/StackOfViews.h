@@ -12,21 +12,21 @@ class StackOfViews : public QObject {
     Q_OBJECT
 public:
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
-    virtual void pushView(const QString& view);
-    virtual void popCurrentView();
-    virtual void popAllViews();
-    virtual void popAllViewsUntil(const QString& view);
-    virtual void replaceCurrentViewWith(const QString& newView);
-    virtual void replaceSpecifiedViewWith(const QString& targetView, const QString& newView);
+    virtual void pushView(const QString& view) const;
+    virtual void popCurrentView() const;
+    virtual void popAllViews() const;
+    virtual void popAllViewsUntil(const QString& view) const;
+    virtual void replaceCurrentViewWith(const QString& newView) const;
+    virtual void replaceSpecifiedViewWith(const QString& targetView, const QString& newView) const;
 public slots:
-    void setCurrentView(QString currentView);
+    void setCurrentView(QString currentView) const;
 signals:
-    void push(QString view);
-    void pop(bool currentView);
-    void unwind(QString targetView);
-    void replaceCurrentView(QString newView);
-    void replaceSpecifiedView(QString targetView, QString newView);
-    void currentViewChanged(QString currentView);
+    void push(QString view) const;
+    void pop(bool currentView) const;
+    void unwind(QString targetView) const;
+    void replaceCurrentView(QString newView) const;
+    void replaceSpecifiedView(QString targetView, QString newView) const;
+    void currentViewChanged(QString currentView) const;
 private:
     [[nodiscard]] QString makePathToViewAbsolute(const QString& view) const;
 };

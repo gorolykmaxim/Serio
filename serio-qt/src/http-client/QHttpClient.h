@@ -21,7 +21,7 @@ namespace serio::qt {
 class QHttpClient : public QObject, public core::HttpClient {
     Q_OBJECT
 public:
-    QHttpClient(int timeout = 5000, QNetworkRequest::RedirectPolicy redirectPolicy = QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy);
+    explicit QHttpClient(int timeout = 5000, QNetworkRequest::RedirectPolicy redirectPolicy = QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy);
     void assignTo(QQmlApplicationEngine& engine);
     std::future<std::vector<std::string>> fetchContentFromLinks(const std::vector<std::string> &links) override;
 signals:

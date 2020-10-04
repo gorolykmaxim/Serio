@@ -18,8 +18,8 @@ public:
 public slots:
     void hide();
 signals:
-    void hasChanged();
-    void hasBeenDisplayed();
+    void hasChanged() const;
+    void hasBeenDisplayed() const;
 private:
     bool displayed = false;
     QString text;

@@ -17,12 +17,12 @@ public:
     [[nodiscard]] QString getImage() const;
     virtual void setImage(const QString& newImage);
 signals:
-    void visibilityChanged();
-    void imageChanged();
+    void visibilityChanged() const;
+    void imageChanged() const;
 private:
     bool visible;
     QString image;
-    QSet<QString> viewsWithBackground;
+    const QSet<QString> viewsWithBackground;
 };
 
 }

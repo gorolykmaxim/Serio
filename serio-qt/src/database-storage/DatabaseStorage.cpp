@@ -6,7 +6,7 @@
 #include <QStandardPaths>
 #include <QDir>
 
-void serio::qt::DatabaseStorage::initialize(bool inMemory) {
+void serio::qt::DatabaseStorage::initialize(bool inMemory) const {
     openDatabaseConnection(inMemory ? ":memory:" : getDatabaseFilePath());
     enableForeignKeys();
     tvShowStorage.initialize();
@@ -59,7 +59,7 @@ std::string serio::qt::DatabaseStorage::getDatabaseFilePath() const {
     return QDir(home).filePath(".serio.dev.db").toStdString();
 }
 
-void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& storageUrl) {
+void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& storageUrl) const {
     QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName(QString::fromStdString(storageUrl));
     if (!database.open()) {
@@ -67,7 +67,7 @@ void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& stora
     }
 }
 
-void serio::qt::DatabaseStorage::enableForeignKeys() {
+void serio::qt::DatabaseStorage::enableForeignKeys() const {
     QSqlQuery enableForeignKeys(QSqlDatabase::database());
     enableForeignKeys.exec("PRAGMA foreign_keys=ON");
 }

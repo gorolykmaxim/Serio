@@ -21,7 +21,7 @@ public:
         shrinkModelIfNecessary(page);
         pageIsLoaded(page);
     }
-    void requestFirstPageLoad() {
+    void requestFirstPageLoad() const {
         emit model.requestPageLoad(0, pageSize);
     }
     int rowCount(const QModelIndex &parent) const {

@@ -10,11 +10,11 @@ namespace serio::qt {
 
 class DatabaseTvShowCrawlerLogStorage : public BaseDatabaseStorage {
 public:
-    void initialize();
-    void saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log);
-    std::vector<core::CrawlLogEntry> getLastCrawlLogOfTvShow(const std::string &tvShowName);
+    void initialize() const;
+    void saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log) const;
+    [[nodiscard]] std::vector<core::CrawlLogEntry> getLastCrawlLogOfTvShow(const std::string &tvShowName) const;
 private:
-    void insertCrawlLogEntries(const std::string& tvShowName, const std::vector<core::CrawlLogEntry>& entries);
+    void insertCrawlLogEntries(const std::string& tvShowName, const std::vector<core::CrawlLogEntry>& entries) const;
     [[nodiscard]] core::CrawlLogEntry readCrawlLogEntryFrom(const QSqlQuery& query) const;
 };
 

@@ -15,7 +15,7 @@ namespace serio::qt {
 
 class DatabaseStorage : public core::TvShowStorage, public core::TvShowCrawlerStorage, public core::TvShowCrawlerLogStorage {
 public:
-    void initialize(bool inMemory = false);
+    void initialize(bool inMemory = false) const;
     std::optional<core::TvShow> getTvShowByName(const std::string &tvShowName) override;
     core::ListPage<core::TvShow> getAllTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::TvShow> getWatchedTvShows(unsigned int offset, unsigned int limit) override;
@@ -33,8 +33,8 @@ private:
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
     DatabaseTvShowCrawlerLogStorage tvShowCrawlerLogStorage;
     [[nodiscard]] std::string getDatabaseFilePath() const;
-    void openDatabaseConnection(const std::string& storageUrl);
-    void enableForeignKeys();
+    void openDatabaseConnection(const std::string& storageUrl) const;
+    void enableForeignKeys() const;
 };
 
 class StorageError : public std::runtime_error {

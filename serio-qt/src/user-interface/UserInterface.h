@@ -37,8 +37,8 @@ private:
     CrawlerStepEditorViewModel crawlerStepEditorViewModel;
     TvShowViewModel tvShowViewModel;
     QQmlApplicationEngine engine;
-    void loadFonts();
-    void exitOnUiLoadFailure(const QUrl &url);
+    void loadFonts() const;
+    void exitOnUiLoadFailure(const QUrl &url) const;
 };
 
 }

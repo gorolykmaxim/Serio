@@ -38,9 +38,9 @@ public:
     void saveWithOverride();
     [[nodiscard]] QList<ButtonModel*> getImportTvShowCrawlerActions() const;
 signals:
-    void tvShowNameChanged();
-    void canCrawlerBeSavedChanged();
-    void canTvShowNameBeChangedChanged();
+    void tvShowNameChanged() const;
+    void canCrawlerBeSavedChanged() const;
+    void canTvShowNameBeChangedChanged() const;
 private:
     bool isEditingExistingTvShow;
     QString tvShowName;

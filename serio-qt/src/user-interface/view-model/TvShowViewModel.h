@@ -40,7 +40,7 @@ public:
     void openTvShowDetails();
     [[nodiscard]] QList<ButtonModel*> getActions() const;
 signals:
-    void selectedTvShowChanged();
+    void selectedTvShowChanged() const;
 private:
     EpisodeListModel episodeListModel;
     QString tvShowName;

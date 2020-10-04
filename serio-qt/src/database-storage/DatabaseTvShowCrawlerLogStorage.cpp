@@ -4,7 +4,7 @@
 #include <QVariantList>
 #include "DatabaseTvShowCrawlerLogStorage.h"
 
-void serio::qt::DatabaseTvShowCrawlerLogStorage::initialize() {
+void serio::qt::DatabaseTvShowCrawlerLogStorage::initialize() const {
     QSqlQuery createCrawlLogEntry(QSqlDatabase::database());
     createCrawlLogEntry.exec("CREATE TABLE IF NOT EXISTS CRAWL_LOG_ENTRY("
                                 "ID INTEGER NOT NULL, "
@@ -15,12 +15,12 @@ void serio::qt::DatabaseTvShowCrawlerLogStorage::initialize() {
                                 "PRIMARY KEY (ID, TV_SHOW_NAME))");
 }
 
-void serio::qt::DatabaseTvShowCrawlerLogStorage::saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log) {
+void serio::qt::DatabaseTvShowCrawlerLogStorage::saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log) const {
     createAndExec("DELETE FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ?", QString::fromStdString(tvShowName));
     insertCrawlLogEntries(tvShowName, log);
 }
 
-std::vector<serio::core::CrawlLogEntry> serio::qt::DatabaseTvShowCrawlerLogStorage::getLastCrawlLogOfTvShow(const std::string &tvShowName) {
+std::vector<serio::core::CrawlLogEntry> serio::qt::DatabaseTvShowCrawlerLogStorage::getLastCrawlLogOfTvShow(const std::string &tvShowName) const {
     std::vector<serio::core::CrawlLogEntry> result;
     QSqlQuery findLastCrawlLogOfTvShow = createAndExec(
             "SELECT TEXT, STEP_INPUT_DATA, STEP_OUTPUT_DATA FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ? ORDER BY ID",
@@ -32,7 +32,7 @@ std::vector<serio::core::CrawlLogEntry> serio::qt::DatabaseTvShowCrawlerLogStora
 }
 
 void serio::qt::DatabaseTvShowCrawlerLogStorage::insertCrawlLogEntries(const std::string &tvShowName,
-                                                                       const std::vector<core::CrawlLogEntry> &entries) {
+                                                                       const std::vector<core::CrawlLogEntry> &entries) const {
     QSqlQuery insertCrawlLog(QSqlDatabase::database());
     insertCrawlLog.prepare("INSERT INTO CRAWL_LOG_ENTRY VALUES(?, ?, ?, ?, ?)");
     QString name = QString::fromStdString(tvShowName);

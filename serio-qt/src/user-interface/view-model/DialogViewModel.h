@@ -27,7 +27,7 @@ public:
     [[nodiscard]] QString getBottomButtonText() const;
     [[nodiscard]] ActionType getBottomButtonAction() const;
 signals:
-    void dialogChanged();
+    void dialogChanged() const;
 private:
     StackOfViews& stack;
     DialogModel dialogModel;

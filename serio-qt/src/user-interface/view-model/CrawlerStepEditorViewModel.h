@@ -22,7 +22,7 @@ public:
     CrawlerStepEditorViewModel(core::TvShowCrawlerEditor &editor, StackOfViews &stackOfViewsController);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     [[nodiscard]] bool isExistingStep() const;
-    [[nodiscard]] QList<RadioButtonModel*> getCrawlerStepTypes();
+    [[nodiscard]] QList<RadioButtonModel*> getCrawlerStepTypes() const;
     [[nodiscard]] QString getDescription() const;
     [[nodiscard]] QList<TextFieldModel*> getProperties() const;
     void openNew();
@@ -33,11 +33,11 @@ public:
     void remove();
     [[nodiscard]] QList<ButtonModel*> getActions() const;
 signals:
-    void isExistingStepChanged();
-    void crawlerStepTypesChanged();
-    void descriptionChanged();
-    void propertiesChanged();
-    void actionsChanged();
+    void isExistingStepChanged() const;
+    void crawlerStepTypesChanged() const;
+    void descriptionChanged() const;
+    void propertiesChanged() const;
+    void actionsChanged() const;
 private:
     std::optional<unsigned int> editedStepIndex;
     std::optional<core::CrawlerStepType> selectedType;

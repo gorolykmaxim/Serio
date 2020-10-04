@@ -7,7 +7,7 @@ namespace serio::qt {
 
 class BaseDatabaseStorage {
 protected:
-    QSqlQuery createAndExec(const QString& sql, const QVariant& argument);
+    QSqlQuery createAndExec(const QString& sql, const QVariant& argument) const;
 };
 
 }

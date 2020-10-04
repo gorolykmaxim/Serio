@@ -18,8 +18,8 @@ public:
     [[nodiscard]] QString getSubtitle() const;
     [[nodiscard]] QString getIcon() const;
 signals:
-    void titleChanged();
-    void subtitleChanged();
+    void titleChanged() const;
+    void subtitleChanged() const;
 private:
     QString title;
     QString subtitle;
