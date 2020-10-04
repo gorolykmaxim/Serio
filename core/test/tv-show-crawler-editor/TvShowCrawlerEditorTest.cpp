@@ -19,7 +19,7 @@ protected:
     const serio::core::CrawlerStep fetch = serio::core::CrawlerStep("fetch");
     const serio::core::CrawlerStep value = serio::core::CrawlerStep("value", {{"value", "https://tv-show/"}});
     serio::core::TvShowCrawler tvShowCrawler = serio::core::TvShowCrawler(mandalorian, serio::core::Crawler({value}));
-    TvShowCrawlerRuntimeMock runtime = TvShowCrawlerRuntimeMock::create();
+    ::testing::NiceMock<TvShowCrawlerRuntimeMock> runtime;
     serio::core::TvShowCrawlerEditor editor = serio::core::TvShowCrawlerEditor(runtime);
     void createCrawler() {
         editor.createTvShowCrawler();
@@ -29,19 +29,17 @@ protected:
         editor.saveCrawler();
     }
     void saveAndRunCrawler() {
-        EXPECT_CALL(runtime, crawlTvShowAndSaveCrawler(tvShowCrawler));
         createCrawler();
         editor.saveAndRunTvShowCrawler();
     }
     void expectCrawlerStepsToBeImported(serio::core::CrawlerType type) {
-        EXPECT_CALL(runtime, deserializeTvShowCrawler(rawTvShowCrawler)).WillOnce(::testing::Return(tvShowCrawler));
+        ON_CALL(runtime, deserializeTvShowCrawler(rawTvShowCrawler)).WillByDefault(::testing::Return(tvShowCrawler));
         editor.importTvShowCrawler(rawTvShowCrawler);
         editor.editCrawler(type);
         EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
     }
     void expectCrawlerStepsToBeEdited(serio::core::CrawlerType type) {
-        EXPECT_CALL(runtime, getTvShowCrawlerByTvShowNameOrFail(mandalorian))
-                .WillOnce(::testing::Return(tvShowCrawler));
+        ON_CALL(runtime, getTvShowCrawlerByTvShowNameOrFail(mandalorian)).WillByDefault(::testing::Return(tvShowCrawler));
         editor.editTvShowCrawler(mandalorian);
         editor.editCrawler(type);
         EXPECT_EQ(tvShowCrawler.getCrawler(type).getSteps(), editor.getCrawlerSteps());
@@ -194,6 +192,7 @@ TEST_F(TvShowCrawlerEditorTest, shouldFailToSaveAndRunCrawlerWithEmptyTvShowName
 }
 
 TEST_F(TvShowCrawlerEditorTest, shouldSaveAndRunTvShowCrawlerWithNoStepsInAnyOfItsCrawlers) {
+    EXPECT_CALL(runtime, crawlTvShowAndSaveCrawler(tvShowCrawler));
     saveAndRunCrawler();
 }
 

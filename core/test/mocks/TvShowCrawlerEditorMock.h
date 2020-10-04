@@ -6,12 +6,12 @@
 #include "TvShowCrawlerRuntimeMock.h"
 
 class TvShowCrawlerEditorMock : public serio::core::TvShowCrawlerEditor {
+    inline static TvShowCrawlerRuntimeMock runtimeMock;
 public:
     static TvShowCrawlerEditorMock create() {
-        TvShowCrawlerRuntimeMock runtime = TvShowCrawlerRuntimeMock::create();
-        return TvShowCrawlerEditorMock(runtime);
+        return TvShowCrawlerEditorMock();
     }
-    explicit TvShowCrawlerEditorMock(serio::core::TvShowCrawlerRuntime& runtime) : TvShowCrawlerEditor(runtime) {}
+    explicit TvShowCrawlerEditorMock() : TvShowCrawlerEditor(runtimeMock) {}
     MOCK_METHOD(void, createTvShowCrawler, (), (override));
     MOCK_METHOD(void, importTvShowCrawler, (const std::string&), (override));
     MOCK_METHOD(void, editTvShowCrawler, (const std::string&), (override));

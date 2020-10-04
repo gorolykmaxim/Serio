@@ -8,16 +8,15 @@
 #include "TvShowCrawlerRuntimeMock.h"
 
 class TvShowViewerMock : public serio::core::TvShowViewer {
+    inline static TvShowStorageMock tvShowStorageMock;
+    inline static TvShowCrawlerStorageMock tvShowCrawlerStorageMock;
+    inline static TvShowCrawlerRuntimeMock runtimeMock;
 public:
     static TvShowViewerMock create() {
-        TvShowStorageMock tvShowStorage;
-        TvShowCrawlerStorageMock crawlerStorage;
-        TvShowCrawlerRuntimeMock runtime = TvShowCrawlerRuntimeMock::create();
-        return TvShowViewerMock(tvShowStorage, crawlerStorage, runtime);
+        return TvShowViewerMock();
     }
-    explicit TvShowViewerMock(serio::core::TvShowStorage &tvShowStorage, serio::core::TvShowCrawlerStorage& crawlerStorage,
-                              serio::core::TvShowCrawlerRuntime& runtime)
-        : TvShowViewer(tvShowStorage, crawlerStorage, runtime) {}
+    TvShowViewerMock()
+        : TvShowViewer(tvShowStorageMock, tvShowCrawlerStorageMock, runtimeMock) {}
     MOCK_METHOD(serio::core::TvShow, getSelectedTvShow, (), (const override));
     MOCK_METHOD((serio::core::ListPage<serio::core::Episode>), getTvShowEpisodes, (unsigned int, unsigned int), (override));
     MOCK_METHOD(void, openTvShowWithName, (const std::string&), (override));

@@ -18,8 +18,8 @@ protected:
     const std::string mandalorian = "Mandalorian";
     const std::string thumbnailUrl = "https://tv-show/thumbnail.jpg";
     const std::string emptyFriendsCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Friends","thumbnailCrawler":{"steps":[]}})";
-    const std::string mandalorianCrawlerWithEpisodeVideoCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})";
-    const std::string mandalorianCrawlerWithThumbnailCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]}})";
+    const std::string mandalorianCrawlerWithEpisodeVideoCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[{"type":"value","value":"https://tv-show"},{"type":"fetch"}]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})";
+    const std::string mandalorianCrawlerWithThumbnailCrawler = R"({"episodeNameCrawler":{"steps":[]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[{"type":"value","value":"https://tv-show"},{"type":"fetch"}]}})";
     const std::string httpClientResponse = "Tv show image='thumbnail.jpg' is nice. Episodes are: episode-1.mp4, episode-2.mp4 and episode-3.mp4";
     const unsigned int maxCrawlLogEntryDataSize = 50;
     std::promise<std::vector<std::string>> httpClientResponsePromise;
@@ -30,7 +30,7 @@ protected:
     serio::core::TvShowCrawlerRuntime runtime = serio::core::TvShowCrawlerRuntime(crawlerStorage, tvShowStorage, logStorage, httpClient, maxCrawlLogEntryDataSize);
     serio::core::Crawler emptyCrawler;
     serio::core::Crawler crawlerWithSteps = serio::core::Crawler({
-        serio::core::CrawlerStep("value", {{"value", "url"}}),
+        serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
         serio::core::CrawlerStep("fetch")
     });
     serio::core::Crawler episodeVideoCrawler = serio::core::Crawler({
@@ -42,7 +42,7 @@ protected:
     virtual void SetUp() {
         std::promise<std::vector<std::string>> promise;
         promise.set_value({httpClientResponse});
-        ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"url"})))
+        ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
             .WillByDefault(::testing::Return(::testing::ByMove(promise.get_future())));
         httpClientResponsePromise.set_value({httpClientResponse});
     }
@@ -148,8 +148,6 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedDynamicall
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedFromWebSiteUsingGroupMatch) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(tvShowStorage, saveTvShow(serio::core::TvShow(mandalorian, thumbnailUrl), std::vector<serio::core::Episode>()));
     serio::core::TvShowCrawler crawler(mandalorian, emptyCrawler, serio::core::Crawler({
         serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
@@ -161,8 +159,6 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedFromWebSit
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedFromWebSiteUsingCompleteMatch) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(tvShowStorage, saveTvShow(serio::core::TvShow(mandalorian, thumbnailUrl), std::vector<serio::core::Episode>()));
     serio::core::TvShowCrawler crawler(mandalorian, emptyCrawler, serio::core::Crawler({
         serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
@@ -174,8 +170,6 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithThumbnailObtainedFromWebSit
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithoutThumbnailSinceTheCrawlersRegExpDidNotMatch) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(tvShowStorage, saveTvShow(serio::core::TvShow(mandalorian, ""), std::vector<serio::core::Episode>()));
     serio::core::TvShowCrawler crawler(mandalorian, emptyCrawler, serio::core::Crawler({
         serio::core::CrawlerStep("value", {{"value", "https://tv-show"}}),
@@ -186,8 +180,6 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithoutThumbnailSinceTheCrawler
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithEpisodesObtainedFromWebSite) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(tvShowStorage, saveTvShow(serio::core::TvShow(mandalorian, ""), std::vector<serio::core::Episode>({
         serio::core::Episode(1, "https://tv-show/episode-1.mp4"),
         serio::core::Episode(2, "https://tv-show/episode-2.mp4"),
@@ -198,8 +190,8 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithEpisodesObtainedFromWebSite
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlTvShowDueToHttpClientError) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
+    ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+        .WillByDefault(::testing::Throw(std::runtime_error("Timeout")));
     EXPECT_CALL(tvShowStorage, saveTvShow(::testing::_, ::testing::_)).Times(0);
     EXPECT_CALL(crawlerStorage, saveTvShowCrawler(::testing::_, ::testing::_)).Times(0);
     serio::core::TvShowCrawler crawler(mandalorian, episodeVideoCrawler);
@@ -210,8 +202,8 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToCrawlTvShowDueToHttpClientError) {
 TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithEpisodesHavingCustomEpisodeNames) {
     httpClientResponsePromise = std::promise<std::vector<std::string>>();
     httpClientResponsePromise.set_value({"Tv show image='thumbnail.jpg' is nice. Episodes are: DarkDawn.mp4, StrangeDay.mp4 and SleeplessNight.mp4"});
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
+    ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+        .WillByDefault(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(tvShowStorage, saveTvShow(serio::core::TvShow(mandalorian, ""), std::vector<serio::core::Episode>({
         serio::core::Episode(1, "https://tv-show/DarkDawn.mp4", "DarkDawn"),
         serio::core::Episode(2, "https://tv-show/StrangeDay.mp4", "StrangeDay"),
@@ -231,8 +223,6 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldSaveTvShowWithEpisodesHavingCustomEpisode
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToSaveTvShowWithEpisodesVideoUrlsCountNotEqualEpisodeNamesCount) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(tvShowStorage, saveTvShow(::testing::_, ::testing::_)).Times(0);
     EXPECT_CALL(crawlerStorage, saveTvShowCrawler(::testing::_, ::testing::_)).Times(0);
     serio::core::Crawler episodeNameCrawler({
@@ -287,7 +277,7 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldDeserializeTvShowCrawlerWithThumbnailCraw
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldDeserializeTvShowCrawlerWithEpisodeNameCrawlerSpecified) {
     serio::core::TvShowCrawler expectedCrawler(mandalorian, emptyCrawler, emptyCrawler, crawlerWithSteps);
-    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(R"({"episodeNameCrawler":{"steps":[{"type":"value","value":"url"},{"type":"fetch"}]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})"));
+    EXPECT_EQ(expectedCrawler, runtime.deserializeTvShowCrawler(R"({"episodeNameCrawler":{"steps":[{"type":"value","value":"https://tv-show"},{"type":"fetch"}]},"episodeVideoCrawler":{"steps":[]},"showName":"Mandalorian","thumbnailCrawler":{"steps":[]}})"));
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToDeserializeTvShowCrawlerWithStepWithoutTypeSpecified) {
@@ -314,14 +304,12 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldReturnResultsOfExecutionOfTheSpecifiedCra
             "https://tv-show/episode-2.mp4",
             "https://tv-show/episode-3.mp4"
     };
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-            .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_EQ(expectedResults, runtime.executeCrawler(episodeVideoCrawler).result);
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteSpecifiedCrawlerDueToHttpClientError) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-            .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
+    ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+        .WillByDefault(::testing::Throw(std::runtime_error("Timeout")));
     try {
         (void) runtime.executeCrawler(episodeVideoCrawler);
         FAIL();
@@ -357,8 +345,6 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithRegExpStepNotHavi
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldReturnExecutionLogOfTheSpecifiedCrawler) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     std::vector<serio::core::CrawlLogEntry> log = runtime.executeCrawler(episodeVideoCrawler).log;
     EXPECT_EQ("Executing value step with properties: 'value: https://tv-show'", log[0].getText());
     EXPECT_EQ("[]", log[0].getStepInputData());
@@ -397,10 +383,10 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldRecrawlTvShow) {
     std::string episodeVideoUrl = "https://tv-show.com/video-1.mp4";
     httpClientResponsePromise = std::promise<std::vector<std::string>>();
     httpClientResponsePromise.set_value({episodeVideoUrl});
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"url"})))
-        .WillOnce(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
+    ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+        .WillByDefault(::testing::Return(::testing::ByMove(httpClientResponsePromise.get_future())));
     EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(mandalorian))
-            .WillOnce(::testing::Return(std::optional(mandalorianCrawlerWithEpisodeVideoCrawler)));
+        .WillOnce(::testing::Return(std::optional(mandalorianCrawlerWithEpisodeVideoCrawler)));
     serio::core::TvShow tvShow(mandalorian);
     std::vector<serio::core::Episode> episodes = {serio::core::Episode(1, episodeVideoUrl)};
     EXPECT_CALL(tvShowStorage, saveTvShow(tvShow, episodes));
@@ -408,10 +394,10 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldRecrawlTvShow) {
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldFailToRecrawlTvShowDueToHttpClientError) {
-    EXPECT_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"url"})))
-            .WillOnce(::testing::Throw(std::runtime_error("Timeout")));
+    ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))
+        .WillByDefault(::testing::Throw(std::runtime_error("Timeout")));
     EXPECT_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(mandalorian))
-            .WillOnce(::testing::Return(std::optional(mandalorianCrawlerWithEpisodeVideoCrawler)));
+        .WillOnce(::testing::Return(std::optional(mandalorianCrawlerWithEpisodeVideoCrawler)));
     EXPECT_CALL(tvShowStorage, saveTvShow(::testing::_, ::testing::_)).Times(0);
     try {
         runtime.crawlTvShow(mandalorian);
