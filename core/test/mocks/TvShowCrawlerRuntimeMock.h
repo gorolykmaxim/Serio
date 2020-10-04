@@ -14,11 +14,8 @@ class TvShowCrawlerRuntimeMock : public serio::core::TvShowCrawlerRuntime {
     inline static TvShowCrawlerStorageMock tvShowCrawlerStorageMock;
     inline static TvShowCrawlerLogStorageMock tvShowCrawlerLogStorageMock;
 public:
-    static TvShowCrawlerRuntimeMock create() {
-        return TvShowCrawlerRuntimeMock();
-    }
-    TvShowCrawlerRuntimeMock()
-        : TvShowCrawlerRuntime(tvShowCrawlerStorageMock, tvShowStorageMock, tvShowCrawlerLogStorageMock, httpClientMock) {};
+    TvShowCrawlerRuntimeMock() : TvShowCrawlerRuntime(tvShowCrawlerStorageMock, tvShowStorageMock,
+                                                      tvShowCrawlerLogStorageMock, httpClientMock) {};
     MOCK_METHOD(void, crawlTvShowAndSaveCrawler, (const serio::core::TvShowCrawler&), (override));
     MOCK_METHOD((std::vector<serio::core::CrawlerStepType>), getCrawlerStepTypes, (), (const override));
     MOCK_METHOD(serio::core::TvShowCrawler, deserializeTvShowCrawler, (const std::string&), (const override));

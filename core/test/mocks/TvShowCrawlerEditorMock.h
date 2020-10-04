@@ -8,9 +8,6 @@
 class TvShowCrawlerEditorMock : public serio::core::TvShowCrawlerEditor {
     inline static TvShowCrawlerRuntimeMock runtimeMock;
 public:
-    static TvShowCrawlerEditorMock create() {
-        return TvShowCrawlerEditorMock();
-    }
     explicit TvShowCrawlerEditorMock() : TvShowCrawlerEditor(runtimeMock) {}
     MOCK_METHOD(void, createTvShowCrawler, (), (override));
     MOCK_METHOD(void, importTvShowCrawler, (const std::string&), (override));
