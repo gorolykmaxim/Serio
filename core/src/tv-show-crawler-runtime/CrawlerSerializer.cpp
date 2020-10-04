@@ -49,6 +49,7 @@ serio::core::Crawler serio::core::CrawlerSerializer::deserialize(nlohmann::json 
     try {
         nlohmann::json& deserializedSteps = crawler[crawlerType]["steps"];
         std::vector<serio::core::CrawlerStep> steps;
+        steps.reserve(deserializedSteps.size());
         for (int i = 0; i < deserializedSteps.size(); i++) {
             steps.push_back(deserialize(deserializedSteps, i));
         }

@@ -22,7 +22,7 @@ public:
     [[nodiscard]] virtual std::vector<CrawlerStepType> getCrawlerStepTypes() const;
     [[nodiscard]] virtual TvShowCrawler deserializeTvShowCrawler(const std::string &rawCrawler) const;
     virtual bool willOverrideExistingTvShow(const TvShowCrawler &crawler);
-    [[nodiscard]] virtual CrawlResult executeCrawler(const Crawler& crawler);
+    [[nodiscard]] virtual CrawlResult executeCrawler(const Crawler& crawler) const;
     [[nodiscard]] virtual std::optional<TvShowCrawler> getTvShowCrawlerByTvShowName(const std::string& tvShowName);
     virtual void crawlTvShow(const std::string& tvShowName);
     [[nodiscard]] virtual TvShowCrawler getTvShowCrawlerByTvShowNameOrFail(const std::string& tvShowName);
