@@ -9,21 +9,26 @@
 
 class CrawlerEditorViewModelTest : public ::testing::Test {
 protected:
+    const std::vector<serio::core::CrawlerStep> steps = {
+            serio::core::CrawlerStep("value", {{"value", "a"}}),
+            serio::core::CrawlerStep("fetch"),
+            serio::core::CrawlerStep("some other", {{"a", "1"}, {"b", "false"}, {"c", "text"}})
+    };
     const std::vector<std::string> previewResults = {"result 1", "result 2"};
-    TvShowCrawlerEditorMock editor = TvShowCrawlerEditorMock::create();
+    ::testing::NiceMock<TvShowCrawlerEditorMock> editor;
     ::testing::NiceMock<StackOfViewsMock> stack;
     serio::qt::CrawlerEditorViewModel viewModel = serio::qt::CrawlerEditorViewModel(editor, stack);
     QSignalSpy crawlerTypeSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerTypeChanged);
+    virtual void SetUp() {
+        ON_CALL(editor, getCrawlerSteps()).WillByDefault(::testing::Return(steps));
+        ON_CALL(editor, previewCrawler()).WillByDefault(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
+    }
     void expectCrawlerEditorViewToOpen(serio::core::CrawlerType type, int typeNumber, const QString& crawlerType) {
         EXPECT_CALL(editor, editCrawler(type));
         EXPECT_CALL(stack, pushView(serio::qt::crawlerEditorView));
         viewModel.openCrawlerEditor(static_cast<serio::core::CrawlerType>(typeNumber));
         EXPECT_EQ(crawlerType, viewModel.getCrawlerType());
         EXPECT_EQ(1, crawlerTypeSpy.count());
-    }
-    void expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType type) {
-        EXPECT_CALL(editor, editCrawler(type));
-        viewModel.openCrawlerEditor(type);
     }
 };
 
@@ -48,14 +53,6 @@ TEST_F(CrawlerEditorViewModelTest, shouldDisplayNoCrawlerStepsByDefault) {
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldLoadCrawlerStepsAndDisplayThem) {
-    std::vector<serio::core::CrawlerStep> steps = {
-            serio::core::CrawlerStep("value", {{"value", "a"}}),
-            serio::core::CrawlerStep("fetch"),
-            serio::core::CrawlerStep("some other", {{"a", "1"}, {"b", "false"}, {"c", "text"}})
-    };
-    EXPECT_CALL(editor, getCrawlerSteps()).WillRepeatedly(::testing::Return(steps));
-    QSignalSpy crawlerStepsSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerStepsChanged);
-    viewModel.loadCrawlerSteps();
     viewModel.loadCrawlerSteps();
     QList<serio::qt::TileModel*> tiles = viewModel.getCrawlerSteps();
     EXPECT_EQ(steps.size(), tiles.size());
@@ -68,7 +65,18 @@ TEST_F(CrawlerEditorViewModelTest, shouldLoadCrawlerStepsAndDisplayThem) {
     EXPECT_EQ("Some other step", tiles[2]->getTitle());
     EXPECT_EQ("a: 1, b: false, c: text", tiles[2]->getSubtitle());
     EXPECT_TRUE(tiles[2]->getIcon().isEmpty());
-    EXPECT_EQ(2, crawlerStepsSpy.count());
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldReloadCrawlerSteps) {
+    viewModel.loadCrawlerSteps();
+    viewModel.loadCrawlerSteps();
+    EXPECT_EQ(3, viewModel.getCrawlerSteps().size());
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldNotifyWatchersAboutCrawlerStepsListChange) {
+    QSignalSpy crawlerStepsSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerStepsChanged);
+    viewModel.loadCrawlerSteps();
+    EXPECT_EQ(1, crawlerStepsSpy.count());
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldSaveEditedCrawlerAndPopCurrentViewFromStack) {
@@ -83,13 +91,8 @@ TEST_F(CrawlerEditorViewModelTest, shouldPushCrawlerEditorHelpViewToStack) {
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPreviewViewWithTheResults) {
-    expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType::episodeVideoCrawler);
-    EXPECT_CALL(editor, previewCrawler())
-        .WillOnce(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
-    ::testing::InSequence s;
-    EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
-    EXPECT_CALL(stack, replaceCurrentViewWith(serio::qt::crawlerPreviewView));
-    QSignalSpy previewResultsSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::previewResultsChanged);
+    EXPECT_CALL(editor, previewCrawler());
+    viewModel.openCrawlerEditor(serio::core::CrawlerType::episodeVideoCrawler);
     viewModel.openCrawlerPreview();
     QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
     for (int i = 0; i < previewResults.size(); i++) {
@@ -97,13 +100,25 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
         EXPECT_TRUE(tiles[i]->getSubtitle().isEmpty());
         EXPECT_TRUE(tiles[i]->getIcon().isEmpty());
     }
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldOpenCrawlerPreviewAfterDisplayingCrawlingInProgress) {
+    viewModel.openCrawlerEditor(serio::core::CrawlerType::episodeVideoCrawler);
+    ::testing::InSequence s;
+    EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
+    EXPECT_CALL(stack, replaceCurrentViewWith(serio::qt::crawlerPreviewView));
+    viewModel.openCrawlerPreview();
+}
+
+TEST_F(CrawlerEditorViewModelTest, shouldNotifyWatchersAboutChangedPreviewResults) {
+    QSignalSpy previewResultsSpy(&viewModel, &serio::qt::CrawlerEditorViewModel::previewResultsChanged);
+    viewModel.openCrawlerEditor(serio::core::CrawlerType::episodeVideoCrawler);
+    viewModel.openCrawlerPreview();
     EXPECT_EQ(1, previewResultsSpy.count());
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWhenPreviewCrawlerSecondTime) {
-    expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType::thumbnailCrawler);
-    EXPECT_CALL(editor, previewCrawler())
-        .WillRepeatedly(::testing::Return(serio::core::CrawlResult{{}, previewResults}));
+    viewModel.openCrawlerEditor(serio::core::CrawlerType::thumbnailCrawler);
     viewModel.openCrawlerPreview();
     viewModel.openCrawlerPreview();
     QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
@@ -111,8 +126,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldOverridePreviousCrawlerPreviewResultsWh
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPreviewHasFailed) {
-    EXPECT_CALL(editor, previewCrawler())
-        .WillOnce(::testing::Throw(std::runtime_error("expected")));
+    ON_CALL(editor, previewCrawler()).WillByDefault(::testing::Throw(std::runtime_error("expected")));
     ::testing::InSequence s;
     EXPECT_CALL(stack, pushView(serio::qt::crawlingInProgressView));
     EXPECT_CALL(stack, popCurrentView());
@@ -121,27 +135,25 @@ TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPrev
 
 TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerEditorActions) {
     QList<serio::qt::ButtonModel*> actions = viewModel.getCrawlerEditorActions();
-    EXPECT_EQ(*actions[0], serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false));
-    EXPECT_EQ(*actions[1], serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR));
-    EXPECT_EQ(*actions[2], serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER));
-    EXPECT_EQ(*actions[3], serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER));
-    EXPECT_EQ(*actions[4], serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP));
+    EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false), *actions[0]);
+    EXPECT_EQ(serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR), *actions[1]);
+    EXPECT_EQ(serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER), *actions[2]);
+    EXPECT_EQ(serio::qt::ButtonModel("preview", serio::qt::ActionType::PREVIEW_CRAWLER), *actions[3]);
+    EXPECT_EQ(serio::qt::ButtonModel("help", serio::qt::ActionType::OPEN_CRAWLER_EDITOR_HELP), *actions[4]);
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerPreviewActions) {
     for (auto type: {serio::core::CrawlerType::episodeVideoCrawler, serio::core::CrawlerType::thumbnailCrawler}) {
-        EXPECT_CALL(editor, previewCrawler()).WillOnce(::testing::Return(serio::core::CrawlResult{{}, {}}));
-        expectCrawlerEditorViewToBeOpened(type);
+        viewModel.openCrawlerEditor(type);
         viewModel.openCrawlerPreview();
         QList<serio::qt::ButtonModel*> actions = viewModel.getCrawlerPreviewActions();
-        EXPECT_EQ(*actions[0], serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false));
-        EXPECT_EQ(*actions[1], serio::qt::ButtonModel("view log", serio::qt::ActionType::OPEN_PREVIEWED_CRAWLER_LOG, QVariantList({viewModel.getCrawlerType()})));
+        EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false), *actions[0]);
+        EXPECT_EQ(serio::qt::ButtonModel("view log", serio::qt::ActionType::OPEN_PREVIEWED_CRAWLER_LOG, QVariantList({viewModel.getCrawlerType()})), *actions[1]);
     }
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldNotifyWatchersAboutChangedCrawlerPreviewActionsList) {
-    EXPECT_CALL(editor, previewCrawler()).WillOnce(::testing::Return(serio::core::CrawlResult{{}, {}}));
-    expectCrawlerEditorViewToBeOpened(serio::core::CrawlerType::thumbnailCrawler);
+    viewModel.openCrawlerEditor(serio::core::CrawlerType::thumbnailCrawler);
     QSignalSpy spy(&viewModel, &serio::qt::CrawlerEditorViewModel::crawlerPreviewActionsChanged);
     viewModel.openCrawlerPreview();
     EXPECT_EQ(2, spy.count());

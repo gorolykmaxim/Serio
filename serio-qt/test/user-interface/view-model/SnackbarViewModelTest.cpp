@@ -4,6 +4,7 @@
 
 class SnackbarViewModelTest : public ::testing::Test {
 protected:
+    const QString text = "Text to display";
     serio::qt::SnackbarViewModel snackbar;
     QSignalSpy spy = QSignalSpy(&snackbar, &serio::qt::SnackbarViewModel::hasChanged);
 };
@@ -13,12 +14,15 @@ TEST_F(SnackbarViewModelTest, shouldNotBeDisplayedByDefault) {
 }
 
 TEST_F(SnackbarViewModelTest, shouldDisplaySpecifiedText) {
-    QString text = "Text to display";
-    QSignalSpy displayedSpy(&snackbar, &serio::qt::SnackbarViewModel::hasBeenDisplayed);
     snackbar.displayText(text);
     EXPECT_TRUE(snackbar.isDisplayed());
     EXPECT_EQ(text, snackbar.getText());
     EXPECT_EQ(1, spy.count());
+}
+
+TEST_F(SnackbarViewModelTest, shouldNotifyWatchersAboutTextChange) {
+    QSignalSpy displayedSpy(&snackbar, &serio::qt::SnackbarViewModel::hasBeenDisplayed);
+    snackbar.displayText(text);
     EXPECT_EQ(1, displayedSpy.count());
 }
 

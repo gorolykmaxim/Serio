@@ -9,21 +9,25 @@
 
 class CrawlerStepEditorViewModelTest : public ::testing::Test {
 protected:
-    std::vector<serio::core::CrawlerStepType> types = {
+    const std::vector<serio::core::CrawlerStepType> types = {
         serio::core::CrawlerStepType("type 1", "description 1", {"property 1", "property 2"}),
         serio::core::CrawlerStepType("type 2", "description 2"),
     };
-    std::vector<serio::core::CrawlerStep> steps {
+    const std::vector<serio::core::CrawlerStep> steps {
         serio::core::CrawlerStep("type 2"),
         serio::core::CrawlerStep("type 1", {{"property 1", "value 1"}, {"property 2", "value 2"}})
     };
-    TvShowCrawlerEditorMock editor = TvShowCrawlerEditorMock::create();
+    ::testing::NiceMock<TvShowCrawlerEditorMock> editor;
     testing::NiceMock<StackOfViewsMock> stack;
     serio::qt::CrawlerStepEditorViewModel viewModel = serio::qt::CrawlerStepEditorViewModel(editor, stack);
     QSignalSpy existingStepSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::isExistingStepChanged);
     QSignalSpy crawlerStepTypesSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::crawlerStepTypesChanged);
     QSignalSpy descriptionSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::descriptionChanged);
     QSignalSpy propertiesSpy = QSignalSpy(&viewModel, &serio::qt::CrawlerStepEditorViewModel::propertiesChanged);
+    virtual void SetUp() {
+        ON_CALL(editor, getCrawlerStepTypes()).WillByDefault(::testing::Return(types));
+        ON_CALL(editor, getCrawlerSteps()).WillByDefault(::testing::Return(steps));
+    }
     void expectTypeOptionsDisplayed(unsigned int selectedTypeIndex) {
         QList<serio::qt::RadioButtonModel*> typeOptions = viewModel.getCrawlerStepTypes();
         EXPECT_EQ(QString::fromStdString(types[0].getName()), typeOptions[0]->getName());
@@ -76,21 +80,18 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldOpenViewWhenEditingNewStep) {
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayExistingCrawlerStepTypesWhilePreselectingFirstOneOfThem) {
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openNew();
     viewModel.load();
     expectTypeOptionsDisplayed(0);
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayDescriptionOfPreselectedFirstCrawlerStepType) {
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openNew();
     viewModel.load();
     expectDescriptionDisplayed(0);
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayEmptyPropertiesOfPreselectedFirstCrawlerStepType) {
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openNew();
     viewModel.load();
     expectPropertiesDisplayed(0, serio::core::CrawlerStep("type 1", {{"property 1", ""}, {"property 2", ""}}));
@@ -108,32 +109,24 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldOpenViewWhenEditingExistingStep) {
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayExistingCrawlerStepTypesWhilePreselectingEditedOneOfThem) {
-    EXPECT_CALL(editor, getCrawlerSteps()).WillOnce(::testing::Return(steps));
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openExisting(QVariantList({0}));
     viewModel.load();
     expectTypeOptionsDisplayed(1);
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayDescriptionOfPreselectedEditedCrawlerStepType) {
-    EXPECT_CALL(editor, getCrawlerSteps()).WillOnce(::testing::Return(steps));
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openExisting(QVariantList({0}));
     viewModel.load();
     expectDescriptionDisplayed(1);
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayPropertiesOfEditedStep) {
-    EXPECT_CALL(editor, getCrawlerSteps()).WillOnce(::testing::Return(steps));
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openExisting(QVariantList({1}));
     viewModel.load();
     expectPropertiesDisplayed(0, steps[1]);
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayNoPropertiesSinceEditedStepHasNone) {
-    EXPECT_CALL(editor, getCrawlerSteps()).WillOnce(::testing::Return(steps));
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openExisting(QVariantList({0}));
     viewModel.load();
     EXPECT_TRUE(viewModel.getProperties().isEmpty());
@@ -141,7 +134,6 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayNoPropertiesSinceEditedStepH
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayCrawlerStepTypesWithSelectedTypeChecked) {
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openNew();
     viewModel.load();
     viewModel.selectType(QVariantList({QString::fromStdString(types[1].getName())}));
@@ -149,7 +141,6 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayCrawlerStepTypesWithSelected
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayDescriptionOfSelectedCrawlerType) {
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     viewModel.openNew();
     viewModel.load();
     QSignalSpy checkedSpy(viewModel.getCrawlerStepTypes()[1], &serio::qt::RadioButtonModel::checkedChanged);
@@ -160,7 +151,6 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldDisplayDescriptionOfSelectedCrawler
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldAddNewStepWithEmptyProperties) {
     serio::core::CrawlerStep expectedStep("type 1", {{"property 1", ""}, {"property 2", ""}});
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     EXPECT_CALL(editor, addCrawlerStep(expectedStep));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.openNew();
@@ -171,7 +161,6 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldAddNewStepWithEmptyProperties) {
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldAddNewStepWithPropertiesSpecified) {
     serio::core::CrawlerStep expectedStep = steps[1];
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     EXPECT_CALL(editor, addCrawlerStep(expectedStep));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.openNew();
@@ -186,8 +175,6 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldAddNewStepWithPropertiesSpecified) 
 TEST_F(CrawlerStepEditorViewModelTest, shouldReplaceExistingStepWithEditedOne) {
     unsigned int editedStepIndex = 1;
     serio::core::CrawlerStep updatedStep = steps[0];
-    EXPECT_CALL(editor, getCrawlerSteps()).WillOnce(::testing::Return(steps));
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     EXPECT_CALL(editor, replaceCrawlerStep(editedStepIndex, updatedStep));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.openExisting(QVariantList({editedStepIndex}));
@@ -197,8 +184,6 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldReplaceExistingStepWithEditedOne) {
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldRemoveExistingStep) {
-    EXPECT_CALL(editor, getCrawlerSteps()).WillOnce(::testing::Return(steps));
-    EXPECT_CALL(editor, getCrawlerStepTypes()).WillOnce(::testing::Return(types));
     EXPECT_CALL(editor, removeCrawlerStep(0));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.openExisting(QVariantList({0}));
