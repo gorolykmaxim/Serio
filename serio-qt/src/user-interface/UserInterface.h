@@ -14,6 +14,8 @@
 #include <user-interface/view-model/SnackbarViewModel.h>
 #include <user-interface/view-model/DialogViewModel.h>
 #include <user-interface/view-model/BackgroundViewModel.h>
+#include <tv-show-player/TvShowPlayer.h>
+#include <user-interface/view-model/TvShowPlayerViewModel.h>
 
 namespace serio::qt {
 
@@ -21,7 +23,7 @@ class UserInterface : public QObject {
     Q_OBJECT
 public:
     UserInterface(QHttpClient& httpClient, core::TvShowCrawlerEditor& tvShowCrawlerEditor, DatabaseStorage& storage,
-                  core::TvShowViewer& viewer, QTaskExecutor& executor);
+                  core::TvShowViewer& viewer, core::TvShowPlayer& tvShowPlayer, QTaskExecutor& executor);
     void initialize();
 private:
     ActionRouter router;
@@ -36,6 +38,7 @@ private:
     CrawlerEditorViewModel crawlerEditorViewModel;
     CrawlerStepEditorViewModel crawlerStepEditorViewModel;
     TvShowViewModel tvShowViewModel;
+    TvShowPlayerViewModel tvShowPlayerViewModel;
     QQmlApplicationEngine engine;
     void loadFonts() const;
     void exitOnUiLoadFailure(const QUrl &url) const;

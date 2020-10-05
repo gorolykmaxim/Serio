@@ -18,6 +18,7 @@ const QString crawlLogEntryView = "CrawlLogEntryView.qml";
 const QString crawlerStepEditorView = "CrawlerStepEditorView.qml";
 const QString dialogView = "DialogView.qml";
 const QString tvShowDetailsView = "TvShowDetailsView.qml";
+const QString tvShowPlayerView = "TvShowPlayerView.qml";
 
 }
 

@@ -6,6 +6,7 @@
 #include <task-executor/QTaskExecutor.h>
 #include <user-interface/UserInterface.h>
 #include <http-client/QHttpClient.h>
+#include <tv-show-player/TvShowPlayer.h>
 
 namespace serio::qt {
 
@@ -16,6 +17,7 @@ private:
     QHttpClient httpClient;
     core::TvShowCrawlerRuntime tvShowCrawlerRuntime;
     core::TvShowCrawlerEditor tvShowCrawlerEditor;
+    core::TvShowPlayer tvShowPlayer;
     QTaskExecutor executor;
     DatabaseStorage storage;
     core::TvShowViewer viewer;
