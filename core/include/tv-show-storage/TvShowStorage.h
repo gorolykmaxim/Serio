@@ -16,6 +16,7 @@ public:
     virtual void saveTvShow(const TvShow& tvShow, const std::vector<Episode>& episodes) = 0;
     virtual void clearTvShowWatchHistory(const std::string& tvShowName) = 0;
     virtual void deleteTvShow(const std::string& tvShowName) = 0;
+    virtual std::optional<Episode> getEpisodeOfTvShowWithName(const std::string& tvShowName, unsigned int episodeId) = 0;
 };
 
 }

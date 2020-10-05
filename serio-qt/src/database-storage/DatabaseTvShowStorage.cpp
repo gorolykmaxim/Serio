@@ -168,3 +168,16 @@ void serio::qt::DatabaseTvShowStorage::clearTvShowWatchHistory(const std::string
     createAndExec("UPDATE TV_SHOW SET LAST_WATCH_DATE = NULL WHERE NAME = ?", name);
     createAndExec("UPDATE EPISODE SET LAST_WATCH_DATE = NULL WHERE TV_SHOW_NAME = ?", name);
 }
+
+std::optional<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId) {
+    QSqlQuery findEpisodeOfTvShow(QSqlDatabase::database());
+    findEpisodeOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE FROM EPISODE WHERE TV_SHOW_NAME = ? AND ID = ?");
+    findEpisodeOfTvShow.addBindValue(QString::fromStdString(tvShowName));
+    findEpisodeOfTvShow.addBindValue(episodeId);
+    findEpisodeOfTvShow.exec();
+    if (findEpisodeOfTvShow.next()) {
+        return readEpisodeFrom(findEpisodeOfTvShow);
+    } else {
+        return std::optional<serio::core::Episode>();
+    }
+}

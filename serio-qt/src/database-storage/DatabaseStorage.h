@@ -28,6 +28,7 @@ public:
     void clearTvShowWatchHistory(const std::string &tvShowName) override;
     void deleteTvShow(const std::string &tvShowName) override;
     void deleteCrawlerOfTvShow(const std::string &tvShowName) override;
+    std::optional<core::Episode> getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId) override;
 private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;

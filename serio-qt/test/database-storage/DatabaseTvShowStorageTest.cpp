@@ -184,3 +184,12 @@ TEST_F(DatabaseTvShowStorageTest, shouldDeleteEpisodesOfTvShow) {
     EXPECT_EQ(firstTvShowEpisodes.size(), storage.getEpisodesOfTvShowWithName(firstTvShow.getName(), 0, 10).getTotalSize());
     EXPECT_EQ(0, storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10).getTotalSize());
 }
+
+TEST_F(DatabaseTvShowStorageTest, shouldNotFindEpisodeSinceItDoesNotExist) {
+    EXPECT_FALSE(storage.getEpisodeOfTvShowWithName(firstTvShow.getName(), 1));
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldFindSpecifiedEpisode) {
+    saveShows();
+    EXPECT_EQ(firstTvShowEpisodes[0], *storage.getEpisodeOfTvShowWithName(firstTvShow.getName(), 1));
+}

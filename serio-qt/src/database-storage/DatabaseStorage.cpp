@@ -92,5 +92,9 @@ void serio::qt::DatabaseStorage::deleteCrawlerOfTvShow(const std::string &tvShow
     tvShowCrawlerStorage.deleteTvShowCrawlerOfTvShow(tvShowName);
 }
 
+std::optional<serio::core::Episode> serio::qt::DatabaseStorage::getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId) {
+    return tvShowStorage.getEpisodeOfTvShowWithName(tvShowName, episodeId);
+}
+
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)
     : std::runtime_error("Failed to open database '" + databaseName + "'. Reason: " + reason) {}

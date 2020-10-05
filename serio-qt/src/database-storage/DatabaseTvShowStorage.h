@@ -21,6 +21,7 @@ public:
     [[nodiscard]] unsigned int countEpisodesOfTvShowWithName(const std::string& tvShowName) const;
     void clearTvShowWatchHistory(const std::string &tvShowName) const;
     void deleteTvShowWithName(const std::string& name) const;
+    [[nodiscard]] std::optional<core::Episode> getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId);
 private:
     void createTvShowTable() const;
     void createEpisodeTable() const;
