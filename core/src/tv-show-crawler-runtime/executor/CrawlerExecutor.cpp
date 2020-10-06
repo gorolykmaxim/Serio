@@ -3,8 +3,7 @@
 
 serio::core::CrawlerExecutor::CrawlerExecutor(unsigned int maxLogEntryDataSize) : maxLogEntryDataSize(maxLogEntryDataSize) {}
 
-void serio::core::CrawlerExecutor::registerCrawlerStepExecutor(const std::string& type,
-                                                               std::unique_ptr<CrawlerStepExecutor> executor) {
+void serio::core::CrawlerExecutor::registerCrawlerStepExecutor(const std::string& type, CrawlerStepExecutor executor) {
     crawlerStepTypeToExecutor[type] = std::move(executor);
 }
 
@@ -64,7 +63,7 @@ std::vector<std::string> serio::core::CrawlerExecutor::executeCrawlerStep(const 
                                                                           unsigned int stepNumber) const {
     try {
         const auto& executor = crawlerStepTypeToExecutor.at(step.getType());
-        return executor->execute(step, previousStepResults);
+        return executor(step, previousStepResults);
     } catch (std::out_of_range& e) {
         throw CrawlerStepTypeError(step.getType());
     } catch (std::runtime_error& e) {

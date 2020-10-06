@@ -33,7 +33,8 @@ private:
     CrawlerExecutor crawlerExecutor;
     CrawlerSerializer serializer;
     std::vector<CrawlerStepType> crawlerStepTypes;
-    void registerCrawlerStepType(const std::string& type, std::unique_ptr<CrawlerStepExecutor> executor, const std::string& description, const std::vector<std::string>& mandatoryProperties = {});
+    void registerCrawlerStepType(const std::string& type, CrawlerStepExecutor executor, const std::string& description,
+                                 const std::vector<std::string>& mandatoryProperties = {});
     void executeCrawler(const TvShowCrawler& crawler);
 };
 

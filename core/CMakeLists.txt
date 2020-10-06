@@ -20,12 +20,11 @@ add_library(Core STATIC
         include/tv-show-crawler-runtime/model/TvShowCrawler.h
         include/tv-show-crawler-runtime/model/CrawlerStepType.h
         include/tv-show-crawler-runtime/model/CrawlResult.h
-        include/tv-show-crawler-runtime/executor/RegExpStepExecutor.h
+        include/tv-show-crawler-runtime/executor/RegExpStep.h
         include/tv-show-crawler-runtime/executor/CrawlerExecutor.h
-        include/tv-show-crawler-runtime/executor/CrawlerStepExecutor.h
-        include/tv-show-crawler-runtime/executor/ValueStepExecutor.h
-        include/tv-show-crawler-runtime/executor/TransformStepExecutor.h
-        include/tv-show-crawler-runtime/executor/FetchStepExecutor.h
+        include/tv-show-crawler-runtime/executor/ValueStep.h
+        include/tv-show-crawler-runtime/executor/TransformStep.h
+        include/tv-show-crawler-runtime/executor/FetchStep.h
         src/tv-show-crawler-runtime/TvShowCrawlerRuntime.cpp
         src/tv-show-crawler-runtime/CrawlerSerializer.cpp
         src/tv-show-crawler-runtime/model/CrawlerStep.cpp
@@ -33,10 +32,10 @@ add_library(Core STATIC
         src/tv-show-crawler-runtime/model/TvShowCrawler.cpp
         src/tv-show-crawler-runtime/model/CrawlerStepType.cpp
         src/tv-show-crawler-runtime/executor/CrawlerExecutor.cpp
-        src/tv-show-crawler-runtime/executor/ValueStepExecutor.cpp
-        src/tv-show-crawler-runtime/executor/TransformStepExecutor.cpp
-        src/tv-show-crawler-runtime/executor/FetchStepExecutor.cpp
-        src/tv-show-crawler-runtime/executor/RegExpStepExecutor.cpp
+        src/tv-show-crawler-runtime/executor/ValueStep.cpp
+        src/tv-show-crawler-runtime/executor/TransformStep.cpp
+        src/tv-show-crawler-runtime/executor/FetchStep.cpp
+        src/tv-show-crawler-runtime/executor/RegExpStep.cpp
         include/tv-show-crawler-editor/TvShowCrawlerEditor.h
         include/tv-show-crawler-editor/TvShowCrawlerBuilder.h
         include/tv-show-crawler-editor/CrawlerBuilder.h
