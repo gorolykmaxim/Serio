@@ -11,7 +11,7 @@ CircularProgressBar {
     secondaryColor: "transparent"
     Timer {
         interval: 800
-        running: true
+        running: root.visible
         repeat: true
         triggeredOnStart: true
         onTriggered: parent.value < 0.5 ? parent.value = 0.9 : parent.value = 0.001
@@ -21,7 +21,7 @@ CircularProgressBar {
         from: 0
         to: 360
         duration: 800
-        running: true
+        running: root.visible
         loops: Animation.Infinite
     }
 }

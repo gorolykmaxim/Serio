@@ -4,6 +4,7 @@ import Serio 1.0
 import "../widgets"
 
 ViewLayout {
+    onCreated: episodeList.itemClicked.connect((i) => actionRouter.trigger(ActionType.PLAY_EPISODE_OF_TV_SHOW, [tvShowViewModel.tvShowName, i + 1]))
     onDisplayed: actionRouter.trigger(ActionType.LOAD_TV_SHOW, [])
     titleText: tvShowViewModel.tvShowName
     subtitleText: tvShowViewModel.lastWatchDate
