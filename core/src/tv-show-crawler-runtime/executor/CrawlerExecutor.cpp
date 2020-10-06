@@ -63,11 +63,10 @@ std::vector<std::string> serio::core::CrawlerExecutor::executeCrawlerStep(const 
                                                                           const serio::core::CrawlerStep &step,
                                                                           unsigned int stepNumber) const {
     try {
-        auto executor = crawlerStepTypeToExecutor.find(step.getType());
-        if (executor == crawlerStepTypeToExecutor.cend()) {
-            throw CrawlerStepTypeError(step.getType());
-        }
-        return executor->second->execute(step, previousStepResults);
+        const auto& executor = crawlerStepTypeToExecutor.at(step.getType());
+        return executor->execute(step, previousStepResults);
+    } catch (std::out_of_range& e) {
+        throw CrawlerStepTypeError(step.getType());
     } catch (std::runtime_error& e) {
         throw CrawlerStepExecutionError(stepNumber, e);
     }
