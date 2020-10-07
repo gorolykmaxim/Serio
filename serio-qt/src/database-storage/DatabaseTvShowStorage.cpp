@@ -31,7 +31,8 @@ std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodesO
                                                                                                 unsigned int limit) const {
     std::vector<core::Episode> result;
     QSqlQuery findEpisodesOfTvShow(QSqlDatabase::database());
-    findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE FROM EPISODE WHERE TV_SHOW_NAME = ? ORDER BY ID LIMIT ? OFFSET ?");
+    findEpisodesOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE, WATCH_PROGRESS "
+                                 "FROM EPISODE WHERE TV_SHOW_NAME = ? ORDER BY ID LIMIT ? OFFSET ?");
     findEpisodesOfTvShow.addBindValue(QString::fromStdString(tvShowName));
     findEpisodesOfTvShow.addBindValue(limit);
     findEpisodesOfTvShow.addBindValue(offset);
@@ -73,6 +74,7 @@ void serio::qt::DatabaseTvShowStorage::createEpisodeTable() const {
                                 "NAME TEXT NOT NULL, "
                                 "VIDEO_URL TEXT NOT NULL, "
                                 "LAST_WATCH_DATE BIGINT, "
+                                "WATCH_PROGRESS REAL DEFAULT 0, "
                                 "PRIMARY KEY(ID, TV_SHOW_NAME),"
                                 "CONSTRAINT FK_TV_SHOW FOREIGN KEY (TV_SHOW_NAME) REFERENCES TV_SHOW(NAME) ON DELETE CASCADE)");
 }
@@ -83,38 +85,27 @@ void serio::qt::DatabaseTvShowStorage::deleteTvShowWithName(const std::string &n
 
 void serio::qt::DatabaseTvShowStorage::insertTvShow(const serio::core::TvShow &tvShow) const {
     QSqlQuery addShow(QSqlDatabase::database());
-    addShow.prepare("INSERT INTO TV_SHOW VALUES(?, ?, ?)");
+    addShow.prepare("INSERT INTO TV_SHOW(NAME, THUMBNAIL_URL) VALUES(?, ?)");
     addShow.addBindValue(QString::fromStdString(tvShow.getName()));
     addShow.addBindValue(QString::fromStdString(tvShow.getThumbnailUrl()));
-    if (tvShow.getLastWatchDate()) {
-        addShow.addBindValue(QVariant(tvShow.getLastWatchDate()->getSinceEpoch()));
-    } else {
-        addShow.addBindValue(QVariant());
-    }
     addShow.exec();
 }
 
 void serio::qt::DatabaseTvShowStorage::insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes) const {
     QSqlQuery insertEpisodes(QSqlDatabase::database());
-    insertEpisodes.prepare("INSERT INTO EPISODE VALUES(?, ?, ?, ?, ?)");
+    insertEpisodes.prepare("INSERT INTO EPISODE(ID, TV_SHOW_NAME, NAME, VIDEO_URL) VALUES(?, ?, ?, ?)");
     QString qTvShowName = QString::fromStdString(tvShowName);
-    QVariantList ids, tvShowNames, names, videoUrls, lastWatchDates;
+    QVariantList ids, tvShowNames, names, videoUrls;
     for (const core::Episode& episode: episodes) {
         ids << QVariant(episode.getId());
         tvShowNames << qTvShowName;
         names << QString::fromStdString(episode.getName());
         videoUrls << QString::fromStdString(episode.getVideoUrl());
-        if (episode.getLastWatchDate()) {
-            lastWatchDates << QVariant(episode.getLastWatchDate()->getSinceEpoch());
-        } else {
-            lastWatchDates << QVariant();
-        }
     }
     insertEpisodes.addBindValue(ids);
     insertEpisodes.addBindValue(tvShowNames);
     insertEpisodes.addBindValue(names);
     insertEpisodes.addBindValue(videoUrls);
-    insertEpisodes.addBindValue(lastWatchDates);
     insertEpisodes.execBatch();
 }
 
@@ -156,7 +147,8 @@ serio::core::Episode serio::qt::DatabaseTvShowStorage::readEpisodeFrom(const QSq
     std::string name = query.value(1).toString().toStdString();
     std::string videoUrl = query.value(2).toString().toStdString();
     std::optional<serio::core::LastWatchDate> lastWatchDate = readLastWatchDate(query.value(3));
-    return serio::core::Episode(id, videoUrl, name, lastWatchDate);
+    serio::core::WatchProgress watchProgress(query.value(4).toDouble());
+    return serio::core::Episode(id, videoUrl, name, lastWatchDate, watchProgress);
 }
 
 std::optional<serio::core::LastWatchDate> serio::qt::DatabaseTvShowStorage::readLastWatchDate(const QVariant &variant) const {
@@ -166,12 +158,13 @@ std::optional<serio::core::LastWatchDate> serio::qt::DatabaseTvShowStorage::read
 void serio::qt::DatabaseTvShowStorage::clearTvShowWatchHistory(const std::string &tvShowName) const {
     QString name = QString::fromStdString(tvShowName);
     createAndExec("UPDATE TV_SHOW SET LAST_WATCH_DATE = NULL WHERE NAME = ?", name);
-    createAndExec("UPDATE EPISODE SET LAST_WATCH_DATE = NULL WHERE TV_SHOW_NAME = ?", name);
+    createAndExec("UPDATE EPISODE SET LAST_WATCH_DATE = NULL, WATCH_PROGRESS = 0 WHERE TV_SHOW_NAME = ?", name);
 }
 
 std::optional<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId) {
     QSqlQuery findEpisodeOfTvShow(QSqlDatabase::database());
-    findEpisodeOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE FROM EPISODE WHERE TV_SHOW_NAME = ? AND ID = ?");
+    findEpisodeOfTvShow.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE, WATCH_PROGRESS "
+                                "FROM EPISODE WHERE TV_SHOW_NAME = ? AND ID = ?");
     findEpisodeOfTvShow.addBindValue(QString::fromStdString(tvShowName));
     findEpisodeOfTvShow.addBindValue(episodeId);
     findEpisodeOfTvShow.exec();
@@ -180,4 +173,34 @@ std::optional<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisode
     } else {
         return std::optional<serio::core::Episode>();
     }
+}
+
+void serio::qt::DatabaseTvShowStorage::watchTvShowEpisode(const std::string &tvShowName, unsigned int episodeId,
+                                                          serio::core::LastWatchDate watchDate,
+                                                          serio::core::WatchProgress watchProgress) const {
+    QString name = QString::fromStdString(tvShowName);
+    updateTvShowLastWatchDate(name, watchDate.getSinceEpoch());
+    updateEpisodeLastWatchDate(name, episodeId, watchDate.getSinceEpoch(), watchProgress.getPercentage());
+}
+
+void serio::qt::DatabaseTvShowStorage::updateTvShowLastWatchDate(const QString &tvShowName,
+                                                                 long long lastWatchDateTimeSinceEpoch) const {
+    QSqlQuery updateTvShowLastWatchDate(QSqlDatabase::database());
+    updateTvShowLastWatchDate.prepare("UPDATE TV_SHOW SET LAST_WATCH_DATE = ? WHERE NAME = ?");
+    updateTvShowLastWatchDate.addBindValue(lastWatchDateTimeSinceEpoch);
+    updateTvShowLastWatchDate.addBindValue(tvShowName);
+    updateTvShowLastWatchDate.exec();
+}
+
+void serio::qt::DatabaseTvShowStorage::updateEpisodeLastWatchDate(const QString &tvShowName, unsigned int episodeId,
+                                                                  long long lastWatchDateTimeSinceEpoch,
+                                                                  double watchProgress) const {
+    QSqlQuery updateEpisodeLastWatchDate(QSqlDatabase::database());
+    updateEpisodeLastWatchDate.prepare("UPDATE EPISODE SET LAST_WATCH_DATE = ?, WATCH_PROGRESS = ? "
+                                       "WHERE TV_SHOW_NAME = ? AND ID = ?");
+    updateEpisodeLastWatchDate.addBindValue(lastWatchDateTimeSinceEpoch);
+    updateEpisodeLastWatchDate.addBindValue(watchProgress);
+    updateEpisodeLastWatchDate.addBindValue(tvShowName);
+    updateEpisodeLastWatchDate.addBindValue(episodeId);
+    updateEpisodeLastWatchDate.exec();
 }

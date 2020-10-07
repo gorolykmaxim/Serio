@@ -22,6 +22,8 @@ public:
     void clearTvShowWatchHistory(const std::string &tvShowName) const;
     void deleteTvShowWithName(const std::string& name) const;
     [[nodiscard]] std::optional<core::Episode> getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId);
+    void watchTvShowEpisode(const std::string &tvShowName, unsigned int episodeId, core::LastWatchDate watchDate,
+                            core::WatchProgress watchProgress) const;
 private:
     void createTvShowTable() const;
     void createEpisodeTable() const;
@@ -32,6 +34,9 @@ private:
     [[nodiscard]] core::TvShow readTvShowFrom(const QSqlQuery& query) const;
     [[nodiscard]] core::Episode readEpisodeFrom(const QSqlQuery& query) const;
     [[nodiscard]] std::optional<core::LastWatchDate> readLastWatchDate(const QVariant& variant) const;
+    void updateTvShowLastWatchDate(const QString& tvShowName, long long lastWatchDateTimeSinceEpoch) const;
+    void updateEpisodeLastWatchDate(const QString& tvShowName, unsigned int episodeId,
+                                    long long lastWatchDateTimeSinceEpoch, double watchProgress) const;
 };
 
 }

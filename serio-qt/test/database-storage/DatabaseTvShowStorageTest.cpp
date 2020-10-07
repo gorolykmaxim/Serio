@@ -5,15 +5,21 @@ class DatabaseTvShowStorageTest : public ::testing::Test {
 protected:
     serio::qt::DatabaseStorage storage;
     const std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    const serio::core::LastWatchDate watchDate;
     const serio::core::TvShow fourthTvShow = serio::core::TvShow("How i met your mom", "", serio::core::LastWatchDate(now - std::chrono::hours(32)));
     const serio::core::TvShow thirdTvShow = serio::core::TvShow("Mandalorian", "", serio::core::LastWatchDate(now));
     const serio::core::TvShow secondTvShow = serio::core::TvShow("Friends");
     const serio::core::TvShow firstTvShow = serio::core::TvShow("Clinic");
     const std::vector<serio::core::Episode> firstTvShowEpisodes = {serio::core::Episode(1, "")};
     const std::vector<serio::core::Episode> secondTvShowEpisodes = {
-        serio::core::Episode(1, "", "Pilot episode", serio::core::LastWatchDate(std::chrono::system_clock::now())),
+        serio::core::Episode(1, "", "Pilot episode"),
         serio::core::Episode(2, "")
     };
+    const std::vector<serio::core::Episode> watchedTvShowEpisodes = {
+            serio::core::Episode(1, "", "Pilot episode", serio::core::LastWatchDate(now)),
+            serio::core::Episode(2, "")
+    };
+    const serio::core::WatchProgress watchProgress = serio::core::WatchProgress(15);
     const unsigned int LIMIT_ONE_ITEM = 1;
     virtual void SetUp() {
         storage.initialize(true);
@@ -23,8 +29,12 @@ protected:
         storage.saveTvShow(firstTvShow, firstTvShowEpisodes);
     }
     void saveWatchedShows() {
-        storage.saveTvShow(fourthTvShow, {});
-        storage.saveTvShow(thirdTvShow, {});
+        storage.saveTvShow(fourthTvShow, watchedTvShowEpisodes);
+        storage.watchTvShowEpisode(fourthTvShow.getName(), watchedTvShowEpisodes[0].getId(),
+                                   *fourthTvShow.getLastWatchDate(), watchProgress);
+        storage.saveTvShow(thirdTvShow, watchedTvShowEpisodes);
+        storage.watchTvShowEpisode(thirdTvShow.getName(), watchedTvShowEpisodes[0].getId(),
+                                   *thirdTvShow.getLastWatchDate(), watchProgress);
     }
 };
 
@@ -162,12 +172,11 @@ TEST_F(DatabaseTvShowStorageTest, shouldClearLastWatchDatesOfSpecifiedTvShow) {
 }
 
 TEST_F(DatabaseTvShowStorageTest, shouldClearLastWatchDatesOfEpisodesOfSpecifiedTvShow) {
-    storage.saveTvShow(secondTvShow, secondTvShowEpisodes);
-    storage.saveTvShow(firstTvShow, secondTvShowEpisodes);
-    storage.clearTvShowWatchHistory(secondTvShow.getName());
-    serio::core::ListPage<serio::core::Episode> affectedEpisodes = storage.getEpisodesOfTvShowWithName(secondTvShow.getName(), 0, 10);
+    saveWatchedShows();
+    storage.clearTvShowWatchHistory(thirdTvShow.getName());
+    serio::core::ListPage<serio::core::Episode> affectedEpisodes = storage.getEpisodesOfTvShowWithName(thirdTvShow.getName(), 0, 10);
     EXPECT_FALSE(affectedEpisodes.getItemByGlobalIndex(0).getLastWatchDate());
-    serio::core::ListPage<serio::core::Episode> unaffectedEpisodes = storage.getEpisodesOfTvShowWithName(firstTvShow.getName(), 0, 10);
+    serio::core::ListPage<serio::core::Episode> unaffectedEpisodes = storage.getEpisodesOfTvShowWithName(fourthTvShow.getName(), 0, 10);
     EXPECT_TRUE(unaffectedEpisodes.getItemByGlobalIndex(0).getLastWatchDate());
 }
 
@@ -192,4 +201,45 @@ TEST_F(DatabaseTvShowStorageTest, shouldNotFindEpisodeSinceItDoesNotExist) {
 TEST_F(DatabaseTvShowStorageTest, shouldFindSpecifiedEpisode) {
     saveShows();
     EXPECT_EQ(firstTvShowEpisodes[0], *storage.getEpisodeOfTvShowWithName(firstTvShow.getName(), 1));
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldUpdateLastWatchDateOfTvShow) {
+    saveShows();
+    storage.watchTvShowEpisode(firstTvShow.getName(), firstTvShowEpisodes[0].getId(), watchDate,
+                               watchProgress);
+    auto tvShow = storage.getTvShowByName(firstTvShow.getName());
+    ASSERT_TRUE(tvShow->getLastWatchDate());
+    EXPECT_EQ(watchDate, tvShow->getLastWatchDate());
+    EXPECT_FALSE(storage.getTvShowByName(secondTvShow.getName())->getLastWatchDate());
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldUpdateLastWatchDateOfTvShowsEpisode) {
+    saveShows();
+    storage.watchTvShowEpisode(secondTvShow.getName(), secondTvShowEpisodes[1].getId(), watchDate,
+                               watchProgress);
+    auto episode = storage.getEpisodeOfTvShowWithName(secondTvShow.getName(), secondTvShowEpisodes[1].getId());
+    ASSERT_TRUE(episode->getLastWatchDate());
+    EXPECT_EQ(watchDate, episode->getLastWatchDate());
+    EXPECT_FALSE(storage.getEpisodeOfTvShowWithName(secondTvShow.getName(), secondTvShowEpisodes[0].getId())->getLastWatchDate());
+    EXPECT_FALSE(storage.getEpisodeOfTvShowWithName(firstTvShow.getName(), firstTvShowEpisodes[0].getId())->getLastWatchDate());
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldUpdateWatchProgressOfTvShowEpisode) {
+    saveShows();
+    storage.watchTvShowEpisode(secondTvShow.getName(), secondTvShowEpisodes[0].getId(), watchDate,
+                               watchProgress);
+    EXPECT_EQ(watchProgress, storage.getEpisodeOfTvShowWithName(secondTvShow.getName(), secondTvShowEpisodes[0].getId())->getWatchProgress());
+    EXPECT_EQ(serio::core::WatchProgress(), storage.getEpisodeOfTvShowWithName(secondTvShow.getName(), secondTvShowEpisodes[1].getId())->getWatchProgress());
+    EXPECT_EQ(serio::core::WatchProgress(), storage.getEpisodeOfTvShowWithName(firstTvShow.getName(), firstTvShowEpisodes[0].getId())->getWatchProgress());
+}
+
+TEST_F(DatabaseTvShowStorageTest, clearingWatchHistoryOfTvShowShouldAlsoResetWatchProgressOfAllEpisodes) {
+    const auto& tvShow = secondTvShow;
+    const auto& episodes = secondTvShowEpisodes;
+    saveShows();
+    storage.watchTvShowEpisode(tvShow.getName(), episodes[0].getId(), watchDate, watchProgress);
+    storage.watchTvShowEpisode(tvShow.getName(), episodes[1].getId(), watchDate, watchProgress);
+    storage.clearTvShowWatchHistory(tvShow.getName());
+    EXPECT_EQ(serio::core::WatchProgress(), storage.getEpisodeOfTvShowWithName(tvShow.getName(), episodes[0].getId())->getWatchProgress());
+    EXPECT_EQ(serio::core::WatchProgress(), storage.getEpisodeOfTvShowWithName(tvShow.getName(), episodes[1].getId())->getWatchProgress());
 }
