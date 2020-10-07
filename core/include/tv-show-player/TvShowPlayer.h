@@ -10,13 +10,20 @@ class TvShowPlayer {
 public:
     explicit TvShowPlayer(TvShowStorage& storage);
     [[nodiscard]] virtual Player playEpisodeOfTvShow(const std::string &tvShowName, unsigned int episodeId);
+    virtual void updatePlayingEpisodeWatchProgress(WatchProgress progress);
 private:
+    std::optional<Player> player;
     TvShowStorage& storage;
 };
 
 class TvShowEpisodeDoesNotExistError : public std::logic_error {
 public:
     TvShowEpisodeDoesNotExistError(const std::string& tvShowName, unsigned int episodeId);
+};
+
+class NoTvShowEpisodePlayingError : public std::logic_error {
+public:
+    NoTvShowEpisodePlayingError();
 };
 
 }
