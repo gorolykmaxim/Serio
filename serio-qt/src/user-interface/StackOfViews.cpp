@@ -3,7 +3,7 @@
 
 void serio::qt::StackOfViews::initialize(ActionRouter& router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("stackOfViews", this);
-    router.registerAction(ActionType::BACK, [this] (const QVariantList& args) { popCurrentView(); });
+    router.registerAction(ActionType::BACK, [this] (const auto& args) { popCurrentView(); });
 }
 
 void serio::qt::StackOfViews::pushView(const QString &view) const {

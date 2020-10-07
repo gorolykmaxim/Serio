@@ -54,7 +54,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldDisplayNoCrawlerStepsByDefault) {
 
 TEST_F(CrawlerEditorViewModelTest, shouldLoadCrawlerStepsAndDisplayThem) {
     viewModel.loadCrawlerSteps();
-    QList<serio::qt::TileModel*> tiles = viewModel.getCrawlerSteps();
+    auto tiles = viewModel.getCrawlerSteps();
     EXPECT_EQ(steps.size(), tiles.size());
     EXPECT_EQ("Value step", tiles[0]->getTitle());
     EXPECT_EQ("value: a", tiles[0]->getSubtitle());
@@ -94,7 +94,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldPreviewEditedCrawlerAndOpenCrawlerPrevi
     EXPECT_CALL(editor, previewCrawler());
     viewModel.openCrawlerEditor(serio::core::CrawlerType::episodeVideoCrawler);
     viewModel.openCrawlerPreview();
-    QList<serio::qt::TileModel*> tiles = viewModel.getPreviewResults();
+    auto tiles = viewModel.getPreviewResults();
     for (int i = 0; i < previewResults.size(); i++) {
         EXPECT_EQ(previewResults[i], tiles[i]->getTitle().toStdString());
         EXPECT_TRUE(tiles[i]->getSubtitle().isEmpty());
@@ -134,7 +134,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldCloseCrawingInProgressViewIfCrawlerPrev
 }
 
 TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerEditorActions) {
-    QList<serio::qt::ButtonModel*> actions = viewModel.getCrawlerEditorActions();
+    auto actions = viewModel.getCrawlerEditorActions();
     EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false), *actions[0]);
     EXPECT_EQ(serio::qt::ButtonModel("add step", serio::qt::ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR), *actions[1]);
     EXPECT_EQ(serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER), *actions[2]);
@@ -146,7 +146,7 @@ TEST_F(CrawlerEditorViewModelTest, shouldReturnListOfCrawlerPreviewActions) {
     for (auto type: {serio::core::CrawlerType::episodeVideoCrawler, serio::core::CrawlerType::thumbnailCrawler}) {
         viewModel.openCrawlerEditor(type);
         viewModel.openCrawlerPreview();
-        QList<serio::qt::ButtonModel*> actions = viewModel.getCrawlerPreviewActions();
+        auto actions = viewModel.getCrawlerPreviewActions();
         EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false), *actions[0]);
         EXPECT_EQ(serio::qt::ButtonModel("view log", serio::qt::ActionType::OPEN_PREVIEWED_CRAWLER_LOG, QVariantList({viewModel.getCrawlerType()})), *actions[1]);
     }

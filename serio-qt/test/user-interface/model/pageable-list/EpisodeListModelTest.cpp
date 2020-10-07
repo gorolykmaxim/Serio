@@ -26,7 +26,7 @@ protected:
 };
 
 TEST_F(EpisodeListModelTest, shouldReturnHashOfExistingRoles) {
-    const QHash<int, QByteArray> rolesNames = model.roleNames();
+    const auto rolesNames = model.roleNames();
     EXPECT_EQ("title", rolesNames[serio::qt::EpisodeListModel::Role::TITLE]);
     EXPECT_EQ("subtitle", rolesNames[serio::qt::EpisodeListModel::Role::SUBTITLE]);
     EXPECT_EQ("icon", rolesNames[serio::qt::EpisodeListModel::Role::ICON]);
@@ -41,7 +41,7 @@ TEST_F(EpisodeListModelTest, shouldHaveNoRowsByDefault) {
 }
 
 TEST_F(EpisodeListModelTest, shouldUpdateRowCountAccordingToLatestAddedPage) {
-    unsigned int totalSize = 3;
+    auto totalSize = 3;
     serio::core::ListPage<serio::core::Episode> page(1, totalSize, {episode});
     model.loadPage(page);
     EXPECT_EQ(totalSize, model.rowCount(index));
@@ -52,7 +52,7 @@ TEST_F(EpisodeListModelTest, shouldInsertNewRowsOnLoadingNewPage) {
     serio::core::ListPage<serio::core::Episode> page(1, 5, {episode});
     model.loadPage(page);
     ASSERT_EQ(1, spy.count());
-    QVariantList args = spy.takeFirst();
+    auto args = spy.takeFirst();
     EXPECT_EQ(0, args[1].toUInt());
     EXPECT_EQ(4, args[2].toUInt());
 }
@@ -62,7 +62,7 @@ TEST_F(EpisodeListModelTest, shouldRemoveRowsOnLoadingNewPage) {
     model.loadPage(serio::core::ListPage<serio::core::Episode>(1, 5, {}));
     model.loadPage(serio::core::ListPage<serio::core::Episode>(1, 3, {}));
     ASSERT_EQ(1, spy.count());
-    QVariantList args = spy.takeFirst();
+    auto args = spy.takeFirst();
     EXPECT_EQ(3, args[1].toUInt());
     EXPECT_EQ(4, args[2].toUInt());
 }
@@ -80,7 +80,7 @@ TEST_F(EpisodeListModelTest, shouldChangeDataOnLoadingNewPage) {
     QSignalSpy spy(&model, &serio::qt::EpisodeListModel::dataChanged);
     model.loadPage(serio::core::ListPage<serio::core::Episode>(300, 1000, episodes));
     ASSERT_EQ(1, spy.count());
-    QVariantList args = spy.takeFirst();
+    auto args = spy.takeFirst();
     EXPECT_EQ(300, args[0].toModelIndex().row());
     EXPECT_EQ(399, args[1].toModelIndex().row());
 }
@@ -125,7 +125,7 @@ TEST_F(EpisodeListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
     (void)model.data(model.index(505), serio::qt::EpisodeListModel::Role::TITLE);
     (void)model.data(model.index(649), serio::qt::EpisodeListModel::Role::TITLE);
     ASSERT_EQ(2, requestPageLoadSpy.count());
-    QVariantList args = requestPageLoadSpy.takeFirst();
+    auto args = requestPageLoadSpy.takeFirst();
     EXPECT_EQ(500, args[0].toUInt());
     EXPECT_EQ(pageSize, args[1].toUInt());
     args = requestPageLoadSpy.takeLast();
@@ -146,7 +146,7 @@ TEST_F(EpisodeListModelTest, shouldNotRequestTheSamePageTwice) {
 
 TEST_F(EpisodeListModelTest, shouldRequestLoadOfTheFirstPage) {
     model.requestFirstPageLoad();
-    QVariantList args = requestPageLoadSpy.takeFirst();
+    auto args = requestPageLoadSpy.takeFirst();
     EXPECT_EQ(0, args[0].toUInt());
     EXPECT_EQ(pageSize, args[1].toUInt());
 }

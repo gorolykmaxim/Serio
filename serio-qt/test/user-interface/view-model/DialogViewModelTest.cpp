@@ -42,7 +42,7 @@ TEST_F(DialogViewModelTest, shouldHaveConfirmAsTopButtonTextByDefault) {
 }
 
 TEST_F(DialogViewModelTest, shouldHaveSpecifiedTopButtonText) {
-    QString rightButtonText = "right button text";
+    auto rightButtonText = "right button text";
     model.setTopButtonText(rightButtonText);
     dialog.display(model);
     EXPECT_EQ(rightButtonText, dialog.getTopButtonText());
@@ -53,7 +53,7 @@ TEST_F(DialogViewModelTest, shouldHaveBackAsDefaultTopButtonAction) {
 }
 
 TEST_F(DialogViewModelTest, shouldHaveSpecifiedActionSetAsTopButtonAction) {
-    serio::qt::ActionType action = serio::qt::ActionType::OPEN_CURRENT_TV_SHOW_CRAWLER_EDITOR_VIEW;
+    auto action = serio::qt::ActionType::OPEN_CURRENT_TV_SHOW_CRAWLER_EDITOR_VIEW;
     model.setTopButtonAction(action);
     dialog.display(model);
     EXPECT_EQ(action, dialog.getTopButtonAction());
@@ -74,7 +74,7 @@ TEST_F(DialogViewModelTest, shouldHaveCancelAsBottomButtonTextByDefault) {
 }
 
 TEST_F(DialogViewModelTest, shouldHaveSpecifiedBottomButtonText) {
-    QString leftButtonText = "left button text";
+    auto leftButtonText = "left button text";
     model.setBottomButtonText(leftButtonText);
     dialog.display(model);
     EXPECT_EQ(leftButtonText, dialog.getBottomButtonText());
@@ -85,7 +85,7 @@ TEST_F(DialogViewModelTest, shouldHaveBackAsDefaultBottomButtonAction) {
 }
 
 TEST_F(DialogViewModelTest, shouldHaveSpecifiedActionAsBottomButtonAction) {
-    serio::qt::ActionType action = serio::qt::ActionType::PREVIEW_CRAWLER;
+    auto action = serio::qt::ActionType::PREVIEW_CRAWLER;
     model.setBottomButtonAction(action);
     dialog.display(model);
     EXPECT_EQ(action, dialog.getBottomButtonAction());

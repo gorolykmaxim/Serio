@@ -10,24 +10,24 @@ serio::qt::CrawlLogViewModel::CrawlLogViewModel(serio::core::TvShowCrawlerEditor
 
 void serio::qt::CrawlLogViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("crawlLogViewModel", this);
-    router.registerAction(ActionType::OPEN_PREVIEWED_CRAWLER_LOG, [this] (const QVariantList& args) { openCrawlerPreviewLogView(args); });
-    router.registerAction(ActionType::OPEN_CRAWL_LOG_ENTRY_VIEW, [this] (const QVariantList& args) { openLogEntryView(args); });
-    router.registerAction(ActionType::OPEN_LAST_TV_SHOW_CRAWL_LOG, [this] (const QVariantList& args) { openLastCrawlLogOfTvShow(args); });
+    router.registerAction(ActionType::OPEN_PREVIEWED_CRAWLER_LOG, [this] (const auto& args) { openCrawlerPreviewLogView(args); });
+    router.registerAction(ActionType::OPEN_CRAWL_LOG_ENTRY_VIEW, [this] (const auto& args) { openLogEntryView(args); });
+    router.registerAction(ActionType::OPEN_LAST_TV_SHOW_CRAWL_LOG, [this] (const auto& args) { openLastCrawlLogOfTvShow(args); });
 }
 
 void serio::qt::CrawlLogViewModel::openCrawlerPreviewLogView(const QVariantList& args) {
-    QString crawlerType = args[0].toString();
+    auto crawlerType = args[0].toString();
     openCrawlLogView(crawlerType + " Crawl Log", editor.getPreviewedCrawlerLog());
 }
 
 void serio::qt::CrawlLogViewModel::openLastCrawlLogOfTvShow(const QVariantList &args) {
-    std::string tvShowName = args[0].toString().toStdString();
+    auto tvShowName = args[0].toString().toStdString();
     openCrawlLogView("Last Crawl Log", logStorage.getLastCrawlLogOfTvShow(tvShowName));
 }
 
 void serio::qt::CrawlLogViewModel::openLogEntryView(const QVariantList& args) {
-    unsigned int entryIndex = args[0].toUInt();
-    serio::core::CrawlLogEntry entry = logEntries.at(entryIndex);
+    auto entryIndex = args[0].toUInt();
+    auto entry = logEntries.at(entryIndex);
     if (!entry.hasData()) {
         return;
     }

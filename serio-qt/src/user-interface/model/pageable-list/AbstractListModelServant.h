@@ -59,7 +59,7 @@ private:
         emit model.dataChanged(model.createIndex(page.getFirstItemIndex()), model.createIndex(page.getLastItemIndex()));
     }
     void loadPageWithIndex(unsigned int index) const {
-        unsigned int offset = listProxy.getOffsetOfPageWithIndex(index);
+        auto offset = listProxy.getOffsetOfPageWithIndex(index);
         if (loadingOffsets.find(offset) == loadingOffsets.cend()) {
             loadingOffsets.insert(offset);
             emit model.requestPageLoad(offset, pageSize);

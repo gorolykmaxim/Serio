@@ -15,7 +15,7 @@ bool serio::qt::BackgroundViewModel::isVisible() const {
 }
 
 void serio::qt::BackgroundViewModel::setCurrentView(const QString &currentView) {
-    bool previouslyVisible = visible;
+    auto previouslyVisible = visible;
     visible = viewsWithBackground.contains(currentView);
     if (previouslyVisible != visible) {
         emit visibilityChanged();

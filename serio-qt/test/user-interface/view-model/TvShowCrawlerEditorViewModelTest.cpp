@@ -217,7 +217,7 @@ TEST_F(TvShowCrawlerEditorViewModelTest, shouldResetRawCrawlerToImportAfterReope
 }
 
 TEST_F(TvShowCrawlerEditorViewModelTest, shouldReturnListOfImportCrawlerActions) {
-    QList<serio::qt::ButtonModel*> actions = viewModel.getImportTvShowCrawlerActions();
+    auto actions = viewModel.getImportTvShowCrawlerActions();
     EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false), *actions[0]);
     EXPECT_EQ(serio::qt::ButtonModel("import", serio::qt::ActionType::IMPORT_TV_SHOW_CRAWLER), *actions[1]);
 }

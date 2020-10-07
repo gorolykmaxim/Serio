@@ -13,17 +13,17 @@ void serio::qt::FetchRequest::execute(QNetworkAccessManager& manager) {
 }
 
 void serio::qt::FetchRequest::sendRequestsToSpecifiedLinks(QNetworkAccessManager& manager) {
-    for (const std::string& link: linksToFetch) {
+    for (const auto& link: linksToFetch) {
         QUrl url(QString::fromStdString(link));
         QNetworkRequest request(url);
-        QNetworkReply* reply = manager.get(request);
+        auto reply = manager.get(request);
         repliesInProgress.insert(reply);
     }
 }
 
 void serio::qt::FetchRequest::writeRepliesIntoPromiseWhenFinished() {
     rawResponses.reserve(repliesInProgress.size());
-    for (QNetworkReply* reply: repliesInProgress) {
+    for (auto reply: repliesInProgress) {
         connect(reply, &QNetworkReply::finished, this, [reply, this] () {handleFinishedReply(reply);});
     }
 }
@@ -39,7 +39,7 @@ void serio::qt::FetchRequest::handleFinishedReply(QNetworkReply *reply) {
 }
 
 void serio::qt::FetchRequest::readSuccessReply(QNetworkReply *reply) {
-    std::string rawResponse = reply->readAll().toStdString();
+    auto rawResponse = reply->readAll().toStdString();
     rawResponses.push_back(std::move(rawResponse));
 }
 
@@ -75,15 +75,15 @@ void serio::qt::FetchRequest::finish() {
 }
 
 void serio::qt::FetchRequest::abortRepliesInProgress() {
-    std::set<QNetworkReply*> repliesToAbort = repliesInProgress;
-    for (QNetworkReply* replyToAbort: repliesToAbort) {
+    auto repliesToAbort = repliesInProgress;
+    for (auto replyToAbort: repliesToAbort) {
         replyToAbort->abort();
     }
 }
 
 void serio::qt::FetchRequest::writeReplyErrorIntoPromise(QNetworkReply *reply) {
-    std::string failedUrl = reply->url().toString().toStdString();
-    std::string errorMessage = reply->errorString().toStdString();
+    auto failedUrl = reply->url().toString().toStdString();
+    auto errorMessage = reply->errorString().toStdString();
     FetchRequestError error(failedUrl, errorMessage);
     responsesPromise.set_exception(std::make_exception_ptr(error));
 }

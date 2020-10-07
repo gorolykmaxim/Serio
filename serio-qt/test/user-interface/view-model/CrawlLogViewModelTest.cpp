@@ -26,7 +26,7 @@ protected:
         ON_CALL(logStorage, getLastCrawlLogOfTvShow(tvShowName.toStdString())).WillByDefault(::testing::Return(expectedLog));
     }
     void expectSpecifiedLogDisplayed() {
-        QList<serio::qt::TileModel*> log = viewModel.getLog();
+        auto log = viewModel.getLog();
         for (int i = 0; i < 2; i++) {
             EXPECT_EQ(expectedLog[i].getText(), log[i]->getTitle().toStdString());
             EXPECT_TRUE(log[i]->getSubtitle().isEmpty());

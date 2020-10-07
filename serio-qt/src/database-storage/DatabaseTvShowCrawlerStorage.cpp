@@ -9,7 +9,7 @@ void serio::qt::DatabaseTvShowCrawlerStorage::initialize() const {
 }
 
 std::optional<std::string> serio::qt::DatabaseTvShowCrawlerStorage::getTvShowCrawlerByTvShowName(const std::string &tvShowName) const {
-    QSqlQuery findTvShowCrawler = createAndExec("SELECT CRAWLER FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?",
+    auto findTvShowCrawler = createAndExec("SELECT CRAWLER FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?",
                                                 QString::fromStdString(tvShowName));
     if (findTvShowCrawler.next()) {
         return findTvShowCrawler.value(0).toString().toStdString();

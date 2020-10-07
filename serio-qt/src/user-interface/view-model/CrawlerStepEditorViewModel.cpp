@@ -8,12 +8,12 @@ serio::qt::CrawlerStepEditorViewModel::CrawlerStepEditorViewModel(core::TvShowCr
 
 void serio::qt::CrawlerStepEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("crawlerStepEditorViewModel", this);
-    router.registerAction(ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR, [this] (const QVariantList& args) { openNew(); });
-    router.registerAction(ActionType::OPEN_EXISTING_CRAWLER_STEP_EDITOR, [this] (const QVariantList& args) { openExisting(args); });
-    router.registerAction(ActionType::LOAD_CRAWLER_STEP, [this] (const QVariantList& args) { load(); });
-    router.registerAction(ActionType::SELECT_CRAWLER_STEP_TYPE, [this] (const QVariantList& args) { selectType(args); });
-    router.registerAction(ActionType::SAVE_CRAWLER_STEP, [this] (const QVariantList& args) { save(); });
-    router.registerAction(ActionType::REMOVE_CRAWLER_STEP, [this] (const QVariantList& args) { remove(); });
+    router.registerAction(ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR, [this] (const auto& args) { openNew(); });
+    router.registerAction(ActionType::OPEN_EXISTING_CRAWLER_STEP_EDITOR, [this] (const auto& args) { openExisting(args); });
+    router.registerAction(ActionType::LOAD_CRAWLER_STEP, [this] (const auto& args) { load(); });
+    router.registerAction(ActionType::SELECT_CRAWLER_STEP_TYPE, [this] (const auto& args) { selectType(args); });
+    router.registerAction(ActionType::SAVE_CRAWLER_STEP, [this] (const auto& args) { save(); });
+    router.registerAction(ActionType::REMOVE_CRAWLER_STEP, [this] (const auto& args) { remove(); });
 }
 
 bool serio::qt::CrawlerStepEditorViewModel::isExistingStep() const {
@@ -43,7 +43,7 @@ void serio::qt::CrawlerStepEditorViewModel::openNew() {
 }
 
 void serio::qt::CrawlerStepEditorViewModel::openExisting(const QVariantList& args) {
-    unsigned int stepIndex = args[0].toUInt();
+    auto stepIndex = args[0].toUInt();
     modifyModel([this, stepIndex] {
         editedStepIndex = stepIndex;
         emit isExistingStepChanged();
@@ -62,7 +62,7 @@ void serio::qt::CrawlerStepEditorViewModel::load() {
     modifyModel([this, editedStep] {
         initializeCrawlerStepTypes();
         if (editedStep) {
-            setSelectedType([&editedStep](const core::CrawlerStepType &type) {
+            setSelectedType([&editedStep] (const auto& type) {
                 return type.getName() == editedStep->getType();
             });
             setProperties(*editedStep);
@@ -73,15 +73,15 @@ void serio::qt::CrawlerStepEditorViewModel::load() {
 }
 
 void serio::qt::CrawlerStepEditorViewModel::selectType(const QVariantList &args) {
-    std::string name = args[0].toString().toStdString();
+    auto name = args[0].toString().toStdString();
     modifyModel([this, name] {
-        setSelectedType([&name](const core::CrawlerStepType &type) { return type.getName() == name; });
+        setSelectedType([&name] (const auto &type) { return type.getName() == name; });
         setProperties(*selectedType);
     });
 }
 
 void serio::qt::CrawlerStepEditorViewModel::save() {
-    core::CrawlerStep step = createCrawlerStep();
+    auto step = createCrawlerStep();
     if (editedStepIndex) {
         editor.replaceCrawlerStep(*editedStepIndex, step);
     } else {
@@ -120,8 +120,8 @@ void serio::qt::CrawlerStepEditorViewModel::setProperties(const serio::core::Cra
     properties.clearAndDelete();
     emit propertiesChanged();
     for (const auto& property: step.getProperties()) {
-        QString name = QString::fromStdString(property.first);
-        QString value = QString::fromStdString(property.second);
+        auto name = QString::fromStdString(property.first);
+        auto value = QString::fromStdString(property.second);
         properties.append(new TextFieldModel(name, value));
     }
     emit propertiesChanged();
@@ -131,7 +131,7 @@ void serio::qt::CrawlerStepEditorViewModel::setSelectedType(const serio::core::C
     selectedType = type;
     description = QString::fromStdString(type.getDescription());
     emit descriptionChanged();
-    QString typeName = QString::fromStdString(selectedType->getName());
+    auto typeName = QString::fromStdString(selectedType->getName());
     for (const auto& stepType: typeOptions) {
         stepType->setChecked(stepType->getName() == typeName);
     }

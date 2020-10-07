@@ -25,7 +25,7 @@ TEST_F(TvShowPlayerViewModelTest, shouldOpenTvShowPlayerView) {
 }
 
 TEST_F(TvShowPlayerViewModelTest, shouldSetEpisodeVideoUrlToUrlOfTheSpecifiedEpisode) {
-    serio::core::Episode nextEpisode = serio::core::Episode(4, "https://mandalorian.com/episode-4.mp4");
+    serio::core::Episode nextEpisode(4, "https://mandalorian.com/episode-4.mp4");
     for (const auto& episode: {episode, nextEpisode}) {
         ON_CALL(tvShowPlayer, playEpisodeOfTvShow(tvShowName.toStdString(), episode.getId()))
             .WillByDefault(::testing::Return(serio::core::Player(tvShowName.toStdString(), episode)));

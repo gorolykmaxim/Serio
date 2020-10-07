@@ -21,17 +21,17 @@ serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
     engine.rootContext()->setContextProperty("tvShowViewModel", this);
-    router.registerAction(serio::qt::ActionType::LOAD_TV_SHOW, [this] (const QVariantList& args) { load(); });
-    router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const QVariantList& args) { loadEpisodes(args); });
-    router.registerAction(serio::qt::ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const QVariantList& args) { shareCrawler(); });
-    router.registerAction(serio::qt::ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const QVariantList& args) { crawl(); });
-    router.registerAction(serio::qt::ActionType::CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { confirmClearWatchHistory(); });
-    router.registerAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const QVariantList& args) { clearWatchHistory(); });
-    router.registerAction(serio::qt::ActionType::CONFIRM_DELETE_CURRENT_TV_SHOW, [this] (const QVariantList& args) { confirmDeleteTvShow(); });
-    router.registerAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW, [this] (const QVariantList& args) { deleteTvShow(); });
-    router.registerAction(serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW, [this] (const QVariantList& args) { openTvShowDetails(); });
+    router.registerAction(serio::qt::ActionType::LOAD_TV_SHOW, [this] (const auto& args) { load(); });
+    router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const auto& args) { loadEpisodes(args); });
+    router.registerAction(serio::qt::ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const auto& args) { shareCrawler(); });
+    router.registerAction(serio::qt::ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const auto& args) { crawl(); });
+    router.registerAction(serio::qt::ActionType::CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const auto& args) { confirmClearWatchHistory(); });
+    router.registerAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const auto& args) { clearWatchHistory(); });
+    router.registerAction(serio::qt::ActionType::CONFIRM_DELETE_CURRENT_TV_SHOW, [this] (const auto& args) { confirmDeleteTvShow(); });
+    router.registerAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW, [this] (const auto& args) { deleteTvShow(); });
+    router.registerAction(serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW, [this] (const auto& args) { openTvShowDetails(); });
     connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
-            this, [&router] (unsigned int offset, unsigned int limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
+            this, [&router] (auto offset, auto limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
 
 QString serio::qt::TvShowViewModel::getTvShowName() const {
@@ -56,12 +56,12 @@ void serio::qt::TvShowViewModel::load() {
 }
 
 void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
-    serio::core::ListPage<serio::core::Episode> episodes = viewer.getTvShowEpisodes(args[0].toUInt(),args[1].toUInt());
+    auto episodes = viewer.getTvShowEpisodes(args[0].toUInt(),args[1].toUInt());
     modifyModel([this, episodes] { episodeListModel.loadPage(episodes); });
 }
 
 void serio::qt::TvShowViewModel::shareCrawler() {
-    std::string rawTvShowCrawler = viewer.getRawCrawlerOfSelectedTvShow();
+    auto rawTvShowCrawler = viewer.getRawCrawlerOfSelectedTvShow();
     modifyModel([this, rawTvShowCrawler] {
         QGuiApplication::clipboard()->setText(QString::fromStdString(rawTvShowCrawler));
         snackbar.displayText("Crawler copied to your clipboard");
@@ -69,12 +69,12 @@ void serio::qt::TvShowViewModel::shareCrawler() {
 }
 
 void serio::qt::TvShowViewModel::loadTvShow() {
-    serio::core::TvShow tvShow = viewer.getSelectedTvShow();
+    auto tvShow = viewer.getSelectedTvShow();
     modifyModel([this, tvShow] {
         tvShowName = QString::fromStdString(tvShow.getName());
         thumbnailUrl = QString::fromStdString(tvShow.getThumbnailUrl());
         background.setImage(thumbnailUrl);
-        std::optional<serio::core::LastWatchDate> date = tvShow.getLastWatchDate();
+        auto date = tvShow.getLastWatchDate();
         lastWatchDate = QString::fromStdString(date ? "Last watched " + date->toString() : "");
         emit selectedTvShowChanged();
     });

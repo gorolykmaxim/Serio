@@ -55,12 +55,12 @@ void serio::qt::DatabaseStorage::saveTvShowCrawler(const std::string &tvShowName
 }
 
 std::string serio::qt::DatabaseStorage::getDatabaseFilePath() const {
-    QString home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    auto home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     return QDir(home).filePath(".serio.dev.db").toStdString();
 }
 
 void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& storageUrl) const {
-    QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
+    auto database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName(QString::fromStdString(storageUrl));
     if (!database.open()) {
         throw StorageError(storageUrl, database.lastError().text().toStdString());

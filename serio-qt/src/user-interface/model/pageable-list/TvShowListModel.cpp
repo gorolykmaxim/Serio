@@ -45,7 +45,7 @@ QVariant serio::qt::TvShowListModel::getAttributeOf(const serio::core::TvShow &t
 
 QString serio::qt::TvShowListModel::getLastWatchDate(const std::optional<core::LastWatchDate> &lastWatchDate) const {
     if (lastWatchDate) {
-        QString date = QString::fromStdString(lastWatchDate->toString());
+        auto date = QString::fromStdString(lastWatchDate->toString());
         date[0] = date[0].toUpper();
         return date;
     } else {

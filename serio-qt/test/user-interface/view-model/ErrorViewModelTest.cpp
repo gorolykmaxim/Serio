@@ -5,7 +5,7 @@
 TEST(ErrorViewModelTest, shouldDisplayErrorMessage) {
     DialogViewModelMock dialog;
     serio::qt::ErrorViewModel viewModel(dialog);
-    QString error = "expected error";
+    auto error = "expected error";
     serio::qt::DialogModel model("Whoops...", error);
     model.hideBottomButton();
     model.setTopButtonText("understand");

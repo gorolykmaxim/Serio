@@ -63,7 +63,7 @@ TEST_F(TvShowViewModelTest, shouldNotifyWatchersAboutTvShowChange) {
 TEST_F(TvShowViewModelTest, shouldRequestFirstPageOfSelectedTvShowEpisodes) {
     QSignalSpy requestEpisodePageSpy(viewModel.getEpisodeList(), &serio::qt::EpisodeListModel::requestPageLoad);
     viewModel.load();
-    QVariantList args = requestEpisodePageSpy.takeFirst();
+    auto args = requestEpisodePageSpy.takeFirst();
     EXPECT_EQ(0, args[0].toUInt());
     EXPECT_EQ(pageSize, args[1].toUInt());
 }
@@ -89,11 +89,11 @@ TEST_F(TvShowViewModelTest, shouldHaveLastWatchDateSetToYesterday) {
 
 TEST_F(TvShowViewModelTest, shouldLoadSpecifiedPageOfEpisodes) {
     viewModel.load();
-    unsigned int offset = 100;
+    auto offset = 100;
     serio::core::ListPage<serio::core::Episode> page(offset,offset + 100, episodes);
     ON_CALL(viewer, getTvShowEpisodes(offset, pageSize)).WillByDefault(::testing::Return(page));
     viewModel.loadEpisodes(QVariantList({offset, pageSize}));
-    serio::qt::EpisodeListModel* episodeList = viewModel.getEpisodeList();
+    auto episodeList = viewModel.getEpisodeList();
     EXPECT_EQ(episodes[0].getName(), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
     EXPECT_EQ(episodes[0].getVideoUrl(), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::SUBTITLE).toString().toStdString());
     EXPECT_EQ(QString("eye"), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::ICON));
@@ -153,7 +153,7 @@ TEST_F(TvShowViewModelTest, shouldOpenTvShowDetailsView) {
 }
 
 TEST_F(TvShowViewModelTest, shouldReturnListOfActions) {
-    QList<serio::qt::ButtonModel*> actions = viewModel.getActions();
+    auto actions = viewModel.getActions();
     EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false), *actions[0]);
     EXPECT_EQ(serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW), *actions[1]);
 }

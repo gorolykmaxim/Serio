@@ -29,7 +29,7 @@ protected:
         ON_CALL(editor, getCrawlerSteps()).WillByDefault(::testing::Return(steps));
     }
     void expectTypeOptionsDisplayed(unsigned int selectedTypeIndex) {
-        QList<serio::qt::RadioButtonModel*> typeOptions = viewModel.getCrawlerStepTypes();
+        auto typeOptions = viewModel.getCrawlerStepTypes();
         EXPECT_EQ(QString::fromStdString(types[0].getName()), typeOptions[0]->getName());
         EXPECT_EQ(QString::fromStdString(types[1].getName()), typeOptions[1]->getName());
         EXPECT_TRUE(typeOptions[selectedTypeIndex]->isChecked());
@@ -41,17 +41,17 @@ protected:
         EXPECT_LE(1, descriptionSpy.count());
     }
     void expectPropertiesDisplayed(unsigned int typeIndex, const serio::core::CrawlerStep& selectedStep) {
-        QList<serio::qt::TextFieldModel*> properties = viewModel.getProperties();
-        std::vector<std::string> expectedProperties = types[typeIndex].getMandatoryProperties();
+        auto properties = viewModel.getProperties();
+        auto expectedProperties = types[typeIndex].getMandatoryProperties();
         for (int i = 0; i < expectedProperties.size(); i++) {
-            std::string property = expectedProperties[i];
+            auto property = expectedProperties[i];
             EXPECT_EQ(QString::fromStdString(property), properties[i]->getName());
             EXPECT_EQ(QString::fromStdString(selectedStep.getPropertyOrFail(property)), properties[i]->getValue());
         }
         EXPECT_EQ(2, propertiesSpy.count());
     }
     void expectActionsToBeDefined(bool isDeleteEnabled) {
-        QList<serio::qt::ButtonModel*> actions = viewModel.getActions();
+        auto actions = viewModel.getActions();
         ASSERT_EQ(isDeleteEnabled ? 3 : 2, actions.size());
         EXPECT_EQ(serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false), *actions[0]);
         EXPECT_EQ(serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER_STEP), *actions[1]);
@@ -160,21 +160,21 @@ TEST_F(CrawlerStepEditorViewModelTest, shouldAddNewStepWithEmptyProperties) {
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldAddNewStepWithPropertiesSpecified) {
-    serio::core::CrawlerStep expectedStep = steps[1];
+    auto expectedStep = steps[1];
     EXPECT_CALL(editor, addCrawlerStep(expectedStep));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.openNew();
     viewModel.load();
     viewModel.selectType(QVariantList({QString::fromStdString(expectedStep.getType())}));
-    QList<serio::qt::TextFieldModel*> properties = viewModel.getProperties();
+    auto properties = viewModel.getProperties();
     properties[0]->setValue(QString::fromStdString(expectedStep.getPropertyOrFail("property 1")));
     properties[1]->setValue(QString::fromStdString(expectedStep.getPropertyOrFail("property 2")));
     viewModel.save();
 }
 
 TEST_F(CrawlerStepEditorViewModelTest, shouldReplaceExistingStepWithEditedOne) {
-    unsigned int editedStepIndex = 1;
-    serio::core::CrawlerStep updatedStep = steps[0];
+    auto editedStepIndex = 1;
+    auto updatedStep = steps[0];
     EXPECT_CALL(editor, replaceCrawlerStep(editedStepIndex, updatedStep));
     EXPECT_CALL(stack, popCurrentView());
     viewModel.openExisting(QVariantList({editedStepIndex}));

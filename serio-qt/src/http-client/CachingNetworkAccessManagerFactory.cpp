@@ -6,8 +6,8 @@ serio::qt::CachingNetworkAccessManagerFactory::CachingNetworkAccessManagerFactor
     : diskCacheDirectory(std::move(diskCacheDirectory)) {}
 
 QNetworkAccessManager *serio::qt::CachingNetworkAccessManagerFactory::create(QObject *parent) {
-    auto* manager = new QNetworkAccessManager(parent);
-    auto* cache = new QNetworkDiskCache(parent);
+    auto manager = new QNetworkAccessManager(parent);
+    auto cache = new QNetworkDiskCache(parent);
     cache->setCacheDirectory(diskCacheDirectory);
     manager->setCache(cache);
     return manager;

@@ -8,7 +8,7 @@ serio::qt::TvShowPlayerViewModel::TvShowPlayerViewModel(serio::core::TvShowPlaye
 
 void serio::qt::TvShowPlayerViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("tvShowPlayerViewModel", this);
-    router.registerAction(ActionType::PLAY_EPISODE_OF_TV_SHOW, [this] (const QVariantList& args) { playEpisodeOfTvShow(args); });
+    router.registerAction(ActionType::PLAY_EPISODE_OF_TV_SHOW, [this] (const auto& args) { playEpisodeOfTvShow(args); });
 }
 
 void serio::qt::TvShowPlayerViewModel::playEpisodeOfTvShow(const QVariantList& args) {

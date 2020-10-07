@@ -16,7 +16,7 @@ TEST_F(DatabaseTvShowCrawlerStorageTest, shouldNotFindCrawlerOfTvShowThatDoesNot
 }
 
 TEST_F(DatabaseTvShowCrawlerStorageTest, shouldOverrideExistingTvShowCrawlerWithNewOne) {
-    std::string expectedCrawler = R"({"showName":"Friends","episodeVideoCrawler":{}})";
+    auto expectedCrawler = R"({"showName":"Friends","episodeVideoCrawler":{}})";
     storage.saveTvShowCrawler(tvShowName, dummyCrawler);
     storage.saveTvShowCrawler(tvShowName, expectedCrawler);
     EXPECT_EQ(expectedCrawler, *storage.getTvShowCrawlerByTvShowName(tvShowName));

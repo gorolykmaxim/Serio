@@ -19,7 +19,7 @@ public:
 };
 
 TEST_F(TvShowListModelTest, shouldReturnHashOfExistingRoles) {
-    const QHash<int, QByteArray> roleNames = model.roleNames();
+    const auto roleNames = model.roleNames();
     EXPECT_EQ("name", roleNames[serio::qt::TvShowListModel::Role::NAME]);
     EXPECT_EQ("thumbnailUrl", roleNames[serio::qt::TvShowListModel::Role::THUMBNAIL_URL]);
     EXPECT_EQ("lastWatchDate", roleNames[serio::qt::TvShowListModel::Role::LAST_WATCH_DATE]);
@@ -34,7 +34,7 @@ TEST_F(TvShowListModelTest, shouldHaveNoRowsByDefault) {
 }
 
 TEST_F(TvShowListModelTest, shouldUpdateRowCountAccordingToLatestAddedPage) {
-    unsigned int totalSize = 3;
+    auto totalSize = 3;
     serio::core::ListPage<serio::core::TvShow> page(1, totalSize, {serio::core::TvShow("Clinic")});
     model.loadPage(page);
     EXPECT_EQ(totalSize, model.rowCount(index));
@@ -45,7 +45,7 @@ TEST_F(TvShowListModelTest, shouldInsertNewRowsOnLoadingNewPage) {
     serio::core::ListPage<serio::core::TvShow> page(1, 5, {serio::core::TvShow("Clinic")});
     model.loadPage(page);
     ASSERT_EQ(1, spy.count());
-    QVariantList args = spy.takeFirst();
+    auto args = spy.takeFirst();
     EXPECT_EQ(0, args[1].toUInt());
     EXPECT_EQ(4, args[2].toUInt());
 }
@@ -55,7 +55,7 @@ TEST_F(TvShowListModelTest, shouldRemoveRowsOnLoadingNewPage) {
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(1, 5, {}));
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(1, 3, {}));
     ASSERT_EQ(1, spy.count());
-    QVariantList args = spy.takeFirst();
+    auto args = spy.takeFirst();
     EXPECT_EQ(3, args[1].toUInt());
     EXPECT_EQ(4, args[2].toUInt());
 }
@@ -74,7 +74,7 @@ TEST_F(TvShowListModelTest, shouldChangeDataOnLoadingNewPage) {
     QSignalSpy spy(&model, &serio::qt::TvShowListModel::dataChanged);
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(300, 1000, tvShows));
     ASSERT_EQ(1, spy.count());
-    QVariantList args = spy.takeFirst();
+    auto args = spy.takeFirst();
     EXPECT_EQ(300, args[0].toModelIndex().row());
     EXPECT_EQ(399, args[1].toModelIndex().row());
 }
@@ -84,8 +84,8 @@ TEST_F(TvShowListModelTest, shouldReturnNullOnInvalidIndex) {
 }
 
 TEST_F(TvShowListModelTest, shouldReturnNameOfTvShowWithSpecifiedIndex) {
-    std::string mandalorian = "Mandalorian";
-    std::string friends = "Friends";
+    auto mandalorian = "Mandalorian";
+    auto friends = "Friends";
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 10, {serio::core::TvShow(mandalorian)}));
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(1, 10, {serio::core::TvShow(friends)}));
     EXPECT_EQ(mandalorian, model.data(model.index(0), serio::qt::TvShowListModel::NAME).toString().toStdString());
@@ -93,8 +93,8 @@ TEST_F(TvShowListModelTest, shouldReturnNameOfTvShowWithSpecifiedIndex) {
 }
 
 TEST_F(TvShowListModelTest, shouldReturnThumbnailOfTvShowWithSpecifiedIndex) {
-    std::string mandalorian = "https://p8b5s7z5.rocketcdn.me/wp-content/uploads/The-Mandalorian-Poster.jpg";
-    std::string friends = "https://m.media-amazon.com/images/M/MV5BNDVkYjU0MzctMWRmZi00NTkxLTgwZWEtOWVhYjZlYjllYmU4XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_UY1200_CR93,0,630,1200_AL_.jpg";
+    auto mandalorian = "https://p8b5s7z5.rocketcdn.me/wp-content/uploads/The-Mandalorian-Poster.jpg";
+    auto friends = "https://m.media-amazon.com/images/M/MV5BNDVkYjU0MzctMWRmZi00NTkxLTgwZWEtOWVhYjZlYjllYmU4XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_UY1200_CR93,0,630,1200_AL_.jpg";
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(0, 10, {serio::core::TvShow("", mandalorian)}));
     model.loadPage(serio::core::ListPage<serio::core::TvShow>(1, 10, {serio::core::TvShow("", friends)}));
     EXPECT_EQ(mandalorian, model.data(model.index(0), serio::qt::TvShowListModel::THUMBNAIL_URL).toString().toStdString());
@@ -126,7 +126,7 @@ TEST_F(TvShowListModelTest, shouldRequestLoadOfPageContainingSpecifiedItem) {
     (void)model.data(model.index(505), serio::qt::TvShowListModel::Role::NAME);
     (void)model.data(model.index(649), serio::qt::TvShowListModel::Role::NAME);
     ASSERT_EQ(2, requestPageLoadSpy.count());
-    QVariantList args = requestPageLoadSpy.takeFirst();
+    auto args = requestPageLoadSpy.takeFirst();
     EXPECT_EQ(500, args[0].toUInt());
     EXPECT_EQ(pageSize, args[1].toUInt());
     args = requestPageLoadSpy.takeLast();
@@ -147,7 +147,7 @@ TEST_F(TvShowListModelTest, shouldNotRequestTheSamePageTwice) {
 
 TEST_F(TvShowListModelTest, shouldRequestLoadOfTheFirstPage) {
     model.requestFirstPageLoad();
-    QVariantList args = requestPageLoadSpy.takeFirst();
+    auto args = requestPageLoadSpy.takeFirst();
     EXPECT_EQ(0, args[0].toUInt());
     EXPECT_EQ(pageSize, args[1].toUInt());
 }

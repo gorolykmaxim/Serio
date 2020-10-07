@@ -27,8 +27,8 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
 }
 
 void serio::qt::UserInterface::loadFonts() const {
-    QString fontsDir = ":/fonts/";
-    for (const QString& font: QDir(fontsDir).entryList()) {
+    auto fontsDir = ":/fonts/";
+    for (const auto& font: QDir(fontsDir).entryList()) {
         QFontDatabase::addApplicationFont(fontsDir + font);
     }
 }
@@ -53,7 +53,7 @@ void serio::qt::UserInterface::initialize() {
 }
 
 void serio::qt::UserInterface::exitOnUiLoadFailure(const QUrl &url) const {
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, this, [url] (QObject* obj, const QUrl &objUrl) {
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, this, [url] (auto obj, const auto& objUrl) {
         if (!obj && url == objUrl) {
             QCoreApplication::exit(1);
         }

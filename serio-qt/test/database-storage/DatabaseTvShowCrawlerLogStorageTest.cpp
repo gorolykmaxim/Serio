@@ -19,8 +19,8 @@ protected:
 };
 
 TEST_F(DatabaseTvShowCrawlerLogStorageTest, shouldReturnLatestSavedCrawlLogOfTvShow) {
-    std::string tvShowName = "The Big Bang Theory";
-    std::vector<serio::core::CrawlLogEntry> crawlLog = generateThumbnailCrawlLog("https://tv-show.com/thumbnail.jpg");
+    auto tvShowName = "The Big Bang Theory";
+    auto crawlLog = generateThumbnailCrawlLog("https://tv-show.com/thumbnail.jpg");
     storage.saveCrawlLog(tvShowName, crawlLog);
     EXPECT_EQ(crawlLog, storage.getLastCrawlLogOfTvShow(tvShowName));
     crawlLog = generateThumbnailCrawlLog("https://tv-show.com/thumbnail-4k.jpg");
