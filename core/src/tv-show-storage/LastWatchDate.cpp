@@ -34,3 +34,19 @@ bool serio::core::LastWatchDate::operator!=(const serio::core::LastWatchDate &rh
 long long serio::core::LastWatchDate::getSinceEpoch() const {
     return date.time_since_epoch().count();
 }
+
+bool serio::core::LastWatchDate::operator<(const serio::core::LastWatchDate &rhs) const {
+    return date < rhs.date;
+}
+
+bool serio::core::LastWatchDate::operator>(const serio::core::LastWatchDate &rhs) const {
+    return rhs < *this;
+}
+
+bool serio::core::LastWatchDate::operator<=(const serio::core::LastWatchDate &rhs) const {
+    return !(rhs < *this);
+}
+
+bool serio::core::LastWatchDate::operator>=(const serio::core::LastWatchDate &rhs) const {
+    return !(*this < rhs);
+}

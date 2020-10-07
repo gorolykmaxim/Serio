@@ -61,3 +61,7 @@ TEST_F(LastWatchDateTest, createWatchDateFromTimeSinceEpoch) {
     serio::core::LastWatchDate recreated(originalDate.getSinceEpoch());
     EXPECT_EQ(originalDate, recreated);
 }
+
+TEST_F(LastWatchDateTest, shouldCreateLastWatchDateThatIsNow) {
+    EXPECT_LE(serio::core::LastWatchDate(now), serio::core::LastWatchDate());
+}
