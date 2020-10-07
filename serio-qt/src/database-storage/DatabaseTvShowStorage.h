@@ -33,7 +33,9 @@ private:
     void insertTvShow(const core::TvShow& tvShow) const;
     void insertEpisodes(const std::string& tvShowName, const std::vector<core::Episode>& episodes) const;
     [[nodiscard]] unsigned int countTvShowsMatchingQuery(const QString& query = "") const;
-    [[nodiscard]] std::vector<core::TvShow> findTvShowsMatchingQuery(const QString& query, unsigned int offset, unsigned int limit, const std::vector<QVariant>& values = {}) const;
+    [[nodiscard]] std::vector<core::TvShow> findTvShowsMatchingQuery(unsigned int offset, unsigned int limit,
+                                                                     const QString& query = "", const QString& orderBy = "",
+                                                                     const std::vector<QVariant>& values = {}) const;
     [[nodiscard]] core::TvShow readTvShowFrom(const QSqlQuery& query) const;
     [[nodiscard]] core::Episode readEpisodeFrom(const QSqlQuery& query) const;
     [[nodiscard]] std::optional<core::LastWatchDate> readLastWatchDate(const QVariant& variant) const;

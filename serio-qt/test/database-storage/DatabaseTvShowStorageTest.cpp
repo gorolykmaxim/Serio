@@ -8,7 +8,7 @@ protected:
     const serio::core::LastWatchDate watchDate;
     const serio::core::WatchProgress watchProgress = serio::core::WatchProgress(15);
     const serio::core::TvShow fourthTvShow = serio::core::TvShow("How i met your mom", "", serio::core::LastWatchDate(now - std::chrono::hours(32)));
-    const serio::core::TvShow thirdTvShow = serio::core::TvShow("Mandalorian", "", serio::core::LastWatchDate(now));
+    const serio::core::TvShow thirdTvShow = serio::core::TvShow("Mandalorian", "", serio::core::LastWatchDate(now - std::chrono::hours(1)));
     const serio::core::TvShow secondTvShow = serio::core::TvShow("Friends");
     const serio::core::TvShow firstTvShow = serio::core::TvShow("Clinic");
     const std::vector<serio::core::Episode> firstTvShowEpisodes = {serio::core::Episode(1, "")};
@@ -97,9 +97,12 @@ TEST_F(DatabaseTvShowStorageTest, shouldReturnTheOffsetUsedToQueryWatchedTvShows
 
 TEST_F(DatabaseTvShowStorageTest, shouldReturnWatchedTvShowsWithTheLatestWatchedTvShowBeingFirstAndTheLatestLast) {
     saveWatchedShows();
+    storage.watchTvShowEpisode(fourthTvShow.getName(), 2, watchDate, watchProgress);
+    serio::core::TvShow fourthTvShowWithNewLastWatchDate(fourthTvShow.getName(), fourthTvShow.getThumbnailUrl(), watchDate);
     auto watchedTvShows = storage.getWatchedTvShows(0, 10);
-    EXPECT_EQ(thirdTvShow, watchedTvShows.getItemByGlobalIndex(0));
-    EXPECT_EQ(fourthTvShow, watchedTvShows.getItemByGlobalIndex(1));
+    EXPECT_EQ(fourthTvShowWithNewLastWatchDate, watchedTvShows.getItemByGlobalIndex(0));
+    EXPECT_EQ(thirdTvShow, watchedTvShows.getItemByGlobalIndex(1));
+    EXPECT_EQ(2, watchedTvShows.getTotalSize());
 }
 
 TEST_F(DatabaseTvShowStorageTest, shouldLimitCountOfReturnedWatchedTvShows) {
