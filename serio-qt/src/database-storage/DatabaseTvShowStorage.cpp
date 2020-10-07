@@ -168,7 +168,7 @@ void serio::qt::DatabaseTvShowStorage::watchTvShowEpisode(const std::string &tvS
                                                           serio::core::LastWatchDate watchDate,
                                                           serio::core::WatchProgress watchProgress) const {
     QSqlQuery insertEpisodeView(QSqlDatabase::database());
-    insertEpisodeView.prepare("INSERT INTO EPISODE_VIEW VALUES(?, ?, ?, ?)");
+    insertEpisodeView.prepare("INSERT OR REPLACE INTO EPISODE_VIEW VALUES(?, ?, ?, ?)");
     insertEpisodeView.addBindValue(QString::fromStdString(tvShowName));
     insertEpisodeView.addBindValue(episodeId);
     insertEpisodeView.addBindValue(watchDate.getSinceEpoch());
