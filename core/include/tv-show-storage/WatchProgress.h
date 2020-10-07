@@ -1,6 +1,8 @@
 #ifndef SERIO_WATCHPROGRESS_H
 #define SERIO_WATCHPROGRESS_H
 
+#include <stdexcept>
+
 namespace serio::core {
 
 class WatchProgress {
