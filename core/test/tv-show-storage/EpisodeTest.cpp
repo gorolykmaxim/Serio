@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <tv-show-storage/Episode.h>
+#include <tv-show-storage/WatchProgress.h>
 
 class EpisodeTest : public ::testing::Test {
 protected:
@@ -51,6 +52,7 @@ TEST_F(EpisodeTest, twoEpisodesWithDifferentIdNameOrVideoUrlShouldNotBeEqual) {
     EXPECT_NE(episode, serio::core::Episode(1, ""));
     EXPECT_NE(episode, serio::core::Episode(1, expectedVideoUrl, ""));
     EXPECT_NE(episode, serio::core::Episode(1, expectedVideoUrl, "Episode 1", lastWatchDate));
+    EXPECT_NE(episode, serio::core::Episode(1, expectedVideoUrl, "Episode 1", std::optional<serio::core::LastWatchDate>(), serio::core::WatchProgress(15)));
 }
 
 TEST_F(EpisodeTest, shouldNotHaveLastWatchDateIfNotSpecifiedExplicitly) {
@@ -61,4 +63,15 @@ TEST_F(EpisodeTest, shouldNotHaveLastWatchDateIfNotSpecifiedExplicitly) {
 TEST_F(EpisodeTest, shouldHaveSpecifiedLastWatchDate) {
     serio::core::Episode episode(2, expectedVideoUrl, "Episode 1", lastWatchDate);
     EXPECT_EQ(lastWatchDate, *episode.getLastWatchDate());
+}
+
+TEST_F(EpisodeTest, shouldHaveEmptyWatchProgressIfNotWatched) {
+    serio::core::Episode episode(1, expectedVideoUrl);
+    EXPECT_EQ(serio::core::WatchProgress(), episode.getWatchProgress());
+}
+
+TEST_F(EpisodeTest, shouldHaveSpecifiedWatchProgress) {
+    serio::core::WatchProgress progress(32);
+    serio::core::Episode episode(2, expectedVideoUrl, "Episode 2", lastWatchDate, progress);
+    EXPECT_EQ(progress, episode.getWatchProgress());
 }

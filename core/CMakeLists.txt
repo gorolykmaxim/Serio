@@ -5,9 +5,11 @@ add_library(Core STATIC
         include/tv-show-storage/ListPage.h
         include/tv-show-storage/BigListProxy.h
         include/tv-show-storage/Episode.h
+        include/tv-show-storage/WatchProgress.h
         src/tv-show-storage/Episode.cpp
         src/tv-show-storage/TvShow.cpp
         src/tv-show-storage/LastWatchDate.cpp
+        src/tv-show-storage/WatchProgress.cpp
         include/http-client/HttpClient.h
         include/tv-show-crawler-storage/TvShowCrawlerStorage.h
         include/tv-show-crawler-log-storage/TvShowCrawlerLogStorage.h
@@ -60,6 +62,7 @@ add_executable(CoreTest
         test/tv-show-storage/ListPageTest.cpp
         test/tv-show-storage/BigListProxyTest.cpp
         test/tv-show-storage/EpisodeTest.cpp
+        test/tv-show-storage/WatchProgressTest.cpp
         test/tv-show-crawler-log-storage/CrawlLogEntryTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerStepTest.cpp
         test/tv-show-crawler-runtime/model/CrawlerTest.cpp
