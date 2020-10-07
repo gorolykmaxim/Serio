@@ -7,7 +7,7 @@ serio::core::LastWatchDate::LastWatchDate(long long timeSinceEpoch)
     : date(std::chrono::system_clock::time_point(std::chrono::system_clock::duration(timeSinceEpoch))) {}
 
 std::string serio::core::LastWatchDate::toString() const {
-    std::chrono::hours hoursSinceLastWatch = std::chrono::duration_cast<std::chrono::hours>(std::chrono::system_clock::now() - date);
+    auto hoursSinceLastWatch = std::chrono::duration_cast<std::chrono::hours>(std::chrono::system_clock::now() - date);
     if (hoursSinceLastWatch < std::chrono::hours(24)) {
         return "today";
     } else if (hoursSinceLastWatch < std::chrono::hours(48)) {
@@ -18,7 +18,7 @@ std::string serio::core::LastWatchDate::toString() const {
         return std::to_string(hoursSinceLastWatch.count() / 24 / 30) + " month ago";
     } else {
         auto yearsSinceLastWatch = hoursSinceLastWatch.count() / 24 / 30 / 12;
-        std::string unitOfMeasure = yearsSinceLastWatch > 1 ? "years" : "year";
+        auto unitOfMeasure = yearsSinceLastWatch > 1 ? "years" : "year";
         return std::to_string(yearsSinceLastWatch) + " " + unitOfMeasure + " ago";
     }
 }

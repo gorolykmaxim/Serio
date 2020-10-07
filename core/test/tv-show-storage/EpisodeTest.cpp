@@ -27,7 +27,7 @@ TEST_F(EpisodeTest, shouldCreateEpisodeWithDefaultName) {
 }
 
 TEST_F(EpisodeTest, shouldCreateEpisodeWithSpecifiedName) {
-    std::string expectedName = "Going dark";
+    auto expectedName = "Going dark";
     serio::core::Episode episode(1, expectedVideoUrl, expectedName);
     EXPECT_EQ(expectedName, episode.getName());
 }

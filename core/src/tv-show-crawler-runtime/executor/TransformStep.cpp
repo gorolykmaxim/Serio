@@ -6,8 +6,8 @@ std::vector<std::string> serio::core::executeTransformStep(const serio::core::Cr
     std::vector<std::string> results;
     results.reserve(previousStepResults.size());
     std::regex regex("%s");
-    std::string template_ = step.getPropertyOrFail("template");
-    for (const std::string& previousResult: previousStepResults) {
+    auto template_ = step.getPropertyOrFail("template");
+    for (const auto& previousResult: previousStepResults) {
         results.push_back(std::regex_replace(template_, regex, previousResult));
     }
     return results;

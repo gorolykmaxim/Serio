@@ -9,8 +9,7 @@ void serio::core::TvShowCrawlerEditor::createTvShowCrawler() {
 }
 
 void serio::core::TvShowCrawlerEditor::importTvShowCrawler(const std::string &rawCrawler) {
-    TvShowCrawler crawler = runtime.deserializeTvShowCrawler(rawCrawler);
-    setTvShowCrawler(crawler);
+    setTvShowCrawler(runtime.deserializeTvShowCrawler(rawCrawler));
 }
 
 void serio::core::TvShowCrawlerEditor::editTvShowCrawler(const std::string &tvShowName) {
@@ -57,7 +56,7 @@ void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
 
 serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawler() {
     serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
-    CrawlResult result = runtime.executeCrawler(crawler);
+    auto result = runtime.executeCrawler(crawler);
     getBuilderOrFail().setPreviewResult(result);
     return result;
 }

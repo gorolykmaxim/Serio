@@ -65,7 +65,7 @@ TEST_F(TvShowViewerTest, shouldFailToGetCrawlerOfSelectedTvShowThatHasBeenAlread
 
 TEST_F(TvShowViewerTest, shouldReturnfCrawlerOfSelectedTvShow) {
     viewer.openTvShowWithName(tvShow.getName());
-    std::string rawCrawler = "raw crawler";
+    auto rawCrawler = "raw crawler";
     ON_CALL(crawlerStorage, getTvShowCrawlerByTvShowName(tvShow.getName()))
         .WillByDefault(::testing::Return(std::optional(rawCrawler)));
     EXPECT_EQ(rawCrawler, viewer.getRawCrawlerOfSelectedTvShow());

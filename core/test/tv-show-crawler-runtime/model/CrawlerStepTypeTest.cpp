@@ -14,7 +14,7 @@ TEST_F(CrawlerStepTypeTest, shoudlHaveSpecifiedName) {
 }
 
 TEST_F(CrawlerStepTypeTest, shouldHaveSpecifiedDescription) {
-    for (const std::string& description: {"Description of the step type", "Different step type description"}) {
+    for (const auto& description: {"Description of the step type", "Different step type description"}) {
         serio::core::CrawlerStepType type("fetch", description);
         EXPECT_EQ(description, type.getDescription());
     }

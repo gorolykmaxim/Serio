@@ -3,7 +3,7 @@
 serio::core::TvShowPlayer::TvShowPlayer(serio::core::TvShowStorage &storage) : storage(storage) {}
 
 serio::core::Player serio::core::TvShowPlayer::playEpisodeOfTvShow(const std::string &tvShowName, unsigned int episodeId) {
-    std::optional<serio::core::Episode> episodeToPlay = storage.getEpisodeOfTvShowWithName(tvShowName, episodeId);
+    auto episodeToPlay = storage.getEpisodeOfTvShowWithName(tvShowName, episodeId);
     if (!episodeToPlay) {
         throw TvShowEpisodeDoesNotExistError(tvShowName, episodeId);
     } else {

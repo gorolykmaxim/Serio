@@ -19,18 +19,18 @@ public:
     }
     void addPage(serio::core::ListPage<T> page) {
         totalSize = page.getTotalSize();
-        pages.remove_if([&page] (const core::ListPage<T>& p) { return p.getOffset() == page.getOffset(); });
+        pages.remove_if([&page] (const auto& p) { return p.getOffset() == page.getOffset(); });
         pages.push_back(std::move(page));
         if (pages.size() > pageCountLimit) {
             pages.pop_front();
         }
     }
     [[nodiscard]] bool containsItemWithGlobalIndex(unsigned int index) const {
-        auto it = std::find_if(pages.cbegin(), pages.cend(), [=] (const ListPage<T>& item) {return item.containsItemWithGlobalIndex(index);});
+        auto it = std::find_if(pages.cbegin(), pages.cend(), [=] (const auto& item) {return item.containsItemWithGlobalIndex(index);});
         return it != pages.cend();
     }
     const T& getItemByGlobalIndex(unsigned int index) const {
-        auto it = std::find_if(pages.cbegin(), pages.cend(), [=] (const ListPage<T>& item) {return item.containsItemWithGlobalIndex(index);});
+        auto it = std::find_if(pages.cbegin(), pages.cend(), [=] (const auto& item) {return item.containsItemWithGlobalIndex(index);});
         if (it == pages.cend()) {
             throw std::out_of_range(std::to_string(index));
         } else {

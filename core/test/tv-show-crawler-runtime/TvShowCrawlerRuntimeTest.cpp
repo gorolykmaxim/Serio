@@ -345,7 +345,7 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToExecuteCrawlerWithRegExpStepNotHavi
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldReturnExecutionLogOfTheSpecifiedCrawler) {
-    std::vector<serio::core::CrawlLogEntry> log = runtime.executeCrawler(episodeVideoCrawler).log;
+    auto log = runtime.executeCrawler(episodeVideoCrawler).log;
     EXPECT_EQ("Executing value step with properties: 'value: https://tv-show'", log[0].getText());
     EXPECT_EQ("[]", log[0].getStepInputData());
     EXPECT_EQ("[https://tv-show]", log[0].getStepOutputData());
@@ -380,7 +380,7 @@ TEST_F(TvShowCrawlerRuntimeTest, shouldFailToRecrawlTvShowCrawlerOfWhichDoesNotE
 }
 
 TEST_F(TvShowCrawlerRuntimeTest, shouldRecrawlTvShow) {
-    std::string episodeVideoUrl = "https://tv-show.com/video-1.mp4";
+    auto episodeVideoUrl = "https://tv-show.com/video-1.mp4";
     httpClientResponsePromise = std::promise<std::vector<std::string>>();
     httpClientResponsePromise.set_value({episodeVideoUrl});
     ON_CALL(httpClient, fetchContentFromLinks(std::vector<std::string>({"https://tv-show"})))

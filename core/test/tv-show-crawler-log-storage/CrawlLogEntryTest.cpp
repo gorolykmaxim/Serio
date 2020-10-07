@@ -9,7 +9,7 @@ protected:
 };
 
 TEST_F(CrawlLogEntryTest, shouldBeASimpleEntryWithoutInputAndOutput) {
-    std::string text = "crawl log entry text";
+    auto text = "crawl log entry text";
     serio::core::CrawlLogEntry entry(text);
     EXPECT_EQ(text, entry.getText());
     EXPECT_FALSE(entry.hasData());
@@ -48,7 +48,7 @@ TEST_F(CrawlLogEntryTest, shouldHaveSpecifiedInputAndOutputUncut) {
 }
 
 TEST_F(CrawlLogEntryTest, shouldHaveSpecifiedInputAndOutputCut) {
-    std::string cutData = "[line 1, lin...";
+    auto cutData = "[line 1, lin...";
     serio::core::CrawlLogEntry entry(value);
     entry.setStepInputData(stepData, 15);
     entry.setStepOutputData(stepData, 15);
@@ -57,7 +57,7 @@ TEST_F(CrawlLogEntryTest, shouldHaveSpecifiedInputAndOutputCut) {
 }
 
 TEST_F(CrawlLogEntryTest, shouldCutInputAndOutputOnComma) {
-    std::string cutData = "[line 1,...";
+    auto cutData = "[line 1,...";
     serio::core::CrawlLogEntry entry(value);
     entry.setStepInputData(stepData, 11);
     entry.setStepOutputData(stepData, 11);
@@ -67,7 +67,7 @@ TEST_F(CrawlLogEntryTest, shouldCutInputAndOutputOnComma) {
 
 TEST_F(CrawlLogEntryTest, shouldCutInputAndOutputOnLargeChunk) {
     std::vector<std::string> stepData = {"very large chunk that will be cut"};
-    std::string cutData = "[very large chunk...";
+    auto cutData = "[very large chunk...";
     serio::core::CrawlLogEntry entry(value);
     entry.setStepInputData(stepData, 20);
     entry.setStepOutputData(stepData, 20);

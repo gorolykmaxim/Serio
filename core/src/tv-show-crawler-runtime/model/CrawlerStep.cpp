@@ -20,7 +20,7 @@ std::optional<std::string> serio::core::CrawlerStep::getProperty(const std::stri
 }
 
 std::string serio::core::CrawlerStep::getPropertyOrFail(const std::string &propertyName) const {
-    std::optional<std::string> propertyValue = getProperty(propertyName);
+    auto propertyValue = getProperty(propertyName);
     if (propertyValue) {
         return *propertyValue;
     } else {
@@ -37,7 +37,7 @@ std::string serio::core::CrawlerStep::getPropertiesAsString() const {
     for (const auto& entry: properties) {
         props << entry.first << ": " << entry.second << ", ";
     }
-    std::string result = props.str();
+    auto result = props.str();
     return result.substr(0, result.size() - 2);
 }
 

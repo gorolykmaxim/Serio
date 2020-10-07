@@ -330,7 +330,7 @@ TEST_F(TvShowCrawlerEditorTest, shouldExecuteStepsOfCurrentlyEditedCrawlerAndRet
         .Times(crawlerTypes.size())
         .WillRepeatedly(::testing::Return(serio::core::CrawlResult{{}, results}));
     editor.createTvShowCrawler();
-    for (serio::core::CrawlerType type: crawlerTypes) {
+    for (auto type: crawlerTypes) {
         editor.editCrawler(type);
         editor.addCrawlerStep(value);
         editor.addCrawlerStep(fetch);

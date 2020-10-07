@@ -67,7 +67,7 @@ serio::core::CrawlResult serio::core::TvShowCrawlerRuntime::executeCrawler(const
 }
 
 std::optional<serio::core::TvShowCrawler> serio::core::TvShowCrawlerRuntime::getTvShowCrawlerByTvShowName(const std::string &tvShowName) {
-    std::optional<std::string> rawTvShowCrawler = crawlerStorage.getTvShowCrawlerByTvShowName(tvShowName);
+    auto rawTvShowCrawler = crawlerStorage.getTvShowCrawlerByTvShowName(tvShowName);
     if (rawTvShowCrawler) {
         return std::optional(serializer.deserialize(*rawTvShowCrawler));
     } else {
@@ -86,13 +86,13 @@ void serio::core::TvShowCrawlerRuntime::crawlTvShow(const std::string &tvShowNam
 void serio::core::TvShowCrawlerRuntime::executeCrawler(const serio::core::TvShowCrawler &crawler) {
     std::vector<serio::core::CrawlLogEntry> crawlLog;
     TvShow tvShow(crawler.getTvShowName(), crawlerExecutor.executeThumbnailCrawler(crawler.getCrawler(CrawlerType::thumbnailCrawler), crawlLog));
-    std::vector<Episode> episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler), crawlLog);
+    auto episodes = crawlerExecutor.executeEpisodeCrawler(crawler.getCrawler(CrawlerType::episodeVideoCrawler), crawler.getCrawler(CrawlerType::episodeNameCrawler), crawlLog);
     tvShowStorage.saveTvShow(tvShow, episodes);
     logStorage.saveCrawlLog(tvShow.getName(), crawlLog);
 }
 
 serio::core::TvShowCrawler serio::core::TvShowCrawlerRuntime::getTvShowCrawlerByTvShowNameOrFail(const std::string &tvShowName) {
-    std::optional<serio::core::TvShowCrawler> crawler = getTvShowCrawlerByTvShowName(tvShowName);
+    auto crawler = getTvShowCrawlerByTvShowName(tvShowName);
     if (crawler) {
         return *crawler;
     } else {

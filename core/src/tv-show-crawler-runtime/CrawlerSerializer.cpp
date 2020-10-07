@@ -15,7 +15,7 @@ std::string serio::core::CrawlerSerializer::serialize(const TvShowCrawler& crawl
 }
 
 nlohmann::json serio::core::CrawlerSerializer::serialize(const serio::core::Crawler &crawler) const {
-    nlohmann::json serializedSteps = std::vector<nlohmann::json>();
+    auto serializedSteps = std::vector<nlohmann::json>();
     for (const CrawlerStep& step: crawler.getSteps()) {
         serializedSteps.push_back(serialize(step));
     }
@@ -32,7 +32,7 @@ nlohmann::json serio::core::CrawlerSerializer::serialize(const CrawlerStep &step
 
 serio::core::TvShowCrawler serio::core::CrawlerSerializer::deserialize(const std::string &rawCrawler) const {
     try {
-        nlohmann::json deserializedCrawler = nlohmann::json::parse(rawCrawler);
+        auto deserializedCrawler = nlohmann::json::parse(rawCrawler);
         assertTvShowNameSpecified(deserializedCrawler);
         assertTvShowNameNotEmpty(deserializedCrawler);
         return serio::core::TvShowCrawler(
@@ -47,7 +47,7 @@ serio::core::TvShowCrawler serio::core::CrawlerSerializer::deserialize(const std
 
 serio::core::Crawler serio::core::CrawlerSerializer::deserialize(nlohmann::json &crawler, const std::string& crawlerType) const {
     try {
-        nlohmann::json& deserializedSteps = crawler[crawlerType]["steps"];
+        auto& deserializedSteps = crawler[crawlerType]["steps"];
         std::vector<serio::core::CrawlerStep> steps;
         steps.reserve(deserializedSteps.size());
         for (int i = 0; i < deserializedSteps.size(); i++) {
@@ -73,10 +73,10 @@ void serio::core::CrawlerSerializer::assertTvShowNameNotEmpty(nlohmann::json &tv
 
 serio::core::CrawlerStep serio::core::CrawlerSerializer::deserialize(nlohmann::json &crawlerSteps, unsigned int stepIndex) const {
     try {
-        nlohmann::json& crawlerStep = crawlerSteps[stepIndex];
+        auto& crawlerStep = crawlerSteps[stepIndex];
         assertCrawlerStepTypeSpecified(crawlerStep);
         assertCrawlerStepIsValid(crawlerStep);
-        std::map<std::string, std::string> properties = crawlerStep;
+        auto properties = crawlerStep;
         properties.erase("type");
         return CrawlerStep(crawlerStep["type"], properties);
     } catch (std::runtime_error& e) {
@@ -91,7 +91,7 @@ void serio::core::CrawlerSerializer::assertCrawlerStepTypeSpecified(nlohmann::js
 }
 
 void serio::core::CrawlerSerializer::assertCrawlerStepIsValid(nlohmann::json &crawlerStep) const {
-    std::string type = crawlerStep["type"];
+    auto type = crawlerStep["type"];
     auto it = std::find_if(crawlerStepTypes.cbegin(), crawlerStepTypes.cend(), [type] (const CrawlerStepType& crawlerStepType) { return crawlerStepType.getName() == type; });
     if (it == crawlerStepTypes.cend()) {
         throw UnknownCrawlerStepTypeError(type);
@@ -102,12 +102,12 @@ void serio::core::CrawlerSerializer::assertCrawlerStepIsValid(nlohmann::json &cr
 void serio::core::CrawlerSerializer::assertCrawlerStepHasMandatoryProperties(const std::map<std::string, std::string> &properties,
                                                                              const serio::core::CrawlerStepType &type) const {
     std::stringstream missingProperties;
-    for (const std::string& mandatoryProperty: type.getMandatoryProperties()) {
+    for (const auto& mandatoryProperty: type.getMandatoryProperties()) {
         if (properties.find(mandatoryProperty) == properties.cend()) {
             missingProperties << "\"" << mandatoryProperty << "\" ";
         }
     }
-    std::string missingPropertiesString = missingProperties.str();
+    auto missingPropertiesString = missingProperties.str();
     if (!missingPropertiesString.empty()) {
         missingPropertiesString.resize(missingPropertiesString.size() - 1);
         throw MandatoryCrawlerStepPropertiesMissingError(type.getName(), missingPropertiesString);

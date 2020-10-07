@@ -8,13 +8,13 @@ void serio::core::CrawlerExecutor::registerCrawlerStepExecutor(const std::string
 }
 
 std::string serio::core::CrawlerExecutor::executeThumbnailCrawler(const serio::core::Crawler &crawler, std::vector<serio::core::CrawlLogEntry>& crawlLog) const {
-    std::vector<std::string> results = executeCrawlerAndSaveLog(crawler, "thumbnail", "Crawling thumbnail", crawlLog);
+    auto results = executeCrawlerAndSaveLog(crawler, "thumbnail", "Crawling thumbnail", crawlLog);
     return results.empty() ? "" : results[0];
 }
 
 std::vector<serio::core::Episode> serio::core::CrawlerExecutor::executeEpisodeCrawler(const Crawler& videoCrawler, const Crawler& nameCrawler, std::vector<serio::core::CrawlLogEntry>& crawlLog) const {
-    std::vector<std::string> videoUrls = crawlEpisodeVideos(videoCrawler, crawlLog);
-    std::vector<std::string> names = crawlEpisodeNamesIfNecessary(nameCrawler, videoUrls, crawlLog);
+    auto videoUrls = crawlEpisodeVideos(videoCrawler, crawlLog);
+    auto names = crawlEpisodeNamesIfNecessary(nameCrawler, videoUrls, crawlLog);
     std::vector<Episode> episodes;
     episodes.reserve(videoUrls.size());
     if (!names.empty() && videoUrls.size() != names.size()) {
@@ -42,7 +42,7 @@ std::vector<std::string> serio::core::CrawlerExecutor::crawlEpisodeNamesIfNecess
 
 serio::core::CrawlResult serio::core::CrawlerExecutor::executeCrawler(const serio::core::Crawler &crawler, const std::string& crawlerType, std::vector<std::string> result) const {
     try {
-        std::vector<CrawlerStep> steps = crawler.getSteps();
+        auto steps = crawler.getSteps();
         std::vector<CrawlLogEntry> log;
         log.reserve(steps.size());
         for (int i = 0; i < steps.size(); ++i) {
@@ -76,7 +76,7 @@ std::vector<std::string> serio::core::CrawlerExecutor::executeCrawlerAndSaveLog(
                                                                                 const std::string &logSectionName,
                                                                                 std::vector<CrawlLogEntry> &crawlLog,
                                                                                 const std::vector<std::string>& result) const {
-    serio::core::CrawlResult execution = executeCrawler(crawler, crawlerType, result);
+    auto execution = executeCrawler(crawler, crawlerType, result);
     crawlLog.reserve(execution.log.size() + crawlLog.capacity());
     crawlLog.emplace_back(logSectionName);
     for (const auto& entry: execution.log) {

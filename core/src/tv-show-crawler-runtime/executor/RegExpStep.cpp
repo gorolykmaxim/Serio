@@ -32,7 +32,7 @@ std::vector<std::string> serio::core::executeRegExpStep(const serio::core::Crawl
     std::vector<std::string> results;
     results.reserve(previousStepResults.size());
     std::regex regExp(step.getPropertyOrFail("regExp"));
-    for (const std::string& previousResult: previousStepResults) {
+    for (const auto & previousResult: previousStepResults) {
         findAndAppendMatchesToResults(previousResult, regExp, results);
     }
     return results;
