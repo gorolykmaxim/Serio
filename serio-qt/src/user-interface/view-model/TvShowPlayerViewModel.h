@@ -19,6 +19,7 @@ public:
     [[nodiscard]] QString getEpisodeVideoUrl() const;
     [[nodiscard]] QString getTvShowName() const;
     [[nodiscard]] QString getEpisodeName() const;
+    void setProgress(const QVariantList& args);
 signals:
     void playingEpisodeChanged() const;
 private:

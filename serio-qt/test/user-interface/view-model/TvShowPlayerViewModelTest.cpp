@@ -61,3 +61,15 @@ TEST_F(TvShowPlayerViewModelTest, shouldNotifyWatchersAboutPlayingEpisodeChange)
     viewModel.playEpisodeOfTvShow(QVariantList({tvShowName, episode.getId()}));
     EXPECT_EQ(1, playingEpisodeSpy.count());
 }
+
+TEST_F(TvShowPlayerViewModelTest, shouldUpdateWatchProgressOfCurrentlyPlayingEpisode) {
+    auto duration = 100000;
+    auto position = 25000;
+    EXPECT_CALL(tvShowPlayer, updatePlayingEpisodeWatchProgress(serio::core::WatchProgress(25)));
+    viewModel.setProgress(QVariantList({position, duration}));
+}
+
+TEST_F(TvShowPlayerViewModelTest, shouldNotUpdateWatchProgressIfDurationIsZero) {
+    EXPECT_CALL(tvShowPlayer, updatePlayingEpisodeWatchProgress(::testing::_)).Times(0);
+    viewModel.setProgress(QVariantList({0, 0}));
+}

@@ -9,11 +9,18 @@ View {
     onCreated: {
         controls.onBackPressed.connect(() => actionRouter.trigger(ActionType.BACK, []))
         controls.onUserInteraction.connect(displayControls)
+        watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
     }
     onDisplayed: displayControls()
     function displayControls() {
         controls.opacity = 1
         hideControlsTimer.restart()
+    }
+    Timer {
+        id: watchProgressSavingTimer
+        interval: 5000
+        repeat: true
+        running: video.playbackState === MediaPlayer.PlayingState
     }
     Timer {
         id: hideControlsTimer
