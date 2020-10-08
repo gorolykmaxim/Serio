@@ -7,10 +7,12 @@ namespace serio::core {
 
 class Player {
 public:
-    Player(std::string playingTvShowName, Episode playingEpisode);
+    Player(std::string playingTvShowName, Episode playingEpisode, bool fromStart = true);
     [[nodiscard]] Episode getPlayingEpisode() const;
     [[nodiscard]] std::string getPlayingTvShowName() const;
+    [[nodiscard]] double getStartPercentage() const;
 private:
+    bool fromStart;
     std::string playingTvShowName;
     Episode playingEpisode;
 };

@@ -11,6 +11,10 @@ double serio::core::WatchProgress::getPercentage() const {
     return percentage;
 }
 
+bool serio::core::WatchProgress::isComplete() const {
+    return percentage == 100;
+}
+
 bool serio::core::WatchProgress::operator==(const serio::core::WatchProgress &rhs) const {
     return percentage == rhs.percentage;
 }

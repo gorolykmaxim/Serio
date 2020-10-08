@@ -9,6 +9,7 @@ class WatchProgress {
 public:
     explicit WatchProgress(double percentage = 0);
     [[nodiscard]] double getPercentage() const;
+    [[nodiscard]] bool isComplete() const;
     bool operator==(const WatchProgress &rhs) const;
     bool operator!=(const WatchProgress &rhs) const;
 private:
