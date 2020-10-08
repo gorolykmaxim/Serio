@@ -10,6 +10,7 @@ View {
         controls.onBackPressed.connect(() => actionRouter.trigger(ActionType.BACK, []))
         controls.onUserInteraction.connect(displayControls)
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
+        video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
     }
     onDisplayed: displayControls()
     function displayControls() {
@@ -20,7 +21,7 @@ View {
         id: watchProgressSavingTimer
         interval: 5000
         repeat: true
-        running: video.playbackState === MediaPlayer.PlayingState
+        running: video.playbackState === MediaPlayer.PlayingState && video.seekable
     }
     Timer {
         id: hideControlsTimer

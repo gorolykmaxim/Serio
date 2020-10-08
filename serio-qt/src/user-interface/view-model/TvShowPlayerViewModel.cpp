@@ -8,14 +8,13 @@ serio::qt::TvShowPlayerViewModel::TvShowPlayerViewModel(serio::core::TvShowPlaye
 
 void serio::qt::TvShowPlayerViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("tvShowPlayerViewModel", this);
+    router.registerAction(ActionType::PLAY_TV_SHOW, [this] (const auto& args) { playTvShow(args); });
     router.registerAction(ActionType::PLAY_EPISODE_OF_TV_SHOW, [this] (const auto& args) { playEpisodeOfTvShow(args); });
     router.registerAction(ActionType::SET_PLAYING_EPISODE_PROGRESS, [this] (const auto& args) { setProgress(args); });
 }
 
 void serio::qt::TvShowPlayerViewModel::playEpisodeOfTvShow(const QVariantList& args) {
-    player = tvShowPlayer.playEpisodeOfTvShow(args[0].toString().toStdString(), args[1].toUInt());
-    emit playingEpisodeChanged();
-    stack.pushView(tvShowPlayerView);
+    play(tvShowPlayer.playEpisodeOfTvShow(args[0].toString().toStdString(), args[1].toUInt()));
 }
 
 QString serio::qt::TvShowPlayerViewModel::getEpisodeVideoUrl() const {
@@ -37,4 +36,18 @@ void serio::qt::TvShowPlayerViewModel::setProgress(const QVariantList &args) {
         serio::core::WatchProgress progress(position / duration * 100.0);
         tvShowPlayer.updatePlayingEpisodeWatchProgress(progress);
     }
+}
+
+void serio::qt::TvShowPlayerViewModel::playTvShow(const QVariantList &args) {
+    play(tvShowPlayer.playTvShow(args[0].toString().toStdString()));
+}
+
+void serio::qt::TvShowPlayerViewModel::play(serio::core::Player &&newPlayer) {
+    player = newPlayer;
+    emit playingEpisodeChanged();
+    stack.pushView(tvShowPlayerView);
+}
+
+double serio::qt::TvShowPlayerViewModel::getOffsetPercentage() const {
+    return player ? player->getStartPercentage() : 0;
 }
