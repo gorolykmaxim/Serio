@@ -30,7 +30,12 @@ std::vector<serio::core::TvShow> serio::qt::DatabaseTvShowStorage::getWatchedTvS
 std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodesOfTvShowWithName(const std::string &tvShowName,
                                                                                                 unsigned int offset,
                                                                                                 unsigned int limit) const {
-    return findEpisodesMatchingQuery("WHERE EPISODE.TV_SHOW_NAME = ?", offset, limit, {QString::fromStdString(tvShowName)});
+    return findEpisodesMatchingQuery(
+            offset,
+            limit,
+            "WHERE EPISODE.TV_SHOW_NAME = ?",
+            "ORDER BY ID",
+            {QString::fromStdString(tvShowName)});
 }
 
 unsigned int serio::qt::DatabaseTvShowStorage::countAllTvShows() const {
@@ -163,7 +168,12 @@ void serio::qt::DatabaseTvShowStorage::clearTvShowWatchHistory(const std::string
 }
 
 std::optional<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId) {
-    auto episodes = findEpisodesMatchingQuery("WHERE EPISODE.TV_SHOW_NAME = ? AND ID = ?", 0, 1, {QString::fromStdString(tvShowName), episodeId});
+    auto episodes = findEpisodesMatchingQuery(
+            0,
+            1,
+            "WHERE EPISODE.TV_SHOW_NAME = ? AND ID = ?",
+            "ORDER BY ID",
+            {QString::fromStdString(tvShowName), episodeId});
     return episodes.empty() ? std::optional<serio::core::Episode>() : episodes[0];
 }
 
@@ -179,17 +189,18 @@ void serio::qt::DatabaseTvShowStorage::watchTvShowEpisode(const std::string &tvS
     insertEpisodeView.exec();
 }
 
-std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::findEpisodesMatchingQuery(const QString &query,
-                                                                                              unsigned int offset,
+std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::findEpisodesMatchingQuery(unsigned int offset,
                                                                                               unsigned int limit,
+                                                                                              const QString &query,
+                                                                                              const QString &orderBy,
                                                                                               const std::vector<QVariant> &values) const {
     std::vector<core::Episode> result;
     QSqlQuery findEpisodes(QSqlDatabase::database());
     findEpisodes.prepare("SELECT ID, NAME, VIDEO_URL, LAST_WATCH_DATE, WATCH_PROGRESS "
                                  "FROM EPISODE "
                                  "LEFT OUTER JOIN EPISODE_VIEW ON (EPISODE.ID = EPISODE_VIEW.EPISODE_ID AND EPISODE.TV_SHOW_NAME = EPISODE_VIEW.TV_SHOW_NAME) "
-                                 + query +
-                                 " ORDER BY ID LIMIT ? OFFSET ?");
+                                 + query + " " + orderBy +
+                                 " LIMIT ? OFFSET ?");
     for (const auto& value: values) {
         findEpisodes.addBindValue(value);
     }
@@ -200,4 +211,14 @@ std::vector<serio::core::Episode> serio::qt::DatabaseTvShowStorage::findEpisodes
         result.push_back(readEpisodeFrom(findEpisodes));
     }
     return result;
+}
+
+std::optional<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getLastWatchedEpisodeOfTvShow(const std::string &tvShowName) {
+    auto episodes = findEpisodesMatchingQuery(
+            0,
+            1,
+            "WHERE EPISODE.TV_SHOW_NAME = ? AND LAST_WATCH_DATE IS NOT NULL",
+            "ORDER BY LAST_WATCH_DATE DESC",
+            {QString::fromStdString(tvShowName)});
+    return episodes.empty() ? std::optional<serio::core::Episode>() : episodes[0];
 }

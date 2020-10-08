@@ -268,3 +268,22 @@ TEST_F(DatabaseTvShowStorageTest, shouldUpdateWatchProgressOfTvShowEpisode) {
     storage.watchTvShowEpisode(tvShowName, episodeId, watchDate, completeWatchProgress);
     EXPECT_EQ(completeWatchProgress, storage.getEpisodeOfTvShowWithName(tvShowName, episodeId)->getWatchProgress());
 }
+
+TEST_F(DatabaseTvShowStorageTest, shouldNotFindLastWatchedEpisodeOfTvShowSinceTvShowHasNotBeenWatched) {
+    saveShows();
+    EXPECT_FALSE(storage.getLastWatchedEpisodeOfTvShow(firstTvShow.getName()));
+}
+
+TEST_F(DatabaseTvShowStorageTest, shouldFindLastWatchedEpisodeOfTvShow) {
+    auto expectedEpisode = fourthTvShowEpisodes[0];
+    expectedEpisode = serio::core::Episode(expectedEpisode.getId(),
+                                           expectedEpisode.getVideoUrl(),
+                                           expectedEpisode.getName(),
+                                           watchDate,
+                                           watchProgress);
+    saveWatchedShows();
+    storage.watchTvShowEpisode(fourthTvShow.getName(), 2, *fourthTvShow.getLastWatchDate(), watchProgress);
+    storage.watchTvShowEpisode(fourthTvShow.getName(), 1, watchDate, watchProgress);
+    auto lastWatchedEpisode = storage.getLastWatchedEpisodeOfTvShow(fourthTvShow.getName());
+    EXPECT_EQ(expectedEpisode, *lastWatchedEpisode);
+}

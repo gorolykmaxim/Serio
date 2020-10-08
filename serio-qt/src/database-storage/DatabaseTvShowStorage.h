@@ -24,6 +24,7 @@ public:
     [[nodiscard]] std::optional<core::Episode> getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId);
     void watchTvShowEpisode(const std::string &tvShowName, unsigned int episodeId, core::LastWatchDate watchDate,
                             core::WatchProgress watchProgress) const;
+    std::optional<core::Episode> getLastWatchedEpisodeOfTvShow(const std::string &tvShowName);
 private:
     const QString fromTvShow = "FROM TV_SHOW "
                                "LEFT OUTER JOIN EPISODE_VIEW ON TV_SHOW.NAME = EPISODE_VIEW.TV_SHOW_NAME ";
@@ -39,7 +40,10 @@ private:
     [[nodiscard]] core::TvShow readTvShowFrom(const QSqlQuery& query) const;
     [[nodiscard]] core::Episode readEpisodeFrom(const QSqlQuery& query) const;
     [[nodiscard]] std::optional<core::LastWatchDate> readLastWatchDate(const QVariant& variant) const;
-    [[nodiscard]] std::vector<core::Episode> findEpisodesMatchingQuery(const QString& query, unsigned int offset, unsigned int limit, const std::vector<QVariant>& values = {}) const;
+    [[nodiscard]] std::vector<core::Episode> findEpisodesMatchingQuery(unsigned int offset, unsigned int limit,
+                                                                       const QString& query,
+                                                                       const QString& orderBy,
+                                                                       const std::vector<QVariant>& values = {}) const;
 };
 
 }

@@ -19,6 +19,7 @@ public:
     virtual std::optional<Episode> getEpisodeOfTvShowWithName(const std::string& tvShowName, unsigned int episodeId) = 0;
     virtual void watchTvShowEpisode(const std::string &tvShowName, unsigned int episodeId, LastWatchDate watchDate,
                                     WatchProgress watchProgress) = 0;
+    virtual std::optional<Episode> getLastWatchedEpisodeOfTvShow(const std::string& tvShowName) = 0;
 };
 
 }

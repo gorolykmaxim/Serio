@@ -102,5 +102,9 @@ void serio::qt::DatabaseStorage::watchTvShowEpisode(const std::string &tvShowNam
     tvShowStorage.watchTvShowEpisode(tvShowName, episodeId, watchDate, watchProgress);
 }
 
+std::optional<serio::core::Episode> serio::qt::DatabaseStorage::getLastWatchedEpisodeOfTvShow(const std::string &tvShowName) {
+    return tvShowStorage.getLastWatchedEpisodeOfTvShow(tvShowName);
+}
+
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)
     : std::runtime_error("Failed to open database '" + databaseName + "'. Reason: " + reason) {}

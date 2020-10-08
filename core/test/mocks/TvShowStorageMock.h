@@ -15,6 +15,7 @@ public:
     MOCK_METHOD(void, deleteTvShow, (const std::string&), (override));
     MOCK_METHOD((std::optional<serio::core::Episode>), getEpisodeOfTvShowWithName, (const std::string&, unsigned int), (override));
     MOCK_METHOD(void, watchTvShowEpisode, (const std::string&, unsigned int, serio::core::LastWatchDate, serio::core::WatchProgress), (override));
+    MOCK_METHOD((std::optional<serio::core::Episode>), getLastWatchedEpisodeOfTvShow, (const std::string&), (override));
 };
 
 #endif //SERIO_TVSHOWSTORAGEMOCK_H

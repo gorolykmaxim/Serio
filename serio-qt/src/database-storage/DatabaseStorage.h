@@ -31,6 +31,7 @@ public:
     std::optional<core::Episode> getEpisodeOfTvShowWithName(const std::string &tvShowName, unsigned int episodeId) override;
     void watchTvShowEpisode(const std::string &tvShowName, unsigned int episodeId, core::LastWatchDate watchDate,
                             core::WatchProgress watchProgress) override;
+    std::optional<core::Episode> getLastWatchedEpisodeOfTvShow(const std::string &tvShowName) override;
 private:
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
