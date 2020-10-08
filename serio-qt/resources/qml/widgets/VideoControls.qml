@@ -13,6 +13,8 @@ Item {
     signal backPressed()
     signal playPressed()
     signal pausePressed()
+    signal forwardPressed()
+    signal replayPressed()
     signal userInteraction()
     TopBottomShade {
         display: true
@@ -60,6 +62,30 @@ Item {
                     playPressed()
             }
             onGotFocus: userInteraction()
+            KeyNavigation.right: replayBtn
+            KeyNavigation.tab: replayBtn
+        }
+        IconButton {
+            id: replayBtn
+            iconName: "replay_30"
+            onClicked: {
+                userInteraction()
+                replayPressed()
+            }
+            onGotFocus: userInteraction()
+            KeyNavigation.up: backBtn
+            KeyNavigation.right: forwardBtn
+            KeyNavigation.tab: forwardBtn
+        }
+        IconButton {
+            id: forwardBtn
+            iconName: "forward_30"
+            onClicked: {
+                userInteraction()
+                forwardPressed()
+            }
+            onGotFocus: userInteraction()
+            KeyNavigation.up: backBtn
             KeyNavigation.tab: backBtn
         }
     }

@@ -11,6 +11,8 @@ View {
         controls.onUserInteraction.connect(displayControls)
         controls.onPlayPressed.connect(() => video.play())
         controls.onPausePressed.connect(() => video.pause())
+        controls.onForwardPressed.connect(() => video.seek(video.position + 30000))
+        controls.onReplayPressed.connect(() => video.seek(video.position - 30000))
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
         video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
     }
