@@ -6,30 +6,53 @@ Item {
     property string titleText
     property string subtitleText
     property real padding
+    property bool isPlaying
     signal backPressed()
+    signal playPressed()
+    signal pausePressed()
     signal userInteraction()
-    TopShade {
+    TopBottomShade {
         display: true
         anchors.fill: parent
     }
-    RowLayout {
+    LeftAnchoredRow {
         anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.margins: padding
         spacing: padding
         IconButton {
-            focus: true
+            id: backBtn
             iconName: "keyboard-backspace"
             onClicked: {
                 userInteraction()
                 backPressed()
             }
+            onGotFocus: userInteraction()
+            KeyNavigation.tab: playPauseBtn
+            KeyNavigation.down: playPauseBtn
         }
         AccentTitleAndSubtitle {
             title: titleText
             subtitle: subtitleText
         }
     }
+    LeftAnchoredRow {
+        anchors.bottom: parent.bottom
+        spacing: padding
+        IconButton {
+            id: playPauseBtn
+            focus: true
+            iconName: isPlaying ? "pause" : "play"
+            onClicked: {
+                userInteraction()
+                if (isPlaying)
+                    pausePressed()
+                else
+                    playPressed()
+            }
+            onGotFocus: userInteraction()
+            KeyNavigation.tab: backBtn
+        }
+    }
+
     PassthroughCursorArea {
         anchors.fill: parent
         cursorVisible: root.opacity > 0

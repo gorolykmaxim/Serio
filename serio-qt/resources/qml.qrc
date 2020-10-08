@@ -70,8 +70,9 @@
         <file>qml/views/TvShowDetailsView.qml</file>
         <file>qml/views/TvShowPlayerView.qml</file>
         <file>qml/widgets/IconButton.qml</file>
-        <file>qml/widgets/TopShade.qml</file>
+        <file>qml/widgets/TopBottomShade.qml</file>
         <file>qml/widgets/VideoControls.qml</file>
         <file>qml/widgets/PassthroughCursorArea.qml</file>
+        <file>qml/widgets/LeftAnchoredRow.qml</file>
     </qresource>
 </RCC>

@@ -9,6 +9,8 @@ View {
     onCreated: {
         controls.onBackPressed.connect(() => actionRouter.trigger(ActionType.BACK, []))
         controls.onUserInteraction.connect(displayControls)
+        controls.onPlayPressed.connect(() => video.play())
+        controls.onPausePressed.connect(() => video.pause())
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
         video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
     }
@@ -16,6 +18,10 @@ View {
     function displayControls() {
         controls.opacity = 1
         hideControlsTimer.restart()
+    }
+    function hideControlsIfPlaying() {
+        if (video.playbackState === MediaPlayer.PlayingState)
+            controls.opacity = 0
     }
     Timer {
         id: watchProgressSavingTimer
@@ -26,7 +32,7 @@ View {
     Timer {
         id: hideControlsTimer
         interval: 5000
-        onTriggered: controls.opacity = 0
+        onTriggered: hideControlsIfPlaying()
     }
     Video {
         id: video
@@ -39,6 +45,7 @@ View {
         anchors.fill: parent
         titleText: tvShowPlayerViewModel.episodeName
         subtitleText: tvShowPlayerViewModel.tvShowName
+        isPlaying: video.playbackState === MediaPlayer.PlayingState
         padding: globalPadding
         opacity: 0
         Behavior on opacity {
