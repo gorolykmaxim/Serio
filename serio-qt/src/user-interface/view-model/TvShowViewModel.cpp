@@ -14,8 +14,7 @@ serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int 
       background(background),
       snackbar(snackbar),
       stack(stack) {
-    actions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false);
-    actions << new serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW);
+    populateActions(false);
 }
 
 void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
@@ -57,7 +56,10 @@ void serio::qt::TvShowViewModel::load() {
 
 void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
     auto episodes = viewer.getTvShowEpisodes(args[0].toUInt(),args[1].toUInt());
-    modifyModel([this, episodes] { episodeListModel.loadPage(episodes); });
+    modifyModel([this, episodes] {
+        populateActions(episodes.getTotalSize() > 0);
+        episodeListModel.loadPage(episodes);
+    });
 }
 
 void serio::qt::TvShowViewModel::shareCrawler() {
@@ -122,4 +124,15 @@ void serio::qt::TvShowViewModel::openTvShowDetails() {
 
 QList<serio::qt::ButtonModel*> serio::qt::TvShowViewModel::getActions() const {
     return actions;
+}
+
+void serio::qt::TvShowViewModel::populateActions(bool includePlayAction) {
+    actions.clearAndDelete();
+    emit actionsChanged();
+    if (includePlayAction) {
+        actions << new serio::qt::ButtonModel(lastWatchDate.isEmpty() ? "play" : "resume", serio::qt::ActionType::PLAY_TV_SHOW, {tvShowName});
+    }
+    actions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false);
+    actions << new serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW);
+    emit actionsChanged();
 }

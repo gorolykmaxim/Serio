@@ -13,9 +13,11 @@
 
 class TvShowViewModelTest : public ::testing::Test {
 protected:
+    const unsigned int offset = 100;
     const unsigned int pageSize = 100;
     const std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
     const serio::core::TvShow scrubs = serio::core::TvShow("Scrubs", "https://tv-show.com/thumbnail.jpg");
+    const serio::core::TvShow friends = serio::core::TvShow("Friends", scrubs.getThumbnailUrl(), serio::core::LastWatchDate(now));
     const std::vector<serio::core::Episode> episodes = {
             serio::core::Episode(1, "https://tv-show.com/episodes/episode-1.mp4", "Episode 1", serio::core::LastWatchDate(now)),
             serio::core::Episode(2, "https://tv-show.com/episodes/episode-2.mp4")
@@ -27,8 +29,22 @@ protected:
     ::testing::NiceMock<BackgroundViewModelMock> background;
     serio::qt::TvShowViewModel viewModel = serio::qt::TvShowViewModel(pageSize, 2, viewer, dialog, background,
                                                                       snackbar, stack);
+    QSignalSpy actionsSpy = QSignalSpy(&viewModel, &serio::qt::TvShowViewModel::actionsChanged);
     virtual void SetUp() {
         ON_CALL(viewer, getSelectedTvShow()).WillByDefault(::testing::Return(scrubs));
+        serio::core::ListPage<serio::core::Episode> page(offset,offset + 100, episodes);
+        ON_CALL(viewer, getTvShowEpisodes(offset, pageSize)).WillByDefault(::testing::Return(page));
+    }
+    void expectActionsToBePopulated(unsigned int actionsChangedNotifications, std::optional<QString> playButtonText = {}, const std::string& tvShowName = "") {
+        auto actions = viewModel.getActions();
+        ASSERT_EQ(playButtonText ? 3 : 2, actions.size());
+        int i = 0;
+        if (playButtonText) {
+            EXPECT_EQ(serio::qt::ButtonModel(*playButtonText, serio::qt::ActionType::PLAY_TV_SHOW, {QString::fromStdString(tvShowName)}), *actions[i++]);
+        }
+        EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false), *actions[i++]);
+        EXPECT_EQ(serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW), *actions[i]);
+        EXPECT_EQ(actionsChangedNotifications * 2, actionsSpy.count());
     }
 };
 
@@ -74,7 +90,6 @@ TEST_F(TvShowViewModelTest, shouldSetApplicationBackgroundToThumbnailImageOfSele
 }
 
 TEST_F(TvShowViewModelTest, shouldHaveLastWatchDateSetToToday) {
-    serio::core::TvShow friends("Friends", scrubs.getThumbnailUrl(), serio::core::LastWatchDate(now));
     ON_CALL(viewer, getSelectedTvShow()).WillByDefault(::testing::Return(friends));
     viewModel.load();
     EXPECT_EQ(QString("Last watched today"), viewModel.getLastWatchDate());
@@ -88,10 +103,6 @@ TEST_F(TvShowViewModelTest, shouldHaveLastWatchDateSetToYesterday) {
 }
 
 TEST_F(TvShowViewModelTest, shouldLoadSpecifiedPageOfEpisodes) {
-    viewModel.load();
-    auto offset = 100;
-    serio::core::ListPage<serio::core::Episode> page(offset,offset + 100, episodes);
-    ON_CALL(viewer, getTvShowEpisodes(offset, pageSize)).WillByDefault(::testing::Return(page));
     viewModel.loadEpisodes(QVariantList({offset, pageSize}));
     auto episodeList = viewModel.getEpisodeList();
     EXPECT_EQ(episodes[0].getName(), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
@@ -152,8 +163,29 @@ TEST_F(TvShowViewModelTest, shouldOpenTvShowDetailsView) {
     viewModel.openTvShowDetails();
 }
 
-TEST_F(TvShowViewModelTest, shouldReturnListOfActions) {
-    auto actions = viewModel.getActions();
-    EXPECT_EQ(serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false), *actions[0]);
-    EXPECT_EQ(serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW), *actions[1]);
+TEST_F(TvShowViewModelTest, shouldHaveBackAndDetailsActionsByDefault) {
+    expectActionsToBePopulated(0);
+}
+
+TEST_F(TvShowViewModelTest, shouldReturnListOfActionsWithoutPlayButtonSinceTvShowHasNoEpisodes) {
+    auto offset = 0;
+    serio::core::ListPage<serio::core::Episode> emptyPage(offset, 0, {});
+    ON_CALL(viewer, getTvShowEpisodes(offset, pageSize)).WillByDefault(::testing::Return(emptyPage));
+    viewModel.loadEpisodes(QVariantList({offset, pageSize}));
+    viewModel.loadEpisodes(QVariantList({offset, pageSize}));
+    expectActionsToBePopulated(2);
+}
+
+TEST_F(TvShowViewModelTest, shouldReturnListOfActionsWithPlayButtonSinceTvShowHasNotBeenWatchedYet) {
+    viewModel.load();
+    viewModel.loadEpisodes(QVariantList({offset, pageSize}));
+    viewModel.loadEpisodes(QVariantList({offset, pageSize}));
+    expectActionsToBePopulated(2, "play", scrubs.getName());
+}
+
+TEST_F(TvShowViewModelTest, shouldReturnListOfActionsWithResumeButtonSinceTvShowHasBeenWatchedInThePast) {
+    ON_CALL(viewer, getSelectedTvShow()).WillByDefault(::testing::Return(friends));
+    viewModel.load();
+    viewModel.loadEpisodes(QVariantList({offset, pageSize}));
+    expectActionsToBePopulated(1, "resume", friends.getName());
 }

@@ -19,7 +19,7 @@ class TvShowViewModel : public ViewModel {
     Q_PROPERTY(QString lastWatchDate READ getLastWatchDate NOTIFY selectedTvShowChanged)
     Q_PROPERTY(QString thumbnailUrl READ getThumbnailUrl NOTIFY selectedTvShowChanged)
     Q_PROPERTY(EpisodeListModel* episodeList READ getEpisodeList CONSTANT)
-    Q_PROPERTY(QList<ButtonModel*> actions READ getActions CONSTANT)
+    Q_PROPERTY(QList<ButtonModel*> actions READ getActions NOTIFY actionsChanged)
 public:
     TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer& viewer,
                     DialogViewModel& dialog, BackgroundViewModel& background, SnackbarViewModel& snackbar,
@@ -41,6 +41,7 @@ public:
     [[nodiscard]] QList<ButtonModel*> getActions() const;
 signals:
     void selectedTvShowChanged() const;
+    void actionsChanged() const;
 private:
     EpisodeListModel episodeListModel;
     QString tvShowName;
@@ -53,6 +54,7 @@ private:
     SnackbarViewModel& snackbar;
     StackOfViews& stack;
     void loadTvShow();
+    void populateActions(bool includePlayAction);
 };
 
 }
