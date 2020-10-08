@@ -36,6 +36,10 @@ serio::core::WatchProgress serio::core::Episode::getWatchProgress() const {
     return watchProgress;
 }
 
+unsigned int serio::core::Episode::getNextEpisodeId() const {
+    return id + 1;
+}
+
 bool serio::core::Episode::operator==(const serio::core::Episode &rhs) const {
     return id == rhs.id &&
            name == rhs.name &&

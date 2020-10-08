@@ -16,7 +16,7 @@ private:
     std::optional<Player> player;
     TvShowStorage& storage;
     [[nodiscard]] Episode getEpisodeOrFail(const std::string& tvShowName, unsigned int episodeId);
-    [[nodiscard]] Player setPlayer(Player newPlayer);
+    [[nodiscard]] Player setPlayer(Player&& newPlayer);
 };
 
 class TvShowEpisodeDoesNotExistError : public std::logic_error {

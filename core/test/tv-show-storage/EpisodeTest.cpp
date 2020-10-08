@@ -75,3 +75,8 @@ TEST_F(EpisodeTest, shouldHaveSpecifiedWatchProgress) {
     serio::core::Episode episode(2, expectedVideoUrl, "Episode 2", lastWatchDate, progress);
     EXPECT_EQ(progress, episode.getWatchProgress());
 }
+
+TEST_F(EpisodeTest, shouldReturnIdOfTheNextEpisode) {
+    EXPECT_EQ(2, serio::core::Episode(1, expectedVideoUrl).getNextEpisodeId());
+    EXPECT_EQ(3, serio::core::Episode(2, expectedVideoUrl).getNextEpisodeId());
+}

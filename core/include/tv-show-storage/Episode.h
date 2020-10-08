@@ -16,6 +16,7 @@ public:
     [[nodiscard]] std::string getVideoUrl() const;
     [[nodiscard]] std::optional<LastWatchDate> getLastWatchDate() const;
     [[nodiscard]] WatchProgress getWatchProgress() const;
+    [[nodiscard]] unsigned int getNextEpisodeId() const;
     bool operator==(const Episode &rhs) const;
     bool operator!=(const Episode &rhs) const;
 private:

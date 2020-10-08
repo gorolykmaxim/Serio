@@ -22,7 +22,7 @@ serio::core::Player serio::core::TvShowPlayer::playTvShow(const std::string &tvS
     if (lastWatchedEpisode && !lastWatchedEpisode->getWatchProgress().isComplete()) {
         return setPlayer(serio::core::Player(tvShowName, *lastWatchedEpisode, false));
     } else if (lastWatchedEpisode) {
-        return setPlayer(serio::core::Player(tvShowName, getEpisodeOrFail(tvShowName, lastWatchedEpisode->getId() + 1)));
+        return setPlayer(serio::core::Player(tvShowName, getEpisodeOrFail(tvShowName, lastWatchedEpisode->getNextEpisodeId())));
     } else {
         return setPlayer(serio::core::Player(tvShowName, getEpisodeOrFail(tvShowName, 1)));
     }
@@ -37,8 +37,8 @@ serio::core::Episode serio::core::TvShowPlayer::getEpisodeOrFail(const std::stri
     }
 }
 
-serio::core::Player serio::core::TvShowPlayer::setPlayer(serio::core::Player newPlayer) {
-    player = std::move(newPlayer);
+serio::core::Player serio::core::TvShowPlayer::setPlayer(serio::core::Player&& newPlayer) {
+    player = newPlayer;
     return *player;
 }
 
