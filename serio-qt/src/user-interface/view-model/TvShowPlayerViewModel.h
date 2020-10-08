@@ -23,6 +23,8 @@ public:
     void setProgress(const QVariantList& args);
     void playTvShow(const QVariantList& args);
     [[nodiscard]] double getOffsetPercentage() const;
+public slots:
+    [[nodiscard]] QString formatDuration(unsigned int duration) const;
 signals:
     void playingEpisodeChanged() const;
 private:

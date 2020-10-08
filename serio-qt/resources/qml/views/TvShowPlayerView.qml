@@ -46,6 +46,9 @@ View {
         titleText: tvShowPlayerViewModel.episodeName
         subtitleText: tvShowPlayerViewModel.tvShowName
         isPlaying: video.playbackState === MediaPlayer.PlayingState
+        position: tvShowPlayerViewModel.formatDuration(video.position)
+        duration: tvShowPlayerViewModel.formatDuration(video.duration)
+        progress: video.position / video.duration
         padding: globalPadding
         opacity: 0
         Behavior on opacity {

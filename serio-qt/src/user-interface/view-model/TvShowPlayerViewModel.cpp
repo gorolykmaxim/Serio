@@ -51,3 +51,10 @@ void serio::qt::TvShowPlayerViewModel::play(serio::core::Player &&newPlayer) {
 double serio::qt::TvShowPlayerViewModel::getOffsetPercentage() const {
     return player ? player->getStartPercentage() : 0;
 }
+
+QString serio::qt::TvShowPlayerViewModel::formatDuration(unsigned int duration) const {
+    std::chrono::milliseconds durationMs(duration);
+    std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(durationMs);
+    std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(durationMs - minutes);
+    return QString::number(minutes.count()) + ":" + QString::number(seconds.count()).rightJustified(2, QLatin1Char('0'));
+}

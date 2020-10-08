@@ -68,3 +68,9 @@ TEST_F(TvShowPlayerViewModelTest, shouldPlaySpecifiedTvShow) {
     viewModel.playTvShow(QVariantList({tvShowName}));
     expectEpisodeToStartPlaying();
 }
+
+TEST_F(TvShowPlayerViewModelTest, shouldConvertDurationInMillisecondsIntoHumanReadableString) {
+    EXPECT_EQ("15:02", viewModel.formatDuration(std::chrono::milliseconds(std::chrono::minutes(15) + std::chrono::seconds(2)).count()).toStdString());
+    EXPECT_EQ("3:45", viewModel.formatDuration(std::chrono::milliseconds(std::chrono::minutes(3) + std::chrono::seconds(45)).count()).toStdString());
+    EXPECT_EQ("0:12", viewModel.formatDuration(std::chrono::milliseconds(std::chrono::seconds(12)).count()).toStdString());
+}

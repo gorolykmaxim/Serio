@@ -74,5 +74,6 @@
         <file>qml/widgets/VideoControls.qml</file>
         <file>qml/widgets/PassthroughCursorArea.qml</file>
         <file>qml/widgets/LeftAnchoredRow.qml</file>
+        <file>qml/widgets/VideoProgressBar.qml</file>
     </qresource>
 </RCC>

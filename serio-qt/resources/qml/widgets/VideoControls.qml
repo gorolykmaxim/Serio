@@ -5,6 +5,9 @@ Item {
     id: root
     property string titleText
     property string subtitleText
+    property string position
+    property string duration
+    property real progress
     property real padding
     property bool isPlaying
     signal backPressed()
@@ -34,7 +37,15 @@ Item {
             subtitle: subtitleText
         }
     }
+    VideoProgressBar {
+        anchors.bottom: controlsRow.top
+        spacing: padding
+        position: parent.position
+        duration: parent.duration
+        progress: parent.progress
+    }
     LeftAnchoredRow {
+        id: controlsRow
         anchors.bottom: parent.bottom
         spacing: padding
         IconButton {

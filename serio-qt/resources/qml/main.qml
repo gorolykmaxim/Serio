@@ -4,9 +4,9 @@ import 'widgets'
 
 ApplicationWindow {
     visible: true
-    width: 800
+    width: 1070
     height: 600
-    minimumWidth: 800
+    minimumWidth: 320
     minimumHeight: 600
     title: qsTr("Serio")
     Background {
