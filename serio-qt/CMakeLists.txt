@@ -3,7 +3,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Quick Concurrent Sql Network Test REQUIRED)
-qt5_add_resources(RESOURCES resources/qml.qrc resources/lib/QtMaterialDesignIcons/resources/QtMaterialIcons.qrc)
+qt5_add_resources(RESOURCES resources/qml.qrc)
 
 add_library(SerioLib STATIC
         src/Application.h

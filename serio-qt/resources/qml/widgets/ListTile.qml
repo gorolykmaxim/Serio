@@ -3,7 +3,6 @@ import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.12
 import '../animations'
-import '../../lib/QtMaterialDesignIcons/qml'
 
 ItemDelegate {
     property string title
@@ -18,10 +17,10 @@ ItemDelegate {
         padding: tilePadding
         RowLayout {
             spacing: tilePadding
-            MaterialDesignIcon {
+            MaterialIcon {
                 Layout.alignment: Qt.AlignVCenter
-                name: !tileIcon || tileIcon == "placeholder" ? "bug" : tileIcon
                 color: !tileIcon || tileIcon == "placeholder" ? "transparent" : Material.accent
+                iconName: !tileIcon || tileIcon == "placeholder" ? "bug_report" : tileIcon
                 visible: tileIcon
             }
             Column {

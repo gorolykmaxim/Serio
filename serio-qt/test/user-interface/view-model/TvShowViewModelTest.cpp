@@ -107,7 +107,7 @@ TEST_F(TvShowViewModelTest, shouldLoadSpecifiedPageOfEpisodes) {
     auto episodeList = viewModel.getEpisodeList();
     EXPECT_EQ(episodes[0].getName(), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
     EXPECT_EQ(episodes[0].getVideoUrl(), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::SUBTITLE).toString().toStdString());
-    EXPECT_EQ(QString("eye"), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::ICON));
+    EXPECT_EQ(QString("visibility"), episodeList->data(episodeList->index(offset), serio::qt::EpisodeListModel::Role::ICON));
     EXPECT_EQ(episodes[1].getName(), episodeList->data(episodeList->index(offset + 1), serio::qt::EpisodeListModel::Role::TITLE).toString().toStdString());
     EXPECT_EQ(episodes[1].getVideoUrl(), episodeList->data(episodeList->index(offset + 1), serio::qt::EpisodeListModel::Role::SUBTITLE).toString().toStdString());
     EXPECT_EQ(QString("placeholder"), episodeList->data(episodeList->index(offset + 1), serio::qt::EpisodeListModel::Role::ICON));

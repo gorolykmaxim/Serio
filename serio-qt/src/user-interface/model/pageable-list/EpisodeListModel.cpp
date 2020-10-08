@@ -37,7 +37,7 @@ QVariant serio::qt::EpisodeListModel::getAttributeOf(const serio::core::Episode 
     } else if (role == Role::SUBTITLE) {
         return QString::fromStdString(episode.getVideoUrl());
     } else if (role == Role::ICON) {
-        return episode.getLastWatchDate() ? "eye" : "placeholder";
+        return episode.getLastWatchDate() ? "visibility" : "placeholder";
     } else {
         throw serio::qt::InvalidListRole(role);
     }

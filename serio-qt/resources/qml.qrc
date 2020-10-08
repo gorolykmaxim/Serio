@@ -56,8 +56,8 @@
         <file>qml/views/CrawlLogView.qml</file>
         <file>qml/views/CrawlLogEntryView.qml</file>
         <file>qml/views/TvShowView.qml</file>
-        <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIcon.qml</file>
-        <file>lib/QtMaterialDesignIcons/qml/MaterialDesignIconGlyphs.js</file>
+        <file>lib/qml-material-icons/src/MaterialDesign.js</file>
+        <file>lib/qml-material-icons/fonts/MaterialIcons-Regular.ttf</file>
         <file>qml/widgets/AccentTitleAndSubtitle.qml</file>
         <file>qml/widgets/Snackbar.qml</file>
         <file>qml/views/AllTvShowsView.qml</file>
@@ -75,5 +75,6 @@
         <file>qml/widgets/PassthroughCursorArea.qml</file>
         <file>qml/widgets/LeftAnchoredRow.qml</file>
         <file>qml/widgets/VideoProgressBar.qml</file>
+        <file>qml/widgets/MaterialIcon.qml</file>
     </qresource>
 </RCC>

@@ -7,3 +7,6 @@
 [submodule "serio-qt/resources/lib/QtMaterialDesignIcons"]
 	path = serio-qt/resources/lib/QtMaterialDesignIcons
 	url = https://github.com/sthlm58/QtMaterialDesignIcons.git
+[submodule "serio-qt/resources/lib/qml-material-icons"]
+	path = serio-qt/resources/lib/qml-material-icons
+	url = https://github.com/eckertj/qml-material-icons.git

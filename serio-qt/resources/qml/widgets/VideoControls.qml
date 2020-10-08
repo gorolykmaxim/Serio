@@ -23,7 +23,7 @@ Item {
         spacing: padding
         IconButton {
             id: backBtn
-            iconName: "keyboard-backspace"
+            iconName: "keyboard_backspace"
             onClicked: {
                 userInteraction()
                 backPressed()
@@ -51,7 +51,7 @@ Item {
         IconButton {
             id: playPauseBtn
             focus: true
-            iconName: isPlaying ? "pause" : "play"
+            iconName: isPlaying ? "pause" : "play_arrow"
             onClicked: {
                 userInteraction()
                 if (isPlaying)
@@ -63,7 +63,6 @@ Item {
             KeyNavigation.tab: backBtn
         }
     }
-
     PassthroughCursorArea {
         anchors.fill: parent
         cursorVisible: root.opacity > 0
