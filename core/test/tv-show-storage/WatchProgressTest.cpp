@@ -22,7 +22,7 @@ TEST(WatchProgressTest, twoWatchProgressesWithDifferentPercentagesShouldNotBeEqu
     EXPECT_NE(serio::core::WatchProgress(42), serio::core::WatchProgress());
 }
 
-TEST(WatchProgressTest, shouldBeCompleteOn100Percent) {
-    EXPECT_TRUE(serio::core::WatchProgress(100).isComplete());
-    EXPECT_FALSE(serio::core::WatchProgress(99).isComplete());
+TEST(WatchProgressTest, shouldBeCompleteAfter90Percent) {
+    EXPECT_TRUE(serio::core::WatchProgress(90).isComplete());
+    EXPECT_FALSE(serio::core::WatchProgress(89.9).isComplete());
 }
