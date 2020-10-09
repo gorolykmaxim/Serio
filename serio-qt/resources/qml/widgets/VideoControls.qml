@@ -20,6 +20,7 @@ Item {
     signal playPreviousEpisodePressed()
     signal playNextEpisodePressed()
     signal userInteraction()
+    onOpacityChanged: opacity < 0.1 && playPauseBtn.forceActiveFocus()
     function togglePlayPause() {
         if (isPlaying)
             pausePressed()
@@ -40,7 +41,7 @@ Item {
                 userInteraction()
                 backPressed()
             }
-            onGotFocus: userInteraction()
+            Keys.onPressed: userInteraction()
             KeyNavigation.tab: playPauseBtn
             KeyNavigation.down: playPauseBtn
         }
@@ -68,7 +69,7 @@ Item {
                 userInteraction()
                 togglePlayPause()
             }
-            onGotFocus: userInteraction()
+            Keys.onPressed: userInteraction()
             KeyNavigation.right: replayBtn
             KeyNavigation.tab: replayBtn
         }
@@ -79,7 +80,7 @@ Item {
                 userInteraction()
                 replayPressed()
             }
-            onGotFocus: userInteraction()
+            Keys.onPressed: userInteraction()
             KeyNavigation.up: backBtn
             KeyNavigation.right: forwardBtn
             KeyNavigation.tab: forwardBtn
@@ -91,7 +92,7 @@ Item {
                 userInteraction()
                 forwardPressed()
             }
-            onGotFocus: userInteraction()
+            Keys.onPressed: userInteraction()
             KeyNavigation.up: backBtn
             KeyNavigation.right: previousEpisodeBtn
             KeyNavigation.tab: previousEpisodeBtn
@@ -105,7 +106,7 @@ Item {
             }
             onVisibleChanged: !visible && activeFocus && nextEpisodeBtn.forceActiveFocus()
             visible: hasPreviousEpisode
-            onGotFocus: userInteraction()
+            Keys.onPressed: userInteraction()
             KeyNavigation.up: backBtn
             KeyNavigation.right: nextEpisodeBtn
             KeyNavigation.tab: nextEpisodeBtn
@@ -119,7 +120,7 @@ Item {
             }
             onVisibleChanged: !visible && activeFocus && previousEpisodeBtn.forceActiveFocus()
             visible: hasNextEpisode
-            onGotFocus: userInteraction()
+            Keys.onPressed: userInteraction()
             KeyNavigation.up: backBtn
             KeyNavigation.tab: backBtn
         }

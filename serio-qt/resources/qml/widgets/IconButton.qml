@@ -5,7 +5,6 @@ import "../../lib/qml-material-icons/src/MaterialDesign.js" as MD
 
 RoundButton {
     property string iconName
-    signal gotFocus()
     font.family: materialFont.name
     font.pixelSize: 28
     text: MD.icons[iconName]
@@ -13,7 +12,6 @@ RoundButton {
     Material.foreground: Material.accent
     Keys.onReturnPressed: clicked()
     Keys.onEnterPressed: clicked()
-    onFocusChanged: activeFocus && gotFocus()
     FontLoader {
         id: materialFont
         source: "qrc:/lib/qml-material-icons/fonts/MaterialIcons-Regular.ttf"
