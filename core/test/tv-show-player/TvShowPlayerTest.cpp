@@ -22,6 +22,8 @@ protected:
             .WillByDefault(::testing::Return(std::optional(episode)));
         ON_CALL(storage, getEpisodeOfTvShowWithName(tvShowName, firstEpisode.getId()))
             .WillByDefault(::testing::Return(std::optional(firstEpisode)));
+        ON_CALL(storage, getEpisodeOfTvShowWithName(tvShowName, lastWatchedEpisode.getId()))
+            .WillByDefault(::testing::Return(std::optional(lastWatchedEpisode)));
         ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
             .WillByDefault(::testing::Return(std::optional(lastWatchedEpisode)));
     }
@@ -103,4 +105,87 @@ TEST_F(TvShowPlayerTest, shouldPlayEpisodeNextToTheLastWatchedEpisodeIfTheLatter
     EXPECT_EQ(episode, player.getPlayingEpisode());
     EXPECT_EQ(0, player.getStartPercentage());
     expectTvShowPlayerToBePlaying();
+}
+
+TEST_F(TvShowPlayerTest, shouldHaveEpisodePriorToNonFirstEpisode) {
+    auto player = tvShowPlayer.playEpisodeOfTvShow(tvShowName, firstEpisode.getId());
+    EXPECT_FALSE(player.hasPreviousEpisode());
+    player = tvShowPlayer.playEpisodeOfTvShow(tvShowName, episode.getId());
+    EXPECT_TRUE(player.hasPreviousEpisode());
+}
+
+TEST_F(TvShowPlayerTest, specificallyPlayedFirstEpisodeShouldHaveNextEpisode) {
+    auto player = tvShowPlayer.playEpisodeOfTvShow(tvShowName, firstEpisode.getId());
+    EXPECT_TRUE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, specificallyPlayedLastEpisodeShouldNotHaveNextEpisode) {
+    auto player = tvShowPlayer.playEpisodeOfTvShow(tvShowName, episode.getId());
+    EXPECT_FALSE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, playedLastWatchedEpisodeShouldHaveNextEpisode) {
+    ON_CALL(storage, getEpisodeOfTvShowWithName(tvShowName, episode.getNextEpisodeId()))
+        .WillByDefault(::testing::Return(std::optional(episode)));
+    ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
+        .WillByDefault(::testing::Return(std::optional(episode)));
+    auto player = tvShowPlayer.playTvShow(tvShowName);
+    EXPECT_TRUE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, playedLastWatchedEpisodeShouldNotHaveNextEpisode) {
+    ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
+        .WillByDefault(::testing::Return(std::optional(episode)));
+    auto player = tvShowPlayer.playTvShow(tvShowName);
+    EXPECT_FALSE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, episodePlayedAfterLastWatchedEpisodeShouldBeLast) {
+    auto player = tvShowPlayer.playTvShow(tvShowName);
+    EXPECT_FALSE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, episodePlayedAfterLastWatchedEpisodeShouldNotBeLast) {
+    ON_CALL(storage, getEpisodeOfTvShowWithName(tvShowName, episode.getNextEpisodeId()))
+        .WillByDefault(::testing::Return(std::optional(episode)));
+    auto player = tvShowPlayer.playTvShow(tvShowName);
+    EXPECT_TRUE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, firstEpisodeShouldBeLast) {
+    ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
+        .WillByDefault(::testing::Return(std::optional<serio::core::Episode>()));
+    ON_CALL(storage, getEpisodeOfTvShowWithName(tvShowName, firstEpisode.getNextEpisodeId()))
+        .WillByDefault(::testing::Return(std::optional<serio::core::Episode>()));
+    auto player = tvShowPlayer.playTvShow(tvShowName);
+    EXPECT_FALSE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, firstEpisodeShouldNotBeLast) {
+    ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
+        .WillByDefault(::testing::Return(std::optional<serio::core::Episode>()));
+    auto player = tvShowPlayer.playTvShow(tvShowName);
+    EXPECT_TRUE(player.hasNextEpisode());
+}
+
+TEST_F(TvShowPlayerTest, shouldFailToPlayPreviousEpisodeIfNoEpisodeIsPlaying) {
+    EXPECT_THROW((void)tvShowPlayer.playPreviousEpisode(), std::logic_error);
+}
+
+TEST_F(TvShowPlayerTest, shouldOnlyPlayPreviousEpisodeIfTheCurrentEpisodeIsNotTheLastOne) {
+    (void)tvShowPlayer.playEpisodeOfTvShow(tvShowName, episode.getId());
+    EXPECT_EQ(lastWatchedEpisode, tvShowPlayer.playPreviousEpisode().getPlayingEpisode());
+    EXPECT_EQ(firstEpisode, tvShowPlayer.playPreviousEpisode().getPlayingEpisode());
+    EXPECT_EQ(firstEpisode, tvShowPlayer.playPreviousEpisode().getPlayingEpisode());
+}
+
+TEST_F(TvShowPlayerTest, shouldFailToPlayNextEpisodeIfNoEpisodeIsPlaying) {
+    EXPECT_THROW((void)tvShowPlayer.playNextEpisode(), std::logic_error);
+}
+
+TEST_F(TvShowPlayerTest, shouldPlayNextEpisode) {
+    (void)tvShowPlayer.playEpisodeOfTvShow(tvShowName, firstEpisode.getId());
+    EXPECT_EQ(lastWatchedEpisode, tvShowPlayer.playNextEpisode().getPlayingEpisode());
+    EXPECT_EQ(episode, tvShowPlayer.playNextEpisode().getPlayingEpisode());
+    EXPECT_THROW((void)tvShowPlayer.playNextEpisode(), std::logic_error);
 }

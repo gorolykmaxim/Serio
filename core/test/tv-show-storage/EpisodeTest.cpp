@@ -80,3 +80,13 @@ TEST_F(EpisodeTest, shouldReturnIdOfTheNextEpisode) {
     EXPECT_EQ(2, serio::core::Episode(1, expectedVideoUrl).getNextEpisodeId());
     EXPECT_EQ(3, serio::core::Episode(2, expectedVideoUrl).getNextEpisodeId());
 }
+
+TEST_F(EpisodeTest, shouldBeFirstIfIdIsOne) {
+    EXPECT_FALSE(serio::core::Episode(2, expectedVideoUrl).isFirst());
+    EXPECT_TRUE(serio::core::Episode(1, expectedVideoUrl).isFirst());
+}
+
+TEST_F(EpisodeTest, shouldReturnIdOfThePreviousEpisode) {
+    EXPECT_EQ(1, serio::core::Episode(1, expectedVideoUrl).getPreviousEpisodeId());
+    EXPECT_EQ(2, serio::core::Episode(3, expectedVideoUrl).getPreviousEpisodeId());
+}

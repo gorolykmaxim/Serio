@@ -40,6 +40,14 @@ unsigned int serio::core::Episode::getNextEpisodeId() const {
     return id + 1;
 }
 
+unsigned int serio::core::Episode::getPreviousEpisodeId() const {
+    return id == 1 ? 1 : id - 1;
+}
+
+bool serio::core::Episode::isFirst() const {
+    return id == 1;
+}
+
 bool serio::core::Episode::operator==(const serio::core::Episode &rhs) const {
     return id == rhs.id &&
            name == rhs.name &&

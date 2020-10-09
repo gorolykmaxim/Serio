@@ -12,11 +12,15 @@ public:
     [[nodiscard]] virtual Player playEpisodeOfTvShow(const std::string &tvShowName, unsigned int episodeId);
     virtual void updatePlayingEpisodeWatchProgress(WatchProgress progress);
     [[nodiscard]] virtual Player playTvShow(const std::string& tvShowName);
+    [[nodiscard]] virtual Player playPreviousEpisode();
+    [[nodiscard]] virtual Player playNextEpisode();
 private:
     std::optional<Player> player;
     TvShowStorage& storage;
+    void assertEpisodeIsPlaying() const;
     [[nodiscard]] Episode getEpisodeOrFail(const std::string& tvShowName, unsigned int episodeId);
-    [[nodiscard]] Player setPlayer(Player&& newPlayer);
+    [[nodiscard]] Player createPlayer(const std::string& tvShowName, serio::core::Episode&& episode, bool fromStart = true);
+    [[nodiscard]] Player playNextOrPreviousEpisode(bool next);
 };
 
 class TvShowEpisodeDoesNotExistError : public std::logic_error {

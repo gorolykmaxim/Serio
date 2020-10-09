@@ -17,6 +17,8 @@ public:
     [[nodiscard]] std::optional<LastWatchDate> getLastWatchDate() const;
     [[nodiscard]] WatchProgress getWatchProgress() const;
     [[nodiscard]] unsigned int getNextEpisodeId() const;
+    [[nodiscard]] unsigned int getPreviousEpisodeId() const;
+    [[nodiscard]] bool isFirst() const;
     bool operator==(const Episode &rhs) const;
     bool operator!=(const Episode &rhs) const;
 private:
