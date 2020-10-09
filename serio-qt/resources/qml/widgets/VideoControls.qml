@@ -20,6 +20,12 @@ Item {
     signal playPreviousEpisodePressed()
     signal playNextEpisodePressed()
     signal userInteraction()
+    function togglePlayPause() {
+        if (isPlaying)
+            pausePressed()
+        else
+            playPressed()
+    }
     TopBottomShade {
         display: true
         anchors.fill: parent
@@ -60,10 +66,7 @@ Item {
             iconName: isPlaying ? "pause" : "play_arrow"
             onClicked: {
                 userInteraction()
-                if (isPlaying)
-                    pausePressed()
-                else
-                    playPressed()
+                togglePlayPause()
             }
             onGotFocus: userInteraction()
             KeyNavigation.right: replayBtn
@@ -127,7 +130,12 @@ Item {
         onMouseMoved: userInteraction()
     }
     TapHandler {
+        acceptedDevices: PointerDevice.AllDevices
         onTapped: userInteraction()
+    }
+    TapHandler {
+        acceptedDevices: PointerDevice.Mouse
+        onTapped: togglePlayPause()
     }
     Keys.onPressed: userInteraction()
 }
