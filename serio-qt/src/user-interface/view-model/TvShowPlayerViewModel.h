@@ -13,6 +13,8 @@ class TvShowPlayerViewModel : public ViewModel {
     Q_PROPERTY(QString tvShowName READ getTvShowName NOTIFY playingEpisodeChanged)
     Q_PROPERTY(QString episodeName READ getEpisodeName NOTIFY playingEpisodeChanged)
     Q_PROPERTY(double offsetPercentage READ getOffsetPercentage NOTIFY playingEpisodeChanged)
+    Q_PROPERTY(bool hasPreviousEpisode READ hasPreviousEpisode NOTIFY playingEpisodeChanged)
+    Q_PROPERTY(bool hasNextEpisode READ hasNextEpisode NOTIFY playingEpisodeChanged)
 public:
     TvShowPlayerViewModel(core::TvShowPlayer& tvShowPlayer, StackOfViews& stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
@@ -23,6 +25,10 @@ public:
     void setProgress(const QVariantList& args);
     void playTvShow(const QVariantList& args);
     [[nodiscard]] double getOffsetPercentage() const;
+    [[nodiscard]] bool hasPreviousEpisode() const;
+    [[nodiscard]] bool hasNextEpisode() const;
+    void playPreviousEpisode();
+    void playNextEpisode();
 public slots:
     [[nodiscard]] QString formatDuration(unsigned int duration) const;
 signals:
@@ -31,7 +37,7 @@ private:
     core::TvShowPlayer& tvShowPlayer;
     std::optional<core::Player> player;
     StackOfViews& stack;
-    void play(core::Player&& newPlayer);
+    void play(core::Player&& newPlayer, bool onPlayerView = true);
 };
 
 }

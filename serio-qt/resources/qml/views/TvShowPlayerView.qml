@@ -13,6 +13,8 @@ View {
         controls.onPausePressed.connect(() => video.pause())
         controls.onForwardPressed.connect(() => video.seek(video.position + 30000))
         controls.onReplayPressed.connect(() => video.seek(video.position - 30000))
+        controls.onPlayPreviousEpisodePressed.connect(() => actionRouter.trigger(ActionType.PLAY_PREVIOUS_EPISODE, []))
+        controls.onPlayNextEpisodePressed.connect(() => actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, []))
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
         video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
     }
@@ -51,6 +53,8 @@ View {
         position: tvShowPlayerViewModel.formatDuration(video.position)
         duration: tvShowPlayerViewModel.formatDuration(video.duration)
         progress: video.position / video.duration
+        hasPreviousEpisode: tvShowPlayerViewModel.hasPreviousEpisode
+        hasNextEpisode: tvShowPlayerViewModel.hasNextEpisode
         padding: globalPadding
         opacity: 0
         Behavior on opacity {

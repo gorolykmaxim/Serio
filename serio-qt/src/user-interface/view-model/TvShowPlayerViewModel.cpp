@@ -11,6 +11,8 @@ void serio::qt::TvShowPlayerViewModel::initialize(serio::qt::ActionRouter &route
     router.registerAction(ActionType::PLAY_TV_SHOW, [this] (const auto& args) { playTvShow(args); });
     router.registerAction(ActionType::PLAY_EPISODE_OF_TV_SHOW, [this] (const auto& args) { playEpisodeOfTvShow(args); });
     router.registerAction(ActionType::SET_PLAYING_EPISODE_PROGRESS, [this] (const auto& args) { setProgress(args); });
+    router.registerAction(ActionType::PLAY_PREVIOUS_EPISODE, [this] (const auto& args) { playPreviousEpisode(); });
+    router.registerAction(ActionType::PLAY_NEXT_EPISODE, [this] (const auto& args) { playNextEpisode(); });
 }
 
 void serio::qt::TvShowPlayerViewModel::playEpisodeOfTvShow(const QVariantList& args) {
@@ -42,14 +44,32 @@ void serio::qt::TvShowPlayerViewModel::playTvShow(const QVariantList &args) {
     play(tvShowPlayer.playTvShow(args[0].toString().toStdString()));
 }
 
-void serio::qt::TvShowPlayerViewModel::play(serio::core::Player &&newPlayer) {
+void serio::qt::TvShowPlayerViewModel::play(serio::core::Player &&newPlayer, bool openPlayerView) {
     player = newPlayer;
     emit playingEpisodeChanged();
-    stack.pushView(tvShowPlayerView);
+    if (openPlayerView) {
+        stack.pushView(tvShowPlayerView);
+    }
 }
 
 double serio::qt::TvShowPlayerViewModel::getOffsetPercentage() const {
     return player ? player->getStartPercentage() : 0;
+}
+
+bool serio::qt::TvShowPlayerViewModel::hasPreviousEpisode() const {
+    return player && player->hasPreviousEpisode();
+}
+
+bool serio::qt::TvShowPlayerViewModel::hasNextEpisode() const {
+    return player && player->hasNextEpisode();
+}
+
+void serio::qt::TvShowPlayerViewModel::playPreviousEpisode() {
+    play(tvShowPlayer.playPreviousEpisode(), false);
+}
+
+void serio::qt::TvShowPlayerViewModel::playNextEpisode() {
+    play(tvShowPlayer.playNextEpisode(), false);
 }
 
 QString serio::qt::TvShowPlayerViewModel::formatDuration(unsigned int duration) const {

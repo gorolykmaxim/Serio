@@ -10,11 +10,15 @@ Item {
     property real progress
     property real padding
     property bool isPlaying
+    property bool hasPreviousEpisode
+    property bool hasNextEpisode
     signal backPressed()
     signal playPressed()
     signal pausePressed()
     signal forwardPressed()
     signal replayPressed()
+    signal playPreviousEpisodePressed()
+    signal playNextEpisodePressed()
     signal userInteraction()
     TopBottomShade {
         display: true
@@ -84,6 +88,34 @@ Item {
                 userInteraction()
                 forwardPressed()
             }
+            onGotFocus: userInteraction()
+            KeyNavigation.up: backBtn
+            KeyNavigation.right: previousEpisodeBtn
+            KeyNavigation.tab: previousEpisodeBtn
+        }
+        IconButton {
+            id: previousEpisodeBtn
+            iconName: "skip_previous"
+            onClicked: {
+                userInteraction()
+                playPreviousEpisodePressed()
+            }
+            onVisibleChanged: !visible && activeFocus && nextEpisodeBtn.forceActiveFocus()
+            visible: hasPreviousEpisode
+            onGotFocus: userInteraction()
+            KeyNavigation.up: backBtn
+            KeyNavigation.right: nextEpisodeBtn
+            KeyNavigation.tab: nextEpisodeBtn
+        }
+        IconButton {
+            id: nextEpisodeBtn
+            iconName: "skip_next"
+            onClicked: {
+                userInteraction()
+                playNextEpisodePressed()
+            }
+            onVisibleChanged: !visible && activeFocus && previousEpisodeBtn.forceActiveFocus()
+            visible: hasNextEpisode
             onGotFocus: userInteraction()
             KeyNavigation.up: backBtn
             KeyNavigation.tab: backBtn
