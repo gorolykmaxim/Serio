@@ -31,6 +31,7 @@ public:
     QList<ButtonModel*> getActions();
     void selectAction(const QString& actionName);
     TvShowListModel* getTvShowList();
+    void openAllTvShowsView();
 signals:
     void actionsChanged() const;
     void selectedListChanged() const;

@@ -25,6 +25,7 @@ void serio::qt::AllTvShowsViewModel::initialize(serio::qt::ActionRouter &router,
     router.registerAction(ActionType::LOAD_WATCHED_TV_SHOWS_LIST_PAGE, [this] (const auto& args) { loadWatchedShows(args); });
     router.registerAction(ActionType::OPEN_TV_SHOW_VIEW, [this] (const auto& args) { openTvShowView(args); });
     router.registerAction(ActionType::LOAD_FIRST_PAGE_OF_TV_SHOWS, [this] (const auto& args) { loadFirstPage(); });
+    router.registerAction(ActionType::GO_TO_ALL_TV_SHOWS, [this] (const auto& args) { openAllTvShowsView(); });
     connect(getTvShowList(allTvShowsAction), &serio::qt::TvShowListModel::requestPageLoad,
             this, [&router] (auto offset, auto limit) { router.trigger(serio::qt::ActionType::LOAD_ALL_TV_SHOWS_LIST_PAGE, QVariantList({offset, limit})); });
     connect(getTvShowList(watchedAction), &serio::qt::TvShowListModel::requestPageLoad,
@@ -100,4 +101,9 @@ serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getTvShowList() {
 
 serio::qt::TvShowListModel *serio::qt::AllTvShowsViewModel::getTvShowList(const QString &listType) {
     return listTypeToListModel[listType].get();
+}
+
+void serio::qt::AllTvShowsViewModel::openAllTvShowsView() {
+    stack.popAllViews();
+    selectAction(allTvShowsAction);
 }

@@ -178,3 +178,14 @@ TEST_F(AllTvShowsViewModelTest, shouldNotAutomaticallySwitchToWatchedTvShowsEver
     viewModel.loadWatchedShows(QVariantList({0, pageSize}));
     expectActionToBeHighlighted(serio::qt::AllTvShowsViewModel::allTvShowsAction);
 }
+
+TEST_F(AllTvShowsViewModelTest, shouldOpenAllTvShowsViewWhileSelectingAllTvShowsTab) {
+    viewModel.loadWatchedShows(QVariantList({0, pageSize}));
+    viewModel.loadAllShows(QVariantList({0, pageSize}));
+    QSignalSpy tvShowListSpy(&viewModel, &serio::qt::AllTvShowsViewModel::selectedListChanged);
+    EXPECT_CALL(stack, popAllViews());
+    viewModel.openAllTvShowsView();
+    EXPECT_EQ(page.getTotalSize(), viewModel.getTvShowList()->rowCount(index));
+    EXPECT_EQ(1, tvShowListSpy.count());
+    expectActionToBeHighlighted(serio::qt::AllTvShowsViewModel::allTvShowsAction);
+}

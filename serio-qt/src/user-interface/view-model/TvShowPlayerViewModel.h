@@ -4,6 +4,7 @@
 #include <user-interface/StackOfViews.h>
 #include <tv-show-player/TvShowPlayer.h>
 #include "ViewModel.h"
+#include "DialogViewModel.h"
 
 namespace serio::qt {
 
@@ -16,7 +17,7 @@ class TvShowPlayerViewModel : public ViewModel {
     Q_PROPERTY(bool hasPreviousEpisode READ hasPreviousEpisode NOTIFY playingEpisodeChanged)
     Q_PROPERTY(bool hasNextEpisode READ hasNextEpisode NOTIFY playingEpisodeChanged)
 public:
-    TvShowPlayerViewModel(core::TvShowPlayer& tvShowPlayer, StackOfViews& stack);
+    TvShowPlayerViewModel(core::TvShowPlayer& tvShowPlayer, DialogViewModel& dialog, StackOfViews& stack);
     void initialize(ActionRouter& router, QQmlApplicationEngine& engine);
     void playEpisodeOfTvShow(const QVariantList& args);
     [[nodiscard]] QString getEpisodeVideoUrl() const;
@@ -29,15 +30,19 @@ public:
     [[nodiscard]] bool hasNextEpisode() const;
     void playPreviousEpisode();
     void playNextEpisode();
+    void rewatchCurrentTvShow();
 public slots:
     [[nodiscard]] QString formatDuration(unsigned int duration) const;
 signals:
     void playingEpisodeChanged() const;
 private:
     core::TvShowPlayer& tvShowPlayer;
+    QString tvShowName;
     std::optional<core::Player> player;
+    DialogViewModel& dialog;
     StackOfViews& stack;
-    void play(core::Player&& newPlayer, bool onPlayerView = true);
+    void play(core::Player&& newPlayer);
+    void displayTvShowIsOverDialog();
 };
 
 }

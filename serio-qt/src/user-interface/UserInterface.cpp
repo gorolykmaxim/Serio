@@ -21,7 +21,7 @@ serio::qt::UserInterface::UserInterface(serio::qt::QHttpClient& httpClient,
           crawlerEditorViewModel(tvShowCrawlerEditor, stack),
           crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
           tvShowViewModel(100, 2, viewer, dialog, background, snackbar, stack),
-          tvShowPlayerViewModel(tvShowPlayer, stack) {
+          tvShowPlayerViewModel(tvShowPlayer, dialog, stack) {
     httpClient.assignTo(engine);
     loadFonts();
 }
