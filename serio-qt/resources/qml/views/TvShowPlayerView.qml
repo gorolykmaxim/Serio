@@ -17,6 +17,7 @@ View {
         controls.onPlayNextEpisodePressed.connect(() => actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, []))
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
         video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
+        video.onStatusChanged.connect(() => video.status === MediaPlayer.EndOfMedia && actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, []))
     }
     onDisplayed: displayControls()
     function displayControls() {
