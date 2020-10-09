@@ -62,6 +62,15 @@ void serio::core::TvShowPlayer::assertEpisodeIsPlaying() const {
     }
 }
 
+bool serio::core::TvShowPlayer::isTvShowWatchComplete(const std::string& tvShowName) {
+    auto lastWatchedEpisode = storage.getLastWatchedEpisodeOfTvShow(tvShowName);
+    if (!lastWatchedEpisode || !lastWatchedEpisode->getWatchProgress().isComplete()) {
+        return false;
+    } else {
+        return !storage.getEpisodeOfTvShowWithName(tvShowName, lastWatchedEpisode->getNextEpisodeId());
+    }
+}
+
 serio::core::TvShowEpisodeDoesNotExistError::TvShowEpisodeDoesNotExistError(const std::string &tvShowName, unsigned int episodeId)
     : std::logic_error("Episode " + std::to_string(episodeId) + " of tv show " + tvShowName + " does not exist") {}
 

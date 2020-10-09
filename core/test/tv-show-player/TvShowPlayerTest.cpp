@@ -189,3 +189,21 @@ TEST_F(TvShowPlayerTest, shouldPlayNextEpisode) {
     EXPECT_EQ(episode, tvShowPlayer.playNextEpisode().getPlayingEpisode());
     EXPECT_THROW((void)tvShowPlayer.playNextEpisode(), std::logic_error);
 }
+
+TEST_F(TvShowPlayerTest, notWatchedTvShowShouldNotBeComplete) {
+    ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
+        .WillByDefault(::testing::Return(std::optional<serio::core::Episode>()));
+    EXPECT_FALSE(tvShowPlayer.isTvShowWatchComplete(tvShowName));
+}
+
+TEST_F(TvShowPlayerTest, tvShowWithLastEpisodeNotCompletelyWatchedIsNotComplete) {
+    ON_CALL(storage, getLastWatchedEpisodeOfTvShow(tvShowName))
+        .WillByDefault(::testing::Return(std::optional(episode)));
+    EXPECT_FALSE(tvShowPlayer.isTvShowWatchComplete(tvShowName));
+}
+
+TEST_F(TvShowPlayerTest, tvShowWithLastEpisodeCompletelyWatchedIsComplete) {
+    ON_CALL(storage, getEpisodeOfTvShowWithName(tvShowName, lastWatchedEpisode.getNextEpisodeId()))
+        .WillByDefault(::testing::Return(std::optional<serio::core::Episode>()));
+    EXPECT_TRUE(tvShowPlayer.isTvShowWatchComplete(tvShowName));
+}

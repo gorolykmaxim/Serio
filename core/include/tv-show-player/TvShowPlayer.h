@@ -14,6 +14,7 @@ public:
     [[nodiscard]] virtual Player playTvShow(const std::string& tvShowName);
     [[nodiscard]] virtual Player playPreviousEpisode();
     [[nodiscard]] virtual Player playNextEpisode();
+    [[nodiscard]] virtual bool isTvShowWatchComplete(const std::string& tvShowName);
 private:
     std::optional<Player> player;
     TvShowStorage& storage;

@@ -14,6 +14,7 @@ public:
     MOCK_METHOD(serio::core::Player, playTvShow, (const std::string&), (override));
     MOCK_METHOD(serio::core::Player, playPreviousEpisode, (), (override));
     MOCK_METHOD(serio::core::Player, playNextEpisode, (), (override));
+    MOCK_METHOD(bool, isTvShowWatchComplete, (const std::string&), (override));
 };
 
 #endif //SERIO_TVSHOWPLAYERMOCK_H
