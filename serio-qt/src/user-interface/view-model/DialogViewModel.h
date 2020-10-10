@@ -18,7 +18,7 @@ class DialogViewModel : public ViewModel {
 public:
     explicit DialogViewModel(StackOfViews& stack);
     void initialize(QQmlApplicationEngine& engine);
-    virtual void display(const DialogModel& model);
+    virtual void display(const DialogModel& model, bool replaceCurrentView = false);
     [[nodiscard]] QString getTitle() const;
     [[nodiscard]] QString getMessage() const;
     [[nodiscard]] QString getTopButtonText() const;

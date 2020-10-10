@@ -53,6 +53,7 @@ enum ActionType {
     PLAY_NEXT_EPISODE,
     RE_WATCH_CURRENT_TV_SHOW,
     GO_TO_ALL_TV_SHOWS,
+    DISPLAY_ERROR,
     BACK
 };
 Q_ENUMS(ActionType)

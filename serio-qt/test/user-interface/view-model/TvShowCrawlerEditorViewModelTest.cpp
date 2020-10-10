@@ -47,7 +47,7 @@ protected:
     void expectTvShowCrawlerOverrideDialogToBeDisplayed() {
         ON_CALL(editor, willOverrideExistingTvShow()).WillByDefault(::testing::Return(true));
         EXPECT_CALL(editor, saveAndRunTvShowCrawler()).Times(0);
-        EXPECT_CALL(dialog, display(dialogModel));
+        EXPECT_CALL(dialog, display(dialogModel, false));
     }
 };
 

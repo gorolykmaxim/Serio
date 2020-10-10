@@ -53,7 +53,7 @@ protected:
         model.setTopButtonText("rewatch");
         model.setBottomButtonAction(serio::qt::ActionType::GO_TO_ALL_TV_SHOWS);
         model.setBottomButtonText("watch another");
-        EXPECT_CALL(dialog, display(model));
+        EXPECT_CALL(dialog, display(model, false));
     }
 };
 

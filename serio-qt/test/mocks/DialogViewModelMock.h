@@ -9,7 +9,7 @@ class DialogViewModelMock : public serio::qt::DialogViewModel {
 public:
     inline static StackOfViewsMock instance;
     DialogViewModelMock() : DialogViewModel(instance) {}
-    MOCK_METHOD(void, display, (const serio::qt::DialogModel&), (override));
+    MOCK_METHOD(void, display, (const serio::qt::DialogModel&, bool), (override));
 };
 
 #endif //SERIO_DIALOGVIEWMODELMOCK_H

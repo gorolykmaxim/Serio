@@ -132,7 +132,7 @@ TEST_F(TvShowViewModelTest, shouldConfirmIfUserWantsToClearWatchHistoryOfSelecte
     serio::qt::DialogModel model("Clear Watch History",
                                  "You are about to clear your watch history of '" + QString::fromStdString(scrubs.getName()) + "'.");
     model.setTopButtonAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY);
-    EXPECT_CALL(dialog, display(model));
+    EXPECT_CALL(dialog, display(model, false));
     viewModel.confirmClearWatchHistory();
 }
 
@@ -148,7 +148,7 @@ TEST_F(TvShowViewModelTest, shouldConfirmIfUserWantsToDeleteSelectedTvShow) {
     serio::qt::DialogModel model("Delete TV Show",
                                  "You are about to delete '" + QString::fromStdString(scrubs.getName()) + "'");
     model.setTopButtonAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW);
-    EXPECT_CALL(dialog, display(model));
+    EXPECT_CALL(dialog, display(model, false));
     viewModel.confirmDeleteTvShow();
 }
 

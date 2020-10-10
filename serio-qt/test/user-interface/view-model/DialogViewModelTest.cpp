@@ -96,3 +96,8 @@ TEST_F(DialogViewModelTest, shouldNotifyWatchersAboutChangesInDialogView) {
     dialog.display(model);
     EXPECT_EQ(1, spy.count());
 }
+
+TEST_F(DialogViewModelTest, shouldDisplayDialogInPlaceOfTheCurrentView) {
+    EXPECT_CALL(stack, replaceCurrentViewWith(serio::qt::dialogView));
+    dialog.display(model, true);
+}

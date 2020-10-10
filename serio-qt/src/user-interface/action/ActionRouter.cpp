@@ -24,7 +24,7 @@ void serio::qt::ActionRouter::trigger(int actionType, const QVariantList& argume
             typeToAction[static_cast<ActionType>(actionType)](arguments);
         } catch (std::runtime_error& e) {
             if (errorAction) {
-                errorAction.value()(QVariantList({QString(e.what())}));
+                errorAction.value()(QVariantList({QString(e.what()), false}));
             }
         }
     });

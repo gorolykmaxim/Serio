@@ -8,11 +8,15 @@ void serio::qt::DialogViewModel::initialize(QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("dialogViewModel", this);
 }
 
-void serio::qt::DialogViewModel::display(const serio::qt::DialogModel& model) {
-    modifyModel([this, model] {
+void serio::qt::DialogViewModel::display(const serio::qt::DialogModel& model, bool replaceCurrentView) {
+    modifyModel([this, model, replaceCurrentView] {
         dialogModel = model;
         emit dialogChanged();
-        stack.pushView(dialogView);
+        if (replaceCurrentView) {
+            stack.replaceCurrentViewWith(dialogView);
+        } else {
+            stack.pushView(dialogView);
+        }
     });
 }
 
