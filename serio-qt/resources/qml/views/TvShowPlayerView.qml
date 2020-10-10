@@ -18,7 +18,7 @@ View {
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
         video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
         video.onStatusChanged.connect(() => video.status === MediaPlayer.EndOfMedia && actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, []))
-        video.onErrorChanged.connect(() => actionRouter.trigger(ActionType.DISPLAY_ERROR, [video.errorString, true]))
+        video.onErrorChanged.connect(() => actionRouter.trigger(ActionType.DISPLAY_ERROR, ["Failed to play " + tvShowPlayerViewModel.episodeName + " of " + tvShowPlayerViewModel.tvShowName + ": " + (video.errorString || "Unknown error"), true]))
     }
     onDisplayed: displayControls()
     function displayControls() {
