@@ -66,7 +66,7 @@ void serio::qt::DatabaseStorage::saveTvShowCrawler(const std::string &tvShowName
 
 std::string serio::qt::DatabaseStorage::getDatabaseFilePath() const {
     auto home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    return QDir(home).filePath(".serio.dev.db").toStdString();
+    return QDir(home).filePath(".serio.db").toStdString();
 }
 
 void serio::qt::DatabaseStorage::openDatabaseConnection(const std::string& storageUrl) const {
