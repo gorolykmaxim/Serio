@@ -32,7 +32,10 @@ void serio::qt::DatabaseTvShowCrawlerStorage::createNewVersion() const {
 }
 
 void serio::qt::DatabaseTvShowCrawlerStorage::migrateRecordsFromOldVersion() const {
-    createAndExec("INSERT INTO TV_SHOW_CRAWLER SELECT SHOW_ID, CRAWLER FROM SHOW_CRAWLER");
+    createAndExec("INSERT INTO TV_SHOW_CRAWLER "
+                  "SELECT S.NAME, C.CRAWLER "
+                  "FROM SHOW_CRAWLER C "
+                  "LEFT JOIN SHOW S ON C.SHOW_ID = S.ID");
 }
 
 void serio::qt::DatabaseTvShowCrawlerStorage::dropOldVersion() const {

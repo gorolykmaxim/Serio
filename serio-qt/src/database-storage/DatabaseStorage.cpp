@@ -18,9 +18,9 @@ void serio::qt::DatabaseStorage::openDatabase(bool inMemory) const {
 void serio::qt::DatabaseStorage::initializeSchema() const {
     enableForeignKeys();
     bool migrate = isSchemaMigrationRequired();
-    tvShowStorage.initialize(migrate);
-    tvShowCrawlerStorage.initialize(migrate);
     tvShowCrawlerLogStorage.initialize(migrate);
+    tvShowCrawlerStorage.initialize(migrate);
+    tvShowStorage.initialize(migrate);
     saveCurrentStorageVersion();
 }
 

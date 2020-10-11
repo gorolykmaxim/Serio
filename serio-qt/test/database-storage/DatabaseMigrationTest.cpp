@@ -6,9 +6,9 @@
 class DatabaseMigrationTest : public ::testing::Test {
 protected:
     serio::qt::DatabaseStorage storage;
-    const QList<QVariant> crawlLogEntryRecord = {1, "tv-show", "text", "input", "output"};
-    const QList<QVariant> tvShowCrawlerRecord = {"tv-show-name", "crawler body text"};
     const QList<QVariant> tvShowRecord = {"1234", "tv show name", "https://tv-show.com/thumbnail.jpg"};
+    const QList<QVariant> crawlLogEntryRecord = {1, tvShowRecord[0], "text", "input", "output"};
+    const QList<QVariant> tvShowCrawlerRecord = {tvShowRecord[0], "crawler body text"};
     const QList<QVariant> episodeRecord = {1, tvShowRecord[0], "Episode 1", "https://tv-show.com/episode-1.mp4"};
     const QList<QVariant> episodeViewRecord = {tvShowRecord[0], episodeRecord[0], 123456, 35.5};
     virtual void SetUp() {
@@ -65,7 +65,7 @@ protected:
 
 TEST_F(DatabaseMigrationTest, shouldCreateCrawlLogEntryTableWithoutMigration) {
     storage.initializeSchema();
-    populateTable("INSERT INTO CRAWL_LOG_ENTRY VALUES(?, ?, ?, ?, ?)", {crawlLogEntryRecord});
+    populateTable("INSERT INTO CRAWL_LOG_ENTRY VALUES(?, ?, ?, ?, ?)", {{crawlLogEntryRecord[0], tvShowRecord[1], crawlLogEntryRecord[2], crawlLogEntryRecord[3], crawlLogEntryRecord[4]}});
     storage.initializeSchema();
     expectTable("CRAWL_LOG_ENTRY", {
             {0, "ID", "INTEGER", 1, "", 1},
@@ -74,15 +74,16 @@ TEST_F(DatabaseMigrationTest, shouldCreateCrawlLogEntryTableWithoutMigration) {
             {3, "STEP_INPUT_DATA", "TEXT", 0, "", 0},
             {4, "STEP_OUTPUT_DATA", "TEXT", 0, "", 0},
     });
-    expectTableData("CRAWL_LOG_ENTRY", {
-            {1, "tv-show", "text", "input", "output"}
-    });
+    expectTableData("CRAWL_LOG_ENTRY", {{crawlLogEntryRecord[0], tvShowRecord[1], crawlLogEntryRecord[2], crawlLogEntryRecord[3], crawlLogEntryRecord[4]}});
 }
 
-TEST_F(DatabaseMigrationTest, shouldMigrateExistingCrawlLogEntryTable) {
+TEST_F(DatabaseMigrationTest, shouldMigrateExistingCrawlLogEntryTableWhileSkippingEntriesThatBelongToTvShowsThatDontExistAnymore) {
+    createTable("CREATE TABLE \"SHOW\"(ID TEXT PRIMARY KEY, NAME TEXT NOT NULL, THUMBNAIL_URL TEXT NOT NULL)");
     createTable("CREATE TABLE CRAWL_LOG_ENTRY(ID INTEGER PRIMARY KEY, "
                 "SHOW_ID TEXT NOT NULL, VALUE TEXT NOT NULL, INPUT TEXT, OUTPUT TEXT)");
+    populateTable("INSERT INTO SHOW VALUES(?, ?, ?)", {tvShowRecord});
     populateTable("INSERT INTO CRAWL_LOG_ENTRY VALUES(?, ?, ?, ?, ?)", {crawlLogEntryRecord});
+    populateTable("INSERT INTO CRAWL_LOG_ENTRY VALUES(?, ?, ?, ?, ?)", {{2, "54321", crawlLogEntryRecord[2], crawlLogEntryRecord[3], crawlLogEntryRecord[4]}});
     storage.initializeSchema();
     expectTable("CRAWL_LOG_ENTRY", {
             {0, "ID", "INTEGER", 1, "", 1},
@@ -91,29 +92,31 @@ TEST_F(DatabaseMigrationTest, shouldMigrateExistingCrawlLogEntryTable) {
             {3, "STEP_INPUT_DATA", "TEXT", 0, "", 0},
             {4, "STEP_OUTPUT_DATA", "TEXT", 0, "", 0},
     });
-    expectTableData("CRAWL_LOG_ENTRY", {crawlLogEntryRecord});
+    expectTableData("CRAWL_LOG_ENTRY", {{crawlLogEntryRecord[0], tvShowRecord[1], crawlLogEntryRecord[2], crawlLogEntryRecord[3], crawlLogEntryRecord[4]}});
 }
 
 TEST_F(DatabaseMigrationTest, shouldCreateTvShowCrawlerTableWithoutMigration) {
     storage.initializeSchema();
-    populateTable("INSERT INTO TV_SHOW_CRAWLER VALUES(?, ?)", {tvShowCrawlerRecord});
+    populateTable("INSERT INTO TV_SHOW_CRAWLER VALUES(?, ?)", {{tvShowRecord[1], tvShowCrawlerRecord[1]}});
     storage.initializeSchema();
     expectTable("TV_SHOW_CRAWLER", {
             {0, "TV_SHOW_NAME", "TEXT", 1, "", 1},
             {1, "CRAWLER", "TEXT", 1, "", 0}
     });
-    expectTableData("TV_SHOW_CRAWLER", {tvShowCrawlerRecord});
+    expectTableData("TV_SHOW_CRAWLER", {{tvShowRecord[1], tvShowCrawlerRecord[1]}});
 }
 
 TEST_F(DatabaseMigrationTest, shouldMigrateExistingTvShowCrawlerTable) {
+    createTable("CREATE TABLE \"SHOW\"(ID TEXT PRIMARY KEY, NAME TEXT NOT NULL, THUMBNAIL_URL TEXT NOT NULL)");
     createTable("CREATE TABLE SHOW_CRAWLER(SHOW_ID TEXT PRIMARY KEY, CRAWLER TEXT NOT NULL)");
+    populateTable("INSERT INTO SHOW VALUES(?, ?, ?)", {tvShowRecord});
     populateTable("INSERT INTO SHOW_CRAWLER VALUES(?, ?)", {tvShowCrawlerRecord});
     storage.initializeSchema();
     expectTable("TV_SHOW_CRAWLER", {
             {0, "TV_SHOW_NAME", "TEXT", 1, "", 1},
             {1, "CRAWLER", "TEXT", 1, "", 0}
     });
-    expectTableData("TV_SHOW_CRAWLER", {tvShowCrawlerRecord});
+    expectTableData("TV_SHOW_CRAWLER", {{tvShowRecord[1], tvShowCrawlerRecord[1]}});
     expectTableDoesNotExist("SHOW_CRAWLER");
 }
 
@@ -144,7 +147,7 @@ TEST_F(DatabaseMigrationTest, shouldCreateTvShowTableGroupWithoutMigration) {
     expectTableData("EPISODE_VIEW", {{tvShowRecord[1], episodeViewRecord[1], episodeViewRecord[2], episodeViewRecord[3]}});
 }
 
-TEST_F(DatabaseMigrationTest, shouldMigrateExistingTvShowTableGroup) {
+TEST_F(DatabaseMigrationTest, shouldMigrateExistingTvShowTableGroupWhileIncreasingExistingLongLastWatchDateToLongLong) {
     createTable("CREATE TABLE \"SHOW\"(ID TEXT PRIMARY KEY, NAME TEXT NOT NULL, THUMBNAIL_URL TEXT NOT NULL)");
     createTable("CREATE TABLE EPISODE(ID INTEGER NOT NULL, SHOW_ID TEXT NOT NULL, NAME TEXT NOT NULL, VIDEO_URL TEXT NOT NULL, PRIMARY KEY(ID, SHOW_ID), CONSTRAINT FK_SHOW FOREIGN KEY (SHOW_ID) REFERENCES \"SHOW\"(ID) ON DELETE CASCADE)");
     createTable("CREATE TABLE EPISODE_VIEW(SHOW_ID TEXT NOT NULL, EPISODE_ID TEXT NOT NULL, LAST_WATCH_DATE BIGINT NOT NULL, PROGRESS REAL NOT NULL, PRIMARY KEY(SHOW_ID, EPISODE_ID))");
@@ -170,6 +173,6 @@ TEST_F(DatabaseMigrationTest, shouldMigrateExistingTvShowTableGroup) {
             {2, "LAST_WATCH_DATE", "BIGINT", 1, "", 0},
             {3, "WATCH_PROGRESS", "REAL", 1, "", 0},
     });
-    expectTableData("EPISODE_VIEW", {{tvShowRecord[1], episodeViewRecord[1], episodeViewRecord[2], episodeViewRecord[3]}});
+    expectTableData("EPISODE_VIEW", {{tvShowRecord[1], episodeViewRecord[1], episodeViewRecord[2].toUInt() * 10000, episodeViewRecord[3]}});
     expectTableDoesNotExist("SHOW");
 }

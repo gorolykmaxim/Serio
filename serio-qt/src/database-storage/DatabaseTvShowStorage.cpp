@@ -218,7 +218,7 @@ void serio::qt::DatabaseTvShowStorage::migrateRecordsFromOldVersion() const {
                   "FROM OLD_EPISODE E "
                   "LEFT JOIN SHOW S ON E.SHOW_ID = S.ID");
     createAndExec("INSERT INTO EPISODE_VIEW "
-                  "SELECT S.NAME, EV.EPISODE_ID, EV.LAST_WATCH_DATE, EV.PROGRESS "
+                  "SELECT S.NAME, EV.EPISODE_ID, EV.LAST_WATCH_DATE * 10000, EV.PROGRESS "
                   "FROM OLD_EPISODE_VIEW EV "
                   "LEFT JOIN SHOW S ON EV.SHOW_ID = S.ID");
 }

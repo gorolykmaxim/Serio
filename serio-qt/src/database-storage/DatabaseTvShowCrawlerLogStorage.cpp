@@ -64,7 +64,10 @@ void serio::qt::DatabaseTvShowCrawlerLogStorage::createNewVersion() const {
 }
 
 void serio::qt::DatabaseTvShowCrawlerLogStorage::migrateRecordsFromOldVersion() const {
-    createAndExec("INSERT INTO CRAWL_LOG_ENTRY SELECT ID, SHOW_ID, VALUE, INPUT, OUTPUT FROM OLD_CRAWL_LOG_ENTRY");
+    createAndExec("INSERT INTO CRAWL_LOG_ENTRY "
+                  "SELECT E.ID, S.NAME, E.VALUE, E.INPUT, E.OUTPUT "
+                  "FROM OLD_CRAWL_LOG_ENTRY E "
+                  "INNER JOIN SHOW S ON E.SHOW_ID = S.ID");
 }
 
 void serio::qt::DatabaseTvShowCrawlerLogStorage::dropOldVersion() const {
