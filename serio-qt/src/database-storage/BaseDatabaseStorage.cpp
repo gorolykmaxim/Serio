@@ -7,3 +7,9 @@ QSqlQuery serio::qt::BaseDatabaseStorage::createAndExec(const QString &sql, cons
     query.exec();
     return query;
 }
+
+QSqlQuery serio::qt::BaseDatabaseStorage::createAndExec(const QString &sql) const {
+    QSqlQuery query(QSqlDatabase::database());
+    query.exec(sql);
+    return query;
+}

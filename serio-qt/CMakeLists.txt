@@ -18,6 +18,8 @@ add_library(SerioLib STATIC
         src/database-storage/DatabaseTvShowCrawlerLogStorage.h
         src/database-storage/BaseDatabaseStorage.cpp
         src/database-storage/BaseDatabaseStorage.h
+        src/database-storage/Schema.h
+        src/database-storage/Schema.cpp
         src/task-executor/QTaskExecutor.h
         src/task-executor/QTaskExecutor.cpp
         src/http-client/QHttpClient.cpp
@@ -102,6 +104,7 @@ add_executable(SerioTest
         test/user-interface/view-model/SnackbarViewModelTest.cpp
         test/user-interface/view-model/DialogViewModelTest.cpp
         test/user-interface/view-model/BackgroundViewModelTest.cpp
-        test/user-interface/view-model/TvShowPlayerViewModelTest.cpp)
+        test/user-interface/view-model/TvShowPlayerViewModelTest.cpp
+        test/database-storage/DatabaseMigrationTest.cpp)
 target_include_directories(SerioTest PUBLIC test/mocks)
 target_link_libraries(SerioTest SerioLib CoreTestMocks gtest gmock gtest_main Qt5::Test)

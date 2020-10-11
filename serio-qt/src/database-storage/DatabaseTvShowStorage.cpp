@@ -2,12 +2,6 @@
 #include <QVariant>
 #include "DatabaseTvShowStorage.h"
 
-void serio::qt::DatabaseTvShowStorage::initialize() const {
-    createTvShowTable();
-    createEpisodeTable();
-    createEpisodeViewTable();
-}
-
 void serio::qt::DatabaseTvShowStorage::saveTvShow(const serio::core::TvShow &tvShow, const std::vector<core::Episode> &episodes) const {
     deleteTvShowWithName(tvShow.getName());
     insertTvShow(tvShow);
@@ -53,34 +47,6 @@ unsigned int serio::qt::DatabaseTvShowStorage::countEpisodesOfTvShowWithName(con
     return countEpisodes.value(0).toUInt();
 }
 
-void serio::qt::DatabaseTvShowStorage::createTvShowTable() const {
-    QSqlQuery createTvShows(QSqlDatabase::database());
-    createTvShows.exec("CREATE TABLE IF NOT EXISTS TV_SHOW("
-                                "NAME TEXT PRIMARY KEY, "
-                                "THUMBNAIL_URL TEXT NOT NULL)");
-}
-
-void serio::qt::DatabaseTvShowStorage::createEpisodeTable() const {
-    QSqlQuery createEpisodes(QSqlDatabase::database());
-    createEpisodes.exec("CREATE TABLE IF NOT EXISTS EPISODE("
-                                "ID UNSIGNED BIG INT NOT NULL, "
-                                "TV_SHOW_NAME TEXT NOT NULL, "
-                                "NAME TEXT NOT NULL, "
-                                "VIDEO_URL TEXT NOT NULL, "
-                                "PRIMARY KEY(ID, TV_SHOW_NAME),"
-                                "CONSTRAINT FK_TV_SHOW FOREIGN KEY (TV_SHOW_NAME) REFERENCES TV_SHOW(NAME) ON DELETE CASCADE)");
-}
-
-void serio::qt::DatabaseTvShowStorage::createEpisodeViewTable() const {
-    QSqlQuery createEpisodeViews(QSqlDatabase::database());
-    createEpisodeViews.exec("CREATE TABLE IF NOT EXISTS EPISODE_VIEW("
-                                    "TV_SHOW_NAME TEXT NOT NULL, "
-                                    "EPISODE_ID UNSIGNED BIG INT NOT NULL, "
-                                    "LAST_WATCH_DATE BIGINT NOT NULL, "
-                                    "WATCH_PROGRESS REAL NOT NULL, "
-                                    "PRIMARY KEY(TV_SHOW_NAME, EPISODE_ID))");
-}
-
 void serio::qt::DatabaseTvShowStorage::deleteTvShowWithName(const std::string &name) const {
     createAndExec("DELETE FROM TV_SHOW WHERE NAME = ?", QString::fromStdString(name));
 }
@@ -112,9 +78,7 @@ void serio::qt::DatabaseTvShowStorage::insertEpisodes(const std::string& tvShowN
 }
 
 unsigned int serio::qt::DatabaseTvShowStorage::countTvShowsMatchingQuery(const QString &query) const {
-    QSqlQuery countTvShows(QSqlDatabase::database());
-    countTvShows.exec("SELECT COUNT(DISTINCT NAME) "
-                      + fromTvShow + query);
+    auto countTvShows = createAndExec("SELECT COUNT(DISTINCT NAME) " + fromTvShow + query);
     countTvShows.next();
     return countTvShows.value(0).toUInt();
 }
@@ -221,4 +185,46 @@ std::optional<serio::core::Episode> serio::qt::DatabaseTvShowStorage::getLastWat
             "ORDER BY LAST_WATCH_DATE DESC",
             {QString::fromStdString(tvShowName)});
     return episodes.empty() ? std::optional<serio::core::Episode>() : episodes[0];
+}
+
+void serio::qt::DatabaseTvShowStorage::backupOldVersion() const {
+    createAndExec("ALTER TABLE EPISODE RENAME TO OLD_EPISODE");
+    createAndExec("ALTER TABLE EPISODE_VIEW RENAME TO OLD_EPISODE_VIEW");
+}
+
+void serio::qt::DatabaseTvShowStorage::createNewVersion() const {
+    createAndExec("CREATE TABLE IF NOT EXISTS TV_SHOW("
+                  "NAME TEXT NOT NULL PRIMARY KEY, "
+                  "THUMBNAIL_URL TEXT NOT NULL)");
+    createAndExec("CREATE TABLE IF NOT EXISTS EPISODE("
+                  "ID UNSIGNED BIG INT NOT NULL, "
+                  "TV_SHOW_NAME TEXT NOT NULL, "
+                  "NAME TEXT NOT NULL, "
+                  "VIDEO_URL TEXT NOT NULL, "
+                  "PRIMARY KEY(ID, TV_SHOW_NAME),"
+                  "CONSTRAINT FK_TV_SHOW FOREIGN KEY (TV_SHOW_NAME) REFERENCES TV_SHOW(NAME) ON DELETE CASCADE)");
+    createAndExec("CREATE TABLE IF NOT EXISTS EPISODE_VIEW("
+                  "TV_SHOW_NAME TEXT NOT NULL, "
+                  "EPISODE_ID UNSIGNED BIG INT NOT NULL, "
+                  "LAST_WATCH_DATE BIGINT NOT NULL, "
+                  "WATCH_PROGRESS REAL NOT NULL, "
+                  "PRIMARY KEY(TV_SHOW_NAME, EPISODE_ID))");
+}
+
+void serio::qt::DatabaseTvShowStorage::migrateRecordsFromOldVersion() const {
+    createAndExec("INSERT INTO TV_SHOW SELECT NAME, THUMBNAIL_URL FROM SHOW");
+    createAndExec("INSERT INTO EPISODE "
+                  "SELECT E.ID, S.NAME, E.NAME, E.VIDEO_URL "
+                  "FROM OLD_EPISODE E "
+                  "LEFT JOIN SHOW S ON E.SHOW_ID = S.ID");
+    createAndExec("INSERT INTO EPISODE_VIEW "
+                  "SELECT S.NAME, EV.EPISODE_ID, EV.LAST_WATCH_DATE, EV.PROGRESS "
+                  "FROM OLD_EPISODE_VIEW EV "
+                  "LEFT JOIN SHOW S ON EV.SHOW_ID = S.ID");
+}
+
+void serio::qt::DatabaseTvShowStorage::dropOldVersion() const {
+    createAndExec("DROP TABLE SHOW");
+    createAndExec("DROP TABLE OLD_EPISODE");
+    createAndExec("DROP TABLE OLD_EPISODE_VIEW");
 }

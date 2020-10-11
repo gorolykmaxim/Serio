@@ -4,15 +4,19 @@
 #include <string>
 #include <optional>
 #include "BaseDatabaseStorage.h"
+#include "Schema.h"
 
 namespace serio::qt {
 
-class DatabaseTvShowCrawlerStorage : public BaseDatabaseStorage {
+class DatabaseTvShowCrawlerStorage : public BaseDatabaseStorage, public Schema {
 public:
-    void initialize() const;
     [[nodiscard]] std::optional<std::string> getTvShowCrawlerByTvShowName(const std::string &tvShowName) const;
     void deleteTvShowCrawlerOfTvShow(const std::string& tvShowName) const;
     void insertTvShowCrawler(const std::string& tvShowName, const std::string& serializedCrawler) const;
+protected:
+    void createNewVersion() const override;
+    void migrateRecordsFromOldVersion() const override;
+    void dropOldVersion() const override;
 };
 
 }

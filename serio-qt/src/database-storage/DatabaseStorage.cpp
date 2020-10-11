@@ -7,11 +7,21 @@
 #include <QDir>
 
 void serio::qt::DatabaseStorage::initialize(bool inMemory) const {
+    openDatabase(inMemory);
+    initializeSchema();
+}
+
+void serio::qt::DatabaseStorage::openDatabase(bool inMemory) const {
     openDatabaseConnection(inMemory ? ":memory:" : getDatabaseFilePath());
+}
+
+void serio::qt::DatabaseStorage::initializeSchema() const {
     enableForeignKeys();
-    tvShowStorage.initialize();
-    tvShowCrawlerStorage.initialize();
-    tvShowCrawlerLogStorage.initialize();
+    bool migrate = isSchemaMigrationRequired();
+    tvShowStorage.initialize(migrate);
+    tvShowCrawlerStorage.initialize(migrate);
+    tvShowCrawlerLogStorage.initialize(migrate);
+    saveCurrentStorageVersion();
 }
 
 std::optional<serio::core::TvShow> serio::qt::DatabaseStorage::getTvShowByName(const std::string &tvShowName) {
@@ -104,6 +114,17 @@ void serio::qt::DatabaseStorage::watchTvShowEpisode(const std::string &tvShowNam
 
 std::optional<serio::core::Episode> serio::qt::DatabaseStorage::getLastWatchedEpisodeOfTvShow(const std::string &tvShowName) {
     return tvShowStorage.getLastWatchedEpisodeOfTvShow(tvShowName);
+}
+
+bool serio::qt::DatabaseStorage::isSchemaMigrationRequired() const {
+    auto getSchemaVersion = createAndExec("SELECT * FROM SERIO_VERSION");
+    return !getSchemaVersion.next() || getSchemaVersion.value(0).toUInt() != version;
+}
+
+void serio::qt::DatabaseStorage::saveCurrentStorageVersion() const {
+    createAndExec("CREATE TABLE IF NOT EXISTS SERIO_VERSION(VERSION INTEGER NOT NULL)");
+    createAndExec("DELETE FROM SERIO_VERSION");
+    createAndExec("INSERT INTO SERIO_VERSION VALUES (?)", version);
 }
 
 serio::qt::StorageError::StorageError(const std::string &databaseName, const std::string &reason)

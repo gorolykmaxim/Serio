@@ -13,9 +13,12 @@
 
 namespace serio::qt {
 
-class DatabaseStorage : public core::TvShowStorage, public core::TvShowCrawlerStorage, public core::TvShowCrawlerLogStorage {
+class DatabaseStorage : public core::TvShowStorage, public core::TvShowCrawlerStorage,
+        public core::TvShowCrawlerLogStorage, public BaseDatabaseStorage {
 public:
     void initialize(bool inMemory = false) const;
+    void openDatabase(bool inMemory) const;
+    void initializeSchema() const;
     std::optional<core::TvShow> getTvShowByName(const std::string &tvShowName) override;
     core::ListPage<core::TvShow> getAllTvShows(unsigned int offset, unsigned int limit) override;
     core::ListPage<core::TvShow> getWatchedTvShows(unsigned int offset, unsigned int limit) override;
@@ -33,12 +36,15 @@ public:
                             core::WatchProgress watchProgress) override;
     std::optional<core::Episode> getLastWatchedEpisodeOfTvShow(const std::string &tvShowName) override;
 private:
+    const unsigned int version = 2;
     DatabaseTvShowStorage tvShowStorage;
     DatabaseTvShowCrawlerStorage tvShowCrawlerStorage;
     DatabaseTvShowCrawlerLogStorage tvShowCrawlerLogStorage;
     [[nodiscard]] std::string getDatabaseFilePath() const;
     void openDatabaseConnection(const std::string& storageUrl) const;
     void enableForeignKeys() const;
+    [[nodiscard]] bool isSchemaMigrationRequired() const;
+    void saveCurrentStorageVersion() const;
 };
 
 class StorageError : public std::runtime_error {

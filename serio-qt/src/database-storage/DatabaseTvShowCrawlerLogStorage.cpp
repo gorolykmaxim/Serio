@@ -4,17 +4,6 @@
 #include <QVariantList>
 #include "DatabaseTvShowCrawlerLogStorage.h"
 
-void serio::qt::DatabaseTvShowCrawlerLogStorage::initialize() const {
-    QSqlQuery createCrawlLogEntry(QSqlDatabase::database());
-    createCrawlLogEntry.exec("CREATE TABLE IF NOT EXISTS CRAWL_LOG_ENTRY("
-                                "ID INTEGER NOT NULL, "
-                                "TV_SHOW_NAME TEXT NOT NULL, "
-                                "\"TEXT\" TEXT NOT NULL, "
-                                "STEP_INPUT_DATA TEXT, "
-                                "STEP_OUTPUT_DATA TEXT, "
-                                "PRIMARY KEY (ID, TV_SHOW_NAME))");
-}
-
 void serio::qt::DatabaseTvShowCrawlerLogStorage::saveCrawlLog(const std::string &tvShowName, const std::vector<core::CrawlLogEntry> &log) const {
     createAndExec("DELETE FROM CRAWL_LOG_ENTRY WHERE TV_SHOW_NAME = ?", QString::fromStdString(tvShowName));
     insertCrawlLogEntries(tvShowName, log);
@@ -58,4 +47,26 @@ serio::core::CrawlLogEntry serio::qt::DatabaseTvShowCrawlerLogStorage::readCrawl
     auto stepInputData = query.value(1).toString().toStdString();
     auto stepOutputData = query.value(2).toString().toStdString();
     return serio::core::CrawlLogEntry(text, stepInputData, stepOutputData);
+}
+
+void serio::qt::DatabaseTvShowCrawlerLogStorage::backupOldVersion() const {
+    createAndExec("ALTER TABLE CRAWL_LOG_ENTRY RENAME TO OLD_CRAWL_LOG_ENTRY");
+}
+
+void serio::qt::DatabaseTvShowCrawlerLogStorage::createNewVersion() const {
+    createAndExec("CREATE TABLE IF NOT EXISTS CRAWL_LOG_ENTRY("
+                  "ID INTEGER NOT NULL, "
+                  "TV_SHOW_NAME TEXT NOT NULL, "
+                  "\"TEXT\" TEXT NOT NULL, "
+                  "STEP_INPUT_DATA TEXT, "
+                  "STEP_OUTPUT_DATA TEXT, "
+                  "PRIMARY KEY (ID, TV_SHOW_NAME))");
+}
+
+void serio::qt::DatabaseTvShowCrawlerLogStorage::migrateRecordsFromOldVersion() const {
+    createAndExec("INSERT INTO CRAWL_LOG_ENTRY SELECT ID, SHOW_ID, VALUE, INPUT, OUTPUT FROM OLD_CRAWL_LOG_ENTRY");
+}
+
+void serio::qt::DatabaseTvShowCrawlerLogStorage::dropOldVersion() const {
+    createAndExec("DROP TABLE OLD_CRAWL_LOG_ENTRY");
 }

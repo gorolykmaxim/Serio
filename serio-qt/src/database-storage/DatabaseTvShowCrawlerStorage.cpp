@@ -3,11 +3,6 @@
 #include <QVariant>
 #include "DatabaseTvShowCrawlerStorage.h"
 
-void serio::qt::DatabaseTvShowCrawlerStorage::initialize() const {
-    QSqlQuery createTvShowCrawlers(QSqlDatabase::database());
-    createTvShowCrawlers.exec("CREATE TABLE IF NOT EXISTS TV_SHOW_CRAWLER(TV_SHOW_NAME TEXT PRIMARY KEY, CRAWLER TEXT NOT NULL)");
-}
-
 std::optional<std::string> serio::qt::DatabaseTvShowCrawlerStorage::getTvShowCrawlerByTvShowName(const std::string &tvShowName) const {
     auto findTvShowCrawler = createAndExec("SELECT CRAWLER FROM TV_SHOW_CRAWLER WHERE TV_SHOW_NAME = ?",
                                                 QString::fromStdString(tvShowName));
@@ -28,4 +23,18 @@ void serio::qt::DatabaseTvShowCrawlerStorage::insertTvShowCrawler(const std::str
     insertTvShowCrawler.addBindValue(QString::fromStdString(tvShowName));
     insertTvShowCrawler.addBindValue(QString::fromStdString(serializedCrawler));
     insertTvShowCrawler.exec();
+}
+
+void serio::qt::DatabaseTvShowCrawlerStorage::createNewVersion() const {
+    createAndExec("CREATE TABLE IF NOT EXISTS TV_SHOW_CRAWLER("
+                  "TV_SHOW_NAME TEXT NOT NULL PRIMARY KEY, "
+                  "CRAWLER TEXT NOT NULL)");
+}
+
+void serio::qt::DatabaseTvShowCrawlerStorage::migrateRecordsFromOldVersion() const {
+    createAndExec("INSERT INTO TV_SHOW_CRAWLER SELECT SHOW_ID, CRAWLER FROM SHOW_CRAWLER");
+}
+
+void serio::qt::DatabaseTvShowCrawlerStorage::dropOldVersion() const {
+    createAndExec("DROP TABLE SHOW_CRAWLER");
 }
