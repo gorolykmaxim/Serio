@@ -24,7 +24,14 @@ ViewLayout {
         Layout.fillHeight: true
         Layout.fillWidth: true
         cardSpacing: globalPadding
+        visible: count > 0
         listModel: allTvShowsViewModel.tvShowsList
         KeyNavigation.tab: actionsList
+    }
+    NoContentPlaceholder {
+        contentType: "tv shows"
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+        visible: tvShowsList.count === 0
     }
 }

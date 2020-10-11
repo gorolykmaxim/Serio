@@ -76,5 +76,6 @@
         <file>qml/widgets/LeftAnchoredRow.qml</file>
         <file>qml/widgets/VideoProgressBar.qml</file>
         <file>qml/widgets/MaterialIcon.qml</file>
+        <file>qml/widgets/NoContentPlaceholder.qml</file>
     </qresource>
 </RCC>

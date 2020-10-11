@@ -22,7 +22,14 @@ ViewLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
         model: tvShowViewModel.episodeList
+        visible: count > 0
         tilePadding: globalPadding / 2
         KeyNavigation.tab: actionsList
+    }
+    NoContentPlaceholder {
+        contentType: "episodes"
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        visible: episodeList.count === 0
     }
 }
