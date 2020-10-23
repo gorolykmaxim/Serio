@@ -107,50 +107,12 @@ target_include_directories(SerioTest PUBLIC test/mocks)
 target_link_libraries(SerioTest SerioLib CoreTestMocks gtest gmock gtest_main Qt5::Test)
 
 if(APPLE)
-    add_executable(Serio MACOSX_BUNDLE ${RESOURCES} src/main.cpp resources/macos/serio.icns)
-    set_source_files_properties(resources/macos/serio.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-    set_target_properties(Serio PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/macos/Info.plist)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        find_program(DEPLOY_QT_EXECUTABLE macdeployqt)
-        set(OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
-        set(BUNDLE_DIR ${OUTPUT_DIR}.app)
-        add_custom_command(TARGET Serio POST_BUILD
-                COMMAND "${DEPLOY_QT_EXECUTABLE}" ${BUNDLE_DIR} -qmldir=${PROJECT_SOURCE_DIR} -dmg
-                BYPRODUCTS ${BUNDLE_DIR} ${OUTPUT_DIR}.dmg
-                COMMENT "Running macdeployqt...")
-    endif()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/resources/macos/build.cmake)
 elseif(WIN32)
-    add_executable(Serio WIN32 ${RESOURCES} src/main.cpp)
-    set(WINDOWS_DEPENDENCIES_ZIP ${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/dependencies.zip)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        set(OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/output")
-        find_program(DEPLOY_QT_EXECUTABLE windeployqt)
-        set(OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/output")
-        add_custom_command(TARGET Serio PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_DIR})
-        add_custom_command(TARGET Serio POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Serio> ${OUTPUT_DIR}
-                COMMAND ${CMAKE_COMMAND} -E tar xzf ${WINDOWS_DEPENDENCIES_ZIP}
-                COMMAND "${DEPLOY_QT_EXECUTABLE}" ${OUTPUT_DIR} -qmldir=${PROJECT_SOURCE_DIR}
-                BYPRODUCTS ${OUTPUT_DIR}
-                WORKING_DIRECTORY ${OUTPUT_DIR}
-                COMMENT "Running windeployqt...")
-        if (DEFINED ENV{NSIS_PATH})
-            find_program(NSIS_EXECUTABLE makensis PATHS $ENV{NSIS_PATH} REQUIRED)
-            add_custom_command(TARGET Serio POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E env
-                    NSIS_INPUT_DIR=${OUTPUT_DIR}
-                    NSIS_OUTPUT_DIR=${OUTPUT_DIR}
-                    "${NSIS_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/installer.nsi"
-                    COMMENT "Compiling an installer...")
-        else()
-            add_custom_command(TARGET Serio POST_BUILD
-                    COMMENT "NSIS executable was not found - skipping installer compilation.")
-        endif ()
-    else()
-        add_custom_command(TARGET Serio POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E tar xzf ${WINDOWS_DEPENDENCIES_ZIP})
-    endif()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/build.cmake)
 else()
-    add_executable(Serio ${RESOURCES} src/main.cpp)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/resources/other/build.cmake)
 endif()
+
+BuildSerio(${RESOURCES})
 target_link_libraries(Serio SerioLib)
