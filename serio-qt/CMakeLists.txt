@@ -121,17 +121,34 @@ if(APPLE)
     endif()
 elseif(WIN32)
     add_executable(Serio WIN32 ${RESOURCES} src/main.cpp)
+    set(WINDOWS_DEPENDENCIES_ZIP ${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/dependencies.zip)
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        find_program(DEPLOY_QT_EXECUTABLE windeployqt)
-        find_program(LIBSSL libssl-1_1-x64.dll)
-        find_program(LIBCRYPTO libcrypto-1_1-x64.dll)
         set(OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/output")
+        find_program(DEPLOY_QT_EXECUTABLE windeployqt)
+        set(OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/output")
+        add_custom_command(TARGET Serio PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_DIR})
         add_custom_command(TARGET Serio POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTPUT_DIR}
-                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Serio> "${LIBSSL}" "${LIBCRYPTO}" ${OUTPUT_DIR}
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Serio> ${OUTPUT_DIR}
+                COMMAND ${CMAKE_COMMAND} -E tar xzf ${WINDOWS_DEPENDENCIES_ZIP}
                 COMMAND "${DEPLOY_QT_EXECUTABLE}" ${OUTPUT_DIR} -qmldir=${PROJECT_SOURCE_DIR}
                 BYPRODUCTS ${OUTPUT_DIR}
+                WORKING_DIRECTORY ${OUTPUT_DIR}
                 COMMENT "Running windeployqt...")
+        if (DEFINED ENV{NSIS_PATH})
+            find_program(NSIS_EXECUTABLE makensis PATHS $ENV{NSIS_PATH} REQUIRED)
+            add_custom_command(TARGET Serio POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E env
+                    NSIS_INPUT_DIR=${OUTPUT_DIR}
+                    NSIS_OUTPUT_DIR=${OUTPUT_DIR}
+                    "${NSIS_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/resources/windows/installer.nsi"
+                    COMMENT "Compiling an installer...")
+        else()
+            add_custom_command(TARGET Serio POST_BUILD
+                    COMMENT "NSIS executable was not found - skipping installer compilation.")
+        endif ()
+    else()
+        add_custom_command(TARGET Serio POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E tar xzf ${WINDOWS_DEPENDENCIES_ZIP})
     endif()
 else()
     add_executable(Serio ${RESOURCES} src/main.cpp)

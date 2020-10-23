@@ -12,6 +12,12 @@ the first time:
 sudo xattr -d com.apple.quarantine /Applications/Serio.app/Contents/MacOS/Serio
 ```
 
+### Windows
+Execute the install.exe.
+
+If you have vc_redist already installed - just close the vc_redist installation window, that will be opened
+at the end of the Serio installation.
+
 ## How to build
 You need to have Qt5 installed. CMAKE_PREFIX_PATH env variable should be set to Qt's installation location.
 
@@ -25,8 +31,18 @@ When you run the Release version of the CMake build - a redistributable .dmg fil
 build directory.
 
 ### Windows
-You need to have OpenSSL installed (or at least have such OpenSSL dlls as **libssl-1_1-x64.dll** and 
-**libcrypto-1_1-x64.dll** on your PATH env variable).
+In order to make video playback work:
+- build Serio target
+- execute install-codecs.bat inside <cmake-build-directory>/serio-qt as administrator (you can revert this action by
+executing uninstall-codecs.bat as administrator in the same directory)
+
+In order to build a release version you would need:
+- NSIS installed
+- NSIS_PATH env variable should be set pointing to the NSIS's installation folder
 
 When you run the Release version of the CMake build - an "output" folder will get generated inside the CMake's build
 directory. That output directory will contain the executable and all the necessary dlls to run it.
+
+In case NSIS_PATH env variable has been set before running the build - the output directory will also have an executable 
+installer generated. NSIS_PATH is not mandatory to build the release version: if it is not set - the installer won't be
+created but the executable and dlls will be.
