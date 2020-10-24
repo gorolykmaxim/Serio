@@ -1,18 +1,20 @@
 #include "FetchRequest.h"
 #include <QNetworkReply>
 
-serio::qt::FetchRequest::FetchRequest(std::vector<std::string> linksToFetch, QThread* managerThread)
+namespace serio::qt {
+
+FetchRequest::FetchRequest(std::vector<std::string> linksToFetch, QThread* managerThread)
     : QObject(), linksToFetch(std::move(linksToFetch)), hasAlreadyFailed(false) {
     moveToThread(managerThread);
 }
 
-void serio::qt::FetchRequest::execute(QNetworkAccessManager& manager) {
+void FetchRequest::execute(QNetworkAccessManager& manager) {
     finishIfNothingToDo();
     sendRequestsToSpecifiedLinks(manager);
     writeRepliesIntoPromiseWhenFinished();
 }
 
-void serio::qt::FetchRequest::sendRequestsToSpecifiedLinks(QNetworkAccessManager& manager) {
+void FetchRequest::sendRequestsToSpecifiedLinks(QNetworkAccessManager& manager) {
     for (const auto& link: linksToFetch) {
         QUrl url(QString::fromStdString(link));
         QNetworkRequest request(url);
@@ -21,14 +23,14 @@ void serio::qt::FetchRequest::sendRequestsToSpecifiedLinks(QNetworkAccessManager
     }
 }
 
-void serio::qt::FetchRequest::writeRepliesIntoPromiseWhenFinished() {
+void FetchRequest::writeRepliesIntoPromiseWhenFinished() {
     rawResponses.reserve(repliesInProgress.size());
     for (auto reply: repliesInProgress) {
         connect(reply, &QNetworkReply::finished, this, [reply, this] () {handleFinishedReply(reply);});
     }
 }
 
-void serio::qt::FetchRequest::handleFinishedReply(QNetworkReply *reply) {
+void FetchRequest::handleFinishedReply(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::NetworkError::NoError) {
         readSuccessReply(reply);
     } else if (!hasAlreadyFailed) {
@@ -38,59 +40,61 @@ void serio::qt::FetchRequest::handleFinishedReply(QNetworkReply *reply) {
     finishIfDone();
 }
 
-void serio::qt::FetchRequest::readSuccessReply(QNetworkReply *reply) {
+void FetchRequest::readSuccessReply(QNetworkReply *reply) {
     auto rawResponse = reply->readAll().toStdString();
     rawResponses.push_back(std::move(rawResponse));
 }
 
-void serio::qt::FetchRequest::readFailReply(QNetworkReply *reply) {
+void FetchRequest::readFailReply(QNetworkReply *reply) {
     hasAlreadyFailed = true;
     writeReplyErrorIntoPromise(reply);
     abortRepliesInProgress();
 }
 
-void serio::qt::FetchRequest::disposeReply(QNetworkReply *reply) {
+void FetchRequest::disposeReply(QNetworkReply *reply) {
     repliesInProgress.erase(reply);
     reply->close();
     reply->deleteLater();
 }
 
-void serio::qt::FetchRequest::finishIfDone() {
+void FetchRequest::finishIfDone() {
     if (repliesInProgress.empty()) {
         finish();
     }
 }
 
-void serio::qt::FetchRequest::finishIfNothingToDo() {
+void FetchRequest::finishIfNothingToDo() {
     if (linksToFetch.empty()) {
         finish();
     }
 }
 
-void serio::qt::FetchRequest::finish() {
+void FetchRequest::finish() {
     if (!hasAlreadyFailed) {
         responsesPromise.set_value(std::move(rawResponses));
     }
     deleteLater();
 }
 
-void serio::qt::FetchRequest::abortRepliesInProgress() {
+void FetchRequest::abortRepliesInProgress() {
     auto repliesToAbort = repliesInProgress;
     for (auto replyToAbort: repliesToAbort) {
         replyToAbort->abort();
     }
 }
 
-void serio::qt::FetchRequest::writeReplyErrorIntoPromise(QNetworkReply *reply) {
+void FetchRequest::writeReplyErrorIntoPromise(QNetworkReply *reply) {
     auto failedUrl = reply->url().toString().toStdString();
     auto errorMessage = reply->errorString().toStdString();
     FetchRequestError error(failedUrl, errorMessage);
     responsesPromise.set_exception(std::make_exception_ptr(error));
 }
 
-std::future<std::vector<std::string>> serio::qt::FetchRequest::getFutureOfResponses() {
+std::future<std::vector<std::string>> FetchRequest::getFutureOfResponses() {
     return responsesPromise.get_future();
 }
 
-serio::qt::FetchRequestError::FetchRequestError(const std::string& failedUrl, const std::string& cause)
+FetchRequestError::FetchRequestError(const std::string& failedUrl, const std::string& cause)
     : runtime_error("Failed to fetch content of '" + failedUrl + "': Reason: " + cause) {}
+
+}

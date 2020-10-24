@@ -1,6 +1,8 @@
 #include "Schema.h"
 
-void serio::qt::Schema::initialize(bool migrate) const {
+namespace serio::qt {
+
+void Schema::initialize(bool migrate) const {
     if (migrate) {
         backupOldVersion();
     }
@@ -11,10 +13,12 @@ void serio::qt::Schema::initialize(bool migrate) const {
     }
 }
 
-void serio::qt::Schema::backupOldVersion() const {}
+void Schema::backupOldVersion() const {}
 
-void serio::qt::Schema::createNewVersion() const {}
+void Schema::createNewVersion() const {}
 
-void serio::qt::Schema::migrateRecordsFromOldVersion() const {}
+void Schema::migrateRecordsFromOldVersion() const {}
 
-void serio::qt::Schema::dropOldVersion() const {}
+void Schema::dropOldVersion() const {}
+
+}

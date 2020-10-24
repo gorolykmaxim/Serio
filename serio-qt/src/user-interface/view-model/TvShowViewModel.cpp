@@ -4,10 +4,11 @@
 #include <QClipboard>
 #include <user-interface/ViewNames.h>
 
-serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit,
-                                            serio::core::TvShowViewer &viewer, serio::qt::DialogViewModel& dialog,
-                                            serio::qt::BackgroundViewModel& background,
-                                            serio::qt::SnackbarViewModel& snackbar, StackOfViews& stack)
+namespace serio::qt {
+
+TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int pageCountLimit, core::TvShowViewer &viewer,
+                                 DialogViewModel& dialog, BackgroundViewModel& background, SnackbarViewModel& snackbar,
+                                 StackOfViews& stack)
     : episodeListModel(pageSize, pageCountLimit),
       viewer(viewer),
       dialog(dialog),
@@ -17,44 +18,44 @@ serio::qt::TvShowViewModel::TvShowViewModel(unsigned int pageSize, unsigned int 
     populateActions(false);
 }
 
-void serio::qt::TvShowViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
+void TvShowViewModel::initialize(ActionRouter &router, QQmlApplicationEngine &engine) {
     qmlRegisterUncreatableType<EpisodeListModel>("Serio", 1, 0, "EpisodeListModel", nullptr);
     engine.rootContext()->setContextProperty("tvShowViewModel", this);
-    router.registerAction(serio::qt::ActionType::LOAD_TV_SHOW, [this] (const auto& args) { load(); });
-    router.registerAction(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const auto& args) { loadEpisodes(args); });
-    router.registerAction(serio::qt::ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const auto& args) { shareCrawler(); });
-    router.registerAction(serio::qt::ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const auto& args) { crawl(); });
-    router.registerAction(serio::qt::ActionType::CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const auto& args) { confirmClearWatchHistory(); });
-    router.registerAction(serio::qt::ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const auto& args) { clearWatchHistory(); });
-    router.registerAction(serio::qt::ActionType::CONFIRM_DELETE_CURRENT_TV_SHOW, [this] (const auto& args) { confirmDeleteTvShow(); });
-    router.registerAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW, [this] (const auto& args) { deleteTvShow(); });
-    router.registerAction(serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW, [this] (const auto& args) { openTvShowDetails(); });
-    connect(&episodeListModel, &serio::qt::EpisodeListModel::requestPageLoad,
-            this, [&router] (auto offset, auto limit) { router.trigger(serio::qt::ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
+    router.registerAction(ActionType::LOAD_TV_SHOW, [this] (const auto& args) { load(); });
+    router.registerAction(ActionType::LOAD_EPISODES_LIST_PAGE, [this] (const auto& args) { loadEpisodes(args); });
+    router.registerAction(ActionType::SHARE_CRAWLER_OF_CURRENT_TV_SHOW, [this] (const auto& args) { shareCrawler(); });
+    router.registerAction(ActionType::CRAWL_CURRENT_TV_SHOW, [this] (const auto& args) { crawl(); });
+    router.registerAction(ActionType::CONFIRM_CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const auto& args) { confirmClearWatchHistory(); });
+    router.registerAction(ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY, [this] (const auto& args) { clearWatchHistory(); });
+    router.registerAction(ActionType::CONFIRM_DELETE_CURRENT_TV_SHOW, [this] (const auto& args) { confirmDeleteTvShow(); });
+    router.registerAction(ActionType::DELETE_CURRENT_TV_SHOW, [this] (const auto& args) { deleteTvShow(); });
+    router.registerAction(ActionType::OPEN_TV_SHOW_DETAILS_VIEW, [this] (const auto& args) { openTvShowDetails(); });
+    connect(&episodeListModel, &EpisodeListModel::requestPageLoad,
+            this, [&router] (auto offset, auto limit) { router.trigger(ActionType::LOAD_EPISODES_LIST_PAGE, QVariantList({offset, limit})); });
 }
 
-QString serio::qt::TvShowViewModel::getTvShowName() const {
+QString TvShowViewModel::getTvShowName() const {
     return tvShowName;
 }
 
-QString serio::qt::TvShowViewModel::getLastWatchDate() const {
+QString TvShowViewModel::getLastWatchDate() const {
     return lastWatchDate;
 }
 
-QString serio::qt::TvShowViewModel::getThumbnailUrl() const {
+QString TvShowViewModel::getThumbnailUrl() const {
     return thumbnailUrl;
 }
 
-serio::qt::EpisodeListModel* serio::qt::TvShowViewModel::getEpisodeList() {
+EpisodeListModel* TvShowViewModel::getEpisodeList() {
     return &episodeListModel;
 }
 
-void serio::qt::TvShowViewModel::load() {
+void TvShowViewModel::load() {
     loadTvShow();
     modifyModel([this] { episodeListModel.requestFirstPageLoad(); });
 }
 
-void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
+void TvShowViewModel::loadEpisodes(const QVariantList& args) {
     auto episodes = viewer.getTvShowEpisodes(args[0].toUInt(),args[1].toUInt());
     modifyModel([this, episodes] {
         populateActions(episodes.getTotalSize() > 0);
@@ -62,7 +63,7 @@ void serio::qt::TvShowViewModel::loadEpisodes(const QVariantList& args) {
     });
 }
 
-void serio::qt::TvShowViewModel::shareCrawler() {
+void TvShowViewModel::shareCrawler() {
     auto rawTvShowCrawler = viewer.getRawCrawlerOfSelectedTvShow();
     modifyModel([this, rawTvShowCrawler] {
         QGuiApplication::clipboard()->setText(QString::fromStdString(rawTvShowCrawler));
@@ -70,7 +71,7 @@ void serio::qt::TvShowViewModel::shareCrawler() {
     });
 }
 
-void serio::qt::TvShowViewModel::loadTvShow() {
+void TvShowViewModel::loadTvShow() {
     auto tvShow = viewer.getSelectedTvShow();
     modifyModel([this, tvShow] {
         tvShowName = QString::fromStdString(tvShow.getName());
@@ -82,7 +83,7 @@ void serio::qt::TvShowViewModel::loadTvShow() {
     });
 }
 
-void serio::qt::TvShowViewModel::crawl() {
+void TvShowViewModel::crawl() {
     try {
         stack.pushView(crawlingInProgressView);
         viewer.crawlSelectedTvShow();
@@ -93,46 +94,48 @@ void serio::qt::TvShowViewModel::crawl() {
     }
 }
 
-void serio::qt::TvShowViewModel::confirmClearWatchHistory() {
+void TvShowViewModel::confirmClearWatchHistory() {
     DialogModel model("Clear Watch History",
                       "You are about to clear your watch history of '" + tvShowName + "'.");
     model.setTopButtonAction(ActionType::CLEAR_CURRENT_TV_SHOW_WATCH_HISTORY);
     dialog.display(model);
 }
 
-void serio::qt::TvShowViewModel::clearWatchHistory() {
+void TvShowViewModel::clearWatchHistory() {
     viewer.clearSelectedTvShowWatchHistory();
     stack.popCurrentView();
     snackbar.displayText("Watch history cleared");
 }
 
-void serio::qt::TvShowViewModel::confirmDeleteTvShow() {
+void TvShowViewModel::confirmDeleteTvShow() {
     DialogModel model("Delete TV Show",
                       "You are about to delete '" + tvShowName + "'");
-    model.setTopButtonAction(serio::qt::ActionType::DELETE_CURRENT_TV_SHOW);
+    model.setTopButtonAction(ActionType::DELETE_CURRENT_TV_SHOW);
     dialog.display(model);
 }
 
-void serio::qt::TvShowViewModel::deleteTvShow() {
+void TvShowViewModel::deleteTvShow() {
     viewer.deleteSelectedTvShow();
     stack.popAllViews();
 }
 
-void serio::qt::TvShowViewModel::openTvShowDetails() {
+void TvShowViewModel::openTvShowDetails() {
     stack.pushView(tvShowDetailsView);
 }
 
-QList<serio::qt::ButtonModel*> serio::qt::TvShowViewModel::getActions() const {
+QList<ButtonModel*> TvShowViewModel::getActions() const {
     return actions;
 }
 
-void serio::qt::TvShowViewModel::populateActions(bool includePlayAction) {
+void TvShowViewModel::populateActions(bool includePlayAction) {
     actions.clearAndDelete();
     emit actionsChanged();
     if (includePlayAction) {
-        actions << new serio::qt::ButtonModel(lastWatchDate.isEmpty() ? "play" : "resume", serio::qt::ActionType::PLAY_TV_SHOW, {tvShowName});
+        actions << new ButtonModel(lastWatchDate.isEmpty() ? "play" : "resume", ActionType::PLAY_TV_SHOW, {tvShowName});
     }
-    actions << new serio::qt::ButtonModel("back", serio::qt::ActionType::BACK, {}, false);
-    actions << new serio::qt::ButtonModel("details", serio::qt::ActionType::OPEN_TV_SHOW_DETAILS_VIEW);
+    actions << new ButtonModel("back", ActionType::BACK, {}, false);
+    actions << new ButtonModel("details", ActionType::OPEN_TV_SHOW_DETAILS_VIEW);
     emit actionsChanged();
+}
+
 }

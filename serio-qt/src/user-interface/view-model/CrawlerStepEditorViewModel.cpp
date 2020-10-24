@@ -2,11 +2,13 @@
 #include <QQmlContext>
 #include <user-interface/ViewNames.h>
 
-serio::qt::CrawlerStepEditorViewModel::CrawlerStepEditorViewModel(core::TvShowCrawlerEditor &editor,
-                                                                  StackOfViews &stackOfViewsController)
+namespace serio::qt {
+
+CrawlerStepEditorViewModel::CrawlerStepEditorViewModel(core::TvShowCrawlerEditor &editor,
+                                                       StackOfViews &stackOfViewsController)
     : editor(editor), stackOfViewsController(stackOfViewsController) {}
 
-void serio::qt::CrawlerStepEditorViewModel::initialize(serio::qt::ActionRouter &router, QQmlApplicationEngine &engine) {
+void CrawlerStepEditorViewModel::initialize(ActionRouter &router, QQmlApplicationEngine &engine) {
     engine.rootContext()->setContextProperty("crawlerStepEditorViewModel", this);
     router.registerAction(ActionType::OPEN_NEW_CRAWLER_STEP_EDITOR, [this] (const auto& args) { openNew(); });
     router.registerAction(ActionType::OPEN_EXISTING_CRAWLER_STEP_EDITOR, [this] (const auto& args) { openExisting(args); });
@@ -16,23 +18,23 @@ void serio::qt::CrawlerStepEditorViewModel::initialize(serio::qt::ActionRouter &
     router.registerAction(ActionType::REMOVE_CRAWLER_STEP, [this] (const auto& args) { remove(); });
 }
 
-bool serio::qt::CrawlerStepEditorViewModel::isExistingStep() const {
+bool CrawlerStepEditorViewModel::isExistingStep() const {
     return editedStepIndex.has_value();
 }
 
-QList<serio::qt::RadioButtonModel*> serio::qt::CrawlerStepEditorViewModel::getCrawlerStepTypes() const {
+QList<RadioButtonModel*> CrawlerStepEditorViewModel::getCrawlerStepTypes() const {
     return typeOptions;
 }
 
-QString serio::qt::CrawlerStepEditorViewModel::getDescription() const {
+QString CrawlerStepEditorViewModel::getDescription() const {
     return description;
 }
 
-QList<serio::qt::TextFieldModel*> serio::qt::CrawlerStepEditorViewModel::getProperties() const {
+QList<TextFieldModel*> CrawlerStepEditorViewModel::getProperties() const {
     return properties;
 }
 
-void serio::qt::CrawlerStepEditorViewModel::openNew() {
+void CrawlerStepEditorViewModel::openNew() {
     modifyModel([this] {
         editedStepIndex.reset();
         emit isExistingStepChanged();
@@ -42,7 +44,7 @@ void serio::qt::CrawlerStepEditorViewModel::openNew() {
     });
 }
 
-void serio::qt::CrawlerStepEditorViewModel::openExisting(const QVariantList& args) {
+void CrawlerStepEditorViewModel::openExisting(const QVariantList& args) {
     auto stepIndex = args[0].toUInt();
     modifyModel([this, stepIndex] {
         editedStepIndex = stepIndex;
@@ -53,7 +55,7 @@ void serio::qt::CrawlerStepEditorViewModel::openExisting(const QVariantList& arg
     });
 }
 
-void serio::qt::CrawlerStepEditorViewModel::load() {
+void CrawlerStepEditorViewModel::load() {
     types = editor.getCrawlerStepTypes();
     std::optional<core::CrawlerStep> editedStep;
     if (editedStepIndex) {
@@ -62,9 +64,7 @@ void serio::qt::CrawlerStepEditorViewModel::load() {
     modifyModel([this, editedStep] {
         initializeCrawlerStepTypes();
         if (editedStep) {
-            setSelectedType([&editedStep] (const auto& type) {
-                return type.getName() == editedStep->getType();
-            });
+            setSelectedType([&editedStep] (const auto& type) {return type.getName() == editedStep->getType();});
             setProperties(*editedStep);
         } else {
             setProperties(*selectedType);
@@ -72,7 +72,7 @@ void serio::qt::CrawlerStepEditorViewModel::load() {
     });
 }
 
-void serio::qt::CrawlerStepEditorViewModel::selectType(const QVariantList &args) {
+void CrawlerStepEditorViewModel::selectType(const QVariantList &args) {
     auto name = args[0].toString().toStdString();
     modifyModel([this, name] {
         setSelectedType([&name] (const auto &type) { return type.getName() == name; });
@@ -80,7 +80,7 @@ void serio::qt::CrawlerStepEditorViewModel::selectType(const QVariantList &args)
     });
 }
 
-void serio::qt::CrawlerStepEditorViewModel::save() {
+void CrawlerStepEditorViewModel::save() {
     auto step = createCrawlerStep();
     if (editedStepIndex) {
         editor.replaceCrawlerStep(*editedStepIndex, step);
@@ -90,12 +90,12 @@ void serio::qt::CrawlerStepEditorViewModel::save() {
     stackOfViewsController.popCurrentView();
 }
 
-void serio::qt::CrawlerStepEditorViewModel::remove() {
+void CrawlerStepEditorViewModel::remove() {
     editor.removeCrawlerStep(*editedStepIndex);
     stackOfViewsController.popCurrentView();
 }
 
-void serio::qt::CrawlerStepEditorViewModel::initializeCrawlerStepTypes() {
+void CrawlerStepEditorViewModel::initializeCrawlerStepTypes() {
     typeOptions.clearAndDelete();
     emit crawlerStepTypesChanged();
     for (const auto& type: types) {
@@ -107,7 +107,7 @@ void serio::qt::CrawlerStepEditorViewModel::initializeCrawlerStepTypes() {
     emit crawlerStepTypesChanged();
 }
 
-void serio::qt::CrawlerStepEditorViewModel::setProperties(const serio::core::CrawlerStepType &type) {
+void CrawlerStepEditorViewModel::setProperties(const core::CrawlerStepType &type) {
     properties.clearAndDelete();
     emit propertiesChanged();
     for (const auto& propertyName: type.getMandatoryProperties()) {
@@ -116,7 +116,7 @@ void serio::qt::CrawlerStepEditorViewModel::setProperties(const serio::core::Cra
     emit propertiesChanged();
 }
 
-void serio::qt::CrawlerStepEditorViewModel::setProperties(const serio::core::CrawlerStep &step) {
+void CrawlerStepEditorViewModel::setProperties(const core::CrawlerStep &step) {
     properties.clearAndDelete();
     emit propertiesChanged();
     for (const auto& property: step.getProperties()) {
@@ -127,7 +127,7 @@ void serio::qt::CrawlerStepEditorViewModel::setProperties(const serio::core::Cra
     emit propertiesChanged();
 }
 
-void serio::qt::CrawlerStepEditorViewModel::setSelectedType(const serio::core::CrawlerStepType &type) {
+void CrawlerStepEditorViewModel::setSelectedType(const core::CrawlerStepType &type) {
     selectedType = type;
     description = QString::fromStdString(type.getDescription());
     emit descriptionChanged();
@@ -137,14 +137,14 @@ void serio::qt::CrawlerStepEditorViewModel::setSelectedType(const serio::core::C
     }
 }
 
-void serio::qt::CrawlerStepEditorViewModel::setSelectedType(const std::function<bool(const core::CrawlerStepType &)>& predicate) {
+void CrawlerStepEditorViewModel::setSelectedType(const std::function<bool(const core::CrawlerStepType &)>& predicate) {
     auto typeIt = std::find_if(types.cbegin(), types.cend(), predicate);
     if (typeIt != types.cend()) {
         setSelectedType(*typeIt);
     }
 }
 
-serio::core::CrawlerStep serio::qt::CrawlerStepEditorViewModel::createCrawlerStep() const {
+core::CrawlerStep CrawlerStepEditorViewModel::createCrawlerStep() const {
     std::map<std::string, std::string> props;
     for (const auto& property: properties) {
         props[property->getName().toStdString()] = property->getValue().toStdString();
@@ -152,17 +152,19 @@ serio::core::CrawlerStep serio::qt::CrawlerStepEditorViewModel::createCrawlerSte
     return core::CrawlerStep(selectedType->getName(), props);
 }
 
-QList<serio::qt::ButtonModel*> serio::qt::CrawlerStepEditorViewModel::getActions() const {
+QList<ButtonModel*> CrawlerStepEditorViewModel::getActions() const {
     return actions;
 }
 
-void serio::qt::CrawlerStepEditorViewModel::populateActions(bool isDeleteEnabled) {
+void CrawlerStepEditorViewModel::populateActions(bool isDeleteEnabled) {
     actions.clearAndDelete();
     emit actionsChanged();
-    actions << new serio::qt::ButtonModel("cancel", serio::qt::ActionType::BACK, {}, false);
-    actions << new serio::qt::ButtonModel("save", serio::qt::ActionType::SAVE_CRAWLER_STEP);
+    actions << new ButtonModel("cancel", ActionType::BACK, {}, false);
+    actions << new ButtonModel("save", ActionType::SAVE_CRAWLER_STEP);
     if (isDeleteEnabled) {
-        actions << new serio::qt::ButtonModel("delete", serio::qt::ActionType::REMOVE_CRAWLER_STEP);
+        actions << new ButtonModel("delete", ActionType::REMOVE_CRAWLER_STEP);
     }
     emit actionsChanged();
+}
+
 }

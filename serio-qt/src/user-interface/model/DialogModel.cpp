@@ -1,63 +1,65 @@
 #include "DialogModel.h"
 
-serio::qt::DialogModel::DialogModel(QString title, QString message)
+namespace serio::qt {
+
+DialogModel::DialogModel(QString title, QString message)
     : title(std::move(title)),
       message(std::move(message)),
       topButtonText("confirm"),
-      topButtonAction(serio::qt::ActionType::BACK),
+      topButtonAction(ActionType::BACK),
       bottomButtonHidden(false),
       bottomButtonText("cancel"),
-      bottomButtonAction(serio::qt::ActionType::BACK) {}
+      bottomButtonAction(ActionType::BACK) {}
 
-QString serio::qt::DialogModel::getTitle() const {
+QString DialogModel::getTitle() const {
     return title;
 }
 
-QString serio::qt::DialogModel::getMessage() const {
+QString DialogModel::getMessage() const {
     return message;
 }
 
-void serio::qt::DialogModel::setTopButtonText(QString newTopButtonText) {
+void DialogModel::setTopButtonText(QString newTopButtonText) {
     topButtonText = std::move(newTopButtonText);
 }
 
-void serio::qt::DialogModel::setTopButtonAction(serio::qt::ActionType actionType) {
+void DialogModel::setTopButtonAction(ActionType actionType) {
     topButtonAction = actionType;
 }
 
-QString serio::qt::DialogModel::getTopButtonText() const {
+QString DialogModel::getTopButtonText() const {
     return topButtonText;
 }
 
-serio::qt::ActionType serio::qt::DialogModel::getTopButtonAction() const {
+ActionType DialogModel::getTopButtonAction() const {
     return topButtonAction;
 }
 
-void serio::qt::DialogModel::hideBottomButton() {
+void DialogModel::hideBottomButton() {
     bottomButtonHidden = true;
 }
 
-bool serio::qt::DialogModel::isBottomButtonHidden() const {
+bool DialogModel::isBottomButtonHidden() const {
     return bottomButtonHidden;
 }
 
-void serio::qt::DialogModel::setBottomButtonText(QString newBottomButtonText) {
+void DialogModel::setBottomButtonText(QString newBottomButtonText) {
     bottomButtonText = std::move(newBottomButtonText);
 }
 
-QString serio::qt::DialogModel::getBottomButtonText() const {
+QString DialogModel::getBottomButtonText() const {
     return bottomButtonText;
 }
 
-void serio::qt::DialogModel::setBottomButtonAction(serio::qt::ActionType actionType) {
+void DialogModel::setBottomButtonAction(ActionType actionType) {
     bottomButtonAction = actionType;
 }
 
-serio::qt::ActionType serio::qt::DialogModel::getBottomButtonAction() const {
+ActionType DialogModel::getBottomButtonAction() const {
     return bottomButtonAction;
 }
 
-bool serio::qt::DialogModel::operator==(const serio::qt::DialogModel &rhs) const {
+bool DialogModel::operator==(const DialogModel &rhs) const {
     return title == rhs.title &&
            message == rhs.message &&
            topButtonText == rhs.topButtonText &&
@@ -67,6 +69,8 @@ bool serio::qt::DialogModel::operator==(const serio::qt::DialogModel &rhs) const
            bottomButtonAction == rhs.bottomButtonAction;
 }
 
-bool serio::qt::DialogModel::operator!=(const serio::qt::DialogModel &rhs) const {
+bool DialogModel::operator!=(const DialogModel &rhs) const {
     return !(rhs == *this);
+}
+
 }

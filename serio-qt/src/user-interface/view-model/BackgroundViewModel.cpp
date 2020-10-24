@@ -2,19 +2,21 @@
 #include <QQmlContext>
 #include <utility>
 
-serio::qt::BackgroundViewModel::BackgroundViewModel(QSet<QString> viewsWithBackground)
+namespace serio::qt {
+
+BackgroundViewModel::BackgroundViewModel(QSet<QString> viewsWithBackground)
     : viewsWithBackground(std::move(viewsWithBackground)), visible(false) {}
 
-void serio::qt::BackgroundViewModel::initialize(serio::qt::StackOfViews &stack, QQmlApplicationEngine &engine) {
-    connect(&stack, &serio::qt::StackOfViews::currentViewChanged, this, &serio::qt::BackgroundViewModel::setCurrentView);
+void BackgroundViewModel::initialize(StackOfViews &stack, QQmlApplicationEngine &engine) {
+    connect(&stack, &StackOfViews::currentViewChanged, this, &BackgroundViewModel::setCurrentView);
     engine.rootContext()->setContextProperty("backgroundViewModel", this);
 }
 
-bool serio::qt::BackgroundViewModel::isVisible() const {
+bool BackgroundViewModel::isVisible() const {
     return visible;
 }
 
-void serio::qt::BackgroundViewModel::setCurrentView(const QString &currentView) {
+void BackgroundViewModel::setCurrentView(const QString &currentView) {
     auto previouslyVisible = visible;
     visible = viewsWithBackground.contains(currentView);
     if (previouslyVisible != visible) {
@@ -22,13 +24,15 @@ void serio::qt::BackgroundViewModel::setCurrentView(const QString &currentView) 
     }
 }
 
-void serio::qt::BackgroundViewModel::setImage(const QString& newImage) {
+void BackgroundViewModel::setImage(const QString& newImage) {
     modifyModel([this, newImage] {
         image = newImage;
         emit imageChanged();
     });
 }
 
-QString serio::qt::BackgroundViewModel::getImage() const {
+QString BackgroundViewModel::getImage() const {
     return image;
+}
+
 }

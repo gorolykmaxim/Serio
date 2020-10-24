@@ -1,6 +1,8 @@
 #include "ButtonModel.h"
 
-serio::qt::ButtonModel::ButtonModel(QString text, serio::qt::ActionType clickAction, QVariantList arguments, bool isPrimary)
+namespace serio::qt {
+
+ButtonModel::ButtonModel(QString text, ActionType clickAction, QVariantList arguments, bool isPrimary)
     : QObject(),
       text(std::move(text)),
       clickAction(clickAction),
@@ -8,33 +10,33 @@ serio::qt::ButtonModel::ButtonModel(QString text, serio::qt::ActionType clickAct
       clickArguments(std::move(arguments)),
       primary(isPrimary) {}
 
-QString serio::qt::ButtonModel::getText() const {
+QString ButtonModel::getText() const {
     return text;
 }
 
-serio::qt::ActionType serio::qt::ButtonModel::getClickAction() const {
+ActionType ButtonModel::getClickAction() const {
     return clickAction;
 }
 
-bool serio::qt::ButtonModel::isHighlighted() const {
+bool ButtonModel::isHighlighted() const {
     return highlighted;
 }
 
-serio::qt::ButtonModel& serio::qt::ButtonModel::setHighlighted(bool isHighlighted) {
+ButtonModel& ButtonModel::setHighlighted(bool isHighlighted) {
     highlighted = isHighlighted;
     emit highlightedChanged();
     return *this;
 }
 
-QVariantList serio::qt::ButtonModel::getClickArguments() const {
+QVariantList ButtonModel::getClickArguments() const {
     return clickArguments;
 }
 
-bool serio::qt::ButtonModel::isPrimary() const {
+bool ButtonModel::isPrimary() const {
     return primary;
 }
 
-bool serio::qt::ButtonModel::operator==(const serio::qt::ButtonModel &rhs) const {
+bool ButtonModel::operator==(const ButtonModel &rhs) const {
     return text == rhs.text &&
            clickAction == rhs.clickAction &&
            highlighted == rhs.highlighted &&
@@ -42,6 +44,8 @@ bool serio::qt::ButtonModel::operator==(const serio::qt::ButtonModel &rhs) const
            primary == rhs.primary;
 }
 
-bool serio::qt::ButtonModel::operator!=(const serio::qt::ButtonModel &rhs) const {
+bool ButtonModel::operator!=(const ButtonModel &rhs) const {
     return !(rhs == *this);
+}
+
 }

@@ -1,6 +1,8 @@
 #include "Application.h"
 
-serio::qt::Application::Application(int &argc, char **argv)
+namespace serio::qt {
+
+Application::Application(int &argc, char **argv)
     : QGuiApplication(argc, argv),
       tvShowCrawlerRuntime(storage, storage, storage, httpClient),
       tvShowCrawlerEditor(tvShowCrawlerRuntime),
@@ -9,4 +11,6 @@ serio::qt::Application::Application(int &argc, char **argv)
       userInterface(httpClient, tvShowCrawlerEditor, storage, viewer, tvShowPlayer, executor) {
     executor.runInBackgroundAndWait([this] { storage.initialize(); });
     userInterface.initialize();
+}
+
 }

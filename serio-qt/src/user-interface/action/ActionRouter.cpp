@@ -3,22 +3,25 @@
 #include <QQmlContext>
 #include <utility>
 
-serio::qt::ActionRouter::ActionRouter(serio::qt::QTaskExecutor &executor) : QObject(), executor(executor) {}
+namespace serio::qt {
 
-void serio::qt::ActionRouter::initialize(QQmlApplicationEngine &engine) {
-    qmlRegisterUncreatableMetaObject(serio::qt::staticMetaObject, "Serio", 1, 0, "ActionType", nullptr);
+ActionRouter::ActionRouter(QTaskExecutor &executor) : QObject(), executor(executor) {}
+
+void ActionRouter::initialize(QQmlApplicationEngine &engine) {
+    qmlRegisterUncreatableMetaObject(serio::qt::staticMetaObject, "Serio", 1, 0,
+                                     "ActionType", nullptr);
     engine.rootContext()->setContextProperty("actionRouter", this);
 }
 
-void serio::qt::ActionRouter::setErrorAction(std::function<void(const QVariantList &)> action) {
+void ActionRouter::setErrorAction(std::function<void(const QVariantList &)> action) {
     errorAction = std::move(action);
 }
 
-void serio::qt::ActionRouter::registerAction(ActionType type, std::function<void(const QVariantList&)> action) {
+void ActionRouter::registerAction(ActionType type, std::function<void(const QVariantList&)> action) {
     typeToAction[type] = std::move(action);
 }
 
-void serio::qt::ActionRouter::trigger(int actionType, const QVariantList& arguments) {
+void ActionRouter::trigger(int actionType, const QVariantList& arguments) {
     executor.runInBackground([=] {
         try {
             typeToAction[static_cast<ActionType>(actionType)](arguments);
@@ -28,4 +31,6 @@ void serio::qt::ActionRouter::trigger(int actionType, const QVariantList& argume
             }
         }
     });
+}
+
 }
