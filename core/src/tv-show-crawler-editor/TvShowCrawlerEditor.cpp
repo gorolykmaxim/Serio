@@ -1,50 +1,52 @@
 #include "tv-show-crawler-editor/TvShowCrawlerEditor.h"
 #include <utility>
 
-serio::core::TvShowCrawlerEditor::TvShowCrawlerEditor(serio::core::TvShowCrawlerRuntime &runtime)
+namespace serio::core {
+
+TvShowCrawlerEditor::TvShowCrawlerEditor(TvShowCrawlerRuntime &runtime)
     : runtime(runtime) {}
 
-void serio::core::TvShowCrawlerEditor::createTvShowCrawler() {
+void TvShowCrawlerEditor::createTvShowCrawler() {
     builder = TvShowCrawlerBuilder();
 }
 
-void serio::core::TvShowCrawlerEditor::importTvShowCrawler(const std::string &rawCrawler) {
+void TvShowCrawlerEditor::importTvShowCrawler(const std::string &rawCrawler) {
     setTvShowCrawler(runtime.deserializeTvShowCrawler(rawCrawler));
 }
 
-void serio::core::TvShowCrawlerEditor::editTvShowCrawler(const std::string &tvShowName) {
+void TvShowCrawlerEditor::editTvShowCrawler(const std::string &tvShowName) {
     setTvShowCrawler(runtime.getTvShowCrawlerByTvShowNameOrFail(tvShowName));
 }
 
-void serio::core::TvShowCrawlerEditor::setTvShowName(std::string name) {
+void TvShowCrawlerEditor::setTvShowName(std::string name) {
     getBuilderOrFail().setTvShowName(std::move(name));
 }
 
-void serio::core::TvShowCrawlerEditor::editCrawler(serio::core::CrawlerType type) {
+void TvShowCrawlerEditor::editCrawler(CrawlerType type) {
     getBuilderOrFail().editCrawler(type);
 }
 
-std::string serio::core::TvShowCrawlerEditor::getTvShowName() const {
+std::string TvShowCrawlerEditor::getTvShowName() const {
     return getBuilderOrFail().getTvShowName();
 }
 
-void serio::core::TvShowCrawlerEditor::addCrawlerStep(serio::core::CrawlerStep step) {
+void TvShowCrawlerEditor::addCrawlerStep(CrawlerStep step) {
     getBuilderOrFail().addCrawlerStep(std::move(step));
 }
 
-void serio::core::TvShowCrawlerEditor::replaceCrawlerStep(unsigned int stepIndex, serio::core::CrawlerStep newStep) {
+void TvShowCrawlerEditor::replaceCrawlerStep(unsigned int stepIndex, CrawlerStep newStep) {
     getBuilderOrFail().replaceCrawlerStep(stepIndex, std::move(newStep));
 }
 
-void serio::core::TvShowCrawlerEditor::removeCrawlerStep(unsigned int stepIndex) {
+void TvShowCrawlerEditor::removeCrawlerStep(unsigned int stepIndex) {
     getBuilderOrFail().removeCrawlerStep(stepIndex);
 }
 
-void serio::core::TvShowCrawlerEditor::saveCrawler() {
+void TvShowCrawlerEditor::saveCrawler() {
     getBuilderOrFail().saveCrawler();
 }
 
-void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
+void TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
     try {
         assertTvShowCrawlerIsEdited();
         runtime.crawlTvShowAndSaveCrawler(getBuilderOrFail().buildTvShowCrawler());
@@ -54,51 +56,50 @@ void serio::core::TvShowCrawlerEditor::saveAndRunTvShowCrawler() {
     }
 }
 
-serio::core::CrawlResult serio::core::TvShowCrawlerEditor::previewCrawler() {
-    serio::core::Crawler crawler(getBuilderOrFail().getCrawlerSteps());
+CrawlResult TvShowCrawlerEditor::previewCrawler() {
+    Crawler crawler(getBuilderOrFail().getCrawlerSteps());
     auto result = runtime.executeCrawler(crawler);
     getBuilderOrFail().setPreviewResult(result);
     return result;
 }
 
-bool serio::core::TvShowCrawlerEditor::willOverrideExistingTvShow() {
+bool TvShowCrawlerEditor::willOverrideExistingTvShow() {
     return runtime.willOverrideExistingTvShow(getBuilderOrFail().buildTvShowCrawler());
 }
 
-std::vector<serio::core::CrawlerStep> serio::core::TvShowCrawlerEditor::getCrawlerSteps() const {
+std::vector<CrawlerStep> TvShowCrawlerEditor::getCrawlerSteps() const {
     return getBuilderOrFail().getCrawlerSteps();
 }
 
-std::vector<serio::core::CrawlerStepType> serio::core::TvShowCrawlerEditor::getCrawlerStepTypes() const {
+std::vector<CrawlerStepType> TvShowCrawlerEditor::getCrawlerStepTypes() const {
     return runtime.getCrawlerStepTypes();
 }
 
-std::vector<std::string> serio::core::TvShowCrawlerEditor::getPreviewedCrawlerResults() const {
+std::vector<std::string> TvShowCrawlerEditor::getPreviewedCrawlerResults() const {
     return getBuilderOrFail().getPreviewedCrawlerResults();
 }
 
-std::vector<serio::core::CrawlLogEntry> serio::core::TvShowCrawlerEditor::getPreviewedCrawlerLog() const {
+std::vector<CrawlLogEntry> TvShowCrawlerEditor::getPreviewedCrawlerLog() const {
     return getBuilderOrFail().getPreviewedCrawlerLog();
 }
 
-void serio::core::TvShowCrawlerEditor::assertTvShowCrawlerIsEdited() const {
+void TvShowCrawlerEditor::assertTvShowCrawlerIsEdited() const {
     if (!builder) {
         throw NoTvShowCrawlerEditedError();
     }
 }
 
-serio::core::TvShowCrawlerBuilder &serio::core::TvShowCrawlerEditor::getBuilderOrFail() {
+TvShowCrawlerBuilder &TvShowCrawlerEditor::getBuilderOrFail() {
     assertTvShowCrawlerIsEdited();
     return *builder;
 }
 
-const serio::core::TvShowCrawlerBuilder &serio::core::TvShowCrawlerEditor::getBuilderOrFail() const {
+const TvShowCrawlerBuilder &TvShowCrawlerEditor::getBuilderOrFail() const {
     assertTvShowCrawlerIsEdited();
     return *builder;
 }
 
-void serio::core::TvShowCrawlerEditor::addCrawlerStepsFrom(serio::core::CrawlerType type,
-                                                           const TvShowCrawler &crawler) {
+void TvShowCrawlerEditor::addCrawlerStepsFrom(CrawlerType type, const TvShowCrawler &crawler) {
     editCrawler(type);
     for (const auto& step: crawler.getCrawler(type).getSteps()) {
         addCrawlerStep(step);
@@ -106,7 +107,7 @@ void serio::core::TvShowCrawlerEditor::addCrawlerStepsFrom(serio::core::CrawlerT
     saveCrawler();
 }
 
-void serio::core::TvShowCrawlerEditor::setTvShowCrawler(const serio::core::TvShowCrawler &crawler) {
+void TvShowCrawlerEditor::setTvShowCrawler(const TvShowCrawler &crawler) {
     createTvShowCrawler();
     setTvShowName(crawler.getTvShowName());
     addCrawlerStepsFrom(CrawlerType::episodeVideoCrawler, crawler);
@@ -114,9 +115,10 @@ void serio::core::TvShowCrawlerEditor::setTvShowCrawler(const serio::core::TvSho
     addCrawlerStepsFrom(CrawlerType::episodeNameCrawler, crawler);
 }
 
-serio::core::NoTvShowCrawlerEditedError::NoTvShowCrawlerEditedError()
+NoTvShowCrawlerEditedError::NoTvShowCrawlerEditedError()
     : std::logic_error("No tv-show crawler is being edited right now") {}
 
-serio::core::TvShowCrawlerEditorError::TvShowCrawlerEditorError(const std::runtime_error &cause)
+TvShowCrawlerEditorError::TvShowCrawlerEditorError(const std::runtime_error &cause)
     : runtime_error(std::string("Failed to save and run edited tv-show crawler: ") + cause.what()) {}
 
+}

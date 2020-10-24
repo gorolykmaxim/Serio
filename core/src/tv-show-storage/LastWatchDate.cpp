@@ -1,12 +1,14 @@
 #include "tv-show-storage/LastWatchDate.h"
 
-serio::core::LastWatchDate::LastWatchDate(std::chrono::system_clock::time_point date)
+namespace serio::core {
+
+LastWatchDate::LastWatchDate(std::chrono::system_clock::time_point date)
     : date(date) {}
 
-serio::core::LastWatchDate::LastWatchDate(long long timeSinceEpoch)
+LastWatchDate::LastWatchDate(long long timeSinceEpoch)
     : date(std::chrono::system_clock::time_point(std::chrono::system_clock::duration(timeSinceEpoch))) {}
 
-std::string serio::core::LastWatchDate::toString() const {
+std::string LastWatchDate::toString() const {
     auto hoursSinceLastWatch = std::chrono::duration_cast<std::chrono::hours>(std::chrono::system_clock::now() - date);
     if (hoursSinceLastWatch < std::chrono::hours(24)) {
         return "today";
@@ -23,30 +25,32 @@ std::string serio::core::LastWatchDate::toString() const {
     }
 }
 
-bool serio::core::LastWatchDate::operator==(const serio::core::LastWatchDate &rhs) const {
+bool LastWatchDate::operator==(const LastWatchDate &rhs) const {
     return date == rhs.date;
 }
 
-bool serio::core::LastWatchDate::operator!=(const serio::core::LastWatchDate &rhs) const {
+bool LastWatchDate::operator!=(const LastWatchDate &rhs) const {
     return !(rhs == *this);
 }
 
-long long serio::core::LastWatchDate::getSinceEpoch() const {
+long long LastWatchDate::getSinceEpoch() const {
     return date.time_since_epoch().count();
 }
 
-bool serio::core::LastWatchDate::operator<(const serio::core::LastWatchDate &rhs) const {
+bool LastWatchDate::operator<(const LastWatchDate &rhs) const {
     return date < rhs.date;
 }
 
-bool serio::core::LastWatchDate::operator>(const serio::core::LastWatchDate &rhs) const {
+bool LastWatchDate::operator>(const LastWatchDate &rhs) const {
     return rhs < *this;
 }
 
-bool serio::core::LastWatchDate::operator<=(const serio::core::LastWatchDate &rhs) const {
+bool LastWatchDate::operator<=(const LastWatchDate &rhs) const {
     return !(rhs < *this);
 }
 
-bool serio::core::LastWatchDate::operator>=(const serio::core::LastWatchDate &rhs) const {
+bool LastWatchDate::operator>=(const LastWatchDate &rhs) const {
     return !(*this < rhs);
+}
+
 }

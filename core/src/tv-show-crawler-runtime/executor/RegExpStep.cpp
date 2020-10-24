@@ -1,6 +1,8 @@
 #include "tv-show-crawler-runtime/executor/RegExpStep.h"
 #include <regex>
 
+namespace serio::core {
+
 static void appendCompleteMatchToResults(const std::smatch &match, std::vector<std::string> &results) {
     results.push_back(match[0].str());
 }
@@ -27,8 +29,7 @@ static void findAndAppendMatchesToResults(std::string input, const std::regex& r
     }
 }
 
-std::vector<std::string> serio::core::executeRegExpStep(const serio::core::CrawlerStep &step,
-                                                        const std::vector<std::string> &previousStepResults) {
+std::vector<std::string> executeRegExpStep(const CrawlerStep &step, const std::vector<std::string> &previousStepResults) {
     std::vector<std::string> results;
     results.reserve(previousStepResults.size());
     std::regex regExp(step.getPropertyOrFail("regExp"));
@@ -36,4 +37,6 @@ std::vector<std::string> serio::core::executeRegExpStep(const serio::core::Crawl
         findAndAppendMatchesToResults(previousResult, regExp, results);
     }
     return results;
+}
+
 }

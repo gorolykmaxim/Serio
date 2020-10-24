@@ -1,11 +1,12 @@
 #include <tv-show-viewer/TvShowViewer.h>
 
-serio::core::TvShowViewer::TvShowViewer(serio::core::TvShowStorage &tvShowStorage,
-                                        serio::core::TvShowCrawlerStorage& crawlerStorage,
-                                        serio::core::TvShowCrawlerRuntime& runtime)
+namespace serio::core {
+
+TvShowViewer::TvShowViewer(TvShowStorage &tvShowStorage, TvShowCrawlerStorage& crawlerStorage,
+                           TvShowCrawlerRuntime& runtime)
     : tvShowStorage(tvShowStorage), crawlerStorage(crawlerStorage), runtime(runtime) {}
 
-serio::core::TvShow serio::core::TvShowViewer::getSelectedTvShow() const {
+TvShow TvShowViewer::getSelectedTvShow() const {
     auto tvShowName = getSelectedTvShowNameOrFail();
     auto tvShow = tvShowStorage.getTvShowByName(tvShowName);
     if (!tvShow) {
@@ -15,18 +16,18 @@ serio::core::TvShow serio::core::TvShowViewer::getSelectedTvShow() const {
     }
 }
 
-serio::core::ListPage<serio::core::Episode> serio::core::TvShowViewer::getTvShowEpisodes(unsigned int offset, unsigned int limit) {
+ListPage<Episode> TvShowViewer::getTvShowEpisodes(unsigned int offset, unsigned int limit) {
     return tvShowStorage.getEpisodesOfTvShowWithName(getSelectedTvShowNameOrFail(), offset, limit);
 }
 
-void serio::core::TvShowViewer::openTvShowWithName(const std::string &tvShowName) {
+void TvShowViewer::openTvShowWithName(const std::string &tvShowName) {
     if (!tvShowStorage.getTvShowByName(tvShowName)) {
         throw TvShowDoesNotExistError(tvShowName);
     }
     selectedTvShow = tvShowName;
 }
 
-std::string serio::core::TvShowViewer::getRawCrawlerOfSelectedTvShow() {
+std::string TvShowViewer::getRawCrawlerOfSelectedTvShow() {
     auto tvShowName = getSelectedTvShowNameOrFail();
     auto rawCrawler = crawlerStorage.getTvShowCrawlerByTvShowName(tvShowName);
     if (rawCrawler) {
@@ -36,31 +37,33 @@ std::string serio::core::TvShowViewer::getRawCrawlerOfSelectedTvShow() {
     }
 }
 
-std::string serio::core::TvShowViewer::getSelectedTvShowNameOrFail() const {
+std::string TvShowViewer::getSelectedTvShowNameOrFail() const {
     if (!selectedTvShow) {
         throw NoTvShowSelectedError();
     }
     return *selectedTvShow;
 }
 
-void serio::core::TvShowViewer::crawlSelectedTvShow() {
+void TvShowViewer::crawlSelectedTvShow() {
     runtime.crawlTvShow(getSelectedTvShowNameOrFail());
 }
 
-void serio::core::TvShowViewer::clearSelectedTvShowWatchHistory() {
+void TvShowViewer::clearSelectedTvShowWatchHistory() {
     tvShowStorage.clearTvShowWatchHistory(getSelectedTvShowNameOrFail());
 }
 
-void serio::core::TvShowViewer::deleteSelectedTvShow() {
+void TvShowViewer::deleteSelectedTvShow() {
     auto tvShowName = getSelectedTvShowNameOrFail();
     tvShowStorage.deleteTvShow(tvShowName);
     crawlerStorage.deleteCrawlerOfTvShow(tvShowName);
 }
 
-serio::core::NoTvShowSelectedError::NoTvShowSelectedError() : std::logic_error("No tv show selected") {}
+NoTvShowSelectedError::NoTvShowSelectedError() : std::logic_error("No tv show selected") {}
 
-serio::core::TvShowDoesNotExistError::TvShowDoesNotExistError(const std::string &tvShowName)
+TvShowDoesNotExistError::TvShowDoesNotExistError(const std::string &tvShowName)
     : logic_error("TV show '" + tvShowName + "' does not exist") {}
 
-serio::core::DeletedTvShowStillSelectedError::DeletedTvShowStillSelectedError(const std::string &tvShowName)
+DeletedTvShowStillSelectedError::DeletedTvShowStillSelectedError(const std::string &tvShowName)
     : logic_error("TV show '" + tvShowName + "' has been deleted, but is still selected in tv-show-viewer") {}
+
+}

@@ -1,20 +1,22 @@
 #include "tv-show-player/TvShowPlayer.h"
 
-serio::core::TvShowPlayer::TvShowPlayer(serio::core::TvShowStorage &storage) : storage(storage) {}
+namespace serio::core {
 
-serio::core::Player serio::core::TvShowPlayer::playEpisodeOfTvShow(const std::string &tvShowName, unsigned int episodeId) {
+TvShowPlayer::TvShowPlayer(TvShowStorage &storage) : storage(storage) {}
+
+Player TvShowPlayer::playEpisodeOfTvShow(const std::string &tvShowName, unsigned int episodeId) {
     return createPlayer(tvShowName, getEpisodeOrFail(tvShowName, episodeId));
 }
 
-void serio::core::TvShowPlayer::updatePlayingEpisodeWatchProgress(serio::core::WatchProgress progress) {
+void TvShowPlayer::updatePlayingEpisodeWatchProgress(WatchProgress progress) {
     assertEpisodeIsPlaying();
     storage.watchTvShowEpisode(player->getPlayingTvShowName(),
                                player->getPlayingEpisode().getId(),
-                               serio::core::LastWatchDate(),
+                               LastWatchDate(),
                                progress);
 }
 
-serio::core::Player serio::core::TvShowPlayer::playTvShow(const std::string &tvShowName) {
+Player TvShowPlayer::playTvShow(const std::string &tvShowName) {
     auto lastWatchedEpisode = storage.getLastWatchedEpisodeOfTvShow(tvShowName);
     if (lastWatchedEpisode && !lastWatchedEpisode->getWatchProgress().isComplete()) {
         return createPlayer(tvShowName, std::move(*lastWatchedEpisode), false);
@@ -25,7 +27,7 @@ serio::core::Player serio::core::TvShowPlayer::playTvShow(const std::string &tvS
     }
 }
 
-serio::core::Episode serio::core::TvShowPlayer::getEpisodeOrFail(const std::string &tvShowName, unsigned int episodeId) {
+Episode TvShowPlayer::getEpisodeOrFail(const std::string &tvShowName, unsigned int episodeId) {
     auto episode = storage.getEpisodeOfTvShowWithName(tvShowName, episodeId);
     if (!episode) {
         throw TvShowEpisodeDoesNotExistError(tvShowName, episodeId);
@@ -34,35 +36,35 @@ serio::core::Episode serio::core::TvShowPlayer::getEpisodeOrFail(const std::stri
     }
 }
 
-serio::core::Player serio::core::TvShowPlayer::createPlayer(const std::string& tvShowName,
-                                                            serio::core::Episode&& episode, bool fromStart) {
+Player TvShowPlayer::createPlayer(const std::string& tvShowName,
+                                                            Episode&& episode, bool fromStart) {
     auto nextEpisode = storage.getEpisodeOfTvShowWithName(tvShowName, episode.getNextEpisodeId());
-    player = serio::core::Player(tvShowName, episode, nextEpisode.has_value(), fromStart);
+    player = Player(tvShowName, episode, nextEpisode.has_value(), fromStart);
     return *player;
 }
 
-serio::core::Player serio::core::TvShowPlayer::playPreviousEpisode() {
+Player TvShowPlayer::playPreviousEpisode() {
     return playNextOrPreviousEpisode(false);
 }
 
-serio::core::Player serio::core::TvShowPlayer::playNextEpisode() {
+Player TvShowPlayer::playNextEpisode() {
     return playNextOrPreviousEpisode(true);
 }
 
-serio::core::Player serio::core::TvShowPlayer::playNextOrPreviousEpisode(bool next) {
+Player TvShowPlayer::playNextOrPreviousEpisode(bool next) {
     assertEpisodeIsPlaying();
     auto tvShowName = player->getPlayingTvShowName();
     auto episode = player->getPlayingEpisode();
     return createPlayer(tvShowName, getEpisodeOrFail(tvShowName, next ? episode.getNextEpisodeId() : episode.getPreviousEpisodeId()));
 }
 
-void serio::core::TvShowPlayer::assertEpisodeIsPlaying() const {
+void TvShowPlayer::assertEpisodeIsPlaying() const {
     if (!player) {
         throw NoTvShowEpisodePlayingError();
     }
 }
 
-bool serio::core::TvShowPlayer::isTvShowWatchComplete(const std::string& tvShowName) {
+bool TvShowPlayer::isTvShowWatchComplete(const std::string& tvShowName) {
     auto lastWatchedEpisode = storage.getLastWatchedEpisodeOfTvShow(tvShowName);
     if (!lastWatchedEpisode || !lastWatchedEpisode->getWatchProgress().isComplete()) {
         return false;
@@ -71,8 +73,10 @@ bool serio::core::TvShowPlayer::isTvShowWatchComplete(const std::string& tvShowN
     }
 }
 
-serio::core::TvShowEpisodeDoesNotExistError::TvShowEpisodeDoesNotExistError(const std::string &tvShowName, unsigned int episodeId)
+TvShowEpisodeDoesNotExistError::TvShowEpisodeDoesNotExistError(const std::string &tvShowName, unsigned int episodeId)
     : std::logic_error("Episode " + std::to_string(episodeId) + " of tv show " + tvShowName + " does not exist") {}
 
-serio::core::NoTvShowEpisodePlayingError::NoTvShowEpisodePlayingError()
+NoTvShowEpisodePlayingError::NoTvShowEpisodePlayingError()
     : std::logic_error("No tv show episode is being played right now") {}
+
+}

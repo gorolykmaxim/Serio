@@ -42,46 +42,46 @@ private:
     unsigned int charsAvailable;
 };
 
-}
+CrawlLogEntry::CrawlLogEntry(std::string text) : text(std::move(text)) {}
 
-serio::core::CrawlLogEntry::CrawlLogEntry(std::string text) : text(std::move(text)) {}
-
-serio::core::CrawlLogEntry::CrawlLogEntry(const serio::core::CrawlerStep& executedStep)
+CrawlLogEntry::CrawlLogEntry(const CrawlerStep& executedStep)
     : text("Executing " + executedStep.getType() + " step with properties: '" + executedStep.getPropertiesAsString() + "'") {}
 
-serio::core::CrawlLogEntry::CrawlLogEntry(std::string text, std::string stepInputData, std::string stepOutputData)
+CrawlLogEntry::CrawlLogEntry(std::string text, std::string stepInputData, std::string stepOutputData)
     : text(std::move(text)), stepInputData(std::move(stepInputData)), stepOutputData(std::move(stepOutputData)) {}
 
-void serio::core::CrawlLogEntry::setStepInputData(const std::vector<std::string>& data, unsigned int maxSize) {
+void CrawlLogEntry::setStepInputData(const std::vector<std::string>& data, unsigned int maxSize) {
     stepInputData = SizeConstrainedStringBuilder::join(data, maxSize);
 }
 
-void serio::core::CrawlLogEntry::setStepOutputData(const std::vector<std::string> &data, unsigned int maxSize) {
+void CrawlLogEntry::setStepOutputData(const std::vector<std::string> &data, unsigned int maxSize) {
     stepOutputData = SizeConstrainedStringBuilder::join(data, maxSize);
 }
 
-bool serio::core::CrawlLogEntry::hasData() const {
+bool CrawlLogEntry::hasData() const {
     return !stepInputData.empty() || !stepOutputData.empty();
 }
 
-std::string serio::core::CrawlLogEntry::getText() const {
+std::string CrawlLogEntry::getText() const {
     return text;
 }
 
-std::string serio::core::CrawlLogEntry::getStepInputData() const {
+std::string CrawlLogEntry::getStepInputData() const {
     return stepInputData;
 }
 
-std::string serio::core::CrawlLogEntry::getStepOutputData() const {
+std::string CrawlLogEntry::getStepOutputData() const {
     return stepOutputData;
 }
 
-bool serio::core::CrawlLogEntry::operator==(const serio::core::CrawlLogEntry &rhs) const {
+bool CrawlLogEntry::operator==(const CrawlLogEntry &rhs) const {
     return text == rhs.text &&
            stepInputData == rhs.stepInputData &&
            stepOutputData == rhs.stepOutputData;
 }
 
-bool serio::core::CrawlLogEntry::operator!=(const serio::core::CrawlLogEntry &rhs) const {
+bool CrawlLogEntry::operator!=(const CrawlLogEntry &rhs) const {
     return !(rhs == *this);
+}
+
 }
