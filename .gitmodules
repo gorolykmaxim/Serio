@@ -4,3 +4,6 @@
 [submodule "core/lib/NFHTTP"]
 	path = core/lib/NFHTTP
 	url = https://github.com/gorolykmaxim/NFHTTP.git
+[submodule "core/lib/SQLiteCpp"]
+	path = core/lib/SQLiteCpp
+	url = https://github.com/SRombauts/SQLiteCpp.git
