@@ -1,4 +1,4 @@
-#include "Cache.h"
+#include <cache/Cache.h>
 
 namespace serio {
 Cache::Cache(SQLite::Database &database) : database(database) {
