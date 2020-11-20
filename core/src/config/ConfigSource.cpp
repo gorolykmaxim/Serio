@@ -19,7 +19,7 @@ std::optional<std::string> ConfigSource::getUrl() {
     SQLite::Statement getSourceUrl(database, "SELECT VALUE FROM CONFIG WHERE KEY = ?");
     getSourceUrl.bind(1, SOURCE_URL_PARAM);
     if (getSourceUrl.executeStep()) {
-        return getSourceUrl.getColumn(0);
+        return getSourceUrl.getColumn(0).getString();
     } else {
         return std::optional<std::string>();
     }

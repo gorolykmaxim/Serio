@@ -2,6 +2,7 @@
 #define SERIO_CONFIGSTRUCTURE_H
 
 #include <nlohmann/json.hpp>
+#include <optional>
 
 namespace serio {
 class ConfigStructure {

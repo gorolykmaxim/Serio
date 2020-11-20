@@ -35,7 +35,7 @@ std::optional<std::string> Cache::getEntry(const std::string &key) {
     SQLite::Statement getEntry(database, "SELECT VALUE FROM CACHE_ENTRY WHERE KEY = ?");
     getEntry.bind(1, key);
     if (getEntry.executeStep()) {
-        return getEntry.getColumn(0);
+        return getEntry.getColumn(0).getString();
     } else {
         return std::optional<std::string>();
     }

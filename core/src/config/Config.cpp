@@ -1,5 +1,4 @@
 #include <config/Config.h>
-#include <config/ConfigStructure.h>
 
 namespace serio {
 Config::Config(SQLite::Database &database, Cache &cache, nativeformat::http::Client &httpClient)
@@ -18,7 +17,7 @@ HttpClientConfig Config::getHttpClientConfig() {
     HttpClientConfig httpClientConfig;
     const auto userAgents = config.getParameter({"http-client", "user-agents"});
     if (userAgents) {
-        httpClientConfig.userAgents = std::vector<std::string>(*userAgents);
+        httpClientConfig.userAgents = userAgents->get<std::vector<std::string>>();
     }
     return httpClientConfig;
 }

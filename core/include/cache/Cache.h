@@ -2,6 +2,7 @@
 #define SERIO_CACHE_H
 
 #include <chrono>
+#include <optional>
 #include <SQLiteCpp/Database.h>
 
 namespace serio {
