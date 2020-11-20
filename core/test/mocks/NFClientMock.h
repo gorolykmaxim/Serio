@@ -6,6 +6,7 @@
 
 namespace mocks {
 class NFClientMock : public nativeformat::http::Client {
+public:
     MOCK_METHOD(
             (std::shared_ptr<nativeformat::http::RequestToken>),
             performRequest,
