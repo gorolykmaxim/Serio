@@ -9,7 +9,7 @@ Cache::Cache(SQLite::Database &database) : database(database) {
 }
 
 void Cache::put(const std::string &key, const std::string &value, const std::chrono::milliseconds &duration) {
-    SQLite::Statement insertEntry(database, "INSERT INTO CACHE_ENTRY VALUES(?, ?, ?)");
+    SQLite::Statement insertEntry(database, "INSERT OR REPLACE INTO CACHE_ENTRY VALUES(?, ?, ?)");
     insertEntry.bind(1, key);
     insertEntry.bind(2, value);
     insertEntry.bind(3, (std::chrono::system_clock::now() + duration).time_since_epoch().count());
