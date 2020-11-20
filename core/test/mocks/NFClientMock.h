@@ -5,7 +5,7 @@
 #include <NFHTTP/NFHTTP.h>
 
 namespace mocks {
-class NFClientMock : nativeformat::http::Client {
+class NFClientMock : public nativeformat::http::Client {
     MOCK_METHOD(
             (std::shared_ptr<nativeformat::http::RequestToken>),
             performRequest,
