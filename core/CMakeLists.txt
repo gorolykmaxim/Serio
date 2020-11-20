@@ -7,4 +7,5 @@ target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include)
 target_link_libraries(Core SQLiteCpp)
 
 add_executable(CoreTest test/cache/CacheTest.cpp)
+target_include_directories(CoreTest PRIVATE test/mocks)
 target_link_libraries(CoreTest Core gtest gmock gtest_main)

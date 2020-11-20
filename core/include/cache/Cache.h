@@ -8,9 +8,9 @@ namespace serio {
 class Cache {
 public:
     explicit Cache(SQLite::Database &database);
-    void put(const std::string& key, const std::string& value, const std::chrono::milliseconds& duration);
-    std::optional<std::string> get(const std::string& key);
-    long size();
+    virtual void put(const std::string& key, const std::string& value, const std::chrono::milliseconds& duration);
+    virtual std::optional<std::string> get(const std::string& key);
+    virtual long size();
 private:
     SQLite::Database& database;
     void clearExpiredEntries();
