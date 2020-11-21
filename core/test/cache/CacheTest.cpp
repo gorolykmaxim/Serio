@@ -24,15 +24,13 @@ TEST_F(CacheTest, shouldMissCacheSinceLastEntryHasAlreadyExpired) {
     EXPECT_FALSE(cache.get(key));
 }
 
-TEST_F(CacheTest, shouldAutomaticallyCleanCacheFromExpiredEntries) {
-    cache.put(key, value, std::chrono::hours(-24));
-    EXPECT_EQ(1, cache.size());
-    cache.get(key);
-    EXPECT_EQ(0, cache.size());
-}
-
 TEST_F(CacheTest, shouldReplaceExistingCacheEntryWithNewOne) {
     cache.put(key, "", duration);
     cache.put(key, value, duration);
     EXPECT_EQ(value, *cache.get(key));
+}
+
+TEST_F(CacheTest, shouldGetLastExpiredEntryFromCache) {
+    cache.put(key, value, std::chrono::hours(-24));
+    EXPECT_EQ(value, *cache.get(key, true));
 }

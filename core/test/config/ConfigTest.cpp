@@ -130,7 +130,7 @@ TEST_P(ConfigFetchTest, shouldGetConfig) {
 }
 
 TEST_P(ConfigFetchTest, shouldGetConfigFromCache) {
-    ON_CALL(cache, get(serio::ConfigSource::CACHE_ENTRY_NAME))
+    ON_CALL(cache, get(serio::ConfigSource::CACHE_ENTRY_NAME, false))
         .WillByDefault(::testing::Return(std::optional<std::string>(jsonResponse.dump())));
     config.setSourceUrl(sourceUrl);
     EXPECT_CALL(httpClient, performRequestSynchronously(::testing::_)).Times(0);

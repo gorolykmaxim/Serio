@@ -10,7 +10,7 @@ class CacheMock : public serio::Cache {
 public:
     CacheMock() : serio::Cache(mocks::Database::STUB) {}
     MOCK_METHOD(void, put, (const std::string&, const std::string&, const std::chrono::milliseconds&), (override));
-    MOCK_METHOD((std::optional<std::string>), get, (const std::string&), (override));
+    MOCK_METHOD((std::optional<std::string>), get, (const std::string&, bool), (override));
     MOCK_METHOD(long, size, (), (override));
 };
 }

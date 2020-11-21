@@ -28,13 +28,13 @@ protected:
 };
 
 TEST_F(CachingHttpClientTest, shouldGetResponseFromCache) {
-    EXPECT_CALL(cache, get(url)).WillOnce(::testing::Return(std::optional(rawResponse)));
+    EXPECT_CALL(cache, get(url, false)).WillOnce(::testing::Return(std::optional(rawResponse)));
     EXPECT_CALL(client, performRequest(::testing::_, ::testing::_)).Times(0);
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
 }
 
 TEST_F(CachingHttpClientTest, shouldMissCacheGetResponseFromNetworkAndCacheIt) {
-    EXPECT_CALL(cache, get(url)).WillOnce(::testing::Return(std::optional<std::string>()));
+    EXPECT_CALL(cache, get(url, false)).WillOnce(::testing::Return(std::optional<std::string>()));
     EXPECT_CALL(cache, put(url, rawResponse, std::chrono::duration_cast<std::chrono::milliseconds>(cacheTtl)));
     mockHttpClientResponse(response);
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());

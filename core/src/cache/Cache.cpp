@@ -1,4 +1,5 @@
 #include <cache/Cache.h>
+#include <sstream>
 
 namespace serio {
 Cache::Cache(SQLite::Database &database) : database(database) {
@@ -16,28 +17,25 @@ void Cache::put(const std::string &key, const std::string &value, const std::chr
     insertEntry.exec();
 }
 
-std::optional<std::string> Cache::get(const std::string &key) {
-    clearExpiredEntries();
-    return getEntry(key);
-}
-
-long Cache::size() {
-    return database.execAndGet("SELECT COUNT() FROM CACHE_ENTRY");
-}
-
-void Cache::clearExpiredEntries() {
-    SQLite::Statement clearExpired(database, "DELETE FROM CACHE_ENTRY WHERE EXPIRATION_DATE < ?");
-    clearExpired.bind(1, std::chrono::system_clock::now().time_since_epoch().count());
-    clearExpired.exec();
-}
-
-std::optional<std::string> Cache::getEntry(const std::string &key) {
-    SQLite::Statement getEntry(database, "SELECT VALUE FROM CACHE_ENTRY WHERE KEY = ?");
+std::optional<std::string> Cache::get(const std::string &key, bool includeExpired) {
+    std::stringstream queryBuilder;
+    queryBuilder << "SELECT VALUE FROM CACHE_ENTRY WHERE KEY = ?";
+    if (!includeExpired) {
+        queryBuilder << " AND EXPIRATION_DATE > ?";
+    }
+    SQLite::Statement getEntry(database, queryBuilder.str());
     getEntry.bind(1, key);
+    if (!includeExpired) {
+        getEntry.bind(2, std::chrono::system_clock::now().time_since_epoch().count());
+    }
     if (getEntry.executeStep()) {
         return getEntry.getColumn(0).getString();
     } else {
         return std::optional<std::string>();
     }
+}
+
+long Cache::size() {
+    return database.execAndGet("SELECT COUNT() FROM CACHE_ENTRY");
 }
 }
