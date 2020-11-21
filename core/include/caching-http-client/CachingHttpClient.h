@@ -10,7 +10,7 @@ namespace serio {
 class CachingHttpClient {
 public:
     CachingHttpClient(nativeformat::http::Client& client, Cache& cache);
-    std::future<std::string> sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl);
+    virtual std::future<std::string> sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl);
 private:
     nativeformat::http::Client& client;
     Cache& cache;
