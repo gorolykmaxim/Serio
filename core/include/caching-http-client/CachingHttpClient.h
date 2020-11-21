@@ -4,19 +4,20 @@
 #include <future>
 #include <NFHTTP/Client.h>
 #include <cache/Cache.h>
+#include "HttpRequest.h"
 
 namespace serio {
 class CachingHttpClient {
 public:
     CachingHttpClient(nativeformat::http::Client& client, Cache& cache);
-    std::future<std::string> sendRequest(const std::shared_ptr<nativeformat::http::Request>& request,
-                                         const std::chrono::milliseconds& cacheTtl);
+    std::future<std::string> sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl);
 private:
     nativeformat::http::Client& client;
     Cache& cache;
 
     void writeResponseToPromise(const std::shared_ptr<nativeformat::http::Response>& response,
                                 const std::shared_ptr<std::promise<std::string>>& promise,
+                                const HttpRequest& request,
                                 const std::chrono::milliseconds& cacheTtl);
     std::string readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response);
 };

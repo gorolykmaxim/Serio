@@ -9,7 +9,7 @@ class CachingHttpClientTest : public ::testing::Test {
 protected:
     const std::string rawResponse = "response";
     const std::string url = "https://some.url.com/";
-    const std::shared_ptr<nativeformat::http::Request> request = nativeformat::http::createRequest(url, {});
+    const serio::HttpRequest request{url};
     const std::chrono::hours cacheTtl = std::chrono::hours(24);
     const std::shared_ptr<nativeformat::http::Response> response = std::make_shared<nativeformat::http::ResponseImplementation>(
             request, reinterpret_cast<const unsigned char*>(rawResponse.c_str()), rawResponse.size() + 1,
@@ -24,7 +24,7 @@ protected:
     void mockHttpClientResponse(const std::shared_ptr<nativeformat::http::Response>& res) {
         const auto invokeResponseCallback = ::testing::InvokeArgument<1>(res);
         const auto returnNull = ::testing::Return(std::shared_ptr<nativeformat::http::RequestToken>(nullptr));
-        EXPECT_CALL(client, performRequest(IsRequest(request), ::testing::_))
+        EXPECT_CALL(client, performRequest(IsRequest(static_cast<std::shared_ptr<nativeformat::http::Request>>(request)), ::testing::_))
             .WillOnce(::testing::DoAll(invokeResponseCallback, returnNull));
     }
 };
