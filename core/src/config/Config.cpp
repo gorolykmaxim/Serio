@@ -44,4 +44,25 @@ std::vector<EpisodeCrawlerConfig> Config::getEpisodeCrawlerConfigs() {
     }
     return episodeCrawlerConfigs;
 }
+
+std::vector<SearchCrawlerConfig> Config::getSearchCrawlerConfigs() {
+    const auto config = source.fetchConfig();
+    std::vector<SearchCrawlerConfig> searchCrawlerConfigs;
+    const auto platforms = config.getPlatforms();
+    searchCrawlerConfigs.reserve(platforms.size());
+    for (const auto& platform: platforms) {
+        const auto name = platform.getParameter({"name"});
+        const auto cacheTtl = platform.getParameter({"search", "cache-ttl"});
+        const auto crawler = platform.getParameter({"search", "crawler"});
+        if (name && cacheTtl && crawler) {
+            SearchCrawlerConfig searchCrawlerConfig{
+                    name->get<std::string>(),
+                    std::chrono::milliseconds(cacheTtl->get<long>()),
+                    crawler->get<std::string>()
+            };
+            searchCrawlerConfigs.push_back(std::move(searchCrawlerConfig));
+        }
+    }
+    return searchCrawlerConfigs;
+}
 }

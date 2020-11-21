@@ -18,12 +18,24 @@ public:
                                     "tv show crawler code 2",
                                     "episode crawler code 2"}
     });
+    inline static const std::vector<serio::SearchCrawlerConfig> searchCrawlerConfigs = std::vector({
+        serio::SearchCrawlerConfig{episodeCrawlerConfigs[0].platformName,
+                                   episodeCrawlerConfigs[0].cacheTtl,
+                                   episodeCrawlerConfigs[0].tvShowCrawler},
+        serio::SearchCrawlerConfig{episodeCrawlerConfigs[1].platformName,
+                                   episodeCrawlerConfigs[1].cacheTtl,
+                                   episodeCrawlerConfigs[1].tvShowCrawler},
+    });
     const std::string sourceUrl = "https://serio.com/config.json";
     const serio::HttpRequest request{sourceUrl};
     const nlohmann::json jsonResponse = {
             {"platforms", {
                 {
                     {"name", episodeCrawlerConfigs[0].platformName},
+                    {"search", {
+                       {"cache-ttl", searchCrawlerConfigs[0].cacheTtl.count()},
+                       {"crawler", searchCrawlerConfigs[0].crawler}
+                    }},
                     {"episode", {
                         {"cache-ttl", episodeCrawlerConfigs[0].cacheTtl.count()},
                         {"tvShowCrawler", episodeCrawlerConfigs[0].tvShowCrawler},
@@ -32,6 +44,10 @@ public:
                 },
                 {
                     {"name", episodeCrawlerConfigs[1].platformName},
+                    {"search", {
+                        {"cache-ttl", searchCrawlerConfigs[1].cacheTtl.count()},
+                        {"crawler", searchCrawlerConfigs[1].crawler}
+                    }},
                     {"episode", {
                             {"cache-ttl", episodeCrawlerConfigs[1].cacheTtl.count()},
                             {"tvShowCrawler", episodeCrawlerConfigs[1].tvShowCrawler},
@@ -108,6 +124,18 @@ TEST_F(ConfigTest, shouldSkipPlatformEpisodeCrawlerConfigsThatLackFields) {
     EXPECT_EQ(std::vector({episodeCrawlerConfigs[0]}), config.getEpisodeCrawlerConfigs());
 }
 
+TEST_F(ConfigTest, shouldGetEmptyVectorOfSearchCrawlerConfigsSinceNoPlatformsAreConfigured) {
+    mockClientResponse({});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_TRUE(config.getSearchCrawlerConfigs().empty());
+}
+
+TEST_F(ConfigTest, shouldSkipPlatformSearchCrawlerConfigsThatLackFields) {
+    mockClientResponse({{"platforms", {jsonResponse["platforms"][0], {}}}});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_EQ(std::vector({searchCrawlerConfigs[0]}), config.getSearchCrawlerConfigs());
+}
+
 struct FetchAsserts {
     std::function<void(serio::Config&)> callGetter;
     std::function<void(serio::Config&)> compareResults;
@@ -131,16 +159,17 @@ TEST_P(ConfigFetchTest, shouldGetConfig) {
     GetParam().compareResults(config);
 }
 
-INSTANTIATE_TEST_SUITE_P(HttpClientConfigFetchTest,
-                         ConfigFetchTest,
-                         ::testing::Values(FetchAsserts{
-                             [] (serio::Config& config) { config.getHttpClientConfig(); },
-                             [] (serio::Config& config) { EXPECT_EQ(ConfigTest::httpClientConfig, config.getHttpClientConfig()); }
-                         }));
-
-INSTANTIATE_TEST_SUITE_P(EpisodeCrawlerConfigFetchTest,
-                         ConfigFetchTest,
-                         ::testing::Values(FetchAsserts{
-                            [] (serio::Config& config) { config.getEpisodeCrawlerConfigs(); },
-                            [] (serio::Config& config) { EXPECT_EQ(ConfigTest::episodeCrawlerConfigs, config.getEpisodeCrawlerConfigs()); }
-                        }));
+const FetchAsserts httpClientConfigAsserts{
+    [] (serio::Config& config) { config.getHttpClientConfig(); },
+    [] (serio::Config& config) { EXPECT_EQ(ConfigTest::httpClientConfig, config.getHttpClientConfig()); }
+};
+const FetchAsserts episodeCrawlerConfigAsserts{
+    [] (serio::Config& config) { config.getEpisodeCrawlerConfigs(); },
+    [] (serio::Config& config) { EXPECT_EQ(ConfigTest::episodeCrawlerConfigs, config.getEpisodeCrawlerConfigs()); }
+};
+const FetchAsserts searchCrawlerConfigAsserts{
+    [] (serio::Config& config) { config.getSearchCrawlerConfigs(); },
+    [] (serio::Config& config) { EXPECT_EQ(ConfigTest::searchCrawlerConfigs, config.getSearchCrawlerConfigs()); }
+};
+INSTANTIATE_TEST_SUITE_P(ConfigFetchTestInstantiation, ConfigFetchTest, ::testing::Values(
+        httpClientConfigAsserts, episodeCrawlerConfigAsserts, searchCrawlerConfigAsserts));

@@ -8,6 +8,7 @@
 #include "ConfigSource.h"
 #include "ConfigStructure.h"
 #include "EpisodeCrawlerConfig.h"
+#include "SearchCrawlerConfig.h"
 #include <nlohmann/json.hpp>
 
 namespace serio {
@@ -18,6 +19,7 @@ public:
     virtual std::optional<std::string> getSourceUrl();
     virtual HttpClientConfig getHttpClientConfig();
     virtual std::vector<EpisodeCrawlerConfig> getEpisodeCrawlerConfigs();
+    virtual std::vector<SearchCrawlerConfig> getSearchCrawlerConfigs();
 private:
     ConfigSource source;
 };
