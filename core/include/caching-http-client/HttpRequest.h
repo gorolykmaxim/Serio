@@ -10,6 +10,8 @@ struct HttpRequest {
 
     operator std::shared_ptr<nativeformat::http::Request>() const;
     operator std::string() const;
+    bool operator==(const HttpRequest &rhs) const;
+    bool operator!=(const HttpRequest &rhs) const;
 };
 }
 

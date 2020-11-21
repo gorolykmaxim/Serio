@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 #include <SQLiteCpp/Database.h>
 #include <NFHTTP/ResponseImplementation.h>
-#include <CacheMock.h>
-#include <NFClientMock.h>
+#include <CachingHttpClientMock.h>
 #include <config/Config.h>
 #include <nlohmann/json.hpp>
 
@@ -20,7 +19,7 @@ public:
                                     "episode crawler code 2"}
     });
     const std::string sourceUrl = "https://serio.com/config.json";
-    const std::shared_ptr<nativeformat::http::Request> request = nativeformat::http::createRequest(sourceUrl, {});
+    const serio::HttpRequest request{sourceUrl};
     const nlohmann::json jsonResponse = {
             {"platforms", {
                 {
@@ -46,20 +45,24 @@ public:
     };
 
     SQLite::Database database = SQLite::Database(":memory:", SQLite::OPEN_READWRITE);
-    ::testing::NiceMock<mocks::CacheMock> cache;
-    mocks::NFClientMock httpClient;
-    serio::Config config = serio::Config(database, cache, httpClient);
+    mocks::CachingHttpClientMock httpClient;
+    serio::Config config = serio::Config(database, httpClient);
 
     void mockClientResponse(const nlohmann::json& response) {
         const auto rawResponse = response.dump();
-        const auto httpResponse = std::make_shared<nativeformat::http::ResponseImplementation>(
-            request,
-            reinterpret_cast<const unsigned char*>(rawResponse.c_str()),
-            rawResponse.size() + 1,
-            nativeformat::http::StatusCode::StatusCodeOK,
-            false);
-        EXPECT_CALL(httpClient, performRequestSynchronously(IsRequest(request)))
-            .WillOnce(::testing::Return(httpResponse));
+        std::promise<std::string> res;
+        res.set_value(rawResponse);
+        const std::chrono::milliseconds cacheTtl = serio::ConfigSource::CACHE_TTL;
+        EXPECT_CALL(httpClient, sendRequest(request, cacheTtl))
+            .WillOnce(::testing::Return(::testing::ByMove(res.get_future())));
+    }
+    void mockClientError() {
+        const auto exception = std::make_exception_ptr(std::runtime_error(""));
+        std::promise<std::string> response;
+        response.set_exception(exception);
+        const std::chrono::milliseconds cacheTtl = serio::ConfigSource::CACHE_TTL;
+        EXPECT_CALL(httpClient, sendRequest(request, cacheTtl))
+                .WillOnce(::testing::Return(::testing::ByMove(response.get_future())));
     }
 };
 
@@ -76,7 +79,7 @@ TEST_F(ConfigTest, shouldReplaceExistingSourceUrlWithNewOne) {
 }
 
 TEST_F(ConfigTest, shouldKeepSourceUrlInDatabase) {
-    serio::Config anotherConfig(database, cache, httpClient);
+    serio::Config anotherConfig(database, httpClient);
     anotherConfig.setSourceUrl(sourceUrl);
     EXPECT_EQ(sourceUrl, *config.getSourceUrl());
 }
@@ -117,8 +120,7 @@ TEST_P(ConfigFetchTest, shouldFailToGetConfigSinceSourceUrlIsNotSet) {
 }
 
 TEST_P(ConfigFetchTest, shouldFailToGetConfigDueToHttpError) {
-    EXPECT_CALL(httpClient, performRequestSynchronously(IsRequest(request)))
-        .WillOnce(::testing::Throw(std::runtime_error("")));
+    mockClientError();
     config.setSourceUrl(sourceUrl);
     EXPECT_THROW(GetParam().callGetter(config), serio::ConfigFetchError);
 }
@@ -127,24 +129,6 @@ TEST_P(ConfigFetchTest, shouldGetConfig) {
     mockClientResponse(jsonResponse);
     config.setSourceUrl(sourceUrl);
     GetParam().compareResults(config);
-}
-
-TEST_P(ConfigFetchTest, shouldGetConfigFromCache) {
-    ON_CALL(cache, get(serio::ConfigSource::CACHE_ENTRY_NAME, false))
-        .WillByDefault(::testing::Return(std::optional<std::string>(jsonResponse.dump())));
-    config.setSourceUrl(sourceUrl);
-    EXPECT_CALL(httpClient, performRequestSynchronously(::testing::_)).Times(0);
-    GetParam().compareResults(config);
-}
-
-TEST_P(ConfigFetchTest, shouldSaveConfigToCache) {
-    config.setSourceUrl(sourceUrl);
-    mockClientResponse(jsonResponse);
-    EXPECT_CALL(cache, put(
-            serio::ConfigSource::CACHE_ENTRY_NAME,
-            jsonResponse.dump(),
-            std::chrono::duration_cast<std::chrono::milliseconds>(serio::ConfigSource::CACHE_TTL)));
-    GetParam().callGetter(config);
 }
 
 INSTANTIATE_TEST_SUITE_P(HttpClientConfigFetchTest,

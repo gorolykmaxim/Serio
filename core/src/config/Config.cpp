@@ -1,8 +1,8 @@
 #include <config/Config.h>
 
 namespace serio {
-Config::Config(SQLite::Database &database, Cache &cache, nativeformat::http::Client &httpClient)
-    : source(database, cache, httpClient) {}
+Config::Config(SQLite::Database &database, CachingHttpClient& httpClient)
+    : source(database, httpClient) {}
 
 void Config::setSourceUrl(const std::string &url) {
     source.setUrl(url);

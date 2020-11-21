@@ -1,10 +1,9 @@
 #include <config/ConfigSource.h>
 
 namespace serio {
-serio::ConfigSource::ConfigSource(SQLite::Database &database, Cache &cache, nativeformat::http::Client &httpClient)
+serio::ConfigSource::ConfigSource(SQLite::Database &database, CachingHttpClient& client)
         : database(database),
-          cache(cache),
-          httpClient(httpClient) {
+          client(client) {
     database.exec("CREATE TABLE IF NOT EXISTS CONFIG(KEY TEXT PRIMARY KEY, VALUE TEXT)");
 }
 
@@ -27,33 +26,17 @@ std::optional<std::string> ConfigSource::getUrl() {
 
 ConfigStructure ConfigSource::fetchConfig() {
     try {
-        const auto cachedResponse = cache.get(CACHE_ENTRY_NAME);
-        if (cachedResponse) {
-            return ConfigStructure(nlohmann::json::parse(*cachedResponse));
-        } else {
-            const auto rawResponse = fetchConfigFrom(getUrlOrFail());
-            cache.put(CACHE_ENTRY_NAME, rawResponse, CACHE_TTL);
-            return ConfigStructure(nlohmann::json::parse(rawResponse));
+        const auto url = getUrl();
+        if (!url) {
+            throw ConfigSourceNotSpecifiedError();
         }
+        HttpRequest request{*url};
+        const auto response = client.sendRequest(request, CACHE_TTL).get();
+        const auto jsonRoot = nlohmann::json::parse(response);
+        return ConfigStructure(jsonRoot);
     } catch (std::runtime_error& e) {
         throw ConfigFetchError(e.what());
     }
-}
-
-std::string ConfigSource::getUrlOrFail() {
-    const auto url = getUrl();
-    if (url) {
-        return *url;
-    } else {
-        throw ConfigSourceNotSpecifiedError();
-    }
-}
-
-std::string ConfigSource::fetchConfigFrom(const std::string &url) {
-    const auto request = nativeformat::http::createRequest(getUrlOrFail(), {});
-    const auto response = httpClient.performRequestSynchronously(request);
-    size_t size;
-    return reinterpret_cast<const char *>(response->data(size));
 }
 
 ConfigSourceNotSpecifiedError::ConfigSourceNotSpecifiedError()

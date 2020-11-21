@@ -10,4 +10,12 @@ HttpRequest::operator std::shared_ptr<nativeformat::http::Request>() const {
 HttpRequest::operator std::string() const {
     return url;
 }
+
+bool HttpRequest::operator==(const HttpRequest &rhs) const {
+    return url == rhs.url;
+}
+
+bool HttpRequest::operator!=(const HttpRequest &rhs) const {
+    return !(rhs == *this);
+}
 }
