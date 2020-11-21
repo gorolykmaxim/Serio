@@ -15,17 +15,10 @@ private:
     nativeformat::http::Client& client;
     Cache& cache;
 
-    void writeResponseTo(const std::shared_ptr<nativeformat::http::Response>& response,
-                         const std::shared_ptr<std::promise<std::string>>& promise,
-                         const std::chrono::milliseconds& cacheTtl);
-    std::string readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response);
-    void writeErrorResponseTo(const std::shared_ptr<nativeformat::http::Response>& response,
-                              const std::shared_ptr<std::promise<std::string>>& promise,
-                              const std::string& responseBody);
-    void writeSuccessResponseTo(const std::shared_ptr<nativeformat::http::Response>& response,
+    void writeResponseToPromise(const std::shared_ptr<nativeformat::http::Response>& response,
                                 const std::shared_ptr<std::promise<std::string>>& promise,
-                                const std::string& responseBody,
                                 const std::chrono::milliseconds& cacheTtl);
+    std::string readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response);
 };
 
 class HttpResponseError : std::runtime_error {

@@ -13,20 +13,29 @@ std::future<std::string> CachingHttpClient::sendRequest(const std::shared_ptr<na
         responsePromise->set_value(*cachedResponse);
     } else {
         client.performRequest(request, [this, responsePromise, cacheTtl] (const auto& response) {
-            writeResponseTo(response, responsePromise, cacheTtl);
+            writeResponseToPromise(response, responsePromise, cacheTtl);
         });
     }
     return responsePromise->get_future();
 }
 
-void CachingHttpClient::writeResponseTo(const std::shared_ptr<nativeformat::http::Response> &response,
-                                        const std::shared_ptr<std::promise<std::string>> &promise,
-                                        const std::chrono::milliseconds &cacheTtl) {
+void CachingHttpClient::writeResponseToPromise(const std::shared_ptr<nativeformat::http::Response> &response,
+                                               const std::shared_ptr<std::promise<std::string>> &promise,
+                                               const std::chrono::milliseconds &cacheTtl) {
+    const auto url = response->request()->url();
     const auto responseBody = readBodyFromResponse(response);
     if (response->statusCode() >= nativeformat::http::StatusCode::StatusCodeBadRequest) {
-        writeErrorResponseTo(response, promise, responseBody);
+        const auto expiredCachedResponse = cache.get(url, true);
+        if (expiredCachedResponse) {
+            promise->set_value(*expiredCachedResponse);
+        } else {
+            HttpResponseError responseError(url, response->statusCode(), responseBody);
+            const auto exception = std::make_exception_ptr(responseError);
+            promise->set_exception(exception);
+        }
     } else {
-        writeSuccessResponseTo(response, promise, responseBody, cacheTtl);
+        cache.put(url, responseBody, cacheTtl);
+        promise->set_value(responseBody);
     }
 }
 
@@ -34,22 +43,6 @@ std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<native
     size_t size;
     const auto data = reinterpret_cast<const char*>(response->data(size));
     return size > 0 ? std::string(data) : "";
-}
-
-void CachingHttpClient::writeErrorResponseTo(const std::shared_ptr<nativeformat::http::Response>& response,
-                                             const std::shared_ptr<std::promise<std::string>>& promise,
-                                             const std::string& responseBody) {
-    HttpResponseError responseError(response->request()->url(), response->statusCode(), responseBody);
-    const auto exception = std::make_exception_ptr(responseError);
-    promise->set_exception(exception);
-}
-
-void CachingHttpClient::writeSuccessResponseTo(const std::shared_ptr<nativeformat::http::Response> &response,
-                                               const std::shared_ptr<std::promise<std::string>> &promise,
-                                               const std::string &responseBody,
-                                               const std::chrono::milliseconds& cacheTtl) {
-    cache.put(response->request()->url(), responseBody, cacheTtl);
-    promise->set_value(responseBody);
 }
 
 HttpResponseError::HttpResponseError(const std::string &url, int code, const std::string &body)

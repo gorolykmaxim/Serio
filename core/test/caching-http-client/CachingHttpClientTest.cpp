@@ -14,6 +14,8 @@ protected:
     const std::shared_ptr<nativeformat::http::Response> response = std::make_shared<nativeformat::http::ResponseImplementation>(
             request, reinterpret_cast<const unsigned char*>(rawResponse.c_str()), rawResponse.size() + 1,
             nativeformat::http::StatusCode::StatusCodeOK, false);
+    const std::shared_ptr<nativeformat::http::Response> error = std::make_shared<nativeformat::http::ResponseImplementation>(
+            request, nullptr, 0, nativeformat::http::StatusCode::StatusCodeBadRequest, false);
 
     ::testing::NiceMock<mocks::CacheMock> cache;
     mocks::NFClientMock client;
@@ -41,11 +43,13 @@ TEST_F(CachingHttpClientTest, shouldMissCacheGetResponseFromNetworkAndCacheIt) {
 }
 
 TEST_F(CachingHttpClientTest, shouldMissCacheAndFailToGetResponseFromNetwork) {
-    const auto error = std::make_shared<nativeformat::http::ResponseImplementation>(request,
-                                                                                    nullptr,
-                                                                                    0,
-                                                                                    nativeformat::http::StatusCode::StatusCodeBadRequest,
-                                                                                    false);
     mockHttpClientResponse(error);
     EXPECT_THROW(cachingClient.sendRequest(request, cacheTtl).get(), serio::HttpResponseError);
+}
+
+TEST_F(CachingHttpClientTest, shouldMissCacheFailToGetResponseFromNetworkAndReturnExpiredEntryFromCache) {
+    mockHttpClientResponse(error);
+    EXPECT_CALL(cache, get(url, false)).WillOnce(::testing::Return(std::optional<std::string>()));
+    EXPECT_CALL(cache, get(url, true)).WillOnce(::testing::Return(std::optional(rawResponse)));
+    EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
 }
