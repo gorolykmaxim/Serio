@@ -4,6 +4,8 @@
 #include <gmock/gmock.h>
 #include <NFHTTP/NFHTTP.h>
 
+MATCHER_P(IsRequest, r, "") { return arg->url() == r->url(); }
+
 namespace mocks {
 class NFClientMock : public nativeformat::http::Client {
 public:

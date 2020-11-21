@@ -6,8 +6,6 @@
 #include <config/Config.h>
 #include <nlohmann/json.hpp>
 
-MATCHER_P(IsRequest, r, "") { return arg->url() == r->url(); }
-
 class ConfigTest : public ::testing::Test {
 public:
     inline static const serio::HttpClientConfig httpClientConfig{{"user-agent 1"}};

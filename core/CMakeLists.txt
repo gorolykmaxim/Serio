@@ -8,10 +8,11 @@ add_library(Core STATIC
         src/config/HttpClientConfig.cpp
         src/config/ConfigSource.cpp
         src/config/ConfigStructure.cpp
-        src/config/EpisodeCrawlerConfig.cpp)
+        src/config/EpisodeCrawlerConfig.cpp
+        src/caching-http-client/CachingHttpClient.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include)
 target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json)
 
-add_executable(CoreTest test/cache/CacheTest.cpp test/config/ConfigTest.cpp)
+add_executable(CoreTest test/cache/CacheTest.cpp test/config/ConfigTest.cpp test/caching-http-client/CachingHttpClientTest.cpp)
 target_include_directories(CoreTest PRIVATE test/mocks)
 target_link_libraries(CoreTest Core gtest gmock gtest_main)
