@@ -9,10 +9,43 @@
 MATCHER_P(IsRequest, r, "") { return arg->url() == r->url(); }
 
 class ConfigTest : public ::testing::Test {
-protected:
+public:
+    inline static const serio::HttpClientConfig httpClientConfig{{"user-agent 1"}};
+    inline static const std::vector<serio::EpisodeCrawlerConfig> episodeCrawlerConfigs = std::vector({
+        serio::EpisodeCrawlerConfig{"Platform 1",
+                                    std::chrono::milliseconds(180000),
+                                    "tv show crawler code",
+                                    "episode crawler code"},
+        serio::EpisodeCrawlerConfig{"Platform 2",
+                                    std::chrono::milliseconds(380000),
+                                    "tv show crawler code 2",
+                                    "episode crawler code 2"}
+    });
     const std::string sourceUrl = "https://serio.com/config.json";
     const std::shared_ptr<nativeformat::http::Request> request = nativeformat::http::createRequest(sourceUrl, {});
-    const nlohmann::json jsonResponse = {{"http-client", {{"user-agents", {"user-agent 1"}}}}};
+    const nlohmann::json jsonResponse = {
+            {"platforms", {
+                {
+                    {"name", episodeCrawlerConfigs[0].platformName},
+                    {"episode", {
+                        {"cache-ttl", episodeCrawlerConfigs[0].cacheTtl.count()},
+                        {"tvShowCrawler", episodeCrawlerConfigs[0].tvShowCrawler},
+                        {"episodeCrawler", episodeCrawlerConfigs[0].episodeCrawler}
+                    }}
+                },
+                {
+                    {"name", episodeCrawlerConfigs[1].platformName},
+                    {"episode", {
+                            {"cache-ttl", episodeCrawlerConfigs[1].cacheTtl.count()},
+                            {"tvShowCrawler", episodeCrawlerConfigs[1].tvShowCrawler},
+                            {"episodeCrawler", episodeCrawlerConfigs[1].episodeCrawler}
+                    }}
+                }
+            }},
+            {"http-client", {
+                {"user-agents", httpClientConfig.userAgents}
+            }}
+    };
 
     SQLite::Database database = SQLite::Database(":memory:", SQLite::OPEN_READWRITE);
     ::testing::NiceMock<mocks::CacheMock> cache;
@@ -48,6 +81,30 @@ TEST_F(ConfigTest, shouldKeepSourceUrlInDatabase) {
     serio::Config anotherConfig(database, cache, httpClient);
     anotherConfig.setSourceUrl(sourceUrl);
     EXPECT_EQ(sourceUrl, *config.getSourceUrl());
+}
+
+TEST_F(ConfigTest, shouldGetHttpClientConfigWithoutUserAgentsSpecified) {
+    mockClientResponse({{"http-client", {}}});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_EQ(serio::HttpClientConfig(), config.getHttpClientConfig());
+}
+
+TEST_F(ConfigTest, shouldGetEmptyHttpClientConfig) {
+    mockClientResponse({});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_EQ(serio::HttpClientConfig(), config.getHttpClientConfig());
+}
+
+TEST_F(ConfigTest, shouldGetEmptyVectorOfEpisodeCrawlerConfigsSinceNoPlatformsAreConfigured) {
+    mockClientResponse({});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_TRUE(config.getEpisodeCrawlerConfigs().empty());
+}
+
+TEST_F(ConfigTest, shouldSkipPlatformEpisodeCrawlerConfigsThatLackFields) {
+    mockClientResponse({{"platforms", {jsonResponse["platforms"][0], {}}}});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_EQ(std::vector({episodeCrawlerConfigs[0]}), config.getEpisodeCrawlerConfigs());
 }
 
 struct FetchAsserts {
@@ -92,21 +149,16 @@ TEST_P(ConfigFetchTest, shouldSaveConfigToCache) {
     GetParam().callGetter(config);
 }
 
-INSTANTIATE_TEST_SUITE_P(ConfigFetchTestInstantiation,
+INSTANTIATE_TEST_SUITE_P(HttpClientConfigFetchTest,
                          ConfigFetchTest,
                          ::testing::Values(FetchAsserts{
-                                 [] (serio::Config& config) { config.getHttpClientConfig(); },
-                                 [] (serio::Config& config) { EXPECT_EQ(serio::HttpClientConfig{{"user-agent 1"}}, config.getHttpClientConfig()); }
+                             [] (serio::Config& config) { config.getHttpClientConfig(); },
+                             [] (serio::Config& config) { EXPECT_EQ(ConfigTest::httpClientConfig, config.getHttpClientConfig()); }
                          }));
 
-TEST_F(ConfigTest, shouldGetHttpClientConfigWithoutUserAgentsSpecified) {
-    mockClientResponse({{"http-client", {}}});
-    config.setSourceUrl(sourceUrl);
-    EXPECT_EQ(serio::HttpClientConfig(), config.getHttpClientConfig());
-}
-
-TEST_F(ConfigTest, shouldGetEmptyHttpClientConfig) {
-    mockClientResponse({});
-    config.setSourceUrl(sourceUrl);
-    EXPECT_EQ(serio::HttpClientConfig(), config.getHttpClientConfig());
-}
+INSTANTIATE_TEST_SUITE_P(EpisodeCrawlerConfigFetchTest,
+                         ConfigFetchTest,
+                         ::testing::Values(FetchAsserts{
+                            [] (serio::Config& config) { config.getEpisodeCrawlerConfigs(); },
+                            [] (serio::Config& config) { EXPECT_EQ(ConfigTest::episodeCrawlerConfigs, config.getEpisodeCrawlerConfigs()); }
+                        }));

@@ -7,6 +7,7 @@
 #include "HttpClientConfig.h"
 #include "ConfigSource.h"
 #include "ConfigStructure.h"
+#include "EpisodeCrawlerConfig.h"
 #include <nlohmann/json.hpp>
 
 namespace serio {
@@ -16,6 +17,7 @@ public:
     virtual void setSourceUrl(const std::string& url);
     virtual std::optional<std::string> getSourceUrl();
     virtual HttpClientConfig getHttpClientConfig();
+    virtual std::vector<EpisodeCrawlerConfig> getEpisodeCrawlerConfigs();
 private:
     ConfigSource source;
 };

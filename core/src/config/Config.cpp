@@ -21,4 +21,27 @@ HttpClientConfig Config::getHttpClientConfig() {
     }
     return httpClientConfig;
 }
+
+std::vector<EpisodeCrawlerConfig> Config::getEpisodeCrawlerConfigs() {
+    const auto config = source.fetchConfig();
+    std::vector<EpisodeCrawlerConfig> episodeCrawlerConfigs;
+    const auto platforms = config.getPlatforms();
+    episodeCrawlerConfigs.reserve(platforms.size());
+    for (const auto& platform: platforms) {
+        const auto name = platform.getParameter({"name"});
+        const auto cacheTtl = platform.getParameter({"episode", "cache-ttl"});
+        const auto tvShowCrawler = platform.getParameter({"episode", "tvShowCrawler"});
+        const auto episodeCrawler = platform.getParameter({"episode", "episodeCrawler"});
+        if (name && cacheTtl && tvShowCrawler && episodeCrawler) {
+            EpisodeCrawlerConfig episodeCrawlerConfig{
+                    name->get<std::string>(),
+                    std::chrono::milliseconds(cacheTtl->get<long>()),
+                    tvShowCrawler->get<std::string>(),
+                    episodeCrawler->get<std::string>()
+            };
+            episodeCrawlerConfigs.push_back(std::move(episodeCrawlerConfig));
+        }
+    }
+    return episodeCrawlerConfigs;
+}
 }
