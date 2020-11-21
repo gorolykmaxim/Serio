@@ -12,8 +12,7 @@ class ConfigTest : public ::testing::Test {
 protected:
     const std::string sourceUrl = "https://serio.com/config.json";
     const std::shared_ptr<nativeformat::http::Request> request = nativeformat::http::createRequest(sourceUrl, {});
-    const serio::HttpClientConfig httpClientConfig = {{"user-agent 1"}};
-    const nlohmann::json jsonResponse = {{"http-client", {{"user-agents", httpClientConfig.userAgents}}}};
+    const nlohmann::json jsonResponse = {{"http-client", {{"user-agents", {"user-agent 1"}}}}};
 
     SQLite::Database database = SQLite::Database(":memory:", SQLite::OPEN_READWRITE);
     ::testing::NiceMock<mocks::CacheMock> cache;
@@ -51,24 +50,54 @@ TEST_F(ConfigTest, shouldKeepSourceUrlInDatabase) {
     EXPECT_EQ(sourceUrl, *config.getSourceUrl());
 }
 
-// HTTP Client Config
+struct FetchAsserts {
+    std::function<void(serio::Config&)> callGetter;
+    std::function<void(serio::Config&)> compareResults;
+};
 
-TEST_F(ConfigTest, shouldFailToGetHttpClientConfigSinceSourceUrlIsNotSet) {
-    EXPECT_THROW(config.getHttpClientConfig(), serio::ConfigFetchError);
+class ConfigFetchTest : public ConfigTest, public ::testing::WithParamInterface<FetchAsserts> {};
+
+TEST_P(ConfigFetchTest, shouldFailToGetConfigSinceSourceUrlIsNotSet) {
+    EXPECT_THROW(GetParam().callGetter(config), serio::ConfigFetchError);
 }
 
-TEST_F(ConfigTest, shouldFailToGetHttpClientConfigDueToHttpError) {
+TEST_P(ConfigFetchTest, shouldFailToGetConfigDueToHttpError) {
     EXPECT_CALL(httpClient, performRequestSynchronously(IsRequest(request)))
         .WillOnce(::testing::Throw(std::runtime_error("")));
     config.setSourceUrl(sourceUrl);
-    EXPECT_THROW(config.getHttpClientConfig(), serio::ConfigFetchError);
+    EXPECT_THROW(GetParam().callGetter(config), serio::ConfigFetchError);
 }
 
-TEST_F(ConfigTest, shouldGetHttpClientConfig) {
+TEST_P(ConfigFetchTest, shouldGetConfig) {
     mockClientResponse(jsonResponse);
     config.setSourceUrl(sourceUrl);
-    EXPECT_EQ(httpClientConfig, config.getHttpClientConfig());
+    GetParam().compareResults(config);
 }
+
+TEST_P(ConfigFetchTest, shouldGetConfigFromCache) {
+    ON_CALL(cache, get(serio::ConfigSource::CACHE_ENTRY_NAME))
+        .WillByDefault(::testing::Return(std::optional<std::string>(jsonResponse.dump())));
+    config.setSourceUrl(sourceUrl);
+    EXPECT_CALL(httpClient, performRequestSynchronously(::testing::_)).Times(0);
+    GetParam().compareResults(config);
+}
+
+TEST_P(ConfigFetchTest, shouldSaveConfigToCache) {
+    config.setSourceUrl(sourceUrl);
+    mockClientResponse(jsonResponse);
+    EXPECT_CALL(cache, put(
+            serio::ConfigSource::CACHE_ENTRY_NAME,
+            jsonResponse.dump(),
+            std::chrono::duration_cast<std::chrono::milliseconds>(serio::ConfigSource::CACHE_TTL)));
+    GetParam().callGetter(config);
+}
+
+INSTANTIATE_TEST_SUITE_P(ConfigFetchTestInstantiation,
+                         ConfigFetchTest,
+                         ::testing::Values(FetchAsserts{
+                                 [] (serio::Config& config) { config.getHttpClientConfig(); },
+                                 [] (serio::Config& config) { EXPECT_EQ(serio::HttpClientConfig{{"user-agent 1"}}, config.getHttpClientConfig()); }
+                         }));
 
 TEST_F(ConfigTest, shouldGetHttpClientConfigWithoutUserAgentsSpecified) {
     mockClientResponse({{"http-client", {}}});
@@ -80,22 +109,4 @@ TEST_F(ConfigTest, shouldGetEmptyHttpClientConfig) {
     mockClientResponse({});
     config.setSourceUrl(sourceUrl);
     EXPECT_EQ(serio::HttpClientConfig(), config.getHttpClientConfig());
-}
-
-TEST_F(ConfigTest, shouldGetHttpClientConfigFromCache) {
-    ON_CALL(cache, get(serio::ConfigSource::CACHE_ENTRY_NAME))
-        .WillByDefault(::testing::Return(std::optional<std::string>(jsonResponse.dump())));
-    config.setSourceUrl(sourceUrl);
-    EXPECT_CALL(httpClient, performRequestSynchronously(::testing::_)).Times(0);
-    EXPECT_EQ(httpClientConfig, config.getHttpClientConfig());
-}
-
-TEST_F(ConfigTest, shouldSaveHttpClientConfigToCache) {
-    config.setSourceUrl(sourceUrl);
-    mockClientResponse(jsonResponse);
-    EXPECT_CALL(cache, put(
-            serio::ConfigSource::CACHE_ENTRY_NAME,
-            jsonResponse.dump(),
-            std::chrono::duration_cast<std::chrono::milliseconds>(serio::ConfigSource::CACHE_TTL)));
-    config.getHttpClientConfig();
 }
