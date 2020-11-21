@@ -29,7 +29,7 @@ std::vector<EpisodeCrawlerConfig> Config::getEpisodeCrawlerConfigs() {
         {"episode", "tvShowCrawler"},
         {"episode", "episodeCrawler"}
     });
-    return getConfigs<EpisodeCrawlerConfig>(fields, [] (const std::vector<nlohmann::json>& values) {
+    return getPlatformConfigs<EpisodeCrawlerConfig>(fields, [](const std::vector<nlohmann::json> &values) {
         return EpisodeCrawlerConfig{
             values[0].get<std::string>(),
             std::chrono::milliseconds(values[1].get<long>()),
@@ -45,12 +45,37 @@ std::vector<SearchCrawlerConfig> Config::getSearchCrawlerConfigs() {
         {"search", "cache-ttl"},
         {"search", "crawler"}
     });
-    return getConfigs<SearchCrawlerConfig>(fields, [] (const std::vector<nlohmann::json>& values) {
+    return getPlatformConfigs<SearchCrawlerConfig>(fields, [](const std::vector<nlohmann::json> &values) {
         return SearchCrawlerConfig{
             values[0].get<std::string>(),
             std::chrono::milliseconds(values[1].get<long>()),
             values[2].get<std::string>()
         };
     });
+}
+
+std::vector<CategoryCrawlerConfig> Config::getCategoryCrawlerConfigs() {
+    const auto config = source.fetchConfig();
+    std::vector<CategoryCrawlerConfig> categoryCrawlerConfigs;
+    const auto platforms = config.getList({"platforms"});
+    for (const auto& platform: platforms) {
+        const auto categoryList = platform.getList({"categories", "category-list"});
+        for (const auto& category: categoryList) {
+            const auto platformName = platform.getParameter({"name"});
+            const auto categoryName = category.getParameter({"name"});
+            const auto cacheTtl = platform.getParameter({"categories", "cache-ttl"});
+            const auto crawler = category.getParameter({"crawler"});
+            if (platformName && cacheTtl && categoryName && crawler) {
+                CategoryCrawlerConfig categoryCrawlerConfig{
+                    platformName->get<std::string>(),
+                    categoryName->get<std::string>(),
+                    std::chrono::milliseconds(cacheTtl->get<long>()),
+                    crawler->get<std::string>()
+                };
+                categoryCrawlerConfigs.push_back(std::move(categoryCrawlerConfig));
+            }
+        }
+    }
+    return categoryCrawlerConfigs;
 }
 }

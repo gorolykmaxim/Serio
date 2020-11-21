@@ -20,13 +20,13 @@ std::optional<nlohmann::json> ConfigStructure::getParameter(const std::vector<st
     return node;
 }
 
-std::vector<ConfigStructure> ConfigStructure::getPlatforms() const {
+std::vector<ConfigStructure> ConfigStructure::getList(const std::vector<std::string> &path) const {
     std::vector<ConfigStructure> result;
-    const auto platforms = rootNode.find("platforms");
-    if (platforms != rootNode.cend()) {
-        result.reserve(platforms->size());
-        for (const auto& platform: *platforms) {
-            result.emplace_back(platform);
+    const auto list = getParameter(path);
+    if (list) {
+        result.reserve(list->size());
+        for (const auto& category: *list) {
+            result.emplace_back(category);
         }
     }
     return result;

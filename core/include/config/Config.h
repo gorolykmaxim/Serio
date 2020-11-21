@@ -9,6 +9,7 @@
 #include "ConfigStructure.h"
 #include "EpisodeCrawlerConfig.h"
 #include "SearchCrawlerConfig.h"
+#include "CategoryCrawlerConfig.h"
 #include <nlohmann/json.hpp>
 
 namespace serio {
@@ -20,15 +21,16 @@ public:
     virtual HttpClientConfig getHttpClientConfig();
     virtual std::vector<EpisodeCrawlerConfig> getEpisodeCrawlerConfigs();
     virtual std::vector<SearchCrawlerConfig> getSearchCrawlerConfigs();
+    virtual std::vector<CategoryCrawlerConfig> getCategoryCrawlerConfigs();
 private:
     ConfigSource source;
 
     template<typename T>
-    std::vector<T> getConfigs(const std::vector<std::vector<std::string>>& fields,
-                              std::function<T(const std::vector<nlohmann::json>&)> factoryMethod) {
+    std::vector<T> getPlatformConfigs(const std::vector<std::vector<std::string>>& fields,
+                                      std::function<T(const std::vector<nlohmann::json>&)> factoryMethod) {
         const auto config = source.fetchConfig();
         std::vector<T> configs;
-        const auto platforms = config.getPlatforms();
+        const auto platforms = config.getList({"platforms"});
         configs.reserve(platforms.size());
         for (const auto& platform: platforms) {
             std::vector<nlohmann::json> values;

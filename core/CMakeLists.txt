@@ -11,7 +11,8 @@ add_library(Core STATIC
         src/config/EpisodeCrawlerConfig.cpp
         src/caching-http-client/CachingHttpClient.cpp
         src/caching-http-client/HttpRequest.cpp
-        src/config/SearchCrawlerConfig.cpp)
+        src/config/SearchCrawlerConfig.cpp
+        src/config/CategoryCrawlerConfig.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include)
 target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json)
 

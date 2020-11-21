@@ -20,11 +20,25 @@ public:
     });
     inline static const std::vector<serio::SearchCrawlerConfig> searchCrawlerConfigs = std::vector({
         serio::SearchCrawlerConfig{episodeCrawlerConfigs[0].platformName,
-                                   episodeCrawlerConfigs[0].cacheTtl,
-                                   episodeCrawlerConfigs[0].tvShowCrawler},
+                                   std::chrono::milliseconds(190000),
+                                   "search tv show crawler"},
         serio::SearchCrawlerConfig{episodeCrawlerConfigs[1].platformName,
-                                   episodeCrawlerConfigs[1].cacheTtl,
-                                   episodeCrawlerConfigs[1].tvShowCrawler},
+                                   std::chrono::milliseconds(200000),
+                                   "search tv show crawler 2"},
+    });
+    inline static const std::vector<serio::CategoryCrawlerConfig> categoryCrawlerConfigs = std::vector({
+        serio::CategoryCrawlerConfig{episodeCrawlerConfigs[0].platformName,
+                                     "category 1",
+                                     std::chrono::milliseconds(150000),
+                                     "category tv show crawler"},
+        serio::CategoryCrawlerConfig{episodeCrawlerConfigs[0].platformName,
+                                     "category 2",
+                                     std::chrono::milliseconds(150000),
+                                     "category tv show crawler 2"},
+        serio::CategoryCrawlerConfig{episodeCrawlerConfigs[1].platformName,
+                                     "category 1",
+                                     std::chrono::milliseconds(100000),
+                                     "category tv show crawler 3"}
     });
     const std::string sourceUrl = "https://serio.com/config.json";
     const serio::HttpRequest request{sourceUrl};
@@ -32,6 +46,19 @@ public:
             {"platforms", {
                 {
                     {"name", episodeCrawlerConfigs[0].platformName},
+                    {"categories", {
+                        {"cache-ttl", categoryCrawlerConfigs[0].cacheTtl.count()},
+                        {"category-list", {
+                            {
+                                {"name", categoryCrawlerConfigs[0].categoryName},
+                                {"crawler", categoryCrawlerConfigs[0].crawler}
+                            },
+                            {
+                                {"name", categoryCrawlerConfigs[1].categoryName},
+                                {"crawler", categoryCrawlerConfigs[1].crawler}
+                            }
+                        }}
+                    }},
                     {"search", {
                        {"cache-ttl", searchCrawlerConfigs[0].cacheTtl.count()},
                        {"crawler", searchCrawlerConfigs[0].crawler}
@@ -44,6 +71,15 @@ public:
                 },
                 {
                     {"name", episodeCrawlerConfigs[1].platformName},
+                    {"categories", {
+                        {"cache-ttl", categoryCrawlerConfigs[2].cacheTtl.count()},
+                        {"category-list", {
+                            {
+                                {"name", categoryCrawlerConfigs[2].categoryName},
+                                {"crawler", categoryCrawlerConfigs[2].crawler}
+                            }
+                        }}
+                    }},
                     {"search", {
                         {"cache-ttl", searchCrawlerConfigs[1].cacheTtl.count()},
                         {"crawler", searchCrawlerConfigs[1].crawler}
@@ -136,6 +172,48 @@ TEST_F(ConfigTest, shouldSkipPlatformSearchCrawlerConfigsThatLackFields) {
     EXPECT_EQ(std::vector({searchCrawlerConfigs[0]}), config.getSearchCrawlerConfigs());
 }
 
+TEST_F(ConfigTest, shouldGetEmptyVectorOfCategoryCrawlerConfigsSinceNoPlatformsAreConfigured) {
+    mockClientResponse({});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_TRUE(config.getCategoryCrawlerConfigs().empty());
+}
+
+TEST_F(ConfigTest, shouldSkipPlatformCategoryCrawlerConfigsThatLackFields) {
+    mockClientResponse({
+        {"platforms", {
+            {
+                {"categories", jsonResponse["platforms"][0]["categories"]}
+            },
+            {
+                {"name", jsonResponse["platforms"][0]["name"]}
+            },
+            {
+                {"name", jsonResponse["platforms"][0]["name"]},
+                {"categories", {
+                    {"category-list", jsonResponse["platforms"][0]["categories"]["category-list"]}
+                }}
+            },
+            {
+                {"name", jsonResponse["platforms"][0]["name"]},
+                {"categories", {
+                    {"cache-ttl", jsonResponse["platforms"][0]["categories"]["cache-ttl"]},
+                    {"category-list", {
+                        {
+                            {"crawler", jsonResponse["platforms"][0]["categories"]["category-list"][0]["crawler"]}
+                        },
+                        {
+                            {"name", jsonResponse["platforms"][0]["categories"]["category-list"][0]["name"]}
+                        }
+                    }}
+                }}
+            },
+            jsonResponse["platforms"][1]
+        }}
+    });
+    config.setSourceUrl(sourceUrl);
+    EXPECT_EQ(std::vector({categoryCrawlerConfigs[2]}), config.getCategoryCrawlerConfigs());
+}
+
 struct FetchAsserts {
     std::function<void(serio::Config&)> callGetter;
     std::function<void(serio::Config&)> compareResults;
@@ -171,5 +249,9 @@ const FetchAsserts searchCrawlerConfigAsserts{
     [] (serio::Config& config) { config.getSearchCrawlerConfigs(); },
     [] (serio::Config& config) { EXPECT_EQ(ConfigTest::searchCrawlerConfigs, config.getSearchCrawlerConfigs()); }
 };
+const FetchAsserts categoryCrawlerConfigAsserts{
+    [] (serio::Config& config) { config.getCategoryCrawlerConfigs(); },
+    [] (serio::Config& config) { EXPECT_EQ(ConfigTest::categoryCrawlerConfigs, config.getCategoryCrawlerConfigs()); }
+};
 INSTANTIATE_TEST_SUITE_P(ConfigFetchTestInstantiation, ConfigFetchTest, ::testing::Values(
-        httpClientConfigAsserts, episodeCrawlerConfigAsserts, searchCrawlerConfigAsserts));
+        httpClientConfigAsserts, episodeCrawlerConfigAsserts, searchCrawlerConfigAsserts, categoryCrawlerConfigAsserts));
