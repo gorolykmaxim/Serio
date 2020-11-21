@@ -23,46 +23,34 @@ HttpClientConfig Config::getHttpClientConfig() {
 }
 
 std::vector<EpisodeCrawlerConfig> Config::getEpisodeCrawlerConfigs() {
-    const auto config = source.fetchConfig();
-    std::vector<EpisodeCrawlerConfig> episodeCrawlerConfigs;
-    const auto platforms = config.getPlatforms();
-    episodeCrawlerConfigs.reserve(platforms.size());
-    for (const auto& platform: platforms) {
-        const auto name = platform.getParameter({"name"});
-        const auto cacheTtl = platform.getParameter({"episode", "cache-ttl"});
-        const auto tvShowCrawler = platform.getParameter({"episode", "tvShowCrawler"});
-        const auto episodeCrawler = platform.getParameter({"episode", "episodeCrawler"});
-        if (name && cacheTtl && tvShowCrawler && episodeCrawler) {
-            EpisodeCrawlerConfig episodeCrawlerConfig{
-                    name->get<std::string>(),
-                    std::chrono::milliseconds(cacheTtl->get<long>()),
-                    tvShowCrawler->get<std::string>(),
-                    episodeCrawler->get<std::string>()
-            };
-            episodeCrawlerConfigs.push_back(std::move(episodeCrawlerConfig));
-        }
-    }
-    return episodeCrawlerConfigs;
+    const std::vector<std::vector<std::string>> fields({
+        {"name"},
+        {"episode", "cache-ttl"},
+        {"episode", "tvShowCrawler"},
+        {"episode", "episodeCrawler"}
+    });
+    return getConfigs<EpisodeCrawlerConfig>(fields, [] (const std::vector<nlohmann::json>& values) {
+        return EpisodeCrawlerConfig{
+            values[0].get<std::string>(),
+            std::chrono::milliseconds(values[1].get<long>()),
+            values[2].get<std::string>(),
+            values[3].get<std::string>()
+        };
+    });
 }
 
 std::vector<SearchCrawlerConfig> Config::getSearchCrawlerConfigs() {
-    const auto config = source.fetchConfig();
-    std::vector<SearchCrawlerConfig> searchCrawlerConfigs;
-    const auto platforms = config.getPlatforms();
-    searchCrawlerConfigs.reserve(platforms.size());
-    for (const auto& platform: platforms) {
-        const auto name = platform.getParameter({"name"});
-        const auto cacheTtl = platform.getParameter({"search", "cache-ttl"});
-        const auto crawler = platform.getParameter({"search", "crawler"});
-        if (name && cacheTtl && crawler) {
-            SearchCrawlerConfig searchCrawlerConfig{
-                    name->get<std::string>(),
-                    std::chrono::milliseconds(cacheTtl->get<long>()),
-                    crawler->get<std::string>()
-            };
-            searchCrawlerConfigs.push_back(std::move(searchCrawlerConfig));
-        }
-    }
-    return searchCrawlerConfigs;
+    const std::vector<std::vector<std::string>> fields({
+        {"name"},
+        {"search", "cache-ttl"},
+        {"search", "crawler"}
+    });
+    return getConfigs<SearchCrawlerConfig>(fields, [] (const std::vector<nlohmann::json>& values) {
+        return SearchCrawlerConfig{
+            values[0].get<std::string>(),
+            std::chrono::milliseconds(values[1].get<long>()),
+            values[2].get<std::string>()
+        };
+    });
 }
 }
