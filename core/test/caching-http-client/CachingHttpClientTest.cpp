@@ -10,7 +10,12 @@ protected:
     const std::string rawResponse = "response";
     const std::string url = "https://some.url.com/";
     const serio::HttpRequest request{url};
+    const std::string requestCacheKey = request;
     const std::chrono::hours cacheTtl = std::chrono::hours(24);
+    const serio::HttpRequest complexRequest{url,
+                                            "POST",
+                                            {{"header 1", "value 1"}, {"header 2", "value 2"}},
+                                            "body of the request"};
     const std::shared_ptr<nativeformat::http::Response> response = std::make_shared<nativeformat::http::ResponseImplementation>(
             request, reinterpret_cast<const unsigned char*>(rawResponse.c_str()), rawResponse.size() + 1,
             nativeformat::http::StatusCode::StatusCodeOK, false);
@@ -30,14 +35,14 @@ protected:
 };
 
 TEST_F(CachingHttpClientTest, shouldGetResponseFromCache) {
-    EXPECT_CALL(cache, get(url, false)).WillOnce(::testing::Return(std::optional(rawResponse)));
+    EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional(rawResponse)));
     EXPECT_CALL(client, performRequest(::testing::_, ::testing::_)).Times(0);
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
 }
 
 TEST_F(CachingHttpClientTest, shouldMissCacheGetResponseFromNetworkAndCacheIt) {
-    EXPECT_CALL(cache, get(url, false)).WillOnce(::testing::Return(std::optional<std::string>()));
-    EXPECT_CALL(cache, put(url, rawResponse, std::chrono::duration_cast<std::chrono::milliseconds>(cacheTtl)));
+    EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
+    EXPECT_CALL(cache, put(requestCacheKey, rawResponse, std::chrono::duration_cast<std::chrono::milliseconds>(cacheTtl)));
     mockHttpClientResponse(response);
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
 }
@@ -49,7 +54,24 @@ TEST_F(CachingHttpClientTest, shouldMissCacheAndFailToGetResponseFromNetwork) {
 
 TEST_F(CachingHttpClientTest, shouldMissCacheFailToGetResponseFromNetworkAndReturnExpiredEntryFromCache) {
     mockHttpClientResponse(error);
-    EXPECT_CALL(cache, get(url, false)).WillOnce(::testing::Return(std::optional<std::string>()));
-    EXPECT_CALL(cache, get(url, true)).WillOnce(::testing::Return(std::optional(rawResponse)));
+    EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
+    EXPECT_CALL(cache, get(requestCacheKey, true)).WillOnce(::testing::Return(std::optional(rawResponse)));
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
+}
+
+TEST_F(CachingHttpClientTest, shouldUseEntireRequestAsCacheKey) {
+    EXPECT_CALL(cache, get("Request{url=" + url + ", method=POST, headers={header 1=value 1, header 2=value 2}, body=body of the request}", false))
+        .WillOnce(::testing::Return(std::optional(rawResponse)));
+    cachingClient.sendRequest(complexRequest, cacheTtl);
+}
+
+TEST_F(CachingHttpClientTest, shouldPassAllRequestAttributesToNFClient) {
+    ON_CALL(cache, get(::testing::_, false)).WillByDefault(::testing::Return(std::optional<std::string>()));
+    const auto expectedRequest = nativeformat::http::createRequest(
+            complexRequest.url,
+            std::unordered_map<std::string, std::string>(complexRequest.headers.cbegin(), complexRequest.headers.cend()));
+    expectedRequest->setMethod(complexRequest.method);
+    expectedRequest->setData(reinterpret_cast<const unsigned char *>(complexRequest.body.c_str()), complexRequest.body.length() + 1);
+    EXPECT_CALL(client, performRequest(IsRequest(expectedRequest), ::testing::_));
+    cachingClient.sendRequest(complexRequest, cacheTtl);
 }
