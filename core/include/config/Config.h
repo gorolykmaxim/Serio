@@ -24,30 +24,6 @@ public:
     virtual std::vector<CategoryCrawlerConfig> getCategoryCrawlerConfigs();
 private:
     ConfigSource source;
-
-    template<typename T>
-    std::vector<T> getPlatformConfigs(const std::vector<std::vector<std::string>>& fields,
-                                      std::function<T(const std::vector<nlohmann::json>&)> factoryMethod) {
-        const auto config = source.fetchConfig();
-        std::vector<T> configs;
-        const auto platforms = config.getList({"platforms"});
-        configs.reserve(platforms.size());
-        for (const auto& platform: platforms) {
-            std::vector<nlohmann::json> values;
-            values.reserve(fields.size());
-            for (const auto& field: fields) {
-                const auto value = platform.getParameter(field);
-                if (value) {
-                    values.push_back(*value);
-                }
-            }
-            if (values.size() < fields.size()) {
-                continue;
-            }
-            configs.push_back(std::move(factoryMethod(values)));
-        }
-        return configs;
-    }
 };
 }
 

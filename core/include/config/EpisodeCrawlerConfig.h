@@ -2,6 +2,7 @@
 #define SERIO_EPISODECRAWLERCONFIG_H
 
 #include <string>
+#include <optional>
 #include <chrono>
 
 namespace serio {
@@ -10,6 +11,7 @@ struct EpisodeCrawlerConfig {
     std::chrono::milliseconds cacheTtl;
     std::string tvShowCrawler;
     std::string episodeCrawler;
+    std::optional<std::string> suggestionsCrawler;
 
     bool operator==(const EpisodeCrawlerConfig &rhs) const;
     bool operator!=(const EpisodeCrawlerConfig &rhs) const;

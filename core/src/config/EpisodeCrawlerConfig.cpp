@@ -5,7 +5,8 @@ bool EpisodeCrawlerConfig::operator==(const EpisodeCrawlerConfig &rhs) const {
     return platformName == rhs.platformName &&
            cacheTtl == rhs.cacheTtl &&
            tvShowCrawler == rhs.tvShowCrawler &&
-           episodeCrawler == rhs.episodeCrawler;
+           episodeCrawler == rhs.episodeCrawler &&
+           suggestionsCrawler == rhs.suggestionsCrawler;
 }
 
 bool EpisodeCrawlerConfig::operator!=(const EpisodeCrawlerConfig &rhs) const {

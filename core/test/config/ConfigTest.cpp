@@ -160,6 +160,16 @@ TEST_F(ConfigTest, shouldSkipPlatformEpisodeCrawlerConfigsThatLackFields) {
     EXPECT_EQ(std::vector({episodeCrawlerConfigs[0]}), config.getEpisodeCrawlerConfigs());
 }
 
+TEST_F(ConfigTest, shouldHaveEpisodeCrawlerConfigsWithOptionalSuggestionsCrawler) {
+    auto episodeCrawlerConfig = episodeCrawlerConfigs[0];
+    episodeCrawlerConfig.suggestionsCrawler = "suggestions crawler";
+    auto platform = jsonResponse["platforms"][0];
+    platform["episode"]["suggestionsCrawler"] = *episodeCrawlerConfig.suggestionsCrawler;
+    mockClientResponse({{"platforms", {platform}}});
+    config.setSourceUrl(sourceUrl);
+    EXPECT_EQ(std::vector({episodeCrawlerConfig}), config.getEpisodeCrawlerConfigs());
+}
+
 TEST_F(ConfigTest, shouldGetEmptyVectorOfSearchCrawlerConfigsSinceNoPlatformsAreConfigured) {
     mockClientResponse({});
     config.setSourceUrl(sourceUrl);
