@@ -30,7 +30,10 @@ HttpRequest::operator std::string() const {
 }
 
 bool HttpRequest::operator==(const HttpRequest &rhs) const {
-    return url == rhs.url;
+    return url == rhs.url &&
+           method == rhs.method &&
+           headers == rhs.headers &&
+           body == rhs.body;
 }
 
 bool HttpRequest::operator!=(const HttpRequest &rhs) const {
