@@ -8,16 +8,16 @@ ConfigStructure::ConfigStructure(const nlohmann::json& rootNode) : rootNode(root
 ConfigStructure::ConfigStructure(nlohmann::json&& rootNode) : rootNode(rootNode) {}
 
 std::optional<nlohmann::json> ConfigStructure::getParameter(const std::vector<std::string> &path) const {
-    auto node = rootNode;
+    auto node = &rootNode;
     for (const auto& segment: path) {
-        const auto it = node.find(segment);
-        if (it == node.end()) {
+        const auto it = node->find(segment);
+        if (it == node->end()) {
             return std::optional<nlohmann::json>();
         } else {
-            node = *it;
+            node = &*it;
         }
     }
-    return node;
+    return std::optional<nlohmann::json>(*node);
 }
 
 std::vector<ConfigStructure> ConfigStructure::getList(const std::vector<std::string> &path) const {
