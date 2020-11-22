@@ -7,7 +7,7 @@
 #include "HttpClientConfig.h"
 #include "ConfigSource.h"
 #include "ConfigStructure.h"
-#include "EpisodeCrawlerConfig.h"
+#include "TvShowCrawlerConfig.h"
 #include "SearchCrawlerConfig.h"
 #include "CategoryCrawlerConfig.h"
 #include <nlohmann/json.hpp>
@@ -19,7 +19,7 @@ public:
     virtual void setSourceUrl(const std::string& url);
     virtual std::optional<std::string> getSourceUrl();
     virtual HttpClientConfig getHttpClientConfig();
-    virtual std::vector<EpisodeCrawlerConfig> getEpisodeCrawlerConfigs();
+    virtual std::vector<TvShowCrawlerConfig> getTvShowCrawlerConfigs();
     virtual std::vector<SearchCrawlerConfig> getSearchCrawlerConfigs();
     virtual std::vector<CategoryCrawlerConfig> getCategoryCrawlerConfigs();
 private:

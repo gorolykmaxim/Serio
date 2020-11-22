@@ -1,7 +1,7 @@
-#include <config/EpisodeCrawlerConfig.h>
+#include <config/TvShowCrawlerConfig.h>
 
 namespace serio {
-bool EpisodeCrawlerConfig::operator==(const EpisodeCrawlerConfig &rhs) const {
+bool TvShowCrawlerConfig::operator==(const TvShowCrawlerConfig &rhs) const {
     return platformName == rhs.platformName &&
            cacheTtl == rhs.cacheTtl &&
            tvShowCrawler == rhs.tvShowCrawler &&
@@ -9,7 +9,7 @@ bool EpisodeCrawlerConfig::operator==(const EpisodeCrawlerConfig &rhs) const {
            suggestionsCrawler == rhs.suggestionsCrawler;
 }
 
-bool EpisodeCrawlerConfig::operator!=(const EpisodeCrawlerConfig &rhs) const {
+bool TvShowCrawlerConfig::operator!=(const TvShowCrawlerConfig &rhs) const {
     return !(rhs == *this);
 }
 }

@@ -8,7 +8,7 @@ add_library(Core STATIC
         src/config/HttpClientConfig.cpp
         src/config/ConfigSource.cpp
         src/config/ConfigStructure.cpp
-        src/config/EpisodeCrawlerConfig.cpp
+        src/config/TvShowCrawlerConfig.cpp
         src/caching-http-client/CachingHttpClient.cpp
         src/caching-http-client/HttpRequest.cpp
         src/config/SearchCrawlerConfig.cpp

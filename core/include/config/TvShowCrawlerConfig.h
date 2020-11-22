@@ -1,21 +1,21 @@
-#ifndef SERIO_EPISODECRAWLERCONFIG_H
-#define SERIO_EPISODECRAWLERCONFIG_H
+#ifndef SERIO_TVSHOWCRAWLERCONFIG_H
+#define SERIO_TVSHOWCRAWLERCONFIG_H
 
 #include <string>
 #include <optional>
 #include <chrono>
 
 namespace serio {
-struct EpisodeCrawlerConfig {
+struct TvShowCrawlerConfig {
     std::string platformName;
     std::chrono::milliseconds cacheTtl;
     std::string tvShowCrawler;
     std::string episodeCrawler;
     std::optional<std::string> suggestionsCrawler;
 
-    bool operator==(const EpisodeCrawlerConfig &rhs) const;
-    bool operator!=(const EpisodeCrawlerConfig &rhs) const;
+    bool operator==(const TvShowCrawlerConfig &rhs) const;
+    bool operator!=(const TvShowCrawlerConfig &rhs) const;
 };
 }
 
-#endif //SERIO_EPISODECRAWLERCONFIG_H
+#endif //SERIO_TVSHOWCRAWLERCONFIG_H

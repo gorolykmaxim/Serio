@@ -8,34 +8,34 @@
 class ConfigTest : public ::testing::Test {
 public:
     inline static const serio::HttpClientConfig httpClientConfig{{"user-agent 1"}};
-    inline static const std::vector<serio::EpisodeCrawlerConfig> episodeCrawlerConfigs = std::vector({
-        serio::EpisodeCrawlerConfig{"Platform 1",
-                                    std::chrono::milliseconds(180000),
-                                    "tv show crawler code",
-                                    "episode crawler code"},
-        serio::EpisodeCrawlerConfig{"Platform 2",
-                                    std::chrono::milliseconds(380000),
-                                    "tv show crawler code 2",
-                                    "episode crawler code 2"}
+    inline static const std::vector<serio::TvShowCrawlerConfig> tvShowCrawlerConfigs = std::vector({
+        serio::TvShowCrawlerConfig{"Platform 1",
+                                   std::chrono::milliseconds(180000),
+                                   "tv show crawler code",
+                                   "episode crawler code"},
+        serio::TvShowCrawlerConfig{"Platform 2",
+                                   std::chrono::milliseconds(380000),
+                                   "tv show crawler code 2",
+                                   "episode crawler code 2"}
     });
     inline static const std::vector<serio::SearchCrawlerConfig> searchCrawlerConfigs = std::vector({
-        serio::SearchCrawlerConfig{episodeCrawlerConfigs[0].platformName,
+        serio::SearchCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
                                    std::chrono::milliseconds(190000),
                                    "search tv show crawler"},
-        serio::SearchCrawlerConfig{episodeCrawlerConfigs[1].platformName,
+        serio::SearchCrawlerConfig{tvShowCrawlerConfigs[1].platformName,
                                    std::chrono::milliseconds(200000),
                                    "search tv show crawler 2"},
     });
     inline static const std::vector<serio::CategoryCrawlerConfig> categoryCrawlerConfigs = std::vector({
-        serio::CategoryCrawlerConfig{episodeCrawlerConfigs[0].platformName,
+        serio::CategoryCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
                                      "category 1",
                                      std::chrono::milliseconds(150000),
                                      "category tv show crawler"},
-        serio::CategoryCrawlerConfig{episodeCrawlerConfigs[0].platformName,
+        serio::CategoryCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
                                      "category 2",
                                      std::chrono::milliseconds(150000),
                                      "category tv show crawler 2"},
-        serio::CategoryCrawlerConfig{episodeCrawlerConfigs[1].platformName,
+        serio::CategoryCrawlerConfig{tvShowCrawlerConfigs[1].platformName,
                                      "category 1",
                                      std::chrono::milliseconds(100000),
                                      "category tv show crawler 3"}
@@ -45,7 +45,7 @@ public:
     const nlohmann::json jsonResponse = {
             {"platforms", {
                 {
-                    {"name", episodeCrawlerConfigs[0].platformName},
+                    {"name", tvShowCrawlerConfigs[0].platformName},
                     {"categories", {
                         {"cache-ttl", categoryCrawlerConfigs[0].cacheTtl.count()},
                         {"category-list", {
@@ -63,14 +63,14 @@ public:
                        {"cache-ttl", searchCrawlerConfigs[0].cacheTtl.count()},
                        {"crawler", searchCrawlerConfigs[0].crawler}
                     }},
-                    {"episode", {
-                        {"cache-ttl", episodeCrawlerConfigs[0].cacheTtl.count()},
-                        {"tvShowCrawler", episodeCrawlerConfigs[0].tvShowCrawler},
-                        {"episodeCrawler", episodeCrawlerConfigs[0].episodeCrawler}
+                    {"tv-show", {
+                        {"cache-ttl", tvShowCrawlerConfigs[0].cacheTtl.count()},
+                        {"tvShowCrawler", tvShowCrawlerConfigs[0].tvShowCrawler},
+                        {"episodeCrawler", tvShowCrawlerConfigs[0].episodeCrawler}
                     }}
                 },
                 {
-                    {"name", episodeCrawlerConfigs[1].platformName},
+                    {"name", tvShowCrawlerConfigs[1].platformName},
                     {"categories", {
                         {"cache-ttl", categoryCrawlerConfigs[2].cacheTtl.count()},
                         {"category-list", {
@@ -84,10 +84,10 @@ public:
                         {"cache-ttl", searchCrawlerConfigs[1].cacheTtl.count()},
                         {"crawler", searchCrawlerConfigs[1].crawler}
                     }},
-                    {"episode", {
-                            {"cache-ttl", episodeCrawlerConfigs[1].cacheTtl.count()},
-                            {"tvShowCrawler", episodeCrawlerConfigs[1].tvShowCrawler},
-                            {"episodeCrawler", episodeCrawlerConfigs[1].episodeCrawler}
+                    {"tv-show", {
+                            {"cache-ttl", tvShowCrawlerConfigs[1].cacheTtl.count()},
+                            {"tvShowCrawler", tvShowCrawlerConfigs[1].tvShowCrawler},
+                            {"episodeCrawler", tvShowCrawlerConfigs[1].episodeCrawler}
                     }}
                 }
             }},
@@ -148,26 +148,26 @@ TEST_F(ConfigTest, shouldGetEmptyHttpClientConfig) {
     EXPECT_EQ(serio::HttpClientConfig(), config.getHttpClientConfig());
 }
 
-TEST_F(ConfigTest, shouldGetEmptyVectorOfEpisodeCrawlerConfigsSinceNoPlatformsAreConfigured) {
+TEST_F(ConfigTest, shouldGetEmptyVectorOfTvShowCrawlerConfigsSinceNoPlatformsAreConfigured) {
     mockClientResponse({});
     config.setSourceUrl(sourceUrl);
-    EXPECT_TRUE(config.getEpisodeCrawlerConfigs().empty());
+    EXPECT_TRUE(config.getTvShowCrawlerConfigs().empty());
 }
 
-TEST_F(ConfigTest, shouldSkipPlatformEpisodeCrawlerConfigsThatLackFields) {
+TEST_F(ConfigTest, shouldSkipPlatformTvShowCrawlerConfigsThatLackFields) {
     mockClientResponse({{"platforms", {jsonResponse["platforms"][0], {}}}});
     config.setSourceUrl(sourceUrl);
-    EXPECT_EQ(std::vector({episodeCrawlerConfigs[0]}), config.getEpisodeCrawlerConfigs());
+    EXPECT_EQ(std::vector({tvShowCrawlerConfigs[0]}), config.getTvShowCrawlerConfigs());
 }
 
-TEST_F(ConfigTest, shouldHaveEpisodeCrawlerConfigsWithOptionalSuggestionsCrawler) {
-    auto episodeCrawlerConfig = episodeCrawlerConfigs[0];
-    episodeCrawlerConfig.suggestionsCrawler = "suggestions crawler";
+TEST_F(ConfigTest, shouldHaveTvShowCrawlerConfigsWithOptionalSuggestionsCrawler) {
+    auto tvShowCrawlerConfig = tvShowCrawlerConfigs[0];
+    tvShowCrawlerConfig.suggestionsCrawler = "suggestions crawler";
     auto platform = jsonResponse["platforms"][0];
-    platform["episode"]["suggestionsCrawler"] = *episodeCrawlerConfig.suggestionsCrawler;
+    platform["tv-show"]["suggestionsCrawler"] = *tvShowCrawlerConfig.suggestionsCrawler;
     mockClientResponse({{"platforms", {platform}}});
     config.setSourceUrl(sourceUrl);
-    EXPECT_EQ(std::vector({episodeCrawlerConfig}), config.getEpisodeCrawlerConfigs());
+    EXPECT_EQ(std::vector({tvShowCrawlerConfig}), config.getTvShowCrawlerConfigs());
 }
 
 TEST_F(ConfigTest, shouldGetEmptyVectorOfSearchCrawlerConfigsSinceNoPlatformsAreConfigured) {
@@ -251,9 +251,9 @@ const FetchAsserts httpClientConfigAsserts{
     [] (serio::Config& config) { config.getHttpClientConfig(); },
     [] (serio::Config& config) { EXPECT_EQ(ConfigTest::httpClientConfig, config.getHttpClientConfig()); }
 };
-const FetchAsserts episodeCrawlerConfigAsserts{
-    [] (serio::Config& config) { config.getEpisodeCrawlerConfigs(); },
-    [] (serio::Config& config) { EXPECT_EQ(ConfigTest::episodeCrawlerConfigs, config.getEpisodeCrawlerConfigs()); }
+const FetchAsserts tvShowCrawlerConfigAsserts{
+    [] (serio::Config& config) { config.getTvShowCrawlerConfigs(); },
+    [] (serio::Config& config) { EXPECT_EQ(ConfigTest::tvShowCrawlerConfigs, config.getTvShowCrawlerConfigs()); }
 };
 const FetchAsserts searchCrawlerConfigAsserts{
     [] (serio::Config& config) { config.getSearchCrawlerConfigs(); },
@@ -264,4 +264,4 @@ const FetchAsserts categoryCrawlerConfigAsserts{
     [] (serio::Config& config) { EXPECT_EQ(ConfigTest::categoryCrawlerConfigs, config.getCategoryCrawlerConfigs()); }
 };
 INSTANTIATE_TEST_SUITE_P(ConfigFetchTestInstantiation, ConfigFetchTest, ::testing::Values(
-        httpClientConfigAsserts, episodeCrawlerConfigAsserts, searchCrawlerConfigAsserts, categoryCrawlerConfigAsserts));
+        httpClientConfigAsserts, tvShowCrawlerConfigAsserts, searchCrawlerConfigAsserts, categoryCrawlerConfigAsserts));

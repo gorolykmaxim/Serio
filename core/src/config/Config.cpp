@@ -22,31 +22,31 @@ HttpClientConfig Config::getHttpClientConfig() {
     return httpClientConfig;
 }
 
-std::vector<EpisodeCrawlerConfig> Config::getEpisodeCrawlerConfigs() {
+std::vector<TvShowCrawlerConfig> Config::getTvShowCrawlerConfigs() {
     const auto config = source.fetchConfig();
-    std::vector<EpisodeCrawlerConfig> episodeCrawlerConfigs;
+    std::vector<TvShowCrawlerConfig> tvShowCrawlerConfigs;
     const auto platforms = config.getList({"platforms"});
-    episodeCrawlerConfigs.reserve(platforms.size());
+    tvShowCrawlerConfigs.reserve(platforms.size());
     for (const auto& platform: platforms) {
         const auto name = platform.getParameter({"name"});
-        const auto cacheTtl = platform.getParameter({"episode", "cache-ttl"});
-        const auto tvShowCrawler = platform.getParameter({"episode", "tvShowCrawler"});
-        const auto episodeCrawler = platform.getParameter({"episode", "episodeCrawler"});
-        const auto suggestionsCrawler = platform.getParameter({"episode", "suggestionsCrawler"});
+        const auto cacheTtl = platform.getParameter({"tv-show", "cache-ttl"});
+        const auto tvShowCrawler = platform.getParameter({"tv-show", "tvShowCrawler"});
+        const auto episodeCrawler = platform.getParameter({"tv-show", "episodeCrawler"});
+        const auto suggestionsCrawler = platform.getParameter({"tv-show", "suggestionsCrawler"});
         if (name && cacheTtl && tvShowCrawler && episodeCrawler) {
-            EpisodeCrawlerConfig episodeCrawlerConfig{
+            TvShowCrawlerConfig tvShowCrawlerConfig{
                     name->get<std::string>(),
                     std::chrono::milliseconds(cacheTtl->get<long>()),
                     tvShowCrawler->get<std::string>(),
                     episodeCrawler->get<std::string>()
             };
             if (suggestionsCrawler) {
-                episodeCrawlerConfig.suggestionsCrawler = suggestionsCrawler->get<std::string>();
+                tvShowCrawlerConfig.suggestionsCrawler = suggestionsCrawler->get<std::string>();
             }
-            episodeCrawlerConfigs.push_back(std::move(episodeCrawlerConfig));
+            tvShowCrawlerConfigs.push_back(std::move(tvShowCrawlerConfig));
         }
     }
-    return episodeCrawlerConfigs;
+    return tvShowCrawlerConfigs;
 }
 
 std::vector<SearchCrawlerConfig> Config::getSearchCrawlerConfigs() {
