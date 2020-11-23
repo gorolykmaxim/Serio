@@ -3,7 +3,7 @@
 namespace serio {
 CrawlerExecution::CrawlerExecution(const std::string& code) {
     mjsContext = mjs_create();
-    const auto fullCode = code + " JSON.stringify(execute())";
+    const auto fullCode = code + " JSON.stringify(crawl())";
     executionContext.done = 0;
     error = mjs_start_execution(mjsContext, &executionContext, fullCode.c_str(), &result);
 }
