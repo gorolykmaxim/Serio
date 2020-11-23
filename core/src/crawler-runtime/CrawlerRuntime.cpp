@@ -8,7 +8,7 @@ std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(const std::vector<Cr
     std::vector<serio::CrawlerExecution> executions;
     initializeCrawlerExecutions(executions, crawlers);
     performExecutions(executions);
-    return fetchExecutionResults(executions, crawlers.size());
+    return fetchExecutionResults(executions);
 }
 
 void CrawlerRuntime::initializeCrawlerExecutions(std::vector<CrawlerExecution> &executions,
@@ -32,10 +32,9 @@ void CrawlerRuntime::performExecutions(std::vector<CrawlerExecution> &executions
     };
 }
 
-std::vector<nlohmann::json> CrawlerRuntime::fetchExecutionResults(std::vector<CrawlerExecution> &executions,
-                                                                  uint32_t estimatedSize) {
+std::vector<nlohmann::json> CrawlerRuntime::fetchExecutionResults(std::vector<CrawlerExecution> &executions) {
     std::vector<nlohmann::json> results;
-    results.reserve(estimatedSize);
+    results.reserve(executions.size());
     for (auto& execution: executions) {
         if (execution.hasFailed()) {
             continue;

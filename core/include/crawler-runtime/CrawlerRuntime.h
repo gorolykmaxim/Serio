@@ -20,7 +20,7 @@ public:
 private:
     void initializeCrawlerExecutions(std::vector<CrawlerExecution>& executions, const std::vector<Crawler>& crawlers);
     void performExecutions(std::vector<CrawlerExecution>& executions);
-    std::vector<nlohmann::json> fetchExecutionResults(std::vector<CrawlerExecution>& executions, uint32_t estimatedSize);
+    std::vector<nlohmann::json> fetchExecutionResults(std::vector<CrawlerExecution> &executions);
 };
 }
 
