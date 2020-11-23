@@ -20,15 +20,16 @@ void CrawlerRuntime::initializeCrawlerExecutions(std::vector<CrawlerExecution> &
 }
 
 void CrawlerRuntime::performExecutions(std::vector<CrawlerExecution> &executions) {
-    std::set<void*> finishedExecutions;
-    do {
+    std::set<CrawlerExecution*> finishedExecutions;
+    while (finishedExecutions.size() < executions.size()) {
         for (auto& execution: executions) {
-            execution.executeStep();
             if (execution.isDone()) {
                 finishedExecutions.emplace(&execution);
+            } else {
+                execution.executeStep();
             }
         }
-    } while (finishedExecutions.size() < executions.size());
+    };
 }
 
 std::vector<nlohmann::json> CrawlerRuntime::fetchExecutionResults(std::vector<CrawlerExecution> &executions,

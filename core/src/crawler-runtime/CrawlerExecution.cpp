@@ -9,9 +9,7 @@ CrawlerExecution::CrawlerExecution(const std::string& code) {
 }
 
 void CrawlerExecution::executeStep() {
-    if (!hasFailed()) {
-        error = mjs_execute_step(&executionContext);
-    }
+    error = mjs_execute_step(&executionContext);
 }
 
 bool CrawlerExecution::isDone() {
