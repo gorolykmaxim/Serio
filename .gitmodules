@@ -7,3 +7,6 @@
 [submodule "core/lib/SQLiteCpp"]
 	path = core/lib/SQLiteCpp
 	url = https://github.com/SRombauts/SQLiteCpp.git
+[submodule "core/lib/mjs"]
+	path = core/lib/mjs
+	url = https://github.com/gorolykmaxim/mjs.git
