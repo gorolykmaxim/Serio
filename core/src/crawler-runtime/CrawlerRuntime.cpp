@@ -15,7 +15,11 @@ void CrawlerRuntime::initializeCrawlerExecutions(std::vector<CrawlerExecution> &
                                                  const std::vector<Crawler> &crawlers) {
     executions.reserve(crawlers.size());
     for (const auto& crawler: crawlers) {
-        executions.emplace_back(crawler.code);
+        try {
+            executions.emplace_back(crawler.code, crawler.arguments);
+        } catch (std::logic_error& e) {
+            throw InvalidCrawlerError(crawler, e.what());
+        }
     }
 }
 
@@ -47,4 +51,8 @@ std::vector<nlohmann::json> CrawlerRuntime::fetchExecutionResults(std::vector<Cr
     }
     return results;
 }
+
+
+InvalidCrawlerError::InvalidCrawlerError(const Crawler& crawler, const std::string &reason)
+    : std::logic_error("Crawler with code '" + crawler.code + "' and arguments '" + crawler.arguments.dump() + "' is invalid: " + reason) {}
 }

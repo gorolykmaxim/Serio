@@ -65,3 +65,22 @@ TEST_F(CrawlerRuntimeTest, shouldIgnoreCrawlerExecutionResultsThatCantBeParsedAs
     const auto actual = runtime.executeCrawlers(crawlers);
     EXPECT_EQ(expected, actual);
 }
+
+TEST_F(CrawlerRuntimeTest, shouldBeAbleToAcceptArguments) {
+    nlohmann::json arguments = {1, "text", false};
+    serio::Crawler crawler{"function crawl(num, text, bool) {return [num, text, bool];}", networkCacheTtl, arguments};
+    const auto actual = runtime.executeCrawlers({crawler});
+    EXPECT_EQ(arguments, actual[0]);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldThrowAnErrorWhenAttemptingToPassCrawlerArgumentsOfUnsupportedType) {
+    nlohmann::json arguments = {"something", {{"objectAttributeName", "objectAttributeValue"}}};
+    serio::Crawler crawler{"function crawl() {return {};}", networkCacheTtl, arguments};
+    EXPECT_THROW(runtime.executeCrawlers({crawler}), serio::InvalidCrawlerError);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldThrowAnErrorWhenAttemptingToPassJsonObjectInsteadOfArrayOfCrawlerArguments) {
+    nlohmann::json arguments = std::map<std::string, std::string>({{"objectAttributeName", "objectAttributeValue"}});
+    serio::Crawler crawler{"function crawl() {return {};}", networkCacheTtl, arguments};
+    EXPECT_THROW(runtime.executeCrawlers({crawler}), serio::InvalidCrawlerError);
+}
