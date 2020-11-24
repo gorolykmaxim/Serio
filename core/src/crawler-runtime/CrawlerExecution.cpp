@@ -1,4 +1,4 @@
-#include <crawler-runtime/CrawlerExecution.h>
+#include "CrawlerExecution.h"
 
 namespace serio {
 CrawlerExecution::CrawlerExecution(const std::string &code, const nlohmann::json &arguments) {

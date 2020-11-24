@@ -1,18 +1,11 @@
 #include <crawler-runtime/CrawlerRuntime.h>
 #include <set>
+#include "CrawlerExecution.h"
 
 namespace serio {
 CrawlerRuntime::CrawlerRuntime(CrawlerHttpClient &httpClient) {}
 
-std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(const std::vector<Crawler>& crawlers) {
-    std::vector<serio::CrawlerExecution> executions;
-    initializeCrawlerExecutions(executions, crawlers);
-    performExecutions(executions);
-    return fetchExecutionResults(executions);
-}
-
-void CrawlerRuntime::initializeCrawlerExecutions(std::vector<CrawlerExecution> &executions,
-                                                 const std::vector<Crawler> &crawlers) {
+static void initializeCrawlerExecutions(std::vector<CrawlerExecution> &executions, const std::vector<Crawler> &crawlers) {
     executions.reserve(crawlers.size());
     for (const auto& crawler: crawlers) {
         try {
@@ -23,7 +16,7 @@ void CrawlerRuntime::initializeCrawlerExecutions(std::vector<CrawlerExecution> &
     }
 }
 
-void CrawlerRuntime::performExecutions(std::vector<CrawlerExecution> &executions) {
+static void performExecutions(std::vector<CrawlerExecution> &executions) {
     std::set<CrawlerExecution*> finishedExecutions;
     while (finishedExecutions.size() < executions.size()) {
         for (auto& execution: executions) {
@@ -36,7 +29,7 @@ void CrawlerRuntime::performExecutions(std::vector<CrawlerExecution> &executions
     };
 }
 
-std::vector<nlohmann::json> CrawlerRuntime::fetchExecutionResults(std::vector<CrawlerExecution> &executions) {
+static std::vector<nlohmann::json> fetchExecutionResults(std::vector<CrawlerExecution> &executions) {
     std::vector<nlohmann::json> results;
     results.reserve(executions.size());
     for (auto& execution: executions) {
@@ -50,6 +43,13 @@ std::vector<nlohmann::json> CrawlerRuntime::fetchExecutionResults(std::vector<Cr
         }
     }
     return results;
+}
+
+std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(const std::vector<Crawler>& crawlers) {
+    std::vector<serio::CrawlerExecution> executions;
+    initializeCrawlerExecutions(executions, crawlers);
+    performExecutions(executions);
+    return fetchExecutionResults(executions);
 }
 
 
