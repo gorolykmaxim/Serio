@@ -2,7 +2,6 @@
 #define SERIO_CRAWLEREXECUTION_H
 
 #include <mjs.h>
-#include <nlohmann/json.hpp>
 #include "JsObject.h"
 
 namespace serio {
@@ -18,7 +17,7 @@ public:
     mjs* getContext();
     void fail();
     [[nodiscard]] JsObject getGlobal() const;
-    nlohmann::json getResult();
+    JsObject getResult();
     virtual ~CrawlerExecution();
 private:
     struct mjs* mjsContext;

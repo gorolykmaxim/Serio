@@ -42,8 +42,8 @@ void CrawlerExecution::fail() {
     error = MJS_INTERNAL_ERROR;
 }
 
-nlohmann::json CrawlerExecution::getResult() {
-    return nlohmann::json::parse(static_cast<std::string>(JsObject(mjsContext, result)));
+JsObject CrawlerExecution::getResult() {
+    return JsObject(mjsContext, result);
 }
 
 JsObject CrawlerExecution::getGlobal() const {

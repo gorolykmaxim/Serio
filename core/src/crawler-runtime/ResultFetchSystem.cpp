@@ -15,7 +15,9 @@ std::vector<nlohmann::json> ResultFetchSystem::fetch() {
             continue;
         }
         try {
-            results.push_back(execution.getResult());
+            const std::string rawResult = execution.getResult();
+            auto result = nlohmann::json::parse(rawResult);
+            results.push_back(std::move(result));
         } catch (std::exception& e) {
             continue;
         }
