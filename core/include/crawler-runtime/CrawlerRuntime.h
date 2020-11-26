@@ -16,7 +16,7 @@ struct Crawler {
 class CrawlerRuntime {
 public:
     explicit CrawlerRuntime(CrawlerHttpClient& httpClient);
-    std::vector<nlohmann::json> executeCrawlers(const std::vector<Crawler>& crawlers);
+    std::vector<nlohmann::json> executeCrawlers(std::vector<Crawler> crawlers);
 };
 
 class InvalidCrawlerError : std::logic_error {

@@ -4,7 +4,7 @@ namespace serio {
 CrawlerExecution::CrawlerExecution(const std::string &code, const nlohmann::json &arguments) {
     mjsContext = mjs_create();
     initializeArguments(arguments);
-    const auto fullCode = "let _waiting=false; let _buffer=null; " + code + " JSON.stringify(crawl(args));";
+    const auto fullCode = "let _waiting=false; let _buffer=null; " + code;
     executionContext.done = 0;
     error = mjs_start_execution(mjsContext, &executionContext, fullCode.c_str(), &result);
 }

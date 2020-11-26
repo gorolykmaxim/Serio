@@ -1,22 +1,27 @@
 #include "RegExpSystem.h"
 
 namespace serio {
-std::string RegExpSystem::getCode() const {
-    return "function regExp(exp, values) {"
-           "  _buffer=[exp,values];"
-           "  _waiting=true;"
-           "  return _buffer;"
-           "}";
+RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerExecution> &executions) : executions(executions) {
+    for (auto& crawler: crawlers) {
+        crawler.code = "function regExp(exp, values) {"
+                       "  _buffer=[exp,values];"
+                       "  _waiting=true;"
+                       "  return _buffer;"
+                       "} "
+                       + crawler.code;
+    }
 }
 
-void RegExpSystem::update(CrawlerExecution &execution) const {
-    if (execution.isWaiting()) {
-        try {
-            const auto buffer = readRegExpBuffer(execution);
-            const auto searchResults = search(buffer);
-            writeRegExpBuffer(execution, searchResults);
-        } catch (std::runtime_error& e) {
-            execution.fail();
+void RegExpSystem::update() {
+    for (auto& execution: executions) {
+        if (execution.isWaiting()) {
+            try {
+                const auto buffer = readRegExpBuffer(execution);
+                const auto searchResults = search(buffer);
+                writeRegExpBuffer(execution, searchResults);
+            } catch (std::runtime_error& e) {
+                execution.fail();
+            }
         }
     }
 }
