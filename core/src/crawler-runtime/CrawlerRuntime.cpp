@@ -1,22 +1,27 @@
 #include <crawler-runtime/CrawlerRuntime.h>
 #include <set>
 #include "CrawlerExecution.h"
+#include "RegExpSystem.h"
+#include <sstream>
 
 namespace serio {
 CrawlerRuntime::CrawlerRuntime(CrawlerHttpClient &httpClient) {}
 
-static void initializeCrawlerExecutions(std::vector<CrawlerExecution> &executions, const std::vector<Crawler> &crawlers) {
+static void initializeCrawlerExecutions(std::vector<CrawlerExecution> &executions, const std::vector<Crawler> &crawlers,
+                                        const RegExpSystem& regExpSystem) {
     executions.reserve(crawlers.size());
     for (const auto& crawler: crawlers) {
         try {
-            executions.emplace_back(crawler.code, crawler.arguments);
+            std::stringstream code;
+            code << regExpSystem.getCode() << " " << crawler.code;
+            executions.emplace_back(code.str(), crawler.arguments);
         } catch (std::logic_error& e) {
             throw InvalidCrawlerError(crawler, e.what());
         }
     }
 }
 
-static void performExecutions(std::vector<CrawlerExecution> &executions) {
+static void performExecutions(std::vector<CrawlerExecution> &executions, const RegExpSystem& regExpSystem) {
     std::set<CrawlerExecution*> finishedExecutions;
     while (finishedExecutions.size() < executions.size()) {
         for (auto& execution: executions) {
@@ -24,6 +29,7 @@ static void performExecutions(std::vector<CrawlerExecution> &executions) {
                 finishedExecutions.emplace(&execution);
             } else {
                 execution.executeStep();
+                regExpSystem.update(execution);
             }
         }
     };
@@ -47,8 +53,9 @@ static std::vector<nlohmann::json> fetchExecutionResults(std::vector<CrawlerExec
 
 std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(const std::vector<Crawler>& crawlers) {
     std::vector<serio::CrawlerExecution> executions;
-    initializeCrawlerExecutions(executions, crawlers);
-    performExecutions(executions);
+    RegExpSystem regExpSystem;
+    initializeCrawlerExecutions(executions, crawlers, regExpSystem);
+    performExecutions(executions, regExpSystem);
     return fetchExecutionResults(executions);
 }
 

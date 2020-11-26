@@ -3,6 +3,7 @@
 
 #include <mjs.h>
 #include <nlohmann/json.hpp>
+#include "JsObject.h"
 
 namespace serio {
 class CrawlerExecution {
@@ -11,6 +12,8 @@ public:
     void executeStep();
     bool isDone();
     bool hasFailed();
+    void fail();
+    [[nodiscard]] JsObject getGlobal() const;
     nlohmann::json getResult();
     virtual ~CrawlerExecution();
 private:
