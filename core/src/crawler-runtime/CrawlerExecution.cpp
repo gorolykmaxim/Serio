@@ -4,7 +4,7 @@ namespace serio {
 CrawlerExecution::CrawlerExecution(const std::string &code, const nlohmann::json &arguments) {
     mjsContext = mjs_create();
     initializeArguments(arguments);
-    const auto fullCode = code + " JSON.stringify(crawl(args));";
+    const auto fullCode = "let _waiting=false; let _buffer=null; " + code + " JSON.stringify(crawl(args));";
     executionContext.done = 0;
     error = mjs_start_execution(mjsContext, &executionContext, fullCode.c_str(), &result);
 }
@@ -19,6 +19,24 @@ bool CrawlerExecution::isDone() {
 
 bool CrawlerExecution::hasFailed() {
     return error != MJS_OK;
+}
+
+bool CrawlerExecution::isWaiting() {
+    return getGlobal().get("_waiting");
+}
+
+JsObject CrawlerExecution::readSharedBuffer() {
+    return getGlobal().get("_buffer");
+}
+
+void CrawlerExecution::writeSharedBuffer(JsObject data) {
+    auto global = getGlobal();
+    global.set("_waiting", JsObject(mjsContext, false));
+    global.set("_buffer", data);
+}
+
+mjs *CrawlerExecution::getContext() {
+    return mjsContext;
 }
 
 void CrawlerExecution::fail() {

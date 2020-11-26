@@ -12,8 +12,11 @@ public:
     void executeStep();
     bool isDone();
     bool hasFailed();
+    bool isWaiting();
+    JsObject readSharedBuffer();
+    void writeSharedBuffer(JsObject data);
+    mjs* getContext();
     void fail();
-    [[nodiscard]] JsObject getGlobal() const;
     nlohmann::json getResult();
     virtual ~CrawlerExecution();
 private:
@@ -22,6 +25,7 @@ private:
     mjs_err_t error;
     mjs_val_t result;
 
+    [[nodiscard]] JsObject getGlobal() const;
     void initializeArguments(const nlohmann::json &arguments);
     mjs_val_t toMjsValue(const nlohmann::json& value);
 };

@@ -15,8 +15,8 @@ private:
     void appendMatchesToResults(std::string string, const std::regex& regex, nlohmann::json& results) const;
     void appendCompleteMatchToResults(const std::smatch& match, nlohmann::json& results) const;
     void appendGroupMatchToResults(const std::smatch& match, nlohmann::json& results) const;
-    [[nodiscard]] nlohmann::json readRegExpBuffer(JsObject global) const;
-    void writeRegExpBuffer(JsObject global, const nlohmann::json& searchResults) const;
+    [[nodiscard]] nlohmann::json readRegExpBuffer(CrawlerExecution& execution) const;
+    void writeRegExpBuffer(CrawlerExecution& execution, const nlohmann::json& searchResults) const;
 };
 
 class InvalidRegExpError : public std::runtime_error {

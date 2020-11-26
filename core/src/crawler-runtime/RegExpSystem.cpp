@@ -2,22 +2,19 @@
 
 namespace serio {
 std::string RegExpSystem::getCode() const {
-    return "let _regExpBuffer=null; "
-           "let _regExpWaiting=false; "
-           "function regExp(exp, values) {"
-           "  _regExpBuffer=[exp,values];"
-           "  _regExpWaiting=true;"
-           "  return _regExpBuffer;"
+    return "function regExp(exp, values) {"
+           "  _buffer=[exp,values];"
+           "  _waiting=true;"
+           "  return _buffer;"
            "}";
 }
 
 void RegExpSystem::update(CrawlerExecution &execution) const {
-    const auto global = execution.getGlobal();
-    if (global.get("_regExpWaiting")) {
+    if (execution.isWaiting()) {
         try {
-            const auto buffer = readRegExpBuffer(global);
+            const auto buffer = readRegExpBuffer(execution);
             const auto searchResults = search(buffer);
-            writeRegExpBuffer(global, searchResults);
+            writeRegExpBuffer(execution, searchResults);
         } catch (std::runtime_error& e) {
             execution.fail();
         }
@@ -56,9 +53,9 @@ void RegExpSystem::appendMatchesToResults(std::string string, const std::regex& 
     }
 }
 
-nlohmann::json RegExpSystem::readRegExpBuffer(JsObject global) const {
+nlohmann::json RegExpSystem::readRegExpBuffer(CrawlerExecution& execution) const {
+    const auto buffer = execution.readSharedBuffer();
     nlohmann::json request;
-    const auto buffer = global.get("_regExpBuffer");
     auto regex = buffer.get(0);
     const auto strings = buffer.get(1);
     if (regex.isNullOrUndefined()) {
@@ -77,14 +74,13 @@ nlohmann::json RegExpSystem::readRegExpBuffer(JsObject global) const {
     return request;
 }
 
-void RegExpSystem::writeRegExpBuffer(JsObject global, const nlohmann::json& searchResults) const {
-    global.set("_regExpWaiting", JsObject(global.mjs, false));
+void RegExpSystem::writeRegExpBuffer(CrawlerExecution& execution, const nlohmann::json& searchResults) const {
     std::vector<JsObject> response;
     response.reserve(searchResults.size());
     for (const auto& result: searchResults) {
-        response.emplace_back(global.mjs, result.get<std::string>());
+        response.emplace_back(execution.getContext(), result.get<std::string>());
     }
-    global.set("_regExpBuffer", JsObject(global.mjs, response));
+    execution.writeSharedBuffer(JsObject(execution.getContext(), response));
 }
 
 InvalidRegExpError::InvalidRegExpError() : std::runtime_error("First argument of regExp() must be a string") {}
