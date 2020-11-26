@@ -1,9 +1,8 @@
 #include "CrawlerExecution.h"
 
 namespace serio {
-CrawlerExecution::CrawlerExecution(const std::string &code, const nlohmann::json &arguments) {
+CrawlerExecution::CrawlerExecution(const std::string &code) {
     mjsContext = mjs_create();
-    initializeArguments(arguments);
     const auto fullCode = "let _waiting=false; let _buffer=null; " + code;
     executionContext.done = 0;
     error = mjs_start_execution(mjsContext, &executionContext, fullCode.c_str(), &result);
@@ -54,33 +53,4 @@ JsObject CrawlerExecution::getGlobal() const {
 CrawlerExecution::~CrawlerExecution() {
     mjs_destroy(mjsContext);
 }
-
-void CrawlerExecution::initializeArguments(const nlohmann::json &arguments) {
-    if (!arguments.is_array() && !arguments.is_null()) {
-        throw NonArrayCrawlerArgumentsError();
-    }
-    std::vector<JsObject> args;
-    args.reserve(arguments.size());
-    for (const auto& argument: arguments) {
-        args.emplace_back(mjsContext, toMjsValue(argument));
-    }
-    getGlobal().set("args", JsObject(mjsContext, args));
-}
-
-mjs_val_t CrawlerExecution::toMjsValue(const nlohmann::json &value) {
-    if (value.is_string()) {
-        return mjs_mk_string(mjsContext, value.get<std::string>().c_str(), value.get<std::string>().length(), true);
-    } else if (value.is_boolean()) {
-        return mjs_mk_boolean(mjsContext, value.get<bool>());
-    } else if (value.is_number()) {
-        return mjs_mk_number(mjsContext, value.get<double>());
-    } else {
-        throw InvalidCrawlerArgumentTypeError(value);
-    }
-}
-
-NonArrayCrawlerArgumentsError::NonArrayCrawlerArgumentsError() : std::logic_error("Crawler arguments should be an array") {}
-
-InvalidCrawlerArgumentTypeError::InvalidCrawlerArgumentTypeError(const nlohmann::json &argument)
-    : std::logic_error("Crawler argument with invalid type: " + argument.dump()) {}
 }

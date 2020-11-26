@@ -8,7 +8,7 @@
 namespace serio {
 class CrawlerExecution {
 public:
-    explicit CrawlerExecution(const std::string &code, const nlohmann::json &arguments);
+    explicit CrawlerExecution(const std::string &code);
     void executeStep();
     bool isDone();
     bool hasFailed();
@@ -17,6 +17,7 @@ public:
     void writeSharedBuffer(JsObject data);
     mjs* getContext();
     void fail();
+    [[nodiscard]] JsObject getGlobal() const;
     nlohmann::json getResult();
     virtual ~CrawlerExecution();
 private:
@@ -24,20 +25,6 @@ private:
     struct mjs_execution executionContext;
     mjs_err_t error;
     mjs_val_t result;
-
-    [[nodiscard]] JsObject getGlobal() const;
-    void initializeArguments(const nlohmann::json &arguments);
-    mjs_val_t toMjsValue(const nlohmann::json& value);
-};
-
-class NonArrayCrawlerArgumentsError : public std::logic_error {
-public:
-    NonArrayCrawlerArgumentsError();
-};
-
-class InvalidCrawlerArgumentTypeError : public std::logic_error {
-public:
-    explicit InvalidCrawlerArgumentTypeError(const nlohmann::json& argument);
 };
 }
 

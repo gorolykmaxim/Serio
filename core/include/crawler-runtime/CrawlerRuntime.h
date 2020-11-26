@@ -18,11 +18,6 @@ public:
     explicit CrawlerRuntime(CrawlerHttpClient& httpClient);
     std::vector<nlohmann::json> executeCrawlers(std::vector<Crawler> crawlers);
 };
-
-class InvalidCrawlerError : std::logic_error {
-public:
-    InvalidCrawlerError(const Crawler& crawler, const std::string &reason);
-};
 }
 
 #endif //SERIO_CRAWLERRUNTIME_H
