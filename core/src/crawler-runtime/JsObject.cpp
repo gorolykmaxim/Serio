@@ -24,7 +24,7 @@ bool JsObject::isArray() const {
 }
 
 JsObject JsObject::get(const std::string &name) const {
-    const auto fieldName = mjs_mk_string(mjs, name.c_str(), name.size(), true);
+    const auto fieldName = mjs_mk_string(mjs, name.c_str(), name.size(), false);
     return JsObject(mjs, mjs_get_v(mjs, root, fieldName));
 }
 
