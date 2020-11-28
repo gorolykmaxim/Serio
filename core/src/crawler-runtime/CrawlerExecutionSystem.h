@@ -2,7 +2,6 @@
 #define SERIO_CRAWLEREXECUTIONSYSTEM_H
 
 #include <vector>
-#include <set>
 #include <crawler-runtime/CrawlerRuntime.h>
 #include "CrawlerExecution.h"
 
@@ -13,8 +12,8 @@ public:
     void update();
     bool isFinished();
 private:
+    bool finished;
     std::vector<CrawlerExecution>& executions;
-    std::set<CrawlerExecution*> finishedExecutions;
 };
 }
 
