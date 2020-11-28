@@ -58,7 +58,7 @@ void HttpRequestSystem::waitForResponsesIfNothingElseToDo(uint32_t finishedExecu
                 deliverResponsesToExecution(handleWithResponses.first, handleWithResponses.second);
             } catch (std::runtime_error& e) {
                 auto& execution = executions[handleWithResponses.first];
-                execution.fail();
+                execution.fail(e);
             }
         }
         executionHandleToResponses.clear();

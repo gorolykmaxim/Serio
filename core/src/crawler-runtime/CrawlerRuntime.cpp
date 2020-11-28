@@ -5,9 +5,11 @@
 #include "CrawlerExecutionSystem.h"
 #include "CrawlerArgumentSystem.h"
 #include "HttpRequestSystem.h"
+#include "LoggingSystem.h"
 
 namespace serio {
-CrawlerRuntime::CrawlerRuntime(CrawlerHttpClient &httpClient) : httpClient(httpClient) {}
+CrawlerRuntime::CrawlerRuntime(CrawlerHttpClient &httpClient, bool enableLogging)
+    : httpClient(httpClient), enableLogging(enableLogging) {}
 
 std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(std::vector<Crawler> crawlers) {
     std::vector<serio::CrawlerExecution> executions;
@@ -16,8 +18,12 @@ std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(std::vector<Crawler>
     ResultFetchSystem resultFetchSystem(crawlers, executions);
     CrawlerExecutionSystem crawlerExecutionSystem(crawlers, executions);
     CrawlerArgumentSystem crawlerArgumentSystem(crawlers, executions);
+    LoggingSystem loggingSystem(executions);
     while (!crawlerExecutionSystem.isFinished()) {
         crawlerExecutionSystem.update();
+        if (enableLogging) {
+            loggingSystem.update();
+        }
         regExpSystem.update();
         httpRequestSystem.update();
     }

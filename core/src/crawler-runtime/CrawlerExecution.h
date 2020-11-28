@@ -16,9 +16,11 @@ public:
     JsObject readSharedBuffer();
     void writeSharedBuffer(JsObject data);
     mjs* getContext();
-    void fail();
+    void fail(const std::exception& exception);
     [[nodiscard]] JsObject getGlobal() const;
     JsObject getResult();
+    std::string getWaitingTarget();
+    std::string getErrorMessage();
     virtual ~CrawlerExecution();
 private:
     struct mjs* mjsContext;

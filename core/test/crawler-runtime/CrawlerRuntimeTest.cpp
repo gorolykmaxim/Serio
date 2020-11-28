@@ -9,7 +9,7 @@ protected:
     const nlohmann::json expectedResult = {{"a", 1}, {"b", "text"}, {"c", false}};
     const serio::Crawler workingCrawler{"function crawl() {return {a: 1, b: 'text', c: false};}", networkCacheTtl};
     ::testing::NiceMock<mocks::CrawlerHttpClientMock> httpClient;
-    serio::CrawlerRuntime runtime = serio::CrawlerRuntime(httpClient);
+    serio::CrawlerRuntime runtime = serio::CrawlerRuntime(httpClient, true);
 
     void mockHttpClientResponse(const serio::HttpRequest& request, const std::string& response) {
         std::promise<std::string> responsePromise;

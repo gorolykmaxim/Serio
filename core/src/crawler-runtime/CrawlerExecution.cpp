@@ -45,12 +45,21 @@ mjs *CrawlerExecution::getContext() {
     return mjsContext;
 }
 
-void CrawlerExecution::fail() {
+void CrawlerExecution::fail(const std::exception& exception) {
     error = MJS_INTERNAL_ERROR;
+    mjs_set_errorf(mjsContext, error, exception.what());
 }
 
 JsObject CrawlerExecution::getResult() {
     return JsObject(mjsContext, result);
+}
+
+std::string CrawlerExecution::getWaitingTarget() {
+    return waiting;
+}
+
+std::string CrawlerExecution::getErrorMessage() {
+    return mjs_strerror(mjsContext, error);
 }
 
 JsObject CrawlerExecution::getGlobal() const {

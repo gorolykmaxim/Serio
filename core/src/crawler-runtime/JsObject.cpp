@@ -43,6 +43,17 @@ uint32_t JsObject::size() const {
     return mjs_array_length(mjs, root);
 }
 
+std::string JsObject::stringify() {
+    char* resultPtr;
+    if (mjs_json_stringify(mjs, root, nullptr, 0, &resultPtr) == MJS_OK) {
+        std::string result(resultPtr);
+        delete resultPtr;
+        return result;
+    } else {
+        return "";
+    }
+}
+
 JsObject::operator std::string() {
     return mjs_get_cstring(mjs, &root);
 }

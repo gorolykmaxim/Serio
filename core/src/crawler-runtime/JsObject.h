@@ -22,6 +22,7 @@ public:
     void set(const std::string& name, JsObject value);
     [[nodiscard]] JsObject get(uint32_t index) const;
     [[nodiscard]] uint32_t size() const;
+    std::string stringify();
     operator std::string();
     operator double();
     operator bool();
