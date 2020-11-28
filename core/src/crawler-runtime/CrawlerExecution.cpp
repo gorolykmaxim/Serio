@@ -10,6 +10,8 @@ CrawlerExecution::CrawlerExecution(const std::string &code) {
 
 void CrawlerExecution::executeStep() {
     error = mjs_execute_step(&executionContext);
+    auto waitingFlag = getGlobal().get("_waiting");
+    waiting = waitingFlag.isNullOrUndefined() ? "" : static_cast<std::string>(waitingFlag);
 }
 
 bool CrawlerExecution::isDone() {
@@ -20,15 +22,12 @@ bool CrawlerExecution::hasFailed() {
     return error != MJS_OK;
 }
 
-bool CrawlerExecution::isWaiting(const std::optional<std::string>& target) {
-    if (isDone()) {
-        return false;
-    }
-    auto waiting = getGlobal().get("_waiting");
-    if (!target) {
-        return !waiting.isNullOrUndefined();
-    }
-    return !waiting.isNullOrUndefined() && target == static_cast<std::string>(waiting);
+bool CrawlerExecution::isWaiting() {
+    return !isDone() && !waiting.empty();
+}
+
+bool CrawlerExecution::isWaiting(const std::string& target) {
+    return !isDone() && waiting == target;
 }
 
 JsObject CrawlerExecution::readSharedBuffer() {
@@ -37,6 +36,7 @@ JsObject CrawlerExecution::readSharedBuffer() {
 
 void CrawlerExecution::writeSharedBuffer(JsObject data) {
     auto global = getGlobal();
+    waiting.clear();
     global.set("_waiting", JsObject(mjsContext));
     global.set("_buffer", data);
 }
