@@ -178,9 +178,10 @@ TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerThatPassesANonArrayToHttpRe
     EXPECT_EQ(expected, actual);
 }
 
-TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerThatTriesToSendHttpRequestWithoutUrlSpecified) {
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerThatTriesToSendHttpRequestWithNonStringUrl) {
     const auto crawlers = {
             serio::Crawler{"function crawl() {return httpRequests([{}]);}", networkCacheTtl},
+            serio::Crawler{"function crawl() {return httpRequests([{url:15}]);}", networkCacheTtl},
             workingCrawler
     };
     const std::vector<nlohmann::json> expected = {expectedResult};
@@ -227,5 +228,25 @@ TEST_F(CrawlerRuntimeTest, shouldSendRequestWithTheSpecifiedHeaders) {
     const std::vector<nlohmann::json> expected = {{response}};
     mockHttpClientResponse(request, response);
     const auto actual = runtime.executeCrawlers({crawler});
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerWithHttpRequestWithANonStringMethod) {
+    const auto crawlers = {
+            serio::Crawler{"function crawl() {return httpRequests([{url:'url', method:15}]);}", networkCacheTtl},
+            workingCrawler
+    };
+    const std::vector<nlohmann::json> expected = {expectedResult};
+    const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerWithHttpRequestWithANonStringBody) {
+    const auto crawlers = {
+            serio::Crawler{"function crawl() {return httpRequests([{url:'url', body:15}]);}", networkCacheTtl},
+            workingCrawler
+    };
+    const std::vector<nlohmann::json> expected = {expectedResult};
+    const auto actual = runtime.executeCrawlers(crawlers);
     EXPECT_EQ(expected, actual);
 }

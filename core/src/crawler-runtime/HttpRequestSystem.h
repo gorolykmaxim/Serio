@@ -23,16 +23,6 @@ private:
     std::future<std::string> sendRequest(JsObject request, std::chrono::milliseconds cacheTtl);
     void deliverResponsesToExecution(uint32_t executionHandle, std::vector<std::future<std::string>>& responses);
 };
-
-class InvalidHttpRequestsArgumentError : public std::runtime_error {
-public:
-    InvalidHttpRequestsArgumentError();
-};
-
-class InvalidHttpRequestUrlError : public std::runtime_error {
-public:
-    InvalidHttpRequestUrlError();
-};
 }
 
 #endif //SERIO_HTTPREQUESTSYSTEM_H

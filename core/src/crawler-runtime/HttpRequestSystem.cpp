@@ -7,8 +7,12 @@ HttpRequestSystem::HttpRequestSystem(std::vector<Crawler> &crawlers, std::vector
     cacheTtls.reserve(crawlers.size());
     for (auto& crawler: crawlers) {
         crawler.code = "function httpRequests(requests) {"
+                       "  if (requests.length === undefined) die('httpRequests() argument should be an array of requests');"
                        "  for (let i = 0; i < requests.length; i++) {"
                        "    let request = requests[i];"
+                       "    if (typeof request.url !== 'string') die('Each http request should have \'url\' string specified');"
+                       "    if (request.method && typeof request.method !== 'string') die('Http request \'method\' must be a string when specified');"
+                       "    if (request.body && typeof request.body !== 'string') die('Http request \'body\' must be a string when specified');"
                        "    let headers = request.headers;"
                        "    if (headers) {"
                        "      let fields = [];"
@@ -64,9 +68,6 @@ void HttpRequestSystem::waitForResponsesIfNothingElseToDo(uint32_t finishedExecu
 void HttpRequestSystem::sendPendingExecutionRequests(CrawlerExecution& execution, uint32_t executionHandle) {
     try {
         const auto requests = execution.readSharedBuffer();
-        if (!requests.isArray()) {
-            throw InvalidHttpRequestsArgumentError();
-        }
         const auto requestCount = requests.size();
         std::vector<std::future<std::string>> responses;
         responses.reserve(requestCount);
@@ -81,9 +82,6 @@ void HttpRequestSystem::sendPendingExecutionRequests(CrawlerExecution& execution
 
 std::future<std::string> HttpRequestSystem::sendRequest(JsObject request, std::chrono::milliseconds cacheTtl) {
     auto url = request.get("url");
-    if (url.isNullOrUndefined()) {
-        throw InvalidHttpRequestUrlError();
-    }
     HttpRequest httpRequest{static_cast<std::string>(url)};
     auto method = request.get("method");
     if (!method.isNullOrUndefined()) {
@@ -115,8 +113,4 @@ void HttpRequestSystem::deliverResponsesToExecution(uint32_t executionHandle,
     }
     execution.writeSharedBuffer(JsObject(context, results));
 }
-
-InvalidHttpRequestsArgumentError::InvalidHttpRequestsArgumentError() : std::runtime_error("Array of HTTP request objects should be passed to httpRequests()") {}
-
-InvalidHttpRequestUrlError::InvalidHttpRequestUrlError() : std::runtime_error("Each request passed to httpRequests() should have a 'url'") {}
 }
