@@ -66,18 +66,14 @@ void HttpRequestSystem::waitForResponsesIfNothingElseToDo(uint32_t finishedExecu
 }
 
 void HttpRequestSystem::sendPendingExecutionRequests(CrawlerExecution& execution, uint32_t executionHandle) {
-    try {
-        const auto requests = execution.readSharedBuffer();
-        const auto requestCount = requests.size();
-        std::vector<std::future<std::string>> responses;
-        responses.reserve(requestCount);
-        for (auto i = 0; i < requestCount; i++) {
-            responses.push_back(sendRequest(requests.get(i), cacheTtls[executionHandle]));
-        }
-        executionHandleToResponses[executionHandle] = std::move(responses);
-    } catch (std::runtime_error& e) {
-        execution.fail();
+    const auto requests = execution.readSharedBuffer();
+    const auto requestCount = requests.size();
+    std::vector<std::future<std::string>> responses;
+    responses.reserve(requestCount);
+    for (auto i = 0; i < requestCount; i++) {
+        responses.push_back(sendRequest(requests.get(i), cacheTtls[executionHandle]));
     }
+    executionHandleToResponses[executionHandle] = std::move(responses);
 }
 
 std::future<std::string> HttpRequestSystem::sendRequest(JsObject request, std::chrono::milliseconds cacheTtl) {
