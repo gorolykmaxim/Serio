@@ -3,7 +3,8 @@
 namespace serio {
 CrawlerExecutionSystem::CrawlerExecutionSystem(std::vector<Crawler> &crawlers,
                                                std::vector<CrawlerExecution> &executions)
-    : executions(executions) {
+    : executions(executions),
+      finished(false) {
     executions.reserve(crawlers.size());
     for (const auto& crawler: crawlers) {
         executions.emplace_back(crawler.code);
