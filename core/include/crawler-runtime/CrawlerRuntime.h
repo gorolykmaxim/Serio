@@ -17,6 +17,8 @@ class CrawlerRuntime {
 public:
     explicit CrawlerRuntime(CrawlerHttpClient& httpClient);
     std::vector<nlohmann::json> executeCrawlers(std::vector<Crawler> crawlers);
+private:
+    CrawlerHttpClient& httpClient;
 };
 }
 

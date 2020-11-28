@@ -10,6 +10,7 @@ class JsObject {
 public:
     mjs* mjs;
 
+    explicit JsObject(struct mjs *mjs);
     JsObject(struct mjs *mjs, const std::vector<JsObject>& values);
     JsObject(struct mjs *mjs, double value);
     JsObject(struct mjs *mjs, const std::string& value);

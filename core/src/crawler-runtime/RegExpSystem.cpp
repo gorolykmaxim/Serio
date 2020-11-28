@@ -5,7 +5,7 @@ RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerEx
     for (auto& crawler: crawlers) {
         crawler.code = "function regExp(exp, values) {"
                        "  _buffer=[exp,values];"
-                       "  _waiting=true;"
+                       "  _waiting='regExp';"
                        "  return _buffer;"
                        "} "
                        + crawler.code;
@@ -14,7 +14,7 @@ RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerEx
 
 void RegExpSystem::update() {
     for (auto& execution: executions) {
-        if (execution.isWaiting()) {
+        if (execution.isWaiting("regExp")) {
             try {
                 const auto buffer = readRegExpBuffer(execution);
                 const auto searchResults = search(buffer);

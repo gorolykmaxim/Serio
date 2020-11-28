@@ -8,8 +8,22 @@ protected:
     const std::chrono::milliseconds networkCacheTtl = std::chrono::milliseconds(1);
     const nlohmann::json expectedResult = {{"a", 1}, {"b", "text"}, {"c", false}};
     const serio::Crawler workingCrawler{"function crawl() {return {a: 1, b: 'text', c: false};}", networkCacheTtl};
-    mocks::CrawlerHttpClientMock httpClient;
+    ::testing::NiceMock<mocks::CrawlerHttpClientMock> httpClient;
     serio::CrawlerRuntime runtime = serio::CrawlerRuntime(httpClient);
+
+    void mockHttpClientResponse(const serio::HttpRequest& request, const std::string& response) {
+        std::promise<std::string> responsePromise;
+        responsePromise.set_value(response);
+        ON_CALL(httpClient, sendRequest(request, networkCacheTtl))
+            .WillByDefault(::testing::Return(::testing::ByMove(responsePromise.get_future())));
+    }
+
+    void mockHttpClientResponse(const serio::HttpRequest& request, const std::runtime_error& exception) {
+        std::promise<std::string> response;
+        response.set_exception(std::make_exception_ptr(exception));
+        ON_CALL(httpClient, sendRequest(request, networkCacheTtl))
+            .WillByDefault(::testing::Return(::testing::ByMove(response.get_future())));
+    }
 };
 
 TEST_F(CrawlerRuntimeTest, shouldExecuteTwoReturnOnlyCrawlers) {
@@ -114,5 +128,102 @@ TEST_F(CrawlerRuntimeTest, shouldFailToExecuteRegExpWithNonArraySecondCallArgume
     };
     const std::vector<nlohmann::json> expected = {expectedResult};
     const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldExecuteHttpRequestWithoutOptionalArguments) {
+    const std::string url = "https://hello-world.com";
+    const std::vector<serio::Crawler> crawlers = {
+            serio::Crawler{"function crawl() {return httpRequests([{url:'" + url + "'}]);}", networkCacheTtl},
+            workingCrawler
+    };
+    const auto response = "Response data";
+    const std::vector<nlohmann::json> expected = {{response}, expectedResult};
+    mockHttpClientResponse(serio::HttpRequest{url}, response);
+    const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldExecuteHttpRequestsOfTwoCrawlersConcurrentlyWhilePausingExecutionOfCrawlersThatAreWaitingForResponse) {
+    const serio::HttpRequest req1{"https://hello-world.com"};
+    const serio::HttpRequest req2{"https://dev.null"};
+    const serio::HttpRequest req3{"https://test.org"};
+    const std::vector<serio::Crawler> crawlers = {
+            serio::Crawler{"function crawl() {let a = 1; let b = 2; let c = a + b; return httpRequests([{url:'" + req1.url + "'}]);}", networkCacheTtl},
+            serio::Crawler{"function crawl() {httpRequests([{url:'" + req2.url + "'}]); return httpRequests([{url:'" + req3.url + "'}]);}", networkCacheTtl},
+    };
+    const auto response = "Response data";
+    const std::vector<nlohmann::json> expected = {{response}, {response}};
+    mockHttpClientResponse(req1, response);
+    mockHttpClientResponse(req2, response);
+    mockHttpClientResponse(req3, response);
+    ::testing::InSequence seq;
+    EXPECT_CALL(httpClient, sendRequest(req2, networkCacheTtl));
+    EXPECT_CALL(httpClient, sendRequest(req1, networkCacheTtl));
+    EXPECT_CALL(httpClient, sendRequest(req3, networkCacheTtl));
+    const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerThatPassesANonArrayToHttpRequests) {
+    const auto crawlers = {
+            serio::Crawler{"function crawl() {return httpRequests();}", networkCacheTtl},
+            serio::Crawler{"function crawl() {return httpRequests({url:'kek'});}", networkCacheTtl},
+            workingCrawler
+    };
+    const std::vector<nlohmann::json> expected = {expectedResult};
+    const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerThatTriesToSendHttpRequestWithoutUrlSpecified) {
+    const auto crawlers = {
+            serio::Crawler{"function crawl() {return httpRequests([{}]);}", networkCacheTtl},
+            workingCrawler
+    };
+    const std::vector<nlohmann::json> expected = {expectedResult};
+    const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerDueToAnHttpFailure) {
+    const serio::HttpRequest request{"https://hello-world.com"};
+    const std::vector<serio::Crawler> crawlers = {
+            serio::Crawler{"function crawl() {return httpRequests([{url:'" + request.url + "'}]);}", networkCacheTtl},
+            workingCrawler
+    };
+    mockHttpClientResponse(request, std::runtime_error("timeout"));
+    const std::vector<nlohmann::json> expected = {expectedResult};
+    const auto actual = runtime.executeCrawlers(crawlers);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldSendRequestWithTheSpecifiedMethod) {
+    const serio::HttpRequest request{"https://hello-world.com", "POST"};
+    const serio::Crawler crawler{"function crawl() {return httpRequests([{url:'" + request.url + "', method:'" + request.method + "'}]);}", networkCacheTtl};
+    const auto response = "Response data";
+    const std::vector<nlohmann::json> expected = {{response}};
+    mockHttpClientResponse(request, response);
+    const auto actual = runtime.executeCrawlers({crawler});
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldSendRequestWithTheSpecifiedBody) {
+    const serio::HttpRequest request{"https://hello-world.com", "", {}, "request body"};
+    const serio::Crawler crawler{"function crawl() {return httpRequests([{url:'" + request.url + "', body:'" + request.body + "'}]);}", networkCacheTtl};
+    const auto response = "Response data";
+    const std::vector<nlohmann::json> expected = {{response}};
+    mockHttpClientResponse(request, response);
+    const auto actual = runtime.executeCrawlers({crawler});
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldSendRequestWithTheSpecifiedHeaders) {
+    const serio::HttpRequest request{"https://hello-world.com", "", {{"header", "value"}}};
+    const serio::Crawler crawler{"function crawl() {return httpRequests([{url:'" + request.url + "', headers:{header: 'value'}}]);}", networkCacheTtl};
+    const auto response = "Response data";
+    const std::vector<nlohmann::json> expected = {{response}};
+    mockHttpClientResponse(request, response);
+    const auto actual = runtime.executeCrawlers({crawler});
     EXPECT_EQ(expected, actual);
 }

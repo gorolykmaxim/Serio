@@ -13,7 +13,7 @@ void CrawlerExecutionSystem::update() {
     for (auto& execution: executions) {
         if (execution.isDone()) {
             finishedExecutions.emplace(&execution);
-        } else {
+        } else if (!execution.isWaiting()) {
             execution.executeStep();
         }
     }

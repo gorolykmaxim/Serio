@@ -3,7 +3,7 @@
 namespace serio {
 CrawlerExecution::CrawlerExecution(const std::string &code) {
     mjsContext = mjs_create();
-    const auto fullCode = "let _waiting=false; let _buffer=null; " + code;
+    const auto fullCode = "let _waiting=null; let _buffer=null; " + code;
     executionContext.done = 0;
     error = mjs_start_execution(mjsContext, &executionContext, fullCode.c_str(), &result);
 }
@@ -20,8 +20,15 @@ bool CrawlerExecution::hasFailed() {
     return error != MJS_OK;
 }
 
-bool CrawlerExecution::isWaiting() {
-    return getGlobal().get("_waiting");
+bool CrawlerExecution::isWaiting(const std::optional<std::string>& target) {
+    if (isDone()) {
+        return false;
+    }
+    auto waiting = getGlobal().get("_waiting");
+    if (!target) {
+        return !waiting.isNullOrUndefined();
+    }
+    return !waiting.isNullOrUndefined() && target == static_cast<std::string>(waiting);
 }
 
 JsObject CrawlerExecution::readSharedBuffer() {
@@ -30,7 +37,7 @@ JsObject CrawlerExecution::readSharedBuffer() {
 
 void CrawlerExecution::writeSharedBuffer(JsObject data) {
     auto global = getGlobal();
-    global.set("_waiting", JsObject(mjsContext, false));
+    global.set("_waiting", JsObject(mjsContext));
     global.set("_buffer", data);
 }
 

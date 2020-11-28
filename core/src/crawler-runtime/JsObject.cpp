@@ -1,6 +1,8 @@
 #include "JsObject.h"
 
 namespace serio {
+JsObject::JsObject(struct mjs *mjs) : mjs(mjs), root(mjs_mk_null()) {}
+
 JsObject::JsObject(struct mjs *mjs, const std::vector<JsObject>& values) : mjs(mjs), root(mjs_mk_array(mjs)) {
     for (const auto& value: values) {
         mjs_array_push(mjs, root, value.root);

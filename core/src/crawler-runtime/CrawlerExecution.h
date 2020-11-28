@@ -2,6 +2,7 @@
 #define SERIO_CRAWLEREXECUTION_H
 
 #include <mjs.h>
+#include <optional>
 #include "JsObject.h"
 
 namespace serio {
@@ -11,7 +12,7 @@ public:
     void executeStep();
     bool isDone();
     bool hasFailed();
-    bool isWaiting();
+    bool isWaiting(const std::optional<std::string>& target = {});
     JsObject readSharedBuffer();
     void writeSharedBuffer(JsObject data);
     mjs* getContext();
