@@ -22,11 +22,6 @@ private:
     void writeRegExpBuffer(CrawlerExecution& execution, const nlohmann::json& searchResults) const;
 };
 
-class InvalidRegExpError : public std::runtime_error {
-public:
-    InvalidRegExpError();
-};
-
 class InvalidRegExpInputDataError : public std::runtime_error {
 public:
     InvalidRegExpInputDataError();

@@ -111,9 +111,10 @@ TEST_F(CrawlerRuntimeTest, shouldBeAbleToExecuteRegularExpressionsWithGroups) {
 }
 
 
-TEST_F(CrawlerRuntimeTest, shouldFailToExecuteRegExpWithFirstCallArgumentNotSpecified) {
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteRegExpWithRegExpNotBeingString) {
     const std::vector<serio::Crawler> crawlers = {
             serio::Crawler{"function crawl() {return regExp(null, ['asdf']);}", networkCacheTtl},
+            serio::Crawler{"function crawl() {return regExp(true, ['false']);}", networkCacheTtl},
             workingCrawler
     };
     const std::vector<nlohmann::json> expected = {expectedResult};

@@ -4,6 +4,7 @@ namespace serio {
 RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerExecution> &executions) : executions(executions) {
     for (auto& crawler: crawlers) {
         crawler.code = "function regExp(exp, values) {"
+                       "  if (typeof exp !== 'string') die('Regular expression must be a string');"
                        "  _buffer=[exp,values];"
                        "  _waiting='regExp';"
                        "  return _buffer;"
@@ -63,9 +64,6 @@ nlohmann::json RegExpSystem::readRegExpBuffer(CrawlerExecution& execution) const
     nlohmann::json request;
     auto regex = buffer.get(0);
     const auto strings = buffer.get(1);
-    if (regex.isNullOrUndefined()) {
-        throw InvalidRegExpError();
-    }
     if (!strings.isArray()) {
         throw InvalidRegExpInputDataError();
     }
@@ -87,8 +85,6 @@ void RegExpSystem::writeRegExpBuffer(CrawlerExecution& execution, const nlohmann
     }
     execution.writeSharedBuffer(JsObject(execution.getContext(), response));
 }
-
-InvalidRegExpError::InvalidRegExpError() : std::runtime_error("First argument of regExp() must be a string") {}
 
 InvalidRegExpInputDataError::InvalidRegExpInputDataError()
     : std::runtime_error("Second argument of regExp() must be an array of strings") {}
