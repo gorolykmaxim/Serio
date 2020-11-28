@@ -122,9 +122,10 @@ TEST_F(CrawlerRuntimeTest, shouldFailToExecuteRegExpWithRegExpNotBeingString) {
     EXPECT_EQ(expected, actual);
 }
 
-TEST_F(CrawlerRuntimeTest, shouldFailToExecuteRegExpWithNonArraySecondCallArgument) {
+TEST_F(CrawlerRuntimeTest, shouldFailToExecuteRegExpWithDataArrayNotBeingAnArrayOfStrings) {
     const std::vector<serio::Crawler> crawlers = {
             serio::Crawler{"function crawl() {return regExp('[a-z]+', 12442);}", networkCacheTtl},
+            serio::Crawler{"function crawl() {return regExp('[a-z]+', ['123', 4124]);}", networkCacheTtl},
             workingCrawler
     };
     const std::vector<nlohmann::json> expected = {expectedResult};

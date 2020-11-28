@@ -5,6 +5,9 @@ RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerEx
     for (auto& crawler: crawlers) {
         crawler.code = "function regExp(exp, values) {"
                        "  if (typeof exp !== 'string') die('Regular expression must be a string');"
+                       "  for (let i = 0; i < values.length; i++) {"
+                       "    if (typeof values[i] !== 'string') die('Regular expression data should be an array of strings');"
+                       "  }"
                        "  _buffer=[exp,values];"
                        "  _waiting='regExp';"
                        "  return _buffer;"
@@ -64,9 +67,6 @@ nlohmann::json RegExpSystem::readRegExpBuffer(CrawlerExecution& execution) const
     nlohmann::json request;
     auto regex = buffer.get(0);
     const auto strings = buffer.get(1);
-    if (!strings.isArray()) {
-        throw InvalidRegExpInputDataError();
-    }
     request.push_back(static_cast<std::string>(regex));
     const auto count = strings.size();
     nlohmann::json requestStrings;
@@ -85,7 +85,4 @@ void RegExpSystem::writeRegExpBuffer(CrawlerExecution& execution, const nlohmann
     }
     execution.writeSharedBuffer(JsObject(execution.getContext(), response));
 }
-
-InvalidRegExpInputDataError::InvalidRegExpInputDataError()
-    : std::runtime_error("Second argument of regExp() must be an array of strings") {}
 }

@@ -21,11 +21,6 @@ private:
     [[nodiscard]] nlohmann::json readRegExpBuffer(CrawlerExecution& execution) const;
     void writeRegExpBuffer(CrawlerExecution& execution, const nlohmann::json& searchResults) const;
 };
-
-class InvalidRegExpInputDataError : public std::runtime_error {
-public:
-    InvalidRegExpInputDataError();
-};
 }
 
 #endif //SERIO_REGEXPSYSTEM_H
