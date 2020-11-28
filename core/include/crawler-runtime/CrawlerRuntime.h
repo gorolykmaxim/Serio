@@ -15,11 +15,11 @@ struct Crawler {
 
 class CrawlerRuntime {
 public:
-    explicit CrawlerRuntime(CrawlerHttpClient& httpClient, bool enableLogging = false);
+    explicit CrawlerRuntime(CrawlerHttpClient& httpClient, bool trace = false);
     std::vector<nlohmann::json> executeCrawlers(std::vector<Crawler> crawlers);
 private:
     CrawlerHttpClient& httpClient;
-    bool enableLogging;
+    bool trace;
 };
 }
 
