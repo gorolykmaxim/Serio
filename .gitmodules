@@ -10,3 +10,7 @@
 [submodule "core/lib/mjs"]
 	path = core/lib/mjs
 	url = https://github.com/gorolykmaxim/mjs.git
+[submodule "crdb/lib/cxxopts"]
+	path = crdb/lib/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git
+	branch = v2_2
