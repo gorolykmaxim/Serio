@@ -15,7 +15,7 @@ private:
     std::vector<CrawlerExecution>& executions;
 
     [[nodiscard]] nlohmann::json search(const nlohmann::json& searchCriteria) const;
-    void appendMatchesToResults(std::string string, const std::regex& regex, nlohmann::json& results) const;
+    void appendMatchesToResults(const std::string& string, const std::regex& regex, nlohmann::json& results) const;
     void appendCompleteMatchToResults(const std::smatch& match, nlohmann::json& results) const;
     void appendGroupMatchToResults(const std::smatch& match, nlohmann::json& results) const;
     [[nodiscard]] nlohmann::json readRegExpBuffer(CrawlerExecution& execution) const;

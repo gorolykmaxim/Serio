@@ -46,15 +46,15 @@ void RegExpSystem::appendCompleteMatchToResults(const std::smatch& match, nlohma
     results.push_back(match[0].str());
 }
 
-void RegExpSystem::appendMatchesToResults(std::string string, const std::regex& regex, nlohmann::json& results) const {
-    std::smatch match;
-    while (std::regex_search(string, match, regex)) {
-        if (match.size() > 1) {
-            appendGroupMatchToResults(match, results);
+void RegExpSystem::appendMatchesToResults(const std::string& string, const std::regex& regex, nlohmann::json& results) const {
+    const auto begin = std::sregex_iterator(string.cbegin(), string.cend(), regex);
+    const auto end = std::sregex_iterator();
+    for (auto it = begin; it != end; it++) {
+        if (it->size() > 1) {
+            appendGroupMatchToResults(*it, results);
         } else {
-            appendCompleteMatchToResults(match, results);
+            appendCompleteMatchToResults(*it, results);
         }
-        string = match.suffix();
     }
 }
 
