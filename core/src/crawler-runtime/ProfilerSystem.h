@@ -16,6 +16,8 @@ private:
     std::string lastSystem;
     std::chrono::system_clock::time_point lastRecordStartTime;
     std::map<std::string, std::chrono::microseconds> systemToExecutionTime;
+
+    std::chrono::system_clock::time_point updateLastSystemDuration();
 };
 }
 

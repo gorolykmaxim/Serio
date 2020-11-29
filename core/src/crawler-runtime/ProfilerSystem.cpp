@@ -2,28 +2,46 @@
 #include <iostream>
 
 namespace serio {
+class UseCoutPrecision {
+public:
+    UseCoutPrecision(std::streamsize newPrecision) {
+        precision = std::cout.precision();
+        std::cout.precision(newPrecision);
+    }
+    virtual ~UseCoutPrecision() {
+        std::cout.precision(precision);
+    }
+private:
+    std::streamsize precision;
+};
+
 ProfilerSystem::ProfilerSystem() : startTime(std::chrono::system_clock::now()), lastRecordStartTime(startTime) {}
 
 void ProfilerSystem::update(const std::string &system) {
-    const auto currentTime = std::chrono::system_clock::now();
-    if (!lastSystem.empty()) {
-        systemToExecutionTime[lastSystem] += std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastRecordStartTime);
-    }
+
+    const auto currentTime = updateLastSystemDuration();
     lastRecordStartTime = currentTime;
     lastSystem = system;
 }
 
 void ProfilerSystem::displayResults() {
-    const auto currentTime = std::chrono::system_clock::now();
-    systemToExecutionTime[lastSystem] += std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastRecordStartTime);
-    const auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - startTime).count();
-    const auto totalDurationMs = totalDuration / 1000.0;
+    const UseCoutPrecision precision(2);
+    const auto currentTime = updateLastSystemDuration();
+    const auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - startTime);
     std::cout << "Profiler results:" << std::endl;
     for (const auto& result: systemToExecutionTime) {
-        const auto durationInMs = result.second.count() / 1000.0;
-        const auto percentage = durationInMs / totalDurationMs * 100;
-        std::cout << result.first << ": " << durationInMs << "ms (" << percentage << "%)" << std::endl;
+        const auto duration = result.second;
+        const auto percentage = duration * 100.0 / totalDuration;
+        std::cout << result.first << ": " << duration.count() / 1000.0 << "ms (" << percentage << "%)" << std::endl;
     }
-    std::cout << "Total duration: " << totalDurationMs << "ms" << std::endl << std::endl;
+    std::cout << "Total duration: " << totalDuration.count() / 1000.0 << "ms" << std::endl << std::endl;
+}
+
+std::chrono::system_clock::time_point ProfilerSystem::updateLastSystemDuration() {
+    const auto currentTime = std::chrono::system_clock::now();
+    if (!lastSystem.empty()) {
+        systemToExecutionTime[lastSystem] += std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastRecordStartTime);
+    }
+    return currentTime;
 }
 }
