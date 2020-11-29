@@ -6,13 +6,13 @@ namespace serio {
 class UseCoutPrecision {
 public:
     UseCoutPrecision(std::streamsize newPrecision) {
-        precision = std::cout.precision();
-        std::cout << std::fixed;
-        std::cout << std::setprecision(newPrecision);
+        precision = std::cerr.precision();
+        std::cerr << std::fixed;
+        std::cerr << std::setprecision(newPrecision);
     }
     virtual ~UseCoutPrecision() {
-        std::cout << std::defaultfloat;
-        std::cout << std::setprecision(precision);
+        std::cerr << std::defaultfloat;
+        std::cerr << std::setprecision(precision);
     }
 private:
     std::streamsize precision;
@@ -31,13 +31,13 @@ void ProfilerSystem::displayResults() {
     const UseCoutPrecision precision(2);
     const auto currentTime = updateLastSystemDuration();
     const auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - startTime);
-    std::cout << "Profiler results:" << std::endl;
+    std::cerr << "Profiler results:" << std::endl;
     for (const auto& result: systemToExecutionTime) {
         const auto duration = result.second;
         const auto percentage = duration * 100.0 / totalDuration;
-        std::cout << result.first << ": " << duration.count() / 1000.0 << "ms (" << percentage << "%)" << std::endl;
+        std::cerr << result.first << ": " << duration.count() / 1000.0 << "ms (" << percentage << "%)" << std::endl;
     }
-    std::cout << "Total duration: " << totalDuration.count() / 1000.0 << "ms" << std::endl << std::endl;
+    std::cerr << "Total duration: " << totalDuration.count() / 1000.0 << "ms" << std::endl << std::endl;
 }
 
 std::chrono::system_clock::time_point ProfilerSystem::updateLastSystemDuration() {

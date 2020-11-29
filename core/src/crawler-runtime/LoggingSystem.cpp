@@ -33,19 +33,19 @@ void LoggingSystem::logExecutionStatusChange(ExecutionStatus newStatus, CrawlerE
                                              uint32_t executionHandle) const {
     switch (newStatus) {
         case done:
-            std::cout << "Crawler #" << std::to_string(executionHandle) << ": Finished executing successfully" << std::endl << std::endl;
+            std::cerr << "Crawler #" << std::to_string(executionHandle) << ": Finished executing successfully" << std::endl << std::endl;
             break;
         case running:
-            std::cout << "Crawler #" << std::to_string(executionHandle) << ": Back to running" << std::endl
+            std::cerr << "Crawler #" << std::to_string(executionHandle) << ": Back to running" << std::endl
                       << "Shared buffer contents: " << execution.readSharedBuffer().stringify() << std::endl << std::endl;
             break;
         case waiting:
-            std::cout << "Crawler #" << std::to_string(executionHandle) << ": Has started waiting" << std::endl
+            std::cerr << "Crawler #" << std::to_string(executionHandle) << ": Has started waiting" << std::endl
                       << "Waiting target: " << execution.getWaitingTarget() << std::endl
                       << "Shared buffer contents: " << execution.readSharedBuffer().stringify() << std::endl << std::endl;
             break;
         case failed:
-            std::cout << "Crawler #" << std::to_string(executionHandle) << ": Has failed:" << std::endl
+            std::cerr << "Crawler #" << std::to_string(executionHandle) << ": Has failed:" << std::endl
                       << execution.getErrorMessage() << std::endl << std::endl;
             break;
     }
