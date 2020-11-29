@@ -1,15 +1,18 @@
 #include "ProfilerSystem.h"
 #include <iostream>
+#include <iomanip>
 
 namespace serio {
 class UseCoutPrecision {
 public:
     UseCoutPrecision(std::streamsize newPrecision) {
         precision = std::cout.precision();
-        std::cout.precision(newPrecision);
+        std::cout << std::fixed;
+        std::cout << std::setprecision(newPrecision);
     }
     virtual ~UseCoutPrecision() {
-        std::cout.precision(precision);
+        std::cout << std::defaultfloat;
+        std::cout << std::setprecision(precision);
     }
 private:
     std::streamsize precision;
