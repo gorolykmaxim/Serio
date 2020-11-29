@@ -2,6 +2,7 @@
 #define SERIO_ARGUMENTS_H
 
 #include <string>
+#include <chrono>
 #include <nlohmann/json.hpp>
 
 namespace crdb {
