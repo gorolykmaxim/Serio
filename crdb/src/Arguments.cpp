@@ -9,6 +9,20 @@ static void displayHelpAndExit(cxxopts::Options& options) {
     std::exit(1);
 }
 
+static void displayErrorAndExit(const std::exception& e) {
+    std::cerr << e.what() << std::endl;
+    std::exit(1);
+}
+
+static std::string readScript(const std::string& scriptPath) {
+    std::ifstream file(scriptPath);
+    if (!file) {
+        throw std::runtime_error(scriptPath + " does not exist");
+    }
+    file >> std::noskipws;
+    return std::string((std::istream_iterator<char>(file)), std::istream_iterator<char>());
+}
+
 void readArguments(int argc, char** argv, bool& trace, std::string& script, nlohmann::json& crawlerArgs,
                    std::string& userAgent, std::chrono::milliseconds& cacheTtl) {
     cxxopts::Options options("crdb", "crdb (crawler runtime debugger) - tool to run "
@@ -31,12 +45,13 @@ void readArguments(int argc, char** argv, bool& trace, std::string& script, nloh
         const auto crawlerPath = result["file"].as<std::string>();
         userAgent = result["user-agent"].as<std::string>();
         cacheTtl = std::chrono::milliseconds(result["cache-ttl"].as<long>());
-
-        std::ifstream file(crawlerPath);
-        file >> std::noskipws;
-        script = std::string((std::istream_iterator<char>(file)), std::istream_iterator<char>());
-    } catch (std::exception& e) {
+        script = readScript(crawlerPath);
+    } catch (cxxopts::OptionException& e) {
         displayHelpAndExit(options);
+    } catch (std::domain_error& e) {
+        displayHelpAndExit(options);
+    } catch (std::exception& e) {
+        displayErrorAndExit(e);
     }
 }
 }
