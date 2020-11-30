@@ -63,7 +63,7 @@ public:
                     }},
                     {"tv-show", {
                         {"cache-ttl", tvShowCrawlerConfigs[0].cacheTtl.count()},
-                        {"tvShowCrawler", tvShowCrawlerConfigs[0].tvShowCrawler},
+                        {"crawler", tvShowCrawlerConfigs[0].crawler},
                     }}
                 },
                 {
@@ -83,7 +83,7 @@ public:
                     }},
                     {"tv-show", {
                             {"cache-ttl", tvShowCrawlerConfigs[1].cacheTtl.count()},
-                            {"tvShowCrawler", tvShowCrawlerConfigs[1].tvShowCrawler},
+                            {"crawler", tvShowCrawlerConfigs[1].crawler},
                     }}
                 }
             }},
