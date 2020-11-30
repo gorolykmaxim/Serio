@@ -31,16 +31,12 @@ std::vector<TvShowCrawlerConfig> Config::getTvShowCrawlerConfigs() {
         const auto name = platform.getParameter({"name"});
         const auto cacheTtl = platform.getParameter({"tv-show", "cache-ttl"});
         const auto crawler = platform.getParameter({"tv-show", "crawler"});
-        const auto suggestionsCrawler = platform.getParameter({"tv-show", "suggestionsCrawler"});
         if (name && cacheTtl && crawler) {
             TvShowCrawlerConfig tvShowCrawlerConfig{
                     name->get<std::string>(),
                     std::chrono::milliseconds(cacheTtl->get<long>()),
                     crawler->get<std::string>()
             };
-            if (suggestionsCrawler) {
-                tvShowCrawlerConfig.suggestionsCrawler = suggestionsCrawler->get<std::string>();
-            }
             tvShowCrawlerConfigs.push_back(std::move(tvShowCrawlerConfig));
         }
     }

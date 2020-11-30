@@ -156,16 +156,6 @@ TEST_F(ConfigTest, shouldSkipPlatformTvShowCrawlerConfigsThatLackFields) {
     EXPECT_EQ(std::vector({tvShowCrawlerConfigs[0]}), config.getTvShowCrawlerConfigs());
 }
 
-TEST_F(ConfigTest, shouldHaveTvShowCrawlerConfigsWithOptionalSuggestionsCrawler) {
-    auto tvShowCrawlerConfig = tvShowCrawlerConfigs[0];
-    tvShowCrawlerConfig.suggestionsCrawler = "suggestions crawler";
-    auto platform = jsonResponse["platforms"][0];
-    platform["tv-show"]["suggestionsCrawler"] = *tvShowCrawlerConfig.suggestionsCrawler;
-    mockClientResponse({{"platforms", {platform}}});
-    config.setSourceUrl(sourceUrl);
-    EXPECT_EQ(std::vector({tvShowCrawlerConfig}), config.getTvShowCrawlerConfigs());
-}
-
 TEST_F(ConfigTest, shouldGetEmptyVectorOfSearchCrawlerConfigsSinceNoPlatformsAreConfigured) {
     mockClientResponse({});
     config.setSourceUrl(sourceUrl);
