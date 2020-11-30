@@ -59,8 +59,8 @@ TEST_F(CachingHttpClientTest, shouldMissCacheFailToGetResponseFromNetworkAndRetu
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
 }
 
-TEST_F(CachingHttpClientTest, shouldUseEntireRequestAsCacheKey) {
-    EXPECT_CALL(cache, get("Request{url=" + url + ", method=POST, headers={header 1=value 1, header 2=value 2}, body=body of the request}", false))
+TEST_F(CachingHttpClientTest, shouldUseRequestUrlMethodAndBodyAsCacheKey) {
+    EXPECT_CALL(cache, get("Request{url=" + url + ", method=POST, body=body of the request}", false))
         .WillOnce(::testing::Return(std::optional(rawResponse)));
     cachingClient.sendRequest(complexRequest, cacheTtl);
 }

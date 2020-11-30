@@ -21,10 +21,6 @@ HttpRequest::operator std::string() const {
     request << "Request{";
     request << "url=" << url << ", ";
     request << "method=" << method << ", ";
-    request << "headers={";
-    for (auto it = headers.cbegin(); it != headers.cend();) {
-        request << it->first << "=" << it->second << (++it != headers.cend() ? ", " : "}, ");
-    }
     request << "body=" << body << "}";
     return request.str();
 }
