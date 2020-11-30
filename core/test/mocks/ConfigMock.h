@@ -16,6 +16,7 @@ public:
     MOCK_METHOD((std::vector<serio::TvShowCrawlerConfig>), getTvShowCrawlerConfigs, (), (override));
     MOCK_METHOD((std::vector<serio::SearchCrawlerConfig>), getSearchCrawlerConfigs, (), (override));
     MOCK_METHOD((std::vector<serio::CategoryCrawlerConfig>), getCategoryCrawlerConfigs, (), (override));
+    MOCK_METHOD((std::vector<serio::SuggestionsCrawlerConfig>), getSuggestionsCrawlerConfigs, (), (override));
 };
 }
 

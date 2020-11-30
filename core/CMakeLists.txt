@@ -26,7 +26,8 @@ add_library(Core STATIC
         src/crawler-runtime/CrawlerArgumentSystem.cpp
         src/crawler-runtime/HttpRequestSystem.cpp
         src/crawler-runtime/LoggingSystem.cpp
-        src/crawler-runtime/ProfilerSystem.cpp)
+        src/crawler-runtime/ProfilerSystem.cpp
+        src/config/SuggestionsCrawlerConfig.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include)
 target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json mjs)
 

@@ -88,4 +88,25 @@ std::vector<CategoryCrawlerConfig> Config::getCategoryCrawlerConfigs() {
     }
     return categoryCrawlerConfigs;
 }
+
+std::vector<SuggestionsCrawlerConfig> Config::getSuggestionsCrawlerConfigs() {
+    const auto config = source.fetchConfig();
+    std::vector<SuggestionsCrawlerConfig> suggestionsCrawlerConfigs;
+    const auto platforms = config.getList({"platforms"});
+    suggestionsCrawlerConfigs.reserve(platforms.size());
+    for (const auto& platform: platforms) {
+        const auto name = platform.getParameter({"name"});
+        const auto cacheTtl = platform.getParameter({"suggestions", "cache-ttl"});
+        const auto crawler = platform.getParameter({"suggestions", "crawler"});
+        if (name && cacheTtl && crawler) {
+            SuggestionsCrawlerConfig suggestionsCrawlerConfig{
+                name->get<std::string>(),
+                std::chrono::milliseconds(cacheTtl->get<long>()),
+                crawler->get<std::string>()
+            };
+            suggestionsCrawlerConfigs.push_back(std::move(suggestionsCrawlerConfig));
+        }
+    }
+    return suggestionsCrawlerConfigs;
+}
 }

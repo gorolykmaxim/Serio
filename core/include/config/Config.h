@@ -10,6 +10,7 @@
 #include "TvShowCrawlerConfig.h"
 #include "SearchCrawlerConfig.h"
 #include "CategoryCrawlerConfig.h"
+#include "SuggestionsCrawlerConfig.h"
 #include <nlohmann/json.hpp>
 
 namespace serio {
@@ -22,6 +23,7 @@ public:
     virtual std::vector<TvShowCrawlerConfig> getTvShowCrawlerConfigs();
     virtual std::vector<SearchCrawlerConfig> getSearchCrawlerConfigs();
     virtual std::vector<CategoryCrawlerConfig> getCategoryCrawlerConfigs();
+    virtual std::vector<SuggestionsCrawlerConfig> getSuggestionsCrawlerConfigs();
 private:
     ConfigSource source;
 };
