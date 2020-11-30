@@ -58,13 +58,11 @@ std::vector<SearchCrawlerConfig> Config::getSearchCrawlerConfigs() {
         const auto name = platform.getParameter({"name"});
         const auto cacheTtl = platform.getParameter({"search", "cache-ttl"});
         const auto crawler = platform.getParameter({"search", "crawler"});
-        const auto isAvailableToUser = platform.getParameter({"search", "available-to-user"});
         if (name && cacheTtl && crawler) {
             SearchCrawlerConfig searchCrawlerConfig{
-                name->get<std::string>(),
-                std::chrono::milliseconds(cacheTtl->get<long>()),
-                crawler->get<std::string>(),
-                isAvailableToUser ? isAvailableToUser->get<bool>() : false
+                    name->get<std::string>(),
+                    std::chrono::milliseconds(cacheTtl->get<long>()),
+                    crawler->get<std::string>()
             };
             searchCrawlerConfigs.push_back(std::move(searchCrawlerConfig));
         }
