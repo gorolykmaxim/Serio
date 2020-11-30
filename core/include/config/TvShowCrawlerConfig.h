@@ -10,7 +10,6 @@ struct TvShowCrawlerConfig {
     std::string platformName;
     std::chrono::milliseconds cacheTtl;
     std::string tvShowCrawler;
-    std::string episodeCrawler;
     std::optional<std::string> suggestionsCrawler;
 
     bool operator==(const TvShowCrawlerConfig &rhs) const;

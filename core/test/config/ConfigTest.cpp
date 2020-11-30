@@ -11,12 +11,10 @@ public:
     inline static const std::vector<serio::TvShowCrawlerConfig> tvShowCrawlerConfigs = std::vector({
         serio::TvShowCrawlerConfig{"Platform 1",
                                    std::chrono::milliseconds(180000),
-                                   "tv show crawler code",
-                                   "episode crawler code"},
+                                   "tv show crawler code"},
         serio::TvShowCrawlerConfig{"Platform 2",
                                    std::chrono::milliseconds(380000),
-                                   "tv show crawler code 2",
-                                   "episode crawler code 2"}
+                                   "tv show crawler code 2"}
     });
     inline static const std::vector<serio::SearchCrawlerConfig> searchCrawlerConfigs = std::vector({
         serio::SearchCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
@@ -66,7 +64,6 @@ public:
                     {"tv-show", {
                         {"cache-ttl", tvShowCrawlerConfigs[0].cacheTtl.count()},
                         {"tvShowCrawler", tvShowCrawlerConfigs[0].tvShowCrawler},
-                        {"episodeCrawler", tvShowCrawlerConfigs[0].episodeCrawler}
                     }}
                 },
                 {
@@ -87,7 +84,6 @@ public:
                     {"tv-show", {
                             {"cache-ttl", tvShowCrawlerConfigs[1].cacheTtl.count()},
                             {"tvShowCrawler", tvShowCrawlerConfigs[1].tvShowCrawler},
-                            {"episodeCrawler", tvShowCrawlerConfigs[1].episodeCrawler}
                     }}
                 }
             }},
