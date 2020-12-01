@@ -195,7 +195,7 @@ TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerDueToAnHttpFailure) {
             serio::Crawler{"function crawl() {return httpRequests([{url:'" + request.url + "'}]);}", networkCacheTtl},
             workingCrawler
     };
-    mockHttpClientResponse(request, std::runtime_error("timeout"));
+    mockHttpClientResponse(request, serio::HttpResponseError(request.url, 503, "timeout"));
     const std::vector<nlohmann::json> expected = {expectedResult};
     const auto actual = runtime.executeCrawlers(crawlers);
     EXPECT_EQ(expected, actual);

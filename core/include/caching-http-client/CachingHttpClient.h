@@ -22,7 +22,7 @@ private:
     std::string readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response);
 };
 
-class HttpResponseError : std::runtime_error {
+class HttpResponseError : public std::runtime_error {
 public:
     HttpResponseError(const std::string& url, int code, const std::string& body);
 };
