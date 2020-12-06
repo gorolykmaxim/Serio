@@ -14,3 +14,6 @@
 	path = crdb/lib/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
 	branch = v2_2
+[submodule "core/lib/iconv-lite"]
+	path = core/lib/iconv-lite
+	url = https://github.com/gorolykmaxim/iconv-lite.git
