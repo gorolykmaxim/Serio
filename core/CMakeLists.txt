@@ -1,6 +1,7 @@
 add_subdirectory(lib/googletest)
 add_subdirectory(lib/NFHTTP)
 add_subdirectory(lib/SQLiteCpp)
+add_subdirectory(lib/iconv-lite)
 
 add_library(mjs STATIC lib/mjs/mjs.c)
 target_include_directories(mjs PUBLIC lib/mjs)
@@ -29,7 +30,7 @@ add_library(Core STATIC
         src/crawler-runtime/ProfilerSystem.cpp
         src/config/SuggestionsCrawlerConfig.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include)
-target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json mjs)
+target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
 add_executable(CoreTest
         test/cache/CacheTest.cpp

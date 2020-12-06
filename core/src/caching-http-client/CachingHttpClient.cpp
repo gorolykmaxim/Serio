@@ -1,4 +1,5 @@
 #include <caching-http-client/CachingHttpClient.h>
+#include <iconvlite.h>
 
 namespace serio {
 CachingHttpClient::CachingHttpClient(nativeformat::http::Client &client, Cache &cache)
@@ -42,7 +43,16 @@ void CachingHttpClient::writeResponseToPromise(const std::shared_ptr<nativeforma
 std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response) {
     size_t size;
     const auto data = reinterpret_cast<const char*>(response->data(size));
-    return size > 0 ? std::string(data) : "";
+    if (size == 0) {
+        return "";
+    }
+    return isWindows1251(response) ? iconvlite::cp2utf(data) : data;
+}
+
+bool CachingHttpClient::isWindows1251(const std::shared_ptr<nativeformat::http::Response> &response) {
+    auto contentType = response->operator[]("Content-Type");
+    std::transform(contentType.begin(), contentType.end(), contentType.begin(), std::tolower);
+    return contentType.rfind("windows-1251") != std::string::npos;
 }
 
 HttpResponseError::HttpResponseError(const std::string &url, int code, const std::string &body)
