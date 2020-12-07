@@ -19,34 +19,32 @@ RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerEx
 void RegExpSystem::update() {
     for (auto& execution: executions) {
         if (execution.isWaiting("regExp")) {
-            const auto buffer = readRegExpBuffer(execution);
+            const auto buffer = getCurrentSearchTask(execution);
             const auto searchResults = search(buffer);
-            writeRegExpBuffer(execution, searchResults);
+            setCurrentSearchResults(execution, searchResults);
         }
     }
 }
 
-nlohmann::json RegExpSystem::search(const nlohmann::json& searchCriteria) const {
-    std::regex regex(searchCriteria.at(0).get<std::string>());
-    const auto strings = searchCriteria.at(1).get<std::vector<std::string>>();
-    nlohmann::json searchResults;
-    for (const auto& string: strings) {
-        appendMatchesToResults(string, regex, searchResults);
+std::vector<std::string> RegExpSystem::search(const RegExpSearchTask& task) const {
+    std::vector<std::string> results;
+    for (const auto& string: task.stringsToSearch) {
+        appendMatchesToResults(string, task.regex, results);
     }
-    return searchResults;
+    return results;
 }
 
-void RegExpSystem::appendGroupMatchToResults(const std::smatch& match, nlohmann::json& results) const {
+void RegExpSystem::appendGroupMatchToResults(const std::smatch& match, std::vector<std::string>& results) const {
     for (auto i = 1; i < match.size(); i++) {
         results.push_back(match[i].str());
     }
 }
 
-void RegExpSystem::appendCompleteMatchToResults(const std::smatch& match, nlohmann::json& results) const {
+void RegExpSystem::appendCompleteMatchToResults(const std::smatch& match, std::vector<std::string>& results) const {
     results.push_back(match[0].str());
 }
 
-void RegExpSystem::appendMatchesToResults(const std::string& string, const std::regex& regex, nlohmann::json& results) const {
+void RegExpSystem::appendMatchesToResults(const std::string& string, const std::regex& regex, std::vector<std::string>& results) const {
     const auto begin = std::sregex_iterator(string.cbegin(), string.cend(), regex);
     const auto end = std::sregex_iterator();
     for (auto it = begin; it != end; it++) {
@@ -58,26 +56,24 @@ void RegExpSystem::appendMatchesToResults(const std::string& string, const std::
     }
 }
 
-nlohmann::json RegExpSystem::readRegExpBuffer(CrawlerExecution& execution) const {
+RegExpSearchTask RegExpSystem::getCurrentSearchTask(CrawlerExecution& execution) const {
     const auto buffer = execution.readSharedBuffer();
-    nlohmann::json request;
-    auto regex = buffer.get(0);
+    const auto regex = static_cast<std::string>(buffer.get(0));
     const auto strings = buffer.get(1);
-    request.push_back(static_cast<std::string>(regex));
     const auto count = strings.size();
-    nlohmann::json requestStrings;
+    std::vector<std::string> stringsToSearch;
+    stringsToSearch.reserve(strings.size());
     for (auto i = 0; i < count; i++) {
-        requestStrings.push_back(static_cast<std::string>(strings.get(i)));
+        stringsToSearch.emplace_back(static_cast<std::string>(strings.get(i)));
     }
-    request.push_back(requestStrings);
-    return request;
+    return {std::regex(regex), stringsToSearch};
 }
 
-void RegExpSystem::writeRegExpBuffer(CrawlerExecution& execution, const nlohmann::json& searchResults) const {
+void RegExpSystem::setCurrentSearchResults(CrawlerExecution& execution, const std::vector<std::string>& results) const {
     std::vector<JsObject> response;
-    response.reserve(searchResults.size());
-    for (const auto& result: searchResults) {
-        response.emplace_back(execution.getContext(), result.get<std::string>());
+    response.reserve(results.size());
+    for (const auto& result: results) {
+        response.emplace_back(execution.getContext(), result);
     }
     execution.writeSharedBuffer(JsObject(execution.getContext(), response));
 }

@@ -7,6 +7,11 @@
 #include "CrawlerExecution.h"
 
 namespace serio {
+struct RegExpSearchTask {
+    std::regex regex;
+    std::vector<std::string> stringsToSearch;
+};
+
 class RegExpSystem {
 public:
     RegExpSystem(std::vector<Crawler>& crawlers, std::vector<CrawlerExecution>& executions);
@@ -14,12 +19,12 @@ public:
 private:
     std::vector<CrawlerExecution>& executions;
 
-    [[nodiscard]] nlohmann::json search(const nlohmann::json& searchCriteria) const;
-    void appendMatchesToResults(const std::string& string, const std::regex& regex, nlohmann::json& results) const;
-    void appendCompleteMatchToResults(const std::smatch& match, nlohmann::json& results) const;
-    void appendGroupMatchToResults(const std::smatch& match, nlohmann::json& results) const;
-    [[nodiscard]] nlohmann::json readRegExpBuffer(CrawlerExecution& execution) const;
-    void writeRegExpBuffer(CrawlerExecution& execution, const nlohmann::json& searchResults) const;
+    [[nodiscard]] std::vector<std::string> search(const RegExpSearchTask& task) const;
+    void appendMatchesToResults(const std::string& string, const std::regex& regex, std::vector<std::string>& results) const;
+    void appendCompleteMatchToResults(const std::smatch& match, std::vector<std::string>& results) const;
+    void appendGroupMatchToResults(const std::smatch& match, std::vector<std::string>& results) const;
+    [[nodiscard]] RegExpSearchTask getCurrentSearchTask(CrawlerExecution& execution) const;
+    void setCurrentSearchResults(CrawlerExecution& execution, const std::vector<std::string>& results) const;
 };
 }
 
