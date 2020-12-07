@@ -15,13 +15,13 @@ private:
     CrawlerHttpClient& httpClient;
     std::vector<CrawlerExecution>& executions;
     std::vector<std::chrono::milliseconds> cacheTtls;
-    std::unordered_map<uint32_t, std::vector<std::future<std::string>>> executionHandleToResponses;
+    std::unordered_map<uint32_t, std::vector<HttpResponse>> executionHandleToResponses;
 
     void sendPendingRequests(uint32_t& finishedExecutions);
     void waitForResponsesIfNothingElseToDo(uint32_t finishedExecutions);
     void sendPendingExecutionRequests(CrawlerExecution& execution, uint32_t executionHandle);
-    std::future<std::string> sendRequest(JsObject request, std::chrono::milliseconds cacheTtl);
-    void deliverResponsesToExecution(uint32_t executionHandle, std::vector<std::future<std::string>>& responses);
+    HttpResponse sendRequest(JsObject request, std::chrono::milliseconds cacheTtl);
+    void deliverResponsesToExecution(uint32_t executionHandle, std::vector<HttpResponse>& responses);
 };
 }
 

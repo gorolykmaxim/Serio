@@ -15,11 +15,10 @@ protected:
     serio::CrawlerHttpClient client = serio::CrawlerHttpClient(config, cachingClient);
 
     serio::HttpRequest executeAndCaptureRequest() {
-        std::promise<std::string> promise;
-        promise.set_value(response);
         serio::HttpRequest actualRequest;
+        serio::HttpResponse httpResponse(response);
         const auto captureRequest = ::testing::SaveArg<0>(&actualRequest);
-        const auto returnResponse = ::testing::Return(::testing::ByMove(promise.get_future()));
+        const auto returnResponse = ::testing::Return(httpResponse);
         EXPECT_CALL(cachingClient, sendRequest(::testing::_, cacheTtl))
             .WillOnce(::testing::DoAll(captureRequest, returnResponse));
         EXPECT_EQ(response, client.sendRequest(originalRequest, cacheTtl).get());

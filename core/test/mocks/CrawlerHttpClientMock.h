@@ -11,7 +11,7 @@ public:
     inline static ConfigMock CONFIG_STUB;
     inline static CachingHttpClientMock CLIENT_STUB;
     CrawlerHttpClientMock() : serio::CrawlerHttpClient(CONFIG_STUB, CLIENT_STUB) {}
-    MOCK_METHOD((std::future<std::string>), sendRequest, (serio::HttpRequest, std::chrono::milliseconds), (override));
+    MOCK_METHOD((serio::HttpResponse), sendRequest, (serio::HttpRequest, std::chrono::milliseconds), (override));
 };
 }
 

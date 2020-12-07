@@ -12,7 +12,7 @@ public:
     inline static NFClientMock CLIENT_STUB;
     inline static CacheMock CACHE_STUB;
     CachingHttpClientMock() : serio::CachingHttpClient(CLIENT_STUB, CACHE_STUB) {}
-    MOCK_METHOD((std::future<std::string>), sendRequest, (const serio::HttpRequest&, const std::chrono::milliseconds&), (override));
+    MOCK_METHOD(serio::HttpResponse, sendRequest, (const serio::HttpRequest&, const std::chrono::milliseconds&), (override));
 };
 }
 

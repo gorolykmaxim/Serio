@@ -114,19 +114,14 @@ protected:
 
     void mockClientResponse(const nlohmann::json& response) {
         const auto rawResponse = response.dump();
-        std::promise<std::string> res;
-        res.set_value(rawResponse);
         const std::chrono::milliseconds cacheTtl = serio::ConfigSource::CACHE_TTL;
-        EXPECT_CALL(httpClient, sendRequest(request, cacheTtl))
-            .WillOnce(::testing::Return(::testing::ByMove(res.get_future())));
+        const serio::HttpResponse httpResponse(rawResponse);
+        EXPECT_CALL(httpClient, sendRequest(request, cacheTtl)).WillOnce(::testing::Return(httpResponse));
     }
     void mockClientError() {
-        const auto exception = std::make_exception_ptr(std::runtime_error(""));
-        std::promise<std::string> response;
-        response.set_exception(exception);
         const std::chrono::milliseconds cacheTtl = serio::ConfigSource::CACHE_TTL;
-        EXPECT_CALL(httpClient, sendRequest(request, cacheTtl))
-                .WillOnce(::testing::Return(::testing::ByMove(response.get_future())));
+        const serio::HttpResponse httpResponse([] () -> std::string { throw std::runtime_error(""); });
+        EXPECT_CALL(httpClient, sendRequest(request, cacheTtl)).WillOnce(::testing::Return(httpResponse));
     }
 };
 

@@ -7,7 +7,7 @@ namespace serio {
 class CrawlerHttpClient {
 public:
     CrawlerHttpClient(Config& config, CachingHttpClient& client);
-    virtual std::future<std::string> sendRequest(HttpRequest request, std::chrono::milliseconds cacheTtl);
+    virtual HttpResponse sendRequest(HttpRequest request, std::chrono::milliseconds cacheTtl);
 private:
     Config& config;
     CachingHttpClient& client;

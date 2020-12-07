@@ -12,17 +12,13 @@ protected:
     serio::CrawlerRuntime runtime = serio::CrawlerRuntime(httpClient, true);
 
     void mockHttpClientResponse(const serio::HttpRequest& request, const std::string& response) {
-        std::promise<std::string> responsePromise;
-        responsePromise.set_value(response);
-        ON_CALL(httpClient, sendRequest(request, networkCacheTtl))
-            .WillByDefault(::testing::Return(::testing::ByMove(responsePromise.get_future())));
+        serio::HttpResponse httpResponse(response);
+        ON_CALL(httpClient, sendRequest(request, networkCacheTtl)).WillByDefault(::testing::Return(httpResponse));
     }
 
     void mockHttpClientResponse(const serio::HttpRequest& request, const std::runtime_error& exception) {
-        std::promise<std::string> response;
-        response.set_exception(std::make_exception_ptr(exception));
-        ON_CALL(httpClient, sendRequest(request, networkCacheTtl))
-            .WillByDefault(::testing::Return(::testing::ByMove(response.get_future())));
+        serio::HttpResponse httpResponse([exception] () -> std::string { throw exception; });
+        ON_CALL(httpClient, sendRequest(request, networkCacheTtl)).WillByDefault(::testing::Return(httpResponse));
     }
 };
 

@@ -13,7 +13,7 @@ protected:
     const std::string url = "https://some.url.com/";
     const serio::HttpRequest request{url};
     const std::string requestCacheKey = request;
-    const std::chrono::hours cacheTtl = std::chrono::hours(24);
+    const std::chrono::milliseconds cacheTtl = std::chrono::hours(24);
     const serio::HttpRequest complexRequest{url,
                                             "POST",
                                             {{"header 1", "value 1"}, {"header 2", "value 2"}},
@@ -59,9 +59,19 @@ TEST_F(CachingHttpClientTest, shouldGetResponseFromCache) {
 
 TEST_F(CachingHttpClientTest, shouldMissCacheGetResponseFromNetworkAndCacheIt) {
     EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
-    EXPECT_CALL(cache, put(requestCacheKey, rawResponse, std::chrono::duration_cast<std::chrono::milliseconds>(cacheTtl)));
+    EXPECT_CALL(cache, put(requestCacheKey, rawResponse, cacheTtl));
     mockHttpClientResponse(response);
     EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
+}
+
+TEST_F(CachingHttpClientTest, shouldCacheResponseOnCallingThread) {
+    EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
+    EXPECT_CALL(cache, put(requestCacheKey, rawResponse, cacheTtl))
+        .Times(0);
+    mockHttpClientResponse(response);
+    auto responseFuture = cachingClient.sendRequest(request, cacheTtl);
+    EXPECT_CALL(cache, put(requestCacheKey, rawResponse, std::chrono::duration_cast<std::chrono::milliseconds>(cacheTtl)));
+    responseFuture.get();
 }
 
 TEST_F(CachingHttpClientTest, shouldMissCacheAndFailToGetResponseFromNetwork) {

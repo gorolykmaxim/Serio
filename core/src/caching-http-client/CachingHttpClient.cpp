@@ -6,37 +6,33 @@ CachingHttpClient::CachingHttpClient(nativeformat::http::Client &client, Cache &
     : client(client),
       cache(cache) {}
 
-std::future<std::string> CachingHttpClient::sendRequest(const HttpRequest& request,
-                                                        const std::chrono::milliseconds& cacheTtl) {
-    const auto responsePromise = std::make_shared<std::promise<std::string>>();
+HttpResponse CachingHttpClient::sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl) {
     const auto cachedResponse = cache.get(request);
     if (cachedResponse) {
-        responsePromise->set_value(*cachedResponse);
+        return HttpResponse(*cachedResponse);
     } else {
-        client.performRequest(request, [this, request, responsePromise, cacheTtl] (const auto& response) {
-            writeResponseToPromise(response, responsePromise, request, cacheTtl);
+        const auto responsePromise = std::make_shared<std::promise<std::shared_ptr<nativeformat::http::Response>>>();
+        client.performRequest(request, [responsePromise] (const auto& response) {responsePromise->set_value(response);});
+        return HttpResponse([this, responsePromise, request, cacheTtl] () {
+            return readResponseFromPromise(responsePromise->get_future().get(), request, cacheTtl);
         });
     }
-    return responsePromise->get_future();
 }
 
-void CachingHttpClient::writeResponseToPromise(const std::shared_ptr<nativeformat::http::Response> &response,
-                                               const std::shared_ptr<std::promise<std::string>> &promise,
-                                               const HttpRequest& request,
-                                               const std::chrono::milliseconds &cacheTtl) {
-    const auto responseBody = readBodyFromResponse(response);
+std::string CachingHttpClient::readResponseFromPromise(const std::shared_ptr<nativeformat::http::Response> &response,
+                                                       const HttpRequest& request,
+                                                       const std::chrono::milliseconds &cacheTtl) {
+    auto responseBody = readBodyFromResponse(response);
     if (response->statusCode() >= nativeformat::http::StatusCode::StatusCodeBadRequest) {
         const auto expiredCachedResponse = cache.get(request, true);
         if (expiredCachedResponse) {
-            promise->set_value(*expiredCachedResponse);
+            return *expiredCachedResponse;
         } else {
-            HttpResponseError responseError(request.url, response->statusCode(), responseBody);
-            const auto exception = std::make_exception_ptr(responseError);
-            promise->set_exception(exception);
+            throw HttpResponseError(request.url, response->statusCode(), responseBody);
         }
     } else {
         cache.put(request, responseBody, cacheTtl);
-        promise->set_value(responseBody);
+        return responseBody;
     }
 }
 

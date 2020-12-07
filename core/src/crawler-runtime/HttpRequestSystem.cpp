@@ -68,7 +68,7 @@ void HttpRequestSystem::waitForResponsesIfNothingElseToDo(uint32_t finishedExecu
 void HttpRequestSystem::sendPendingExecutionRequests(CrawlerExecution& execution, uint32_t executionHandle) {
     const auto requests = execution.readSharedBuffer();
     const auto requestCount = requests.size();
-    std::vector<std::future<std::string>> responses;
+    std::vector<HttpResponse> responses;
     responses.reserve(requestCount);
     for (auto i = 0; i < requestCount; i++) {
         responses.push_back(sendRequest(requests.get(i), cacheTtls[executionHandle]));
@@ -76,7 +76,7 @@ void HttpRequestSystem::sendPendingExecutionRequests(CrawlerExecution& execution
     executionHandleToResponses[executionHandle] = std::move(responses);
 }
 
-std::future<std::string> HttpRequestSystem::sendRequest(JsObject request, std::chrono::milliseconds cacheTtl) {
+HttpResponse HttpRequestSystem::sendRequest(JsObject request, std::chrono::milliseconds cacheTtl) {
     auto url = request.get("url");
     HttpRequest httpRequest{static_cast<std::string>(url)};
     auto method = request.get("method");
@@ -99,7 +99,7 @@ std::future<std::string> HttpRequestSystem::sendRequest(JsObject request, std::c
 }
 
 void HttpRequestSystem::deliverResponsesToExecution(uint32_t executionHandle,
-                                                    std::vector<std::future<std::string>>& responses) {
+                                                    std::vector<HttpResponse>& responses) {
     auto& execution = executions[executionHandle];
     auto context = execution.getContext();
     std::vector<JsObject> results;
