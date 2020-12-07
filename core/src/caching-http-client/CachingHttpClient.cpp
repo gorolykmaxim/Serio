@@ -14,14 +14,14 @@ HttpResponse CachingHttpClient::sendRequest(const HttpRequest& request, const st
         const auto responsePromise = std::make_shared<std::promise<std::shared_ptr<nativeformat::http::Response>>>();
         client.performRequest(request, [responsePromise] (const auto& response) {responsePromise->set_value(response);});
         return HttpResponse([this, responsePromise, request, cacheTtl] () {
-            return readResponseFromPromise(responsePromise->get_future().get(), request, cacheTtl);
+            return readBodyFromResponse(responsePromise->get_future().get(), request, cacheTtl);
         });
     }
 }
 
-std::string CachingHttpClient::readResponseFromPromise(const std::shared_ptr<nativeformat::http::Response> &response,
-                                                       const HttpRequest& request,
-                                                       const std::chrono::milliseconds &cacheTtl) {
+std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response> &response,
+                                                    const HttpRequest& request,
+                                                    const std::chrono::milliseconds &cacheTtl) {
     auto responseBody = readBodyFromResponse(response);
     if (response->statusCode() >= nativeformat::http::StatusCode::StatusCodeBadRequest) {
         const auto expiredCachedResponse = cache.get(request, true);

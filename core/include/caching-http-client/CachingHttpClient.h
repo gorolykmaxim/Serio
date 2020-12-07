@@ -16,9 +16,9 @@ private:
     nativeformat::http::Client& client;
     Cache& cache;
 
-    std::string readResponseFromPromise(const std::shared_ptr<nativeformat::http::Response>& response,
-                                        const HttpRequest& request,
-                                        const std::chrono::milliseconds& cacheTtl);
+    std::string readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response,
+                                     const HttpRequest& request,
+                                     const std::chrono::milliseconds& cacheTtl);
     std::string readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response);
     bool isWindows1251(const std::shared_ptr<nativeformat::http::Response>& response);
 };
