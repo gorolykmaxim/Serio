@@ -19,8 +19,8 @@ RegExpSystem::RegExpSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerEx
 void RegExpSystem::update() {
     for (auto& execution: executions) {
         if (execution.isWaiting("regExp")) {
-            const auto buffer = getCurrentSearchTask(execution);
-            const auto searchResults = search(buffer);
+            const auto searchTask = getCurrentSearchTask(execution);
+            const auto searchResults = search(searchTask);
             setCurrentSearchResults(execution, searchResults);
         }
     }
