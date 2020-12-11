@@ -2,6 +2,7 @@
 #define SERIO_HTTPRESPONSE_H
 
 #include <string>
+#include <functional>
 
 namespace serio {
 struct HttpResponse {
