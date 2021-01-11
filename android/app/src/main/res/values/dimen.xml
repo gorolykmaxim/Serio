@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="half_spacing">7dp</dimen>
+    <dimen name="spacing">14dp</dimen>
+    <dimen name="placeholder_line_size">27dp</dimen>
+    <dimen name="tv_show_card_width">170dp</dimen>
+    <dimen name="tv_show_card_height">200dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+</resources>
