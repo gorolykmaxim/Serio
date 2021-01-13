@@ -16,26 +16,11 @@
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/category_shimmer_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <org.serio.android.GridRecyclerView
-                android:id="@+id/category_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusedByDefault="true"
-                android:layout_margin="@dimen/spacing"
-                android:columnWidth="@dimen/tv_show_card_width"/>
-        </com.facebook.shimmer.ShimmerFrameLayout>
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/category_no_tv_shows_placeholder"
+        <org.serio.android.TvShowGridView
+            android:id="@+id/category_tv_show_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/no_tv_shows"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:visibility="gone"/>
+            android:focusedByDefault="true"/>
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/category_navigation_view"
