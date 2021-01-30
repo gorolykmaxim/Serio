@@ -1,26 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Serio" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="Theme.Serio" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_500</item>
-        <item name="colorPrimaryVariant">@color/orange_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/indigo_500</item>
-        <item name="colorSecondaryVariant">@color/indigo_700</item>
-        <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/black</item>
-    </style>
-    <style name="Theme.Serio.Toolbar" parent="ThemeOverlay.MaterialComponents">
-        <item name="android:textColorPrimary">?colorPrimary</item>
-        <item name="android:textColorSecondary">?colorPrimary</item>
-    </style>
-    <style name="Theme.Serio.Title.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
-        <item name="fontFamily">@font/passion_one</item>
-        <item name="android:textColor">?colorPrimary</item>
-        <item name="android:textStyle">bold</item>
     </style>
 </resources>

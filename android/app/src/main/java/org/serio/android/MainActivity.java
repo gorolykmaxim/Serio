@@ -1,10 +1,10 @@
 package org.serio.android;
 
 import android.os.Bundle;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
@@ -12,35 +12,30 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
+    private final DarkVideoPosterClient chromeClient = new DarkVideoPosterClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(R.id.main_frame);
-        if (fragment == null) {
-            manager
-                    .beginTransaction()
-                    .replace(R.id.main_frame, new CategoryFragment())
-                    .commit();
-        }
+        WebView view = findViewById(R.id.webview);
+        view.setWebChromeClient(chromeClient);
+        WebSettings settings = view.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setAllowFileAccess(true);
+        settings.setLoadsImagesAutomatically(true);
+        settings.setAppCacheEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        view.loadUrl("http://192.168.1.200:3000");
 
         // Example of a call to a native method
 //        TextView tv = findViewById(R.id.sample_text);
 //        tv.setText(stringFromJNI());
-    }
-
-    @Override
-    public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_frame);
-        boolean result = false;
-        if (fragment instanceof BackPressHandler) {
-            result = ((BackPressHandler) fragment).onBackPressed();
-        }
-        if (!result) {
-            super.onBackPressed();
-        }
     }
 
     /**
