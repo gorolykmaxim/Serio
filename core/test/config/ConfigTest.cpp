@@ -30,14 +30,17 @@ protected:
         serio::CategoryCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
                                      "category 1",
                                      std::chrono::milliseconds(150000),
+                                     3,
                                      "category tv show crawler"},
         serio::CategoryCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
                                      "category 2",
                                      std::chrono::milliseconds(150000),
+                                     1,
                                      "category tv show crawler 2"},
         serio::CategoryCrawlerConfig{tvShowCrawlerConfigs[1].platformName,
                                      "category 1",
                                      std::chrono::milliseconds(100000),
+                                     2,
                                      "category tv show crawler 3"}
     });
     const std::vector<serio::SuggestionsCrawlerConfig> suggestionsCrawlerConfigs = std::vector({
@@ -59,6 +62,7 @@ protected:
                         {"category-list", {
                             {
                                 {"name", categoryCrawlerConfigs[0].categoryName},
+                                {"pages-per-load", categoryCrawlerConfigs[0].pagesPerLoad},
                                 {"crawler", categoryCrawlerConfigs[0].crawler}
                             },
                             {
@@ -88,6 +92,7 @@ protected:
                         {"category-list", {
                             {
                                 {"name", categoryCrawlerConfigs[2].categoryName},
+                                {"pages-per-load", categoryCrawlerConfigs[2].pagesPerLoad},
                                 {"crawler", categoryCrawlerConfigs[2].crawler}
                             }
                         }}

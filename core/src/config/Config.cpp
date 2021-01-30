@@ -76,12 +76,14 @@ std::vector<CategoryCrawlerConfig> Config::getCategoryCrawlerConfigs() {
             const auto platformName = platform.getParameter({"name"});
             const auto categoryName = category.getParameter({"name"});
             const auto cacheTtl = platform.getParameter({"categories", "cache-ttl"});
+            const auto pagesPerLoad = category.getParameter({"pages-per-load"});
             const auto crawler = category.getParameter({"crawler"});
             if (platformName && cacheTtl && categoryName && crawler) {
                 CategoryCrawlerConfig categoryCrawlerConfig{
                     platformName->get<std::string>(),
                     categoryName->get<std::string>(),
                     std::chrono::milliseconds(cacheTtl->get<long>()),
+                    pagesPerLoad ? pagesPerLoad->get<uint32_t>() : 1,
                     crawler->get<std::string>()
                 };
                 categoryCrawlerConfigs.push_back(std::move(categoryCrawlerConfig));

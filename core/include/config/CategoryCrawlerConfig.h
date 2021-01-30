@@ -9,6 +9,7 @@ struct CategoryCrawlerConfig {
     std::string platformName;
     std::string categoryName;
     std::chrono::milliseconds cacheTtl;
+    uint32_t pagesPerLoad;
     std::string crawler;
 
     bool operator==(const CategoryCrawlerConfig &rhs) const;
