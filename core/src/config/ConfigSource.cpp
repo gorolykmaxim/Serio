@@ -1,7 +1,7 @@
 #include <config/ConfigSource.h>
 
 namespace serio {
-serio::ConfigSource::ConfigSource(SQLite::Database &database, CachingHttpClient& client)
+serio::ConfigSource::ConfigSource(SQLite::Database &database, HttpClient& client)
         : database(database),
           client(client) {
     database.exec("CREATE TABLE IF NOT EXISTS CONFIG(KEY TEXT PRIMARY KEY, VALUE TEXT)");

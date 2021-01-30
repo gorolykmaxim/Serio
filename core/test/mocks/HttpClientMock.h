@@ -1,19 +1,19 @@
-#ifndef SERIO_CACHINGHTTPCLIENTMOCK_H
-#define SERIO_CACHINGHTTPCLIENTMOCK_H
+#ifndef SERIO_HTTPCLIENTMOCK_H
+#define SERIO_HTTPCLIENTMOCK_H
 
 #include <gmock/gmock.h>
-#include <caching-http-client/CachingHttpClient.h>
+#include <http-client/HttpClient.h>
 #include "NFClientMock.h"
 #include "CacheMock.h"
 
 namespace mocks {
-class CachingHttpClientMock : public serio::CachingHttpClient {
+class HttpClientMock : public serio::HttpClient {
 public:
     inline static NFClientMock CLIENT_STUB;
     inline static CacheMock CACHE_STUB;
-    CachingHttpClientMock() : serio::CachingHttpClient(CLIENT_STUB, CACHE_STUB) {}
+    HttpClientMock() : serio::HttpClient(CLIENT_STUB, CACHE_STUB) {}
     MOCK_METHOD(serio::HttpResponse, sendRequest, (const serio::HttpRequest&, const std::chrono::milliseconds&), (override));
 };
 }
 
-#endif //SERIO_CACHINGHTTPCLIENTMOCK_H
+#endif //SERIO_HTTPCLIENTMOCK_H

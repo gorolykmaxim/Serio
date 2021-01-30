@@ -6,7 +6,7 @@
 namespace crdb {
 class HardcodedConfig : public serio::Config {
 public:
-    HardcodedConfig(std::string  userAgent, SQLite::Database &database, serio::CachingHttpClient &httpClient);
+    HardcodedConfig(std::string  userAgent, SQLite::Database &database, serio::HttpClient &httpClient);
     serio::HttpClientConfig getHttpClientConfig() override;
 private:
     std::string userAgent;

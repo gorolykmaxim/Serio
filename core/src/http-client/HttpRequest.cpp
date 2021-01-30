@@ -1,4 +1,4 @@
-#include <caching-http-client/HttpRequest.h>
+#include <http-client/HttpRequest.h>
 
 #include <utility>
 #include <sstream>

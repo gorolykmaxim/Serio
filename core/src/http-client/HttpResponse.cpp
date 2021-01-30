@@ -1,4 +1,4 @@
-#include <caching-http-client/HttpResponse.h>
+#include <http-client/HttpResponse.h>
 
 #include <utility>
 

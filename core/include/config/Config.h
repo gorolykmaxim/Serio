@@ -16,7 +16,7 @@
 namespace serio {
 class Config {
 public:
-    Config(SQLite::Database &database, CachingHttpClient& httpClient);
+    Config(SQLite::Database &database, HttpClient& httpClient);
     virtual void setSourceUrl(const std::string& url);
     virtual std::optional<std::string> getSourceUrl();
     virtual HttpClientConfig getHttpClientConfig();

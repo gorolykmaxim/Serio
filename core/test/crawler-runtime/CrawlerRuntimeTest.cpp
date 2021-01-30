@@ -1,15 +1,21 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <crawler-runtime/CrawlerRuntime.h>
-#include <CrawlerHttpClientMock.h>
+#include <HttpClientMock.h>
+#include <ConfigMock.h>
 
 class CrawlerRuntimeTest : public ::testing::Test {
 protected:
     const std::chrono::milliseconds networkCacheTtl = std::chrono::milliseconds(1);
     const nlohmann::json expectedResult = {{"a", 1}, {"b", "text"}, {"c", false}};
     const serio::Crawler workingCrawler{"function crawl() {return {a: 1, b: 'text', c: false};}", networkCacheTtl};
-    ::testing::NiceMock<mocks::CrawlerHttpClientMock> httpClient;
-    serio::CrawlerRuntime runtime = serio::CrawlerRuntime(httpClient, true);
+    ::testing::NiceMock<mocks::HttpClientMock> httpClient;
+    ::testing::NiceMock<mocks::ConfigMock> config;
+    serio::CrawlerRuntime runtime = serio::CrawlerRuntime(httpClient, config, true);
+
+    virtual void SetUp() {
+        ON_CALL(config, getHttpClientConfig()).WillByDefault(::testing::Return(serio::HttpClientConfig{}));
+    }
 
     void mockHttpClientResponse(const serio::HttpRequest& request, const std::string& response) {
         serio::HttpResponse httpResponse(response);
@@ -245,4 +251,20 @@ TEST_F(CrawlerRuntimeTest, shouldFailToExecuteCrawlerWithHttpRequestWithANonStri
     const std::vector<nlohmann::json> expected = {expectedResult};
     const auto actual = runtime.executeCrawlers(crawlers);
     EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CrawlerRuntimeTest, shouldExecuteHttpRequestsUsingDifferentUserAgents) {
+    const std::string url = "https://url.com";
+    const serio::HttpClientConfig httpClientConfig{{"user agent 1", "user agent 2"}};
+    const serio::HttpResponse response("");
+    ON_CALL(config, getHttpClientConfig()).WillByDefault(::testing::Return(httpClientConfig));
+    ON_CALL(httpClient, sendRequest(::testing::_, networkCacheTtl)).WillByDefault(::testing::Return(response));
+    for (const auto& userAgent: httpClientConfig.userAgents) {
+        const serio::HttpRequest request{url, "", {{"User-Agent", userAgent}}};
+        EXPECT_CALL(httpClient, sendRequest(request, networkCacheTtl)).Times(::testing::AtLeast(1));
+    }
+    const auto crawlers = {
+        serio::Crawler{"function crawl() {for (let i = 0; i < 5; i++) httpRequests([{url:'" + url + "'}]); return [];}", networkCacheTtl}
+    };
+    runtime.executeCrawlers(crawlers);
 }

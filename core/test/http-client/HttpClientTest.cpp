@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include <NFHTTP/NFHTTP.h>
 #include <NFHTTP/ResponseImplementation.h>
-#include <caching-http-client/CachingHttpClient.h>
+#include <http-client/HttpClient.h>
 #include <NFClientMock.h>
 #include <CacheMock.h>
 #include <iconvlite.h>
 
-class CachingHttpClientTest : public ::testing::Test {
+class HttpClientTest : public ::testing::Test {
 protected:
     const std::string rawResponse = "response";
     const std::string utfResponse = "Поиск по сайту";
@@ -26,7 +26,7 @@ protected:
 
     ::testing::NiceMock<mocks::CacheMock> cache;
     mocks::NFClientMock client;
-    serio::CachingHttpClient cachingClient = serio::CachingHttpClient(client, cache);
+    serio::HttpClient httpClient = serio::HttpClient(client, cache);
 
     virtual void SetUp() {
         ON_CALL(cache, get(::testing::_, false)).WillByDefault(::testing::Return(std::optional<std::string>()));
@@ -51,71 +51,71 @@ protected:
     }
 };
 
-TEST_F(CachingHttpClientTest, shouldGetResponseFromCache) {
+TEST_F(HttpClientTest, shouldGetResponseFromCache) {
     EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional(rawResponse)));
     EXPECT_CALL(client, performRequest(::testing::_, ::testing::_)).Times(0);
-    EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
+    EXPECT_EQ(rawResponse, httpClient.sendRequest(request, cacheTtl).get());
 }
 
-TEST_F(CachingHttpClientTest, shouldMissCacheGetResponseFromNetworkAndCacheIt) {
+TEST_F(HttpClientTest, shouldMissCacheGetResponseFromNetworkAndCacheIt) {
     EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
     EXPECT_CALL(cache, put(requestCacheKey, rawResponse, cacheTtl));
     mockHttpClientResponse(response);
-    EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
+    EXPECT_EQ(rawResponse, httpClient.sendRequest(request, cacheTtl).get());
 }
 
-TEST_F(CachingHttpClientTest, shouldCacheResponseOnCallingThread) {
+TEST_F(HttpClientTest, shouldCacheResponseOnCallingThread) {
     EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
     EXPECT_CALL(cache, put(requestCacheKey, rawResponse, cacheTtl))
         .Times(0);
     mockHttpClientResponse(response);
-    auto responseFuture = cachingClient.sendRequest(request, cacheTtl);
+    auto responseFuture = httpClient.sendRequest(request, cacheTtl);
     EXPECT_CALL(cache, put(requestCacheKey, rawResponse, std::chrono::duration_cast<std::chrono::milliseconds>(cacheTtl)));
     responseFuture.get();
 }
 
-TEST_F(CachingHttpClientTest, shouldMissCacheAndFailToGetResponseFromNetwork) {
+TEST_F(HttpClientTest, shouldMissCacheAndFailToGetResponseFromNetwork) {
     mockHttpClientResponse(error);
-    EXPECT_THROW(cachingClient.sendRequest(request, cacheTtl).get(), serio::HttpResponseError);
+    EXPECT_THROW(httpClient.sendRequest(request, cacheTtl).get(), serio::HttpResponseError);
 }
 
-TEST_F(CachingHttpClientTest, shouldMissCacheFailToGetResponseFromNetworkAndReturnExpiredEntryFromCache) {
+TEST_F(HttpClientTest, shouldMissCacheFailToGetResponseFromNetworkAndReturnExpiredEntryFromCache) {
     mockHttpClientResponse(error);
     EXPECT_CALL(cache, get(requestCacheKey, false)).WillOnce(::testing::Return(std::optional<std::string>()));
     EXPECT_CALL(cache, get(requestCacheKey, true)).WillOnce(::testing::Return(std::optional(rawResponse)));
-    EXPECT_EQ(rawResponse, cachingClient.sendRequest(request, cacheTtl).get());
+    EXPECT_EQ(rawResponse, httpClient.sendRequest(request, cacheTtl).get());
 }
 
-TEST_F(CachingHttpClientTest, shouldUseRequestUrlMethodAndBodyAsCacheKey) {
+TEST_F(HttpClientTest, shouldUseRequestUrlMethodAndBodyAsCacheKey) {
     EXPECT_CALL(cache, get("Request{url=" + url + ", method=POST, body=body of the request}", false))
         .WillOnce(::testing::Return(std::optional(rawResponse)));
-    cachingClient.sendRequest(complexRequest, cacheTtl);
+    httpClient.sendRequest(complexRequest, cacheTtl);
 }
 
-TEST_F(CachingHttpClientTest, shouldPassAllRequestAttributesToNFClient) {
+TEST_F(HttpClientTest, shouldPassAllRequestAttributesToNFClient) {
     const auto expectedRequest = nativeformat::http::createRequest(
             complexRequest.url,
             std::unordered_map<std::string, std::string>(complexRequest.headers.cbegin(), complexRequest.headers.cend()));
     expectedRequest->setMethod(complexRequest.method);
     expectedRequest->setData(reinterpret_cast<const unsigned char *>(complexRequest.body.c_str()), complexRequest.body.length() + 1);
     EXPECT_CALL(client, performRequest(IsRequest(expectedRequest), ::testing::_));
-    cachingClient.sendRequest(complexRequest, cacheTtl);
+    httpClient.sendRequest(complexRequest, cacheTtl);
 }
 
-TEST_F(CachingHttpClientTest, shouldConvertWindows1251ResponseToUtf8WithContentTypeLowercase) {
+TEST_F(HttpClientTest, shouldConvertWindows1251ResponseToUtf8WithContentTypeLowercase) {
     const auto winResponse = iconvlite::utf2cp(utfResponse);
     mockHttpClientResponse(winResponse, "windows-1251");
-    EXPECT_EQ(utfResponse, cachingClient.sendRequest(request, cacheTtl).get());
+    EXPECT_EQ(utfResponse, httpClient.sendRequest(request, cacheTtl).get());
 }
 
-TEST_F(CachingHttpClientTest, shouldConvertWindows1251ResponseToUtf8WithContentTypeUppercase) {
+TEST_F(HttpClientTest, shouldConvertWindows1251ResponseToUtf8WithContentTypeUppercase) {
     const auto winResponse = iconvlite::utf2cp(utfResponse);
     mockHttpClientResponse(winResponse, "WINDOWS-1251");
-    EXPECT_EQ(utfResponse, cachingClient.sendRequest(request, cacheTtl).get());
+    EXPECT_EQ(utfResponse, httpClient.sendRequest(request, cacheTtl).get());
 }
 
-TEST_F(CachingHttpClientTest, shouldNotConvertResponseToUtf8IfItIsNotWindows1251) {
+TEST_F(HttpClientTest, shouldNotConvertResponseToUtf8IfItIsNotWindows1251) {
     const auto unknownResponse = iconvlite::utf2cp(utfResponse);
     mockHttpClientResponse(unknownResponse, "unknown-charset");
-    EXPECT_EQ(unknownResponse, cachingClient.sendRequest(request, cacheTtl).get());
+    EXPECT_EQ(unknownResponse, httpClient.sendRequest(request, cacheTtl).get());
 }

@@ -4,7 +4,8 @@
 #include <string>
 #include <chrono>
 #include <nlohmann/json.hpp>
-#include <crawler-http-client/CrawlerHttpClient.h>
+#include <http-client/HttpClient.h>
+#include <config/Config.h>
 
 namespace serio {
 struct Crawler {
@@ -15,10 +16,11 @@ struct Crawler {
 
 class CrawlerRuntime {
 public:
-    explicit CrawlerRuntime(CrawlerHttpClient& httpClient, bool trace = false);
+    explicit CrawlerRuntime(HttpClient& httpClient, Config& config, bool trace = false);
     std::vector<nlohmann::json> executeCrawlers(std::vector<Crawler> crawlers);
 private:
-    CrawlerHttpClient& httpClient;
+    HttpClient& httpClient;
+    Config& config;
     bool trace;
 };
 }

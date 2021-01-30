@@ -13,11 +13,10 @@ add_library(Core STATIC
         src/config/ConfigSource.cpp
         src/config/ConfigStructure.cpp
         src/config/TvShowCrawlerConfig.cpp
-        src/caching-http-client/CachingHttpClient.cpp
-        src/caching-http-client/HttpRequest.cpp
+        src/http-client/HttpClient.cpp
+        src/http-client/HttpRequest.cpp
         src/config/SearchCrawlerConfig.cpp
         src/config/CategoryCrawlerConfig.cpp
-        src/crawler-http-client/CrawlerHttpClient.cpp
         src/crawler-runtime/CrawlerRuntime.cpp
         src/crawler-runtime/CrawlerExecution.cpp
         src/crawler-runtime/RegExpSystem.cpp
@@ -29,15 +28,14 @@ add_library(Core STATIC
         src/crawler-runtime/LoggingSystem.cpp
         src/crawler-runtime/ProfilerSystem.cpp
         src/config/SuggestionsCrawlerConfig.cpp
-        src/caching-http-client/HttpResponse.cpp)
+        src/http-client/HttpResponse.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include)
 target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
 add_executable(CoreTest
         test/cache/CacheTest.cpp
         test/config/ConfigTest.cpp
-        test/caching-http-client/CachingHttpClientTest.cpp
-        test/crawler-http-client/CrawlerHttpClientTest.cpp
+        test/http-client/HttpClientTest.cpp
         test/crawler-runtime/CrawlerRuntimeTest.cpp)
 target_include_directories(CoreTest PRIVATE test/mocks)
 target_link_libraries(CoreTest Core gtest gmock gtest_main)

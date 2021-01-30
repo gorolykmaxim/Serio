@@ -1,5 +1,5 @@
-#ifndef SERIO_CACHINGHTTPCLIENT_H
-#define SERIO_CACHINGHTTPCLIENT_H
+#ifndef SERIO_HTTPCLIENT_H
+#define SERIO_HTTPCLIENT_H
 
 #include <future>
 #include <NFHTTP/Client.h>
@@ -8,9 +8,9 @@
 #include "HttpResponse.h"
 
 namespace serio {
-class CachingHttpClient {
+class HttpClient {
 public:
-    CachingHttpClient(nativeformat::http::Client& client, Cache& cache);
+    HttpClient(nativeformat::http::Client& client, Cache& cache);
     virtual HttpResponse sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl);
 private:
     nativeformat::http::Client& client;
@@ -29,4 +29,4 @@ public:
 };
 }
 
-#endif //SERIO_CACHINGHTTPCLIENT_H
+#endif //SERIO_HTTPCLIENT_H

@@ -2,7 +2,7 @@
 #define SERIO_CONFIGSOURCE_H
 
 #include <SQLiteCpp/Database.h>
-#include <caching-http-client/CachingHttpClient.h>
+#include <http-client/HttpClient.h>
 #include "ConfigStructure.h"
 
 namespace serio {
@@ -11,14 +11,14 @@ public:
     inline static const std::string CACHE_ENTRY_NAME = "config";
     inline static const std::chrono::hours CACHE_TTL = std::chrono::hours(24);
 
-    ConfigSource(SQLite::Database &database, CachingHttpClient& client);
+    ConfigSource(SQLite::Database &database, HttpClient& client);
     void setUrl(const std::string& url);
     std::optional<std::string> getUrl();
     ConfigStructure fetchConfig();
 private:
     inline static const std::string SOURCE_URL_PARAM = "source-url";
     SQLite::Database& database;
-    CachingHttpClient& client;
+    HttpClient& client;
 };
 
 class ConfigSourceNotSpecifiedError : public std::runtime_error {

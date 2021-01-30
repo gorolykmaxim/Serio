@@ -1,9 +1,10 @@
 #include "HttpRequestSystem.h"
+#include <random>
 
 namespace serio {
 HttpRequestSystem::HttpRequestSystem(std::vector<Crawler> &crawlers, std::vector<CrawlerExecution> &executions,
-                                     CrawlerHttpClient& httpClient)
-    : executions(executions), httpClient(httpClient) {
+                                     HttpClient& httpClient, Config& config)
+    : executions(executions), httpClient(httpClient), config(config) {
     cacheTtls.reserve(crawlers.size());
     for (auto& crawler: crawlers) {
         crawler.code = "function httpRequests(requests) {"
@@ -95,7 +96,15 @@ HttpResponse HttpRequestSystem::sendRequest(JsObject request, std::chrono::milli
     if (!body.isNullOrUndefined()) {
         httpRequest.body = static_cast<std::string>(body);
     }
+    setUserAgentFromConfig(httpRequest);
     return httpClient.sendRequest(httpRequest, cacheTtl);
+}
+
+void HttpRequestSystem::setUserAgentFromConfig(HttpRequest &request) {
+    const auto agents = config.getHttpClientConfig().userAgents;
+    if (!agents.empty()) {
+        request.headers["User-Agent"] = agents[std::rand() % agents.size()];
+    }
 }
 
 void HttpRequestSystem::deliverResponsesToExecution(uint32_t executionHandle,

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <SQLiteCpp/Database.h>
 #include <NFHTTP/ResponseImplementation.h>
-#include <CachingHttpClientMock.h>
+#include <HttpClientMock.h>
 #include <config/Config.h>
 #include <nlohmann/json.hpp>
 
@@ -109,7 +109,7 @@ protected:
     };
 
     SQLite::Database database = SQLite::Database(":memory:", SQLite::OPEN_READWRITE);
-    mocks::CachingHttpClientMock httpClient;
+    mocks::HttpClientMock httpClient;
     serio::Config config = serio::Config(database, httpClient);
 
     void mockClientResponse(const nlohmann::json& response) {

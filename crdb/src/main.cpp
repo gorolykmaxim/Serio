@@ -14,10 +14,9 @@ int main(int argc, char** argv) {
     SQLite::Database database(":memory:", SQLite::OPEN_READWRITE);
     serio::Cache cache(database);
     const auto client = nativeformat::http::createClient("", "");
-    serio::CachingHttpClient cachingHttpClient(*client, cache);
-    crdb::HardcodedConfig config(userAgent, database, cachingHttpClient);
-    serio::CrawlerHttpClient crawlerHttpClient(config, cachingHttpClient);
-    serio::CrawlerRuntime runtime(crawlerHttpClient, trace);
+    serio::HttpClient httpClient(*client, cache);
+    crdb::HardcodedConfig config(userAgent, database, httpClient);
+    serio::CrawlerRuntime runtime(httpClient, config, trace);
 
     serio::Crawler crawler{script, cacheTtl, crawlerArgs};
     const auto results = runtime.executeCrawlers({crawler});

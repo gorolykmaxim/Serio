@@ -9,8 +9,8 @@
 #include "ProfilerSystem.h"
 
 namespace serio {
-CrawlerRuntime::CrawlerRuntime(CrawlerHttpClient &httpClient, bool trace)
-    : httpClient(httpClient), trace(trace) {}
+CrawlerRuntime::CrawlerRuntime(HttpClient &httpClient, Config& config, bool trace)
+    : httpClient(httpClient), config(config), trace(trace) {}
 
 static void executeWithoutTrace(CrawlerExecutionSystem& crawlerExecutionSystem, RegExpSystem& regExpSystem,
                                 HttpRequestSystem& httpRequestSystem) {
@@ -42,7 +42,7 @@ static void executeWithTrace(std::vector<serio::CrawlerExecution>& executions,
 std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(std::vector<Crawler> crawlers) {
     std::vector<serio::CrawlerExecution> executions;
     RegExpSystem regExpSystem(crawlers, executions);
-    HttpRequestSystem httpRequestSystem(crawlers, executions, httpClient);
+    HttpRequestSystem httpRequestSystem(crawlers, executions, httpClient, config);
     ResultFetchSystem resultFetchSystem(crawlers, executions);
     CrawlerExecutionSystem crawlerExecutionSystem(crawlers, executions);
     CrawlerArgumentSystem crawlerArgumentSystem(crawlers, executions);

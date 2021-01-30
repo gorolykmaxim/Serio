@@ -3,7 +3,7 @@
 #include <utility>
 
 namespace crdb {
-HardcodedConfig::HardcodedConfig(std::string  userAgent, SQLite::Database &database, serio::CachingHttpClient &httpClient)
+HardcodedConfig::HardcodedConfig(std::string  userAgent, SQLite::Database &database, serio::HttpClient &httpClient)
     : Config(database, httpClient), userAgent(std::move(userAgent)) {}
 
 serio::HttpClientConfig HardcodedConfig::getHttpClientConfig() {

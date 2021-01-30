@@ -3,12 +3,12 @@
 
 #include <gmock/gmock.h>
 #include <config/Config.h>
-#include "CachingHttpClientMock.h"
+#include "HttpClientMock.h"
 
 namespace mocks {
 class ConfigMock : public serio::Config {
 public:
-    inline static CachingHttpClientMock CLIENT_STUB;
+    inline static HttpClientMock CLIENT_STUB;
     ConfigMock() : serio::Config(Database::STUB, CLIENT_STUB) {}
     MOCK_METHOD(void, setSourceUrl, (const std::string&), (override));
     MOCK_METHOD((std::optional<std::string>), getSourceUrl, (), (override));

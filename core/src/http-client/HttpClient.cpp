@@ -1,12 +1,12 @@
-#include <caching-http-client/CachingHttpClient.h>
+#include <http-client/HttpClient.h>
 #include <iconvlite.h>
 
 namespace serio {
-CachingHttpClient::CachingHttpClient(nativeformat::http::Client &client, Cache &cache)
+HttpClient::HttpClient(nativeformat::http::Client &client, Cache &cache)
     : client(client),
       cache(cache) {}
 
-HttpResponse CachingHttpClient::sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl) {
+HttpResponse HttpClient::sendRequest(const HttpRequest& request, const std::chrono::milliseconds& cacheTtl) {
     const auto cachedResponse = cache.get(request);
     if (cachedResponse) {
         return HttpResponse(*cachedResponse);
@@ -19,7 +19,7 @@ HttpResponse CachingHttpClient::sendRequest(const HttpRequest& request, const st
     }
 }
 
-std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response> &response,
+std::string HttpClient::readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response> &response,
                                                     const HttpRequest& request,
                                                     const std::chrono::milliseconds &cacheTtl) {
     auto responseBody = readBodyFromResponse(response);
@@ -36,7 +36,7 @@ std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<native
     }
 }
 
-std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response) {
+std::string HttpClient::readBodyFromResponse(const std::shared_ptr<nativeformat::http::Response>& response) {
     size_t size;
     const auto data = reinterpret_cast<const char*>(response->data(size));
     if (size == 0) {
@@ -45,7 +45,7 @@ std::string CachingHttpClient::readBodyFromResponse(const std::shared_ptr<native
     return isWindows1251(response) ? iconvlite::cp2utf(data) : data;
 }
 
-bool CachingHttpClient::isWindows1251(const std::shared_ptr<nativeformat::http::Response> &response) {
+bool HttpClient::isWindows1251(const std::shared_ptr<nativeformat::http::Response> &response) {
     auto contentType = response->operator[]("Content-Type");
     std::transform(contentType.begin(), contentType.end(), contentType.begin(), std::tolower);
     return contentType.rfind("windows-1251") != std::string::npos;
