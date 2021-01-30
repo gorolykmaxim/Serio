@@ -8,6 +8,7 @@ namespace serio {
 struct SearchCrawlerConfig {
     std::string platformName;
     std::chrono::milliseconds cacheTtl;
+    uint32_t pagesPerLoad;
     std::string crawler;
 
     bool operator==(const SearchCrawlerConfig &rhs) const;

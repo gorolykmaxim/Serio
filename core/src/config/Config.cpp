@@ -51,11 +51,13 @@ std::vector<SearchCrawlerConfig> Config::getSearchCrawlerConfigs() {
     for (const auto& platform: platforms) {
         const auto name = platform.getParameter({"name"});
         const auto cacheTtl = platform.getParameter({"search", "cache-ttl"});
+        const auto pagesPerLoad = platform.getParameter({"search", "pages-per-load"});
         const auto crawler = platform.getParameter({"search", "crawler"});
         if (name && cacheTtl && crawler) {
             SearchCrawlerConfig searchCrawlerConfig{
                     name->get<std::string>(),
                     std::chrono::milliseconds(cacheTtl->get<long>()),
+                    pagesPerLoad ? pagesPerLoad->get<uint32_t>() : 1,
                     crawler->get<std::string>()
             };
             searchCrawlerConfigs.push_back(std::move(searchCrawlerConfig));

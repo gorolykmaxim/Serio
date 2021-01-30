@@ -19,9 +19,11 @@ protected:
     const std::vector<serio::SearchCrawlerConfig> searchCrawlerConfigs = std::vector({
         serio::SearchCrawlerConfig{tvShowCrawlerConfigs[0].platformName,
                                    std::chrono::milliseconds(190000),
+                                   3,
                                    "search tv show crawler"},
         serio::SearchCrawlerConfig{tvShowCrawlerConfigs[1].platformName,
                                    std::chrono::milliseconds(200000),
+                                   1,
                                    "search tv show crawler 2"},
     });
     const std::vector<serio::CategoryCrawlerConfig> categoryCrawlerConfigs = std::vector({
@@ -71,6 +73,7 @@ protected:
                     }},
                     {"search", {
                        {"cache-ttl", searchCrawlerConfigs[0].cacheTtl.count()},
+                       {"pages-per-load", searchCrawlerConfigs[0].pagesPerLoad},
                        {"crawler", searchCrawlerConfigs[0].crawler}
                     }},
                     {"tv-show", {
