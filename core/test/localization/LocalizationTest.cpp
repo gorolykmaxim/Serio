@@ -67,7 +67,7 @@ TEST_F(LocalizationTest, shouldHaveLocalizationForEveryTextIdInEveryAvailableLan
     for (const auto& language: localization.getLanguages()) {
         localization.setCurrentLanguage(language);
         for (int id = serio::TextId::serio; id <= serio::TextId::settings; id++) {
-            (void)localization.getText(static_cast<serio::TextId>(id));
+            EXPECT_NO_THROW((void)localization.getText(static_cast<serio::TextId>(id)));
         }
     }
 }
