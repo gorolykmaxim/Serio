@@ -38,9 +38,6 @@ mjs_val_t CrawlerArgumentSystem::toMjsValue(mjs* context, const nlohmann::json &
     }
 }
 
-InvalidCrawlerError::InvalidCrawlerError(const Crawler& crawler, const std::string &reason)
-    : std::logic_error("Crawler with code '" + crawler.code + "' and arguments '" + crawler.arguments.dump() + "' is invalid: " + reason) {}
-
 NonArrayCrawlerArgumentsError::NonArrayCrawlerArgumentsError() : std::logic_error("Crawler arguments should be an array") {}
 
 InvalidCrawlerArgumentTypeError::InvalidCrawlerArgumentTypeError(const nlohmann::json &argument)

@@ -14,11 +14,6 @@ private:
     mjs_val_t toMjsValue(mjs* context, const nlohmann::json& value);
 };
 
-class InvalidCrawlerError : public std::logic_error {
-public:
-    InvalidCrawlerError(const Crawler& crawler, const std::string &reason);
-};
-
 class NonArrayCrawlerArgumentsError : public std::logic_error {
 public:
     NonArrayCrawlerArgumentsError();

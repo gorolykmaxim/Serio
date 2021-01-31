@@ -23,6 +23,11 @@ private:
     Config& config;
     bool trace;
 };
+
+class InvalidCrawlerError : public std::logic_error {
+public:
+    InvalidCrawlerError(const Crawler& crawler, const std::string &reason);
+};
 }
 
 #endif //SERIO_CRAWLERRUNTIME_H

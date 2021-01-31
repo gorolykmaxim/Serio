@@ -53,4 +53,7 @@ std::vector<nlohmann::json> CrawlerRuntime::executeCrawlers(std::vector<Crawler>
     }
     return resultFetchSystem.fetch();
 }
+
+InvalidCrawlerError::InvalidCrawlerError(const Crawler& crawler, const std::string &reason)
+    : std::logic_error("Crawler with code '" + crawler.code + "' and arguments '" + crawler.arguments.dump() + "' is invalid: " + reason) {}
 }

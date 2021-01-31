@@ -89,13 +89,13 @@ TEST_F(CrawlerRuntimeTest, shouldBeAbleToAcceptArguments) {
 TEST_F(CrawlerRuntimeTest, shouldThrowAnErrorWhenAttemptingToPassCrawlerArgumentsOfUnsupportedType) {
     nlohmann::json arguments = {"something", {{"objectAttributeName", "objectAttributeValue"}}};
     serio::Crawler crawler{"function crawl() {return {};}", networkCacheTtl, arguments};
-    EXPECT_THROW(runtime.executeCrawlers({crawler}), std::logic_error);
+    EXPECT_THROW(runtime.executeCrawlers({crawler}), serio::InvalidCrawlerError);
 }
 
 TEST_F(CrawlerRuntimeTest, shouldThrowAnErrorWhenAttemptingToPassJsonObjectInsteadOfArrayOfCrawlerArguments) {
     nlohmann::json arguments = std::map<std::string, std::string>({{"objectAttributeName", "objectAttributeValue"}});
     serio::Crawler crawler{"function crawl() {return {};}", networkCacheTtl, arguments};
-    EXPECT_THROW(runtime.executeCrawlers({crawler}), std::logic_error);
+    EXPECT_THROW(runtime.executeCrawlers({crawler}), serio::InvalidCrawlerError);
 }
 
 TEST_F(CrawlerRuntimeTest, shouldBeAbleToExecuteRegularExpressionsWithoutGroups) {
