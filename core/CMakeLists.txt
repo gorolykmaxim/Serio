@@ -28,7 +28,8 @@ add_library(Core STATIC
         src/crawler-runtime/LoggingSystem.cpp
         src/crawler-runtime/ProfilerSystem.cpp
         src/config/SuggestionsCrawlerConfig.cpp
-        src/http-client/HttpResponse.cpp)
+        src/http-client/HttpResponse.cpp
+        src/localization/Localization.cpp)
 target_include_directories(Core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include)
 target_link_libraries(Core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
@@ -36,6 +37,7 @@ add_executable(CoreTest
         test/cache/CacheTest.cpp
         test/config/ConfigTest.cpp
         test/http-client/HttpClientTest.cpp
-        test/crawler-runtime/CrawlerRuntimeTest.cpp)
+        test/crawler-runtime/CrawlerRuntimeTest.cpp
+        test/localization/LocalizationTest.cpp)
 target_include_directories(CoreTest PRIVATE test/mocks)
 target_link_libraries(CoreTest Core gtest gmock gtest_main)
