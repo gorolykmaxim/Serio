@@ -2,52 +2,88 @@
 #include "English.h"
 #include "Russian.h"
 #include <utility>
+#include <algorithm>
 
 namespace serio {
-Localization::Localization() : Localization({ENGLISH, RUSSIAN}) {}
+static std::vector<Translation> flatten(const std::vector<std::vector<Translation>>& languages) {
+    std::vector<Translation> translations;
+    for (const auto& language: languages) {
+        translations.insert(translations.cend(), language.cbegin(), language.cend());
+    }
+    return translations;
+}
 
-Localization::Localization(std::vector<Language> languages) : languages(std::move(languages)) {
-    currentLanguage = this->languages[0];
+Localization::Localization() : Localization(flatten({ENGLISH, RUSSIAN})) {}
+
+Localization::Localization(const std::vector<Translation>& translations) {
+    if (translations.empty()) {
+        return;
+    }
+    currentLanguage = translations[0].language;
+    for (const auto& translation: translations) {
+        languageToTextIdToTranslationRules[translation.language][translation.textId].push_back({translation.text, translation.parameterRule});
+    }
 }
 
 void Localization::setCurrentLanguage(const std::string &language) {
-    const auto it = std::find_if(languages.cbegin(), languages.cend(),
-                                 [&language] (const auto& l) { return language == l.name; });
-    if (it == languages.cend()) {
+    const auto it = languageToTextIdToTranslationRules.find(language);
+    if (it == languageToTextIdToTranslationRules.cend()) {
         throw UnsupportedLanguageError(language);
     }
-    currentLanguage = *it;
+    currentLanguage = language;
 }
 
 std::string Localization::getCurrentLanguage() const {
-    return currentLanguage.name;
+    return currentLanguage;
 }
 
 std::vector<std::string> Localization::getLanguages() const {
     std::vector<std::string> languageNames;
-    languageNames.reserve(languages.size());
-    for (const auto& language: languages) {
-        languageNames.push_back(language.name);
+    languageNames.reserve(languageToTextIdToTranslationRules.size());
+    for (const auto& languageToText: languageToTextIdToTranslationRules) {
+        languageNames.push_back(languageToText.first);
     }
     return languageNames;
 }
 
 std::string Localization::getText(TextId id) const {
     try {
-        return currentLanguage.idToText.at(id);
+        return languageToTextIdToTranslationRules.at(currentLanguage).at(id).back().text;
     } catch (std::out_of_range& e) {
-        throw MissingLocalizationError(currentLanguage.name, id);
+        throw MissingLocalizationError(currentLanguage, id);
     }
 }
 
-std::string Localization::getText(TextId id, const std::string &parameter1) const {
-    auto text = getText(id);
+std::string Localization::getText(TextId id, const std::string &parameter) const {
+    try {
+        auto text = getTextForParameter(id, parameter);
+        applyParameterToText(text, parameter, id);
+        return text;
+    } catch (std::out_of_range& e) {
+        throw MissingLocalizationError(currentLanguage, id);
+    }
+}
+
+std::string Localization::getTextForParameter(TextId id, const std::string &parameter) const {
+    const auto rules = languageToTextIdToTranslationRules.at(currentLanguage).at(id);
+    const auto it = std::find_if(rules.cbegin(), rules.cend(),
+                                 [this, &parameter] (const TranslationRule& r) { return ruleAppliesToParameter(r.parameterRule, parameter); });
+    if (it == rules.cend()) {
+        throw std::out_of_range("");
+    }
+    return it->text;
+}
+
+void Localization::applyParameterToText(std::string &text, const std::string &parameter, TextId id) const {
     const auto pos = text.find(PLACEHOLDER);
     if (pos == std::string::npos) {
-        throw NotFormattableTextError(currentLanguage.name, id);
+        throw NotFormattableTextError(currentLanguage, id);
     }
-    text.replace(pos, PLACEHOLDER.size(), parameter1);
-    return text;
+    text.replace(pos, PLACEHOLDER.size(), parameter);
+}
+
+bool Localization::ruleAppliesToParameter(const std::string &rule, const std::string &parameter) const {
+    return std::equal(rule.rbegin(), rule.rend(), parameter.rbegin());
 }
 
 UnsupportedLanguageError::UnsupportedLanguageError(const std::string &language)

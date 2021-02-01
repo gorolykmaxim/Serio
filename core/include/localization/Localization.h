@@ -3,13 +3,21 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <unordered_map>
 #include "TextId.h"
 
 namespace serio {
-struct Language {
-    std::string name;
-    std::unordered_map<TextId, std::string> idToText;
+struct Translation {
+    std::string language;
+    TextId textId;
+    std::string text;
+    std::string parameterRule;
+};
+
+struct TranslationRule {
+    std::string text;
+    std::string parameterRule;
 };
 
 class Localization {
@@ -17,15 +25,19 @@ public:
     inline static const std::string PLACEHOLDER = "{}";
 
     Localization();
-    explicit Localization(std::vector<Language> languages);
+    explicit Localization(const std::vector<Translation>& translations);
     void setCurrentLanguage(const std::string& language);
     [[nodiscard]] std::string getCurrentLanguage() const;
     [[nodiscard]] std::vector<std::string> getLanguages() const;
     [[nodiscard]] std::string getText(TextId id) const;
-    [[nodiscard]] std::string getText(TextId id, const std::string& parameter1) const;
+    [[nodiscard]] std::string getText(TextId id, const std::string& parameter) const;
 private:
-    std::vector<Language> languages;
-    Language currentLanguage;
+    std::map<std::string, std::unordered_map<TextId, std::vector<TranslationRule>>> languageToTextIdToTranslationRules;
+    std::string currentLanguage;
+
+    [[nodiscard]] std::string getTextForParameter(TextId id, const std::string& parameter) const;
+    void applyParameterToText(std::string& text, const std::string& parameter, TextId id) const;
+    [[nodiscard]] bool ruleAppliesToParameter(const std::string& rule, const std::string& parameter) const;
 };
 
 class UnsupportedLanguageError: public std::logic_error {
