@@ -1,5 +1,27 @@
 #include <gtest/gtest.h>
 #include <localization/Localization.h>
+#include <ConfigMock.h>
+
+class LanguageStorageMock : public mocks::ConfigMock {
+public:
+    LanguageStorageMock() = default;
+    explicit LanguageStorageMock(const std::string& currentLanguage) {
+        properties[serio::Localization::CURRENT_LANGUAGE_CONFIG_PROPERTY] = currentLanguage;
+    }
+    void setProperty(const std::string& name, const std::string& value) override {
+        properties[name] = value;
+    }
+    std::optional<std::string> getProperty(const std::string& name) override {
+        const auto it = properties.find(name);
+        if (it != properties.cend()) {
+            return it->second;
+        } else {
+            return std::optional<std::string>();
+        }
+    }
+private:
+    std::unordered_map<std::string, std::string> properties;
+};
 
 class LocalizationTest : public ::testing::Test {
 protected:
@@ -12,8 +34,13 @@ protected:
             {expectedLanguageNames[1], serio::TextId::daysAgo, "{} дней назад"},
             {expectedLanguageNames[1], serio::TextId::monthsAgo, "{} месяц назад", "1"},
     };
-    serio::Localization localization = serio::Localization(expectedTranslations);
+    LanguageStorageMock config;
+    serio::Localization localization = serio::Localization(expectedTranslations, config);
 };
+
+TEST_F(LocalizationTest, shouldFailToConstructLocalizationWithNoTraslationsProvided) {
+    EXPECT_THROW(serio::Localization({}, config), serio::NoTranslationsProvidedError);
+}
 
 TEST_F(LocalizationTest, shouldReturnListOfAvailableLanguages) {
     EXPECT_EQ(expectedLanguageNames, localization.getLanguages());
@@ -32,6 +59,18 @@ TEST_F(LocalizationTest, shouldChangeCurrentLanguage) {
         localization.setCurrentLanguage(language);
         EXPECT_EQ(language, localization.getCurrentLanguage());
     }
+}
+
+TEST_F(LocalizationTest, shouldReadCurrentLanguageFromConfigOnInstantiation) {
+    LanguageStorageMock config(expectedLanguageNames[1]);
+    serio::Localization localization(expectedTranslations, config);
+    EXPECT_EQ(expectedLanguageNames[1], localization.getCurrentLanguage());
+}
+
+TEST_F(LocalizationTest, shouldFallbackToEnglishAsCurrentLanguageIfLanguageStoredInConfigDoesNotExist) {
+    LanguageStorageMock config("not supported language");
+    serio::Localization localization(expectedTranslations, config);
+    EXPECT_EQ(expectedLanguageNames[0], localization.getCurrentLanguage());
 }
 
 TEST_F(LocalizationTest, shouldFailToGetLocalizedVersionOfTheText) {
@@ -62,12 +101,12 @@ TEST_F(LocalizationTest, shouldFailToGetLocalizedTextForParameterThatDoesNotMatc
 }
 
 TEST_F(LocalizationTest, shouldHaveAtLeastOneLanguageByDefault) {
-    serio::Localization localization;
+    serio::Localization localization(config);
     EXPECT_LE(1, localization.getLanguages().size());
 }
 
 TEST_F(LocalizationTest, shouldHaveLocalizationForEveryTextIdInEveryAvailableLanguage) {
-    serio::Localization localization;
+    serio::Localization localization(config);
     for (const auto& language: localization.getLanguages()) {
         localization.setCurrentLanguage(language);
         for (int id = serio::TextId::serio; id <= serio::TextId::settings; id++) {

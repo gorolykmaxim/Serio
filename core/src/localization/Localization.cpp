@@ -13,28 +13,46 @@ static std::vector<Translation> flatten(const std::vector<std::vector<Translatio
     return translations;
 }
 
-Localization::Localization() : Localization(flatten({ENGLISH, RUSSIAN})) {}
+Localization::Localization(Config& config) : Localization(flatten({ENGLISH, RUSSIAN}), config) {}
 
-Localization::Localization(const std::vector<Translation>& translations) {
+Localization::Localization(const std::vector<Translation>& translations, Config& config) : config(config) {
     if (translations.empty()) {
-        return;
+        throw NoTranslationsProvidedError();
     }
-    currentLanguage = translations[0].language;
+    loadTranslations(translations);
+    updateCurrentLanguageIfNecessary(translations);
+}
+
+void Localization::loadTranslations(const std::vector<Translation> &translations) {
     for (const auto& translation: translations) {
         languageToTextIdToTranslationRules[translation.language][translation.textId].push_back({translation.text, translation.parameterRule});
     }
 }
 
+void Localization::updateCurrentLanguageIfNecessary(const std::vector<Translation>& translations) {
+    const auto existingCurrentLanguage = config.getProperty(CURRENT_LANGUAGE_CONFIG_PROPERTY);
+    if (existingCurrentLanguage) {
+        try {
+            setCurrentLanguage(*existingCurrentLanguage);
+        } catch (UnsupportedLanguageError& e) {
+            setCurrentLanguage(translations[0].language);
+        }
+    } else {
+        setCurrentLanguage(translations[0].language);
+    }
+}
+
 void Localization::setCurrentLanguage(const std::string &language) {
-    const auto it = languageToTextIdToTranslationRules.find(language);
-    if (it == languageToTextIdToTranslationRules.cend()) {
+    try {
+        textIdToTranslationRules = &languageToTextIdToTranslationRules.at(language);
+        config.setProperty(CURRENT_LANGUAGE_CONFIG_PROPERTY, language);
+    } catch (std::out_of_range& e) {
         throw UnsupportedLanguageError(language);
     }
-    currentLanguage = language;
 }
 
 std::string Localization::getCurrentLanguage() const {
-    return currentLanguage;
+    return *config.getProperty(CURRENT_LANGUAGE_CONFIG_PROPERTY);
 }
 
 std::vector<std::string> Localization::getLanguages() const {
@@ -48,9 +66,9 @@ std::vector<std::string> Localization::getLanguages() const {
 
 std::string Localization::getText(TextId id) const {
     try {
-        return languageToTextIdToTranslationRules.at(currentLanguage).at(id).back().text;
+        return textIdToTranslationRules->at(id).back().text;
     } catch (std::out_of_range& e) {
-        throw MissingLocalizationError(currentLanguage, id);
+        throw MissingLocalizationError(getCurrentLanguage(), id);
     }
 }
 
@@ -60,12 +78,12 @@ std::string Localization::getText(TextId id, const std::string &parameter) const
         applyParameterToText(text, parameter, id);
         return text;
     } catch (std::out_of_range& e) {
-        throw MissingLocalizationError(currentLanguage, id);
+        throw MissingLocalizationError(getCurrentLanguage(), id);
     }
 }
 
 std::string Localization::getTextForParameter(TextId id, const std::string &parameter) const {
-    const auto rules = languageToTextIdToTranslationRules.at(currentLanguage).at(id);
+    const auto rules = textIdToTranslationRules->at(id);
     const auto it = std::find_if(rules.cbegin(), rules.cend(),
                                  [this, &parameter] (const TranslationRule& r) { return ruleAppliesToParameter(r.parameterRule, parameter); });
     if (it == rules.cend()) {
@@ -77,7 +95,7 @@ std::string Localization::getTextForParameter(TextId id, const std::string &para
 void Localization::applyParameterToText(std::string &text, const std::string &parameter, TextId id) const {
     const auto pos = text.find(PLACEHOLDER);
     if (pos == std::string::npos) {
-        throw NotFormattableTextError(currentLanguage, id);
+        throw NotFormattableTextError(getCurrentLanguage(), id);
     }
     text.replace(pos, PLACEHOLDER.size(), parameter);
 }
@@ -85,6 +103,9 @@ void Localization::applyParameterToText(std::string &text, const std::string &pa
 bool Localization::ruleAppliesToParameter(const std::string &rule, const std::string &parameter) const {
     return std::equal(rule.rbegin(), rule.rend(), parameter.rbegin());
 }
+
+NoTranslationsProvidedError::NoTranslationsProvidedError()
+    : logic_error("At least one translations has to be provided") {}
 
 UnsupportedLanguageError::UnsupportedLanguageError(const std::string &language)
     : logic_error("Can't set current language to an unsupported language: " + language) {}
