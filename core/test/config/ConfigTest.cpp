@@ -320,3 +320,15 @@ TEST_F(ConfigTest, shouldSkipPlatformSuggestionsCrawlerConfigsThatLackFields) {
     config.setSourceUrl(sourceUrl);
     EXPECT_EQ(std::vector({suggestionsCrawlerConfigs[0]}), config.getSuggestionsCrawlerConfigs());
 }
+
+TEST_F(ConfigTest, shouldReturnEmptyOptionalForPropertyThatDoesNotExist) {
+    EXPECT_FALSE(config.getProperty(""));
+}
+
+TEST_F(ConfigTest, shouldSavePropertyInAPersistentStorage) {
+    const auto name = "name";
+    const auto value = "value";
+    config.setProperty(name, value);
+    serio::Config config(database, httpClient);
+    EXPECT_EQ(value, *config.getProperty(name));
+}

@@ -1,32 +1,21 @@
 #include <config/ConfigSource.h>
 
 namespace serio {
-serio::ConfigSource::ConfigSource(SQLite::Database &database, HttpClient& client)
-        : database(database),
-          client(client) {
-    database.exec("CREATE TABLE IF NOT EXISTS CONFIG(KEY TEXT PRIMARY KEY, VALUE TEXT)");
-}
+serio::ConfigSource::ConfigSource(PersistentProperties &properties, HttpClient& client)
+    : properties(properties),
+      client(client) {}
 
 void ConfigSource::setUrl(const std::string &url) {
-    SQLite::Statement saveSourceUrl(database, "INSERT OR REPLACE INTO CONFIG VALUES(?, ?)");
-    saveSourceUrl.bind(1, SOURCE_URL_PARAM);
-    saveSourceUrl.bind(2, url);
-    saveSourceUrl.exec();
+    properties.setProperty(SOURCE_URL_PROPERTY, url);
 }
 
 std::optional<std::string> ConfigSource::getUrl() {
-    SQLite::Statement getSourceUrl(database, "SELECT VALUE FROM CONFIG WHERE KEY = ?");
-    getSourceUrl.bind(1, SOURCE_URL_PARAM);
-    if (getSourceUrl.executeStep()) {
-        return getSourceUrl.getColumn(0).getString();
-    } else {
-        return std::optional<std::string>();
-    }
+    return properties.getProperty(SOURCE_URL_PROPERTY);
 }
 
 ConfigStructure ConfigSource::fetchConfig() {
     try {
-        const auto url = getUrl();
+        const auto url = properties.getProperty(SOURCE_URL_PROPERTY);
         if (!url) {
             throw ConfigSourceNotSpecifiedError();
         }

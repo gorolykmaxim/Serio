@@ -19,12 +19,15 @@ public:
     Config(SQLite::Database &database, HttpClient& httpClient);
     virtual void setSourceUrl(const std::string& url);
     virtual std::optional<std::string> getSourceUrl();
+    virtual void setProperty(const std::string& name, const std::string& value);
+    virtual std::optional<std::string> getProperty(const std::string& name);
     virtual HttpClientConfig getHttpClientConfig();
     virtual std::vector<TvShowCrawlerConfig> getTvShowCrawlerConfigs();
     virtual std::vector<SearchCrawlerConfig> getSearchCrawlerConfigs();
     virtual std::vector<CategoryCrawlerConfig> getCategoryCrawlerConfigs();
     virtual std::vector<SuggestionsCrawlerConfig> getSuggestionsCrawlerConfigs();
 private:
+    PersistentProperties properties;
     ConfigSource source;
 };
 }

@@ -2,7 +2,7 @@
 
 namespace serio {
 Config::Config(SQLite::Database &database, HttpClient& httpClient)
-    : source(database, httpClient) {}
+    : properties(database), source(properties, httpClient) {}
 
 void Config::setSourceUrl(const std::string &url) {
     source.setUrl(url);
@@ -10,6 +10,14 @@ void Config::setSourceUrl(const std::string &url) {
 
 std::optional<std::string> Config::getSourceUrl() {
     return source.getUrl();
+}
+
+void Config::setProperty(const std::string &name, const std::string &value) {
+    properties.setProperty(name, value);
+}
+
+std::optional<std::string> Config::getProperty(const std::string &name) {
+    return properties.getProperty(name);
 }
 
 HttpClientConfig Config::getHttpClientConfig() {
