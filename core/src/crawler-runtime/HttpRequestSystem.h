@@ -6,7 +6,8 @@
 #include <crawler-runtime/CrawlerRuntime.h>
 #include "CrawlerExecution.h"
 
-namespace serio {class HttpRequestSystem {
+namespace serio {
+class HttpRequestSystem {
 public:
     HttpRequestSystem(std::vector<Crawler>& crawlers, std::vector<CrawlerExecution>& executions,
                       HttpClient& httpClient, Config& config);
