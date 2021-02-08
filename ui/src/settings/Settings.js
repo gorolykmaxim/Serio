@@ -2,7 +2,6 @@ import {Container, List, makeStyles, Paper} from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
 import ApplicationBar from "./ApplicationBar";
 import SettingItem from "./SettingItem";
-import TextFieldDialog from "./TextFieldDialog";
 import RadioGroupDialog from "./RadioGroupDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
 import {createElement, useState} from "react";
@@ -15,9 +14,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Settings() {
     const classes = useStyles();
-    const [configUrlDialogOpen, setConfigUrlDialogOpen] = useState(false);
-    const openConfigUrlDialog = () => setConfigUrlDialogOpen(true);
-    const closeConfigUrlDialog = () => setConfigUrlDialogOpen(false);
     const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
     const openLanguageDialog = () => setLanguageDialogOpen(true);
     const closeLanguageDialog = () => setLanguageDialogOpen(false);
@@ -33,8 +29,7 @@ export default function Settings() {
                         <SettingItem name="Crawler config URL"
                                      value="https://github.com/gorolykmaxim/tv-show-content"
                                      icon={createElement(Icons["Dns"])}
-                                     autoFocus
-                                     onClick={openConfigUrlDialog}/>
+                                     autoFocus/>
                         <SettingItem name="Language"
                                      value="English"
                                      icon={createElement(Icons["Language"])}
@@ -45,15 +40,6 @@ export default function Settings() {
                     </List>
                 </Paper>
             </Container>
-            <TextFieldDialog open={configUrlDialogOpen}
-                             title="Crawler config URL"
-                             description="Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows."
-                             label="Config file URL"
-                             value="https://github.com/gorolykmaxim/tv-show-content"
-                             cancelText="Cancel"
-                             saveText="Save"
-                             onSave={closeConfigUrlDialog}
-                             onCancel={closeConfigUrlDialog}/>
             <RadioGroupDialog open={languageDialogOpen}
                               title="Choose language"
                               saveText="Save"

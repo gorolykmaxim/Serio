@@ -1,40 +1,50 @@
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    TextField
-} from "@material-ui/core";
-import {useState} from "react";
+import {Button, Container, Grid, makeStyles, TextField, Typography} from "@material-ui/core";
+
+const maxHeightStyle = makeStyles(() => ({
+    root: {
+        height: "100%"
+    }
+}));
+
+const marginBottomStyle = makeStyles(theme => ({
+    root: {
+        marginBottom: theme.spacing(1)
+    }
+}));
 
 /**
- * @param {{open: boolean, title: string, description: string, label: string, value: string, cancelText: string, saveText: string, onSave: Function, onCancel: Function}} props
+ * @param {{title: string, description: string, label: string, saveText: string, cancelText: string, value: string, onValueChange: Function, onCancel: Function, onSave: Function}} props
  * @returns {JSX.Element}
- * @constructor
  */
 export default function TextFieldDialog(props) {
-    const [value, setValue] = useState(props.value);
-    const onSave = () => props.onSave(value);
+    const maxHeight = maxHeightStyle();
+    const marginBottom = marginBottomStyle();
     return (
-        <Dialog open={props.open} onClose={props.onCancel}>
-            <DialogTitle>{props.title}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{props.description}</DialogContentText>
-                <form onSubmit={e => {e.preventDefault(); onSave();}}>
-                    <TextField autoFocus
-                               margin="dense"
-                               label={props.label}
-                               value={value}
-                               onChange={e => setValue(e.target.value)}
-                               fullWidth/>
-                </form>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={props.onCancel}>{props.cancelText}</Button>
-                <Button onClick={onSave} variant="contained" color="primary">{props.saveText}</Button>
-            </DialogActions>
-        </Dialog>
+        <Container classes={maxHeight} maxWidth="xs">
+            <Grid container
+                  classes={maxHeight}
+                  direction="column"
+                  justify="center"
+                  alignItems="center">
+                <Typography variant="h6"
+                            classes={marginBottom}>{props.title}</Typography>
+                <Typography color="textSecondary"
+                            classes={marginBottom}>{props.description}</Typography>
+                <TextField autoFocus
+                           fullWidth
+                           label={props.label}
+                           margin="dense"
+                           value={props.value}
+                           onChange={e => props.onValueChange(e.target.value)}
+                           classes={marginBottom}/>
+                <Button fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={props.onSave}
+                        classes={marginBottom}>{props.saveText}</Button>
+                <Button fullWidth
+                        onClick={props.onCancel}>{props.cancelText}</Button>
+            </Grid>
+        </Container>
     );
 }
