@@ -1,4 +1,5 @@
 import {Button, Container, Grid, makeStyles, TextField, Typography} from "@material-ui/core";
+import {useState} from "react";
 
 const maxHeightStyle = makeStyles(() => ({
     root: {
@@ -19,6 +20,12 @@ const marginBottomStyle = makeStyles(theme => ({
 export default function TextFieldDialog(props) {
     const maxHeight = maxHeightStyle();
     const marginBottom = marginBottomStyle();
+    const [value, setValue] = useState(props.value || "");
+    const onValueChanged = e => {
+        const v = e.target.value;
+        setValue(v);
+        props.onValueChange(v);
+    };
     return (
         <Container classes={maxHeight} maxWidth="xs">
             <Grid container
@@ -34,8 +41,8 @@ export default function TextFieldDialog(props) {
                            fullWidth
                            label={props.label}
                            margin="dense"
-                           value={props.value}
-                           onChange={e => props.onValueChange(e.target.value)}
+                           value={value}
+                           onChange={onValueChanged}
                            classes={marginBottom}/>
                 <Button fullWidth
                         variant="contained"
