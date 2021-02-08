@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function Settings() {
+function Settings() {
     const classes = useStyles();
     const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
     const openLanguageDialog = () => setLanguageDialogOpen(true);
@@ -57,4 +57,8 @@ export default function Settings() {
                                 onAccept={closeClearCacheDialog}/>
         </div>
     );
+}
+
+export default function create() {
+    return <Settings/>;
 }

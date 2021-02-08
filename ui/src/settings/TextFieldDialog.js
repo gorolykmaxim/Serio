@@ -12,7 +12,7 @@ const marginBottomStyle = makeStyles(theme => ({
  * @param {{title: string, description: string, label: string, saveText: string, cancelText: string, value: string, onValueChange: Function, onCancel: Function, onSave: Function}} props
  * @returns {JSX.Element}
  */
-export default function TextFieldDialog(props) {
+function TextFieldDialog(props) {
     const height = maxHeight();
     const marginBottom = marginBottomStyle();
     const [value, setValue] = useState(props.value || "");
@@ -48,5 +48,20 @@ export default function TextFieldDialog(props) {
                         onClick={props.onCancel}>{props.cancelText}</Button>
             </Grid>
         </Container>
+    );
+}
+
+export default function create(data, sendEvent) {
+    return (
+        <TextFieldDialog
+            title={data.title}
+            description={data.description}
+            label={data.label}
+            value={data.value}
+            onCancel={() => sendEvent(data.cancelEvent)}
+            onSave={() => sendEvent(data.saveEvent)}
+            onValueChange={(v) => sendEvent(Object.assign({value: v}, data.valueChangeEvent))}
+            cancelText={data.cancelText}
+            saveText={data.saveText}/>
     );
 }

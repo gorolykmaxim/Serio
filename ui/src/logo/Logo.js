@@ -8,10 +8,14 @@ const logoStyle = makeStyles(() => ({
     }
 }));
 
-export default function Logo() {
+function Logo() {
     return (
         <Grid container justify="center" alignItems="center" classes={maxHeight()}>
             <Typography variant="h1" className={logoStyle().root} color="primary">Serio</Typography>
         </Grid>
     );
+}
+
+export default function create() {
+    return <Logo/>;
 }
