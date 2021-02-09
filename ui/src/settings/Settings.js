@@ -2,8 +2,7 @@ import {Box, Container, List, makeStyles, Paper} from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
 import ChildAppBar from "../common/ChildAppBar";
 import SettingItem from "./SettingItem";
-import RadioGroupDialog from "./RadioGroupDialog";
-import {createElement, useState} from "react";
+import {createElement} from "react";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -13,9 +12,6 @@ const useStyles = makeStyles(theme => ({
 
 function Settings() {
     const classes = useStyles();
-    const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
-    const openLanguageDialog = () => setLanguageDialogOpen(true);
-    const closeLanguageDialog = () => setLanguageDialogOpen(false);
     return (
         <Box>
             <ChildAppBar title="Settings"/>
@@ -28,21 +24,12 @@ function Settings() {
                                      autoFocus/>
                         <SettingItem name="Language"
                                      value="English"
-                                     icon={createElement(Icons["Language"])}
-                                     onClick={openLanguageDialog}/>
+                                     icon={createElement(Icons["Language"])}/>
                         <SettingItem name="Clear cache"
                                      icon={createElement(Icons["Delete"])}/>
                     </List>
                 </Paper>
             </Container>
-            <RadioGroupDialog open={languageDialogOpen}
-                              title="Choose language"
-                              saveText="Save"
-                              cancelText="Cancel"
-                              value="English"
-                              options={["English", "Русский"]}
-                              onSave={closeLanguageDialog}
-                              onCancel={closeLanguageDialog}/>
         </Box>
     );
 }

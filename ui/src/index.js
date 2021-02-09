@@ -5,12 +5,14 @@ import Logo from "./view/Logo";
 import Settings from "./settings/Settings";
 import TextFieldDialog from "./view/TextFieldDialog";
 import ConfirmationDialog from "./view/ConfirmationDialog";
+import SelectDialog from "./view/SelectDialog";
 
 const userInterface = new UserInterface(console.log, Logo);
 window.userInterface = userInterface;
 userInterface.registerView(1, TextFieldDialog);
 userInterface.registerView(2, Settings);
 userInterface.registerView(3, ConfirmationDialog);
+userInterface.registerView(4, SelectDialog);
 
 ReactDOM.render(
     userInterface.render(),
@@ -48,4 +50,16 @@ const clearCacheEvent = {
         event: "clear-cache"
     }
 };
-userInterface.displayView(clearCacheEvent);
+const selectLanguageEvent = {
+    viewId: 4,
+    title: "Choose language",
+    selectedValue: "Русский",
+    values: ["English", "Русский"],
+    cancelEvent: {
+        event: "back"
+    },
+    selectEvent: {
+        event: "language-select"
+    }
+};
+userInterface.displayView(selectLanguageEvent);

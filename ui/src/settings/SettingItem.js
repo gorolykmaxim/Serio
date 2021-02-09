@@ -1,5 +1,5 @@
 import {ListItemIcon, ListItemText} from "@material-ui/core";
-import FocusableListItem from "./FocusableListItem";
+import FocusableListItem from "../common/FocusableListItem";
 
 /**
  * @param {{name: string, value: string, icon: JSX.Element, autoFocus: boolean, onClick: Function}} props
