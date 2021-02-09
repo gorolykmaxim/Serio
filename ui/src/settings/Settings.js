@@ -1,6 +1,6 @@
 import {Box, Container, List, makeStyles, Paper} from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
-import ApplicationBar from "./ApplicationBar";
+import ApplicationBar from "../common/ApplicationBar";
 import SettingItem from "./SettingItem";
 import RadioGroupDialog from "./RadioGroupDialog";
 import {createElement, useState} from "react";

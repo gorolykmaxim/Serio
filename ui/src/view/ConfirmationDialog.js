@@ -1,6 +1,6 @@
 import {Button, Typography} from "@material-ui/core";
-import {marginBottom} from "../common/Styles";
-import CenteredView from "./CenteredView";
+import {marginBottom} from "../Styles";
+import CenteredView from "../common/CenteredView";
 
 /**
  * @param {{title: string, description: string, confirmText: string, cancelText: string, onConfirm: Function, onCancel: Function}} props

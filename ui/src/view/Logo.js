@@ -1,6 +1,6 @@
 import 'typeface-passion-one';
 import {Grid, makeStyles, Typography} from "@material-ui/core";
-import {maxHeight} from "../common/Styles";
+import {maxHeight} from "../Styles";
 
 const logoStyle = makeStyles(() => ({
     root: {

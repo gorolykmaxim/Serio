@@ -1,4 +1,4 @@
-import {maxHeight} from "../common/Styles";
+import {maxHeight} from "../Styles";
 import {Container, Grid} from "@material-ui/core";
 
 /**

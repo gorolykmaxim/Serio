@@ -1,10 +1,10 @@
 import ReactDOM from 'react-dom';
 import "./index.css";
 import UserInterface from "./UserInterface";
-import Logo from "./logo/Logo";
+import Logo from "./view/Logo";
 import Settings from "./settings/Settings";
-import TextFieldDialog from "./settings/TextFieldDialog";
-import ConfirmationDialog from "./settings/ConfirmationDialog";
+import TextFieldDialog from "./view/TextFieldDialog";
+import ConfirmationDialog from "./view/ConfirmationDialog";
 
 const userInterface = new UserInterface(console.log, Logo);
 window.userInterface = userInterface;
