@@ -1,6 +1,6 @@
 import {Box, Container, List, makeStyles, Paper} from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
-import ApplicationBar from "../common/ApplicationBar";
+import ChildAppBar from "../common/ChildAppBar";
 import SettingItem from "./SettingItem";
 import RadioGroupDialog from "./RadioGroupDialog";
 import {createElement, useState} from "react";
@@ -18,7 +18,7 @@ function Settings() {
     const closeLanguageDialog = () => setLanguageDialogOpen(false);
     return (
         <Box>
-            <ApplicationBar title="Settings" icon={<Icons.ArrowBack/>}/>
+            <ChildAppBar title="Settings"/>
             <Container maxWidth="sm">
                 <Paper className={classes.root}>
                     <List>
