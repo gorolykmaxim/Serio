@@ -5,6 +5,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         WebView view = findViewById(R.id.webview);
+        view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         view.setWebChromeClient(chromeClient);
         WebSettings settings = view.getSettings();
         settings.setJavaScriptEnabled(true);
