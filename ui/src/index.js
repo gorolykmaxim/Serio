@@ -4,11 +4,13 @@ import UserInterface from "./UserInterface";
 import Logo from "./logo/Logo";
 import Settings from "./settings/Settings";
 import TextFieldDialog from "./settings/TextFieldDialog";
+import ConfirmationDialog from "./settings/ConfirmationDialog";
 
 const userInterface = new UserInterface(console.log, Logo);
 window.userInterface = userInterface;
 userInterface.registerView(1, TextFieldDialog);
 userInterface.registerView(2, Settings);
+userInterface.registerView(3, ConfirmationDialog);
 
 ReactDOM.render(
     userInterface.render(),
@@ -33,4 +35,17 @@ const setCrawlerConfigUrlEvent = {
         event: "crawler-config-url-save"
     }
 };
-userInterface.displayView(setCrawlerConfigUrlEvent);
+const clearCacheEvent = {
+    viewId: 3,
+    title: "Clear cache",
+    description: "You are about to clear all the cache. This might temporarily decrease application's performance. Are you sure you want to do that?",
+    cancelText: "Cancel",
+    confirmText: "Confirm",
+    cancelEvent: {
+        event: "back"
+    },
+    confirmEvent: {
+        event: "clear-cache"
+    }
+};
+userInterface.displayView(clearCacheEvent);

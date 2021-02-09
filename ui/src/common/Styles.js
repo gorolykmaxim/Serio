@@ -5,3 +5,9 @@ export const maxHeight = makeStyles(() => ({
         height: "100%"
     }
 }));
+
+export const marginBottom = makeStyles(theme => ({
+    root: {
+        marginBottom: theme.spacing(1)
+    }
+}));
