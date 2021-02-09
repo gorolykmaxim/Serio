@@ -1,13 +1,13 @@
-import {Button, Container, Grid, TextField, Typography} from "@material-ui/core";
+import {Button, TextField, Typography} from "@material-ui/core";
 import {useState} from "react";
-import {marginBottom, maxHeight} from "../common/Styles";
+import {marginBottom} from "../common/Styles";
+import CenteredView from "./CenteredView";
 
 /**
  * @param {{title: string, description: string, label: string, saveText: string, cancelText: string, value: string, onValueChange: Function, onCancel: Function, onSave: Function}} props
  * @returns {JSX.Element}
  */
 function TextFieldDialog(props) {
-    const height = maxHeight();
     const margin = marginBottom();
     const [value, setValue] = useState(props.value || "");
     const onValueChanged = e => {
@@ -16,32 +16,26 @@ function TextFieldDialog(props) {
         props.onValueChange(v);
     };
     return (
-        <Container classes={height} maxWidth="xs">
-            <Grid container
-                  classes={height}
-                  direction="column"
-                  justify="center"
-                  alignItems="center">
-                <Typography variant="h6"
-                            classes={margin}>{props.title}</Typography>
-                <Typography color="textSecondary"
-                            classes={margin}>{props.description}</Typography>
-                <TextField autoFocus
-                           fullWidth
-                           label={props.label}
-                           margin="dense"
-                           value={value}
-                           onChange={onValueChanged}
-                           classes={margin}/>
-                <Button fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={props.onSave}
-                        classes={margin}>{props.saveText}</Button>
-                <Button fullWidth
-                        onClick={props.onCancel}>{props.cancelText}</Button>
-            </Grid>
-        </Container>
+        <CenteredView>
+            <Typography variant="h6"
+                        classes={margin}>{props.title}</Typography>
+            <Typography color="textSecondary"
+                        classes={margin}>{props.description}</Typography>
+            <TextField autoFocus
+                       fullWidth
+                       label={props.label}
+                       margin="dense"
+                       value={value}
+                       onChange={onValueChanged}
+                       classes={margin}/>
+            <Button fullWidth
+                    variant="contained"
+                    color="primary"
+                    onClick={props.onSave}
+                    classes={margin}>{props.saveText}</Button>
+            <Button fullWidth
+                    onClick={props.onCancel}>{props.cancelText}</Button>
+        </CenteredView>
     );
 }
 
