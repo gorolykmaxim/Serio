@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import "./index.css";
 import UserInterface from "./UserInterface";
 import Logo from "./view/Logo";
-import Settings from "./settings/Settings";
+import Settings from "./view/Settings";
 import TextFieldDialog from "./view/TextFieldDialog";
 import ConfirmationDialog from "./view/ConfirmationDialog";
 import SelectDialog from "./view/SelectDialog";
@@ -37,6 +37,38 @@ const setCrawlerConfigUrlEvent = {
         event: "crawler-config-url-save"
     }
 };
+const settingsEvent = {
+    viewId: 2,
+    title: "Settings",
+    backEvent: {
+        event: "back"
+    },
+    settings: [
+        {
+            name: "Crawler config URL",
+            value: "https://github.com/gorolykmaxim/tv-show-content",
+            icon: "Dns",
+            selectEvent: {
+                event: "set-crawler-config-url"
+            }
+        },
+        {
+            name: "Language",
+            value: "English",
+            icon: "Language",
+            selectEvent: {
+                event: "select-language"
+            }
+        },
+        {
+            name: "Clear cache",
+            icon: "Delete",
+            selectEvent: {
+                event: "ask-clear-cache-confirmation"
+            }
+        },
+    ]
+};
 const clearCacheEvent = {
     viewId: 3,
     title: "Clear cache",
@@ -62,4 +94,4 @@ const selectLanguageEvent = {
         event: "language-select"
     }
 };
-userInterface.displayView(selectLanguageEvent);
+userInterface.displayView(settingsEvent);
