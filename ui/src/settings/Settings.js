@@ -1,8 +1,6 @@
-import {Box, Container, List, makeStyles, Paper} from "@material-ui/core";
-import * as Icons from "@material-ui/icons";
+import {Box, Container, makeStyles, Paper} from "@material-ui/core";
 import ChildAppBar from "../common/ChildAppBar";
-import SettingItem from "./SettingItem";
-import {createElement} from "react";
+import FocusableList from "../common/FocusableList";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -12,22 +10,28 @@ const useStyles = makeStyles(theme => ({
 
 function Settings() {
     const classes = useStyles();
+    const items = [
+        {
+            primaryText: "Crawler config URL",
+            secondaryText: "https://github.com/gorolykmaxim/tv-show-content",
+            icon: "Dns"
+        },
+        {
+            primaryText: "Language",
+            secondaryText: "English",
+            icon: "Language"
+        },
+        {
+            primaryText: "Clear cache",
+            icon: "Delete"
+        },
+    ];
     return (
         <Box>
             <ChildAppBar title="Settings"/>
             <Container maxWidth="sm">
                 <Paper className={classes.root}>
-                    <List>
-                        <SettingItem name="Crawler config URL"
-                                     value="https://github.com/gorolykmaxim/tv-show-content"
-                                     icon={createElement(Icons["Dns"])}
-                                     autoFocus/>
-                        <SettingItem name="Language"
-                                     value="English"
-                                     icon={createElement(Icons["Language"])}/>
-                        <SettingItem name="Clear cache"
-                                     icon={createElement(Icons["Delete"])}/>
-                    </List>
+                    <FocusableList autoFocus items={items} onSelect={console.log}/>
                 </Paper>
             </Container>
         </Box>
