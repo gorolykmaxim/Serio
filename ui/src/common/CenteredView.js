@@ -1,5 +1,5 @@
 import {maxHeight} from "../Styles";
-import {Container, Grid} from "@material-ui/core";
+import {Container, Grid, Grow} from "@material-ui/core";
 
 /**
  * @param {{children: Array<JSX.Element>}} props
@@ -9,14 +9,16 @@ import {Container, Grid} from "@material-ui/core";
 export default function CenteredView(props) {
     const height = maxHeight();
     return (
-        <Container classes={height} maxWidth="xs">
-            <Grid container
-                  classes={height}
-                  direction="column"
-                  justify="center"
-                  alignItems="center">
-                {props.children}
-            </Grid>
-        </Container>
+        <Grow in>
+            <Container classes={height} maxWidth="xs">
+                <Grid container
+                      classes={height}
+                      direction="column"
+                      justify="center"
+                      alignItems="center">
+                    {props.children}
+                </Grid>
+            </Container>
+        </Grow>
     );
 }

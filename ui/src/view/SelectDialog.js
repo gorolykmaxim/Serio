@@ -1,6 +1,7 @@
-import {Box, Container} from "@material-ui/core";
+import {Box} from "@material-ui/core";
 import ChildAppBar from "../common/ChildAppBar";
 import FocusableList from "../common/FocusableList";
+import Content from "../common/Content";
 
 /**
  * @param {{title: string, selectedValue: string, values: Array<string>, onSelect: Function, onCancel: Function}} props
@@ -14,12 +15,12 @@ function SelectDialog(props) {
                          color="transparent"
                          elevation={0}
                          onBack={props.onCancel}/>
-            <Container maxWidth="sm">
+            <Content>
                 <FocusableList autoFocus
                                selected={props.selectedValue ? props.values.indexOf(props.selectedValue) : 0}
                                items={props.values.map(v => ({primaryText: v}))}
                                onSelect={i => props.onSelect(i.primaryText)}/>
-            </Container>
+            </Content>
         </Box>
     );
 }

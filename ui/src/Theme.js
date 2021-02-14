@@ -11,6 +11,11 @@ const darkTheme = createMuiTheme({
         type: "dark",
         primary: orange,
         background: black
+    },
+    transitions: {
+        duration: {
+            complex: 1000
+        }
     }
 });
 
