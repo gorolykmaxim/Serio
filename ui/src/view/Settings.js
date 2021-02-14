@@ -1,13 +1,7 @@
-import {Box, makeStyles, Paper} from "@material-ui/core";
+import {Box, Paper} from "@material-ui/core";
 import ChildAppBar from "../common/ChildAppBar";
 import FocusableList from "../common/FocusableList";
 import Content from "../common/Content";
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        marginTop: theme.spacing(2)
-    }
-}));
 
 function settingToListItem(setting) {
     return {
@@ -24,12 +18,14 @@ function settingToListItem(setting) {
  * @constructor
  */
 function Settings(props) {
-    const classes = useStyles();
     return (
         <Box>
-            <ChildAppBar title={props.title} onBack={props.onBack}/>
+            <ChildAppBar title={props.title}
+                         color="transparent"
+                         elevation={0}
+                         onBack={props.onBack}/>
             <Content>
-                <Paper className={classes.root}>
+                <Paper>
                     <FocusableList autoFocus
                                    items={props.items.map(settingToListItem)}
                                    onSelect={i => props.onSelect(i)}/>
