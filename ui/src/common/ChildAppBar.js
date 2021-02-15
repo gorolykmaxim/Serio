@@ -1,5 +1,6 @@
-import {AppBar, IconButton, Toolbar, Typography} from "@material-ui/core";
+import {AppBar, IconButton, Toolbar} from "@material-ui/core";
 import {ArrowBack} from "@material-ui/icons";
+import Text from "./Text";
 
 /**
  * @param {{title: string, color: string, elevation: number, onBack: Function}} props
@@ -13,7 +14,7 @@ export default function ChildAppBar(props) {
                 <IconButton edge="start" onClick={props.onBack}>
                     <ArrowBack/>
                 </IconButton>
-                <Typography variant="h6">{props.title}</Typography>
+                <Text variant="h6">{props.title}</Text>
             </Toolbar>
         </AppBar>
     );

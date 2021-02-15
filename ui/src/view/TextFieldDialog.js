@@ -1,7 +1,8 @@
-import {Button, TextField, Typography} from "@material-ui/core";
+import {Button, TextField} from "@material-ui/core";
 import {useState} from "react";
 import {marginBottom} from "../Styles";
 import CenteredView from "../common/CenteredView";
+import Text from "../common/Text";
 
 /**
  * @param {{title: string, description: string, label: string, saveText: string, cancelText: string, value: string, onValueChange: Function, onCancel: Function, onSave: Function}} props
@@ -17,10 +18,10 @@ function TextFieldDialog(props) {
     };
     return (
         <CenteredView>
-            <Typography variant="h6"
-                        classes={margin}>{props.title}</Typography>
-            <Typography color="textSecondary"
-                        classes={margin}>{props.description}</Typography>
+            <Text variant="h6"
+                        classes={margin}>{props.title}</Text>
+            <Text color="textSecondary"
+                        classes={margin}>{props.description}</Text>
             <TextField autoFocus
                        fullWidth
                        label={props.label}

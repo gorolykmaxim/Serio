@@ -1,6 +1,7 @@
-import {Button, Typography} from "@material-ui/core";
+import {Button} from "@material-ui/core";
 import {marginBottom} from "../Styles";
 import CenteredView from "../common/CenteredView";
+import Text from "../common/Text";
 
 /**
  * @param {{title: string, description: string, confirmText: string, cancelText: string, onConfirm: Function, onCancel: Function}} props
@@ -11,10 +12,10 @@ function ConfirmationDialog(props) {
     const margin = marginBottom();
     return (
         <CenteredView>
-            <Typography variant="h6"
-                        classes={margin}>{props.title}</Typography>
-            <Typography color="textSecondary"
-                        classes={margin}>{props.description}</Typography>
+            <Text variant="h6"
+                        classes={margin}>{props.title}</Text>
+            <Text color="textSecondary"
+                        classes={margin}>{props.description}</Text>
             <Button fullWidth
                     variant="contained"
                     color="primary"
