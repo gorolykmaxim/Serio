@@ -1,6 +1,7 @@
 import {Box, FormControl, Grid, IconButton, InputBase, makeStyles, Paper} from "@material-ui/core";
 import {Search as SearchIcon} from "@material-ui/icons";
 import ChildAppBar from "../common/ChildAppBar";
+import {callOnEnter} from "../common/BrowserEvents";
 
 const searchBarStyles = makeStyles(theme => ({
     root: {
@@ -8,14 +9,6 @@ const searchBarStyles = makeStyles(theme => ({
         verticalAlign: "middle"
     },
 }));
-
-function callOnEnter(callback) {
-    return e => {
-        if (e.key === 'Enter') {
-            callback();
-        }
-    };
-}
 
 /**
  * @param {{placeholder: string, value: string, onValueChange: Function, onSearch: Function, onBack: Function}} props

@@ -3,6 +3,7 @@ import {useState} from "react";
 import {marginBottom} from "../Styles";
 import CenteredView from "../common/CenteredView";
 import Text from "../common/Text";
+import {callOnEnter} from "../common/BrowserEvents";
 
 /**
  * @param {{title: string, description: string, label: string, saveText: string, cancelText: string, value: string, onValueChange: Function, onCancel: Function, onSave: Function}} props
@@ -28,6 +29,7 @@ function TextFieldDialog(props) {
                        margin="dense"
                        value={value}
                        onChange={onValueChanged}
+                       onKeyDown={callOnEnter(props.onSave)}
                        classes={margin}/>
             <Button fullWidth
                     variant="contained"
