@@ -9,7 +9,7 @@ import Text from "./Text";
  */
 export default function ChildAppBar(props) {
     return (
-        <AppBar position="sticky" color={props.color || "inherit"} elevation={props.elevation}>
+        <AppBar position="sticky" color={props.color || "transparent"} elevation={props.elevation || 0}>
             <Toolbar>
                 <IconButton edge="start" onClick={props.onBack}>
                     <ArrowBack/>

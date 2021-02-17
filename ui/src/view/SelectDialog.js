@@ -12,8 +12,6 @@ function SelectDialog(props) {
     return (
         <Box>
             <ChildAppBar title={props.title}
-                         color="transparent"
-                         elevation={0}
                          onBack={props.onCancel}/>
             <Content>
                 <FocusableList autoFocus

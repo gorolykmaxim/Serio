@@ -17,7 +17,7 @@ const searchBarStyles = makeStyles(theme => ({
  */
 function SearchBar(props) {
     return (
-        <ChildAppBar color="transparent" elevation={0} onBack={props.onBack}>
+        <ChildAppBar onBack={props.onBack}>
             <Grid container justify="center">
                 <Paper>
                     <FormControl classes={searchBarStyles()}>
