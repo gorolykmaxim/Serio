@@ -3,7 +3,7 @@ import {ArrowBack} from "@material-ui/icons";
 import Text from "./Text";
 
 /**
- * @param {{title: string, color: string, elevation: number, onBack: Function}} props
+ * @param {{title: string, color: string, elevation: number, onBack: Function, children: Array<JSX.Element>}} props
  * @returns {JSX.Element}
  * @constructor
  */
@@ -15,6 +15,7 @@ export default function ChildAppBar(props) {
                     <ArrowBack/>
                 </IconButton>
                 <Text variant="h6">{props.title}</Text>
+                {props.children}
             </Toolbar>
         </AppBar>
     );

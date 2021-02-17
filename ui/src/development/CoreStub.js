@@ -10,7 +10,7 @@ const setCrawlerConfigUrlEvent = {
         event: "crawler-config-url-changed"
     },
     cancelEvent: {
-        event: "back"
+        event: "back-to-settings"
     },
     saveEvent: {
         event: "crawler-config-url-save"
@@ -20,7 +20,7 @@ const settingsEvent = {
     viewId: 2,
     title: "Settings",
     backEvent: {
-        event: "back"
+        event: "back-to-settings"
     },
     settings: [
         {
@@ -55,7 +55,7 @@ const clearCacheEvent = {
     cancelText: "Cancel",
     confirmText: "Confirm",
     cancelEvent: {
-        event: "back"
+        event: "back-to-settings"
     },
     confirmEvent: {
         event: "clear-cache"
@@ -67,10 +67,25 @@ const selectLanguageEvent = {
     selectedValue: "Русский",
     values: ["English", "Русский"],
     cancelEvent: {
-        event: "back"
+        event: "back-to-settings"
     },
     selectEvent: {
         event: "language-select"
+    }
+};
+
+const searchEvent = {
+    viewId: 5,
+    searchText: "Search",
+    searchString: "",
+    searchStringChangeEvent: {
+        event: "search-string-change"
+    },
+    searchEvent: {
+        event: "search"
+    },
+    backEvent: {
+        event: "back-to-search"
     }
 };
 
@@ -85,13 +100,15 @@ export class CoreStub {
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[selectLanguageEvent.selectEvent.event] = settingsEvent;
         this.incomingToOutgoing[clearCacheEvent.confirmEvent.event] = settingsEvent;
+        this.incomingToOutgoing[searchEvent.backEvent.event] = searchEvent;
     }
     start() {
         setTimeout(() => {
-            window.userInterface.displayView(settingsEvent);
+            window.userInterface.displayView(searchEvent);
         }, 1000);
     }
     sendEvent(event) {
+        console.log(event);
         event = this.incomingToOutgoing[event.event];
         window.userInterface.displayView(event);
     }

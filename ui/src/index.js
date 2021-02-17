@@ -6,6 +6,7 @@ import Settings from "./view/Settings";
 import TextFieldDialog from "./view/TextFieldDialog";
 import ConfirmationDialog from "./view/ConfirmationDialog";
 import SelectDialog from "./view/SelectDialog";
+import Search from "./view/Search";
 import {CoreStub} from "./development/CoreStub";
 
 const coreStub = new CoreStub();
@@ -15,6 +16,7 @@ userInterface.registerView(1, TextFieldDialog);
 userInterface.registerView(2, Settings);
 userInterface.registerView(3, ConfirmationDialog);
 userInterface.registerView(4, SelectDialog);
+userInterface.registerView(5, Search);
 
 ReactDOM.render(
     userInterface.render(),
