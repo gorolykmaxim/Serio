@@ -1,11 +1,11 @@
-import {Box, FormControl, Grid, IconButton, InputBase, makeStyles, Paper} from "@material-ui/core";
+import {Box, FormControl, Grid, InputBase, makeStyles, Paper} from "@material-ui/core";
 import {Search as SearchIcon} from "@material-ui/icons";
 import ChildAppBar from "../common/ChildAppBar";
 import {callOnEnter} from "../common/BrowserEvents";
 
 const searchBarStyles = makeStyles(theme => ({
     root: {
-        marginLeft: theme.spacing(2),
+        marginLeft: theme.spacing(1),
         verticalAlign: "middle"
     },
 }));
@@ -20,6 +20,7 @@ function SearchBar(props) {
         <ChildAppBar onBack={props.onBack}>
             <Grid container justify="center">
                 <Paper>
+                    <SearchIcon classes={searchBarStyles()}/>
                     <FormControl classes={searchBarStyles()}>
                         <InputBase autoFocus
                                    placeholder={props.placeholder}
@@ -27,9 +28,6 @@ function SearchBar(props) {
                                    onChange={e => props.onValueChange(e.target.value)}
                                    value={props.value}/>
                     </FormControl>
-                    <IconButton onClick={props.onSearch}>
-                        <SearchIcon/>
-                    </IconButton>
                 </Paper>
             </Grid>
         </ChildAppBar>
