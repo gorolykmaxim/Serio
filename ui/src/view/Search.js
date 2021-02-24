@@ -11,7 +11,7 @@ const searchBarStyles = makeStyles(theme => ({
 }));
 
 /**
- * @param {{placeholder: string, value: string, onValueChange: Function, onSearch: Function, onBack: Function}} props
+ * @param {{placeholder: string, value: string, autoFocus: boolean, onValueChange: Function, onSearch: Function, onBack: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
@@ -22,7 +22,7 @@ function SearchBar(props) {
                 <Paper>
                     <SearchIcon classes={searchBarStyles()}/>
                     <FormControl classes={searchBarStyles()}>
-                        <InputBase autoFocus
+                        <InputBase autoFocus={props.autoFocus}
                                    placeholder={props.placeholder}
                                    onKeyDown={callOnEnter(props.onSearch)}
                                    onChange={e => props.onValueChange(e.target.value)}
