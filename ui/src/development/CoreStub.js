@@ -79,22 +79,24 @@ const searchEvent = {
     searchText: "Search",
     searchString: "",
     selected: 0,
-    tvShows: Array(50).fill({
-        title: "Boruto very-very-very-very-very-very-very-very-very long title",
-        lastWatched: "2348723648723563278547132649124 days ago",
-        thumbnail: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
-        selectTvShowEvent: {
-            event: "select-tv-show",
-            id: "Boruto"
-        }
-    }).concat(Array(50).fill({
-        title: "Boruto very-very-very-very-very-very-very-very-very long title",
-        thumbnail: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
-        selectTvShowEvent: {
-            event: "select-tv-show",
-            id: "Boruto"
-        }
-    })),
+    tvShows: [],
+    noTvShowsFoundText: "No TV Shows Found :(",
+    // tvShows: Array(50).fill({
+    //     title: "Boruto very-very-very-very-very-very-very-very-very long title",
+    //     lastWatched: "2348723648723563278547132649124 days ago",
+    //     thumbnail: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
+    //     selectTvShowEvent: {
+    //         event: "select-tv-show",
+    //         id: "Boruto"
+    //     }
+    // }).concat(Array(50).fill({
+    //     title: "Boruto very-very-very-very-very-very-very-very-very long title",
+    //     thumbnail: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
+    //     selectTvShowEvent: {
+    //         event: "select-tv-show",
+    //         id: "Boruto"
+    //     }
+    // })),
     searchStringChangeEvent: {
         event: "search-string-change"
     },

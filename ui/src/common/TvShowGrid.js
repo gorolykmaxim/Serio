@@ -4,6 +4,26 @@ import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
 import {useRef} from "react";
 import {useAutoFocusWhenReady} from "../Focus";
 
+const noTvShowsPlaceholderStyles = makeStyles(() => ({
+    root: {
+        height: "70vh"
+    }
+}));
+
+/**
+ * @param {{placeholderText: string}} props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+function NoTvShowsPlaceholder(props) {
+    return (
+        <Grid container classes={noTvShowsPlaceholderStyles()} justify="center" alignItems="center">
+            <Text variant="h6">{props.placeholderText}</Text>
+        </Grid>
+    );
+}
+
+
 const tvShowCardStyles = makeStyles(theme => ({
     root: {
         height: "200px",
@@ -63,7 +83,7 @@ function TvShowCard(props) {
 }
 
 /**
- * @param {{selected: number, tvShows: Array, onSelect: Function}} props
+ * @param {{selected: number, tvShows: Array, noTvShowsFoundText: string, onSelect: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
@@ -78,6 +98,11 @@ export default function TvShowGrid(props) {
                         lastWatched={tvShow.lastWatched}
                         thumbnail={tvShow.thumbnail}
                         onClick={() => props.onSelect(tvShow.selectTvShowEvent)}/>
+        );
+    }
+    if (cards.length === 0) {
+        cards.push(
+            <NoTvShowsPlaceholder placeholderText={props.noTvShowsFoundText}/>
         );
     }
     return (

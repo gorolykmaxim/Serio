@@ -40,6 +40,7 @@ function SearchBar(props) {
  * @param {{
  * searchText: string,
  * searchString: string,
+ * noTvShowsFoundText: string,
  * tvShows: Array,
  * onTvShowSelect: Function,
  * onSearchStringChange: Function,
@@ -55,13 +56,14 @@ function Search(props) {
         <Box>
             <SearchBar placeholder={props.searchText}
                        value={props.searchString}
-                       autoFocus={props.selected === undefined}
+                       autoFocus={props.tvShows.length === 0 || props.selected === undefined}
                        onValueChange={props.onSearchStringChange}
                        onSearch={props.onSearch}
                        onBack={props.onBack}/>
             <Content maxWidth={false}>
                 <TvShowGrid selected={props.selected}
                             tvShows={props.tvShows}
+                            noTvShowsFoundText={props.noTvShowsFoundText}
                             onSelect={props.onTvShowSelect}/>
             </Content>
         </Box>
@@ -73,6 +75,7 @@ export default function create(data, sendEvent) {
                    searchString={data.searchString}
                    selected={data.selected}
                    tvShows={data.tvShows}
+                   noTvShowsFoundText={data.noTvShowsFoundText}
                    onTvShowSelect={sendEvent}
                    onSearchStringChange={v => sendEvent(Object.assign({searchString: v}, data.searchStringChangeEvent))}
                    onSearch={() => sendEvent(data.searchEvent)}
