@@ -6,7 +6,7 @@ import {useAutoFocusWhenReady} from "../Focus";
 
 const noTvShowsPlaceholderStyles = makeStyles(() => ({
     root: {
-        height: "70vh"
+        height: "300px"
     }
 }));
 
