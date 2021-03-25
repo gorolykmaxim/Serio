@@ -2,6 +2,8 @@ import {Box, FormControl, Grid, InputBase, makeStyles, Paper} from "@material-ui
 import {Search as SearchIcon} from "@material-ui/icons";
 import ChildAppBar from "../common/ChildAppBar";
 import {callOnEnter} from "../common/BrowserEvents";
+import Content from "../common/Content";
+import TvShowGrid from "../common/TvShowGrid";
 
 const searchBarStyles = makeStyles(theme => ({
     root: {
@@ -35,7 +37,16 @@ function SearchBar(props) {
 }
 
 /**
- * @param {{searchText: string, searchString: string, onSearchStringChange: Function, onSearch: Function, onBack: Function}} props
+ * @param {{
+ * searchText: string,
+ * searchString: string,
+ * tvShows: Array,
+ * onTvShowSelect: Function,
+ * onSearchStringChange: Function,
+ * onSearch: Function,
+ * onBack: Function,
+ * selected: number
+ * }} props
  * @returns {JSX.Element}
  * @constructor
  */
@@ -44,9 +55,15 @@ function Search(props) {
         <Box>
             <SearchBar placeholder={props.searchText}
                        value={props.searchString}
+                       autoFocus={props.selected === undefined}
                        onValueChange={props.onSearchStringChange}
                        onSearch={props.onSearch}
                        onBack={props.onBack}/>
+            <Content maxWidth={false}>
+                <TvShowGrid selected={props.selected}
+                            tvShows={props.tvShows}
+                            onSelect={props.onTvShowSelect}/>
+            </Content>
         </Box>
     );
 }
@@ -54,6 +71,9 @@ function Search(props) {
 export default function create(data, sendEvent) {
     return <Search searchText={data.searchText}
                    searchString={data.searchString}
+                   selected={data.selected}
+                   tvShows={data.tvShows}
+                   onTvShowSelect={sendEvent}
                    onSearchStringChange={v => sendEvent(Object.assign({searchString: v}, data.searchStringChangeEvent))}
                    onSearch={() => sendEvent(data.searchEvent)}
                    onBack={() => sendEvent(data.backEvent)}/>;
