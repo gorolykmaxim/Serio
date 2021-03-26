@@ -18,9 +18,11 @@ const setCrawlerConfigUrlEvent = {
 };
 const settingsEvent = {
     viewId: 2,
-    title: "Settings",
-    backEvent: {
-        event: "back-to-search"
+    appBar: {
+        title: "Settings",
+        backEvent: {
+            event: "back-to-search"
+        },
     },
     settings: [
         {
@@ -63,12 +65,14 @@ const clearCacheEvent = {
 };
 const selectLanguageEvent = {
     viewId: 4,
-    title: "Choose language",
+    appBar: {
+        title: "Choose language",
+        backEvent: {
+            event: "back-to-settings"
+        },
+    },
     selectedValue: "Русский",
     values: ["English", "Русский"],
-    cancelEvent: {
-        event: "back-to-settings"
-    },
     selectEvent: {
         event: "language-select"
     }
@@ -118,7 +122,7 @@ export class CoreStub {
         this.incomingToOutgoing[settingsEvent.settings[0].selectEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[settingsEvent.settings[1].selectEvent.event] = selectLanguageEvent;
         this.incomingToOutgoing[settingsEvent.settings[2].selectEvent.event] = clearCacheEvent;
-        this.incomingToOutgoing[settingsEvent.backEvent.event] = searchEvent;
+        this.incomingToOutgoing[settingsEvent.appBar.backEvent.event] = searchEvent;
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.saveEvent.event] = settingsEvent;
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[selectLanguageEvent.selectEvent.event] = settingsEvent;
@@ -128,7 +132,7 @@ export class CoreStub {
     }
     start() {
         setTimeout(() => {
-            window.userInterface.displayView(searchEvent);
+            window.userInterface.displayView(settingsEvent);
         }, 1000);
     }
     sendEvent(event) {

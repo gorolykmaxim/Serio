@@ -19,7 +19,7 @@ const searchBarStyles = makeStyles(theme => ({
  */
 function SearchBar(props) {
     return (
-        <ChildAppBar onBack={props.onBack}>
+        <ChildAppBar appBar={{}} sendEvent={props.onBack}>
             <Grid container justify="center">
                 <Paper>
                     <SearchIcon classes={searchBarStyles()}/>

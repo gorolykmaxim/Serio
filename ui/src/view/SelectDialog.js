@@ -4,15 +4,14 @@ import FocusableList from "../common/FocusableList";
 import Content from "../common/Content";
 
 /**
- * @param {{title: string, selectedValue: string, values: Array<string>, onSelect: Function, onCancel: Function}} props
+ * @param {{appBar: Object, sendEvent: Function, selectedValue: string, values: Array<string>, onSelect: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
 function SelectDialog(props) {
     return (
         <Box>
-            <ChildAppBar title={props.title}
-                         onBack={props.onCancel}/>
+            <ChildAppBar {...props}/>
             <Content>
                 <FocusableList autoFocus
                                selected={props.selectedValue ? props.values.indexOf(props.selectedValue) : 0}
@@ -24,9 +23,9 @@ function SelectDialog(props) {
 }
 
 export default function create(data, sendEvent) {
-    return <SelectDialog title={data.title}
+    return <SelectDialog appBar={data.appBar}
+                         sendEvent={sendEvent}
                          selectedValue={data.selectedValue}
                          values={data.values}
-                         onSelect={(option) => sendEvent(Object.assign({value: option}, data.selectEvent))}
-                         onCancel={() => sendEvent(data.cancelEvent)}/>;
+                         onSelect={(option) => sendEvent(Object.assign({value: option}, data.selectEvent))}/>;
 }

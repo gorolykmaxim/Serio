@@ -13,15 +13,14 @@ function settingToListItem(setting) {
 }
 
 /**
- * @param {{title: string, items: Array, onSelect: Function, onBack: Function}} props
+ * @param {{appBar: Object, sendEvent: Function, items: Array, onSelect: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
 function Settings(props) {
     return (
         <Box>
-            <ChildAppBar title={props.title}
-                         onBack={props.onBack}/>
+            <ChildAppBar {...props}/>
             <Content>
                 <Paper>
                     <FocusableList autoFocus
@@ -34,8 +33,8 @@ function Settings(props) {
 }
 
 export default function create(data, sendEvent) {
-    return <Settings title={data.title}
+    return <Settings appBar={data.appBar}
+                     sendEvent={sendEvent}
                      items={data.settings}
-                     onSelect={i => sendEvent(i.selectEvent)}
-                     onBack={() => sendEvent(data.backEvent)}/>;
+                     onSelect={i => sendEvent(i.selectEvent)}/>;
 }
