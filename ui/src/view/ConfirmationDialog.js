@@ -4,38 +4,33 @@ import CenteredView from "../common/CenteredView";
 import Text from "../common/Text";
 
 /**
- * @param {{title: string, description: string, confirmText: string, cancelText: string, onConfirm: Function, onCancel: Function}} props
+ * @param {{title: string, description: string, confirmText: string, cancelText: string, confirmEvent: Object, cancelEvent: Object, sendEvent: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
 function ConfirmationDialog(props) {
+    const {title, description, confirmText, cancelText, confirmEvent, cancelEvent, sendEvent} = props;
     const margin = marginBottom();
     return (
         <CenteredView>
             <Text variant="h6"
-                        classes={margin}>{props.title}</Text>
+                        classes={margin}>{title}</Text>
             <Text color="textSecondary"
-                        classes={margin}>{props.description}</Text>
+                        classes={margin}>{description}</Text>
             <Button fullWidth
                     variant="contained"
                     color="primary"
-                    onClick={props.onConfirm}
-                    classes={margin}>{props.confirmText}</Button>
+                    onClick={() => sendEvent(confirmEvent)}
+                    classes={margin}>{confirmText}</Button>
             <Button fullWidth
                     autoFocus
-                    onClick={props.onCancel}>{props.cancelText}</Button>
+                    onClick={() => sendEvent(cancelEvent)}>{cancelText}</Button>
         </CenteredView>
     );
 }
 
 export default function create(data, sendEvent) {
     return (
-        <ConfirmationDialog
-            title={data.title}
-            description={data.description}
-            onCancel={() => sendEvent(data.cancelEvent)}
-            onConfirm={() => sendEvent(data.confirmEvent)}
-            cancelText={data.cancelText}
-            confirmText={data.confirmText}/>
+        <ConfirmationDialog sendEvent={sendEvent} {...data}/>
     );
 }
