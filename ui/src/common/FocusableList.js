@@ -1,7 +1,6 @@
 import {List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {createElement, useState} from "react";
 import * as Icons from "@material-ui/icons";
-import {useAutoFocusWhenReady} from "../Focus";
 
 /**
  * @param {{autoFocus: boolean, onClick: Function, primaryText: string, secondaryText: string, icon: string}} props
@@ -14,7 +13,7 @@ function FocusableListItem(props) {
     return (
         <ListItem button
                   selected={selected}
-                  ref={useAutoFocusWhenReady(props.autoFocus)}
+                  autoFocus={props.autoFocus}
                   onClick={props.onClick}
                   onFocus={() => setSelected(true)}
                   onBlur={() => setSelected(false)}>

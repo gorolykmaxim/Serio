@@ -12,7 +12,7 @@ const logoStyle = makeStyles(() => ({
 function Logo() {
     return (
         <Fade in timeout={useTheme().transitions.duration.complex}>
-            <CenteredView animate={false}>
+            <CenteredView>
                 <Text variant="h1" className={logoStyle().root} color="primary">Serio</Text>
             </CenteredView>
         </Fade>
