@@ -6,53 +6,45 @@ import Text from "../common/Text";
 import {callOnEnter} from "../common/BrowserEvents";
 
 /**
- * @param {{title: string, description: string, label: string, saveText: string, cancelText: string, value: string, onValueChange: Function, onCancel: Function, onSave: Function}} props
+ * @param {{title: string, description: string, label: string, confirmText: string, cancelText: string, value: string, valueChangeEvent: Object, cancelEvent: Object, confirmEvent: Object, sendEvent: Function}} props
  * @returns {JSX.Element}
  */
 function TextFieldDialog(props) {
+    const {title, description, label, confirmText, cancelText, valueChangeEvent, cancelEvent, confirmEvent, sendEvent} = props;
     const margin = marginBottom();
     const [value, setValue] = useState(props.value || "");
     const onValueChanged = e => {
         const v = e.target.value;
         setValue(v);
-        props.onValueChange(v);
+        sendEvent(Object.assign({value: v}, valueChangeEvent));
     };
     return (
         <CenteredView>
             <Text variant="h6"
-                        classes={margin}>{props.title}</Text>
+                        classes={margin}>{title}</Text>
             <Text color="textSecondary"
-                        classes={margin}>{props.description}</Text>
+                        classes={margin}>{description}</Text>
             <TextField autoFocus
                        fullWidth
-                       label={props.label}
+                       label={label}
                        margin="dense"
                        value={value}
                        onChange={onValueChanged}
-                       onKeyDown={callOnEnter(props.onSave)}
+                       onKeyDown={callOnEnter(() => sendEvent(confirmEvent))}
                        classes={margin}/>
             <Button fullWidth
                     variant="contained"
                     color="primary"
-                    onClick={props.onSave}
-                    classes={margin}>{props.saveText}</Button>
+                    onClick={() => sendEvent(confirmEvent)}
+                    classes={margin}>{confirmText}</Button>
             <Button fullWidth
-                    onClick={props.onCancel}>{props.cancelText}</Button>
+                    onClick={() => sendEvent(cancelEvent)}>{cancelText}</Button>
         </CenteredView>
     );
 }
 
 export default function create(data, sendEvent) {
     return (
-        <TextFieldDialog
-            title={data.title}
-            description={data.description}
-            label={data.label}
-            value={data.value}
-            onCancel={() => sendEvent(data.cancelEvent)}
-            onSave={() => sendEvent(data.saveEvent)}
-            onValueChange={(v) => sendEvent(Object.assign({value: v}, data.valueChangeEvent))}
-            cancelText={data.cancelText}
-            saveText={data.saveText}/>
+        <TextFieldDialog sendEvent={sendEvent} {...data}/>
     );
 }

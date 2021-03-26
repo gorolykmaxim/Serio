@@ -5,14 +5,14 @@ const setCrawlerConfigUrlEvent = {
     label: "Crawler config URL",
     value: "https://github.com/gorolykmaxim/content.json",
     cancelText: "Cancel",
-    saveText: "Save",
+    confirmText: "Save",
     valueChangeEvent: {
         event: "crawler-config-url-changed"
     },
     cancelEvent: {
         event: "back-to-settings"
     },
-    saveEvent: {
+    confirmEvent: {
         event: "crawler-config-url-save"
     }
 };
@@ -133,7 +133,7 @@ export class CoreStub {
         this.incomingToOutgoing[settingsEvent.list.items[1].selectEvent.event] = selectLanguageEvent;
         this.incomingToOutgoing[settingsEvent.list.items[2].selectEvent.event] = clearCacheEvent;
         this.incomingToOutgoing[settingsEvent.appBar.backEvent.event] = searchEvent;
-        this.incomingToOutgoing[setCrawlerConfigUrlEvent.saveEvent.event] = settingsEvent;
+        this.incomingToOutgoing[setCrawlerConfigUrlEvent.confirmEvent.event] = settingsEvent;
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = settingsEvent;
         this.incomingToOutgoing[clearCacheEvent.confirmEvent.event] = settingsEvent;
