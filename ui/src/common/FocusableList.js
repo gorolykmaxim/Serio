@@ -24,18 +24,19 @@ function FocusableListItem(props) {
 }
 
 /**
- * @param {{autoFocus: boolean, selected: number, onSelect: Function, items: Array}} props
+ * @param {{autoFocus: boolean, list: Object, sendEvent: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
 export default function FocusableList(props) {
-    const items = [];
-    for (let i = 0; i < props.items.length; i++) {
-        const item = props.items[i];
-        items.push((
+    const {selected, items} = props.list;
+    const listItems = [];
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        listItems.push((
             <FocusableListItem key={item.primaryText}
-                               autoFocus={props.autoFocus && (props.selected ? props.selected === i : i === 0)}
-                               onClick={() => props.onSelect(item)}
+                               autoFocus={props.autoFocus && (selected ? selected === i : i === 0)}
+                               onClick={() => props.sendEvent(item.selectEvent)}
                                primaryText={item.primaryText}
                                secondaryText={item.secondaryText}
                                icon={item.icon}/>
@@ -43,7 +44,7 @@ export default function FocusableList(props) {
     }
     return (
         <List>
-            {items}
+            {listItems}
         </List>
     );
 }

@@ -3,17 +3,8 @@ import ChildAppBar from "../common/ChildAppBar";
 import FocusableList from "../common/FocusableList";
 import Content from "../common/Content";
 
-function settingToListItem(setting) {
-    return {
-        primaryText: setting.name,
-        secondaryText: setting.value,
-        icon: setting.icon,
-        selectEvent: setting.selectEvent
-    };
-}
-
 /**
- * @param {{appBar: Object, sendEvent: Function, items: Array, onSelect: Function}} props
+ * @param {{appBar: Object, list: Object, sendEvent: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
@@ -23,9 +14,7 @@ function Settings(props) {
             <ChildAppBar {...props}/>
             <Content>
                 <Paper>
-                    <FocusableList autoFocus
-                                   items={props.items.map(settingToListItem)}
-                                   onSelect={i => props.onSelect(i)}/>
+                    <FocusableList autoFocus {...props}/>
                 </Paper>
             </Content>
         </Box>
@@ -33,8 +22,5 @@ function Settings(props) {
 }
 
 export default function create(data, sendEvent) {
-    return <Settings appBar={data.appBar}
-                     sendEvent={sendEvent}
-                     items={data.settings}
-                     onSelect={i => sendEvent(i.selectEvent)}/>;
+    return <Settings sendEvent={sendEvent} {...data}/>;
 }

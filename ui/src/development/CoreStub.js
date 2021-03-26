@@ -24,31 +24,33 @@ const settingsEvent = {
             event: "back-to-search"
         },
     },
-    settings: [
-        {
-            name: "Crawler config URL",
-            value: "https://github.com/gorolykmaxim/tv-show-content",
-            icon: "Dns",
-            selectEvent: {
-                event: "set-crawler-config-url"
-            }
-        },
-        {
-            name: "Language",
-            value: "English",
-            icon: "Language",
-            selectEvent: {
-                event: "select-language"
-            }
-        },
-        {
-            name: "Clear cache",
-            icon: "Delete",
-            selectEvent: {
-                event: "ask-clear-cache-confirmation"
-            }
-        },
-    ]
+    list: {
+        items: [
+            {
+                primaryText: "Crawler config URL",
+                secondaryText: "https://github.com/gorolykmaxim/tv-show-content",
+                icon: "Dns",
+                selectEvent: {
+                    event: "set-crawler-config-url"
+                }
+            },
+            {
+                primaryText: "Language",
+                secondaryText: "English",
+                icon: "Language",
+                selectEvent: {
+                    event: "select-language"
+                }
+            },
+            {
+                primaryText: "Clear cache",
+                icon: "Delete",
+                selectEvent: {
+                    event: "ask-clear-cache-confirmation"
+                }
+            },
+        ]
+    }
 };
 const clearCacheEvent = {
     viewId: 3,
@@ -71,10 +73,18 @@ const selectLanguageEvent = {
             event: "back-to-settings"
         },
     },
-    selectedValue: "Русский",
-    values: ["English", "Русский"],
-    selectEvent: {
-        event: "language-select"
+    list: {
+        selected: 1,
+        items: [
+            {
+                primaryText: "English",
+                selectEvent: {event: "language-select"}
+            },
+            {
+                primaryText: "Русский",
+                selectEvent: {event: "language-select"}
+            }
+        ]
     }
 };
 
@@ -119,13 +129,13 @@ const searchEventWithTvShows = Object.assign({
 export class CoreStub {
     constructor() {
         this.incomingToOutgoing = {};
-        this.incomingToOutgoing[settingsEvent.settings[0].selectEvent.event] = setCrawlerConfigUrlEvent;
-        this.incomingToOutgoing[settingsEvent.settings[1].selectEvent.event] = selectLanguageEvent;
-        this.incomingToOutgoing[settingsEvent.settings[2].selectEvent.event] = clearCacheEvent;
+        this.incomingToOutgoing[settingsEvent.list.items[0].selectEvent.event] = setCrawlerConfigUrlEvent;
+        this.incomingToOutgoing[settingsEvent.list.items[1].selectEvent.event] = selectLanguageEvent;
+        this.incomingToOutgoing[settingsEvent.list.items[2].selectEvent.event] = clearCacheEvent;
         this.incomingToOutgoing[settingsEvent.appBar.backEvent.event] = searchEvent;
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.saveEvent.event] = settingsEvent;
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
-        this.incomingToOutgoing[selectLanguageEvent.selectEvent.event] = settingsEvent;
+        this.incomingToOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = settingsEvent;
         this.incomingToOutgoing[clearCacheEvent.confirmEvent.event] = settingsEvent;
         this.incomingToOutgoing[searchEvent.searchEvent.event] = searchEventWithTvShows;
         this.incomingToOutgoing[searchEvent.backEvent.event] = settingsEvent;
