@@ -54,15 +54,17 @@ const settingsEvent = {
 };
 const clearCacheEvent = {
     viewId: 3,
-    title: "Clear cache",
-    description: "You are about to clear all the cache. This might temporarily decrease application's performance. Are you sure you want to do that?",
-    cancelText: "Cancel",
-    confirmText: "Confirm",
-    cancelEvent: {
-        event: "back-to-settings"
-    },
-    confirmEvent: {
-        event: "clear-cache"
+    dialog: {
+        title: "Clear cache",
+        description: "You are about to clear all the cache. This might temporarily decrease application's performance. Are you sure you want to do that?",
+        cancelText: "Cancel",
+        confirmText: "Confirm",
+        cancelEvent: {
+            event: "back-to-settings"
+        },
+        confirmEvent: {
+            event: "clear-cache"
+        }
     }
 };
 const selectLanguageEvent = {
@@ -136,7 +138,7 @@ export class CoreStub {
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.confirmEvent.event] = settingsEvent;
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = settingsEvent;
-        this.incomingToOutgoing[clearCacheEvent.confirmEvent.event] = settingsEvent;
+        this.incomingToOutgoing[clearCacheEvent.dialog.confirmEvent.event] = settingsEvent;
         this.incomingToOutgoing[searchEvent.searchEvent.event] = searchEventWithTvShows;
         this.incomingToOutgoing[searchEvent.backEvent.event] = settingsEvent;
     }
