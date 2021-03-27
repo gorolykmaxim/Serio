@@ -3,7 +3,7 @@ import {Search as SearchIcon} from "@material-ui/icons";
 import ChildAppBar from "../common/ChildAppBar";
 import {callOnEnter} from "../common/BrowserEvents";
 import Content from "../common/Content";
-import TvShowGrid from "../common/TvShowGrid";
+import CardGrid from "../common/CardGrid";
 
 const searchBarStyles = makeStyles(theme => ({
     root: {
@@ -40,9 +40,9 @@ function SearchBar(props) {
  * @param {{
  * searchText: string,
  * searchString: string,
- * noTvShowsFoundText: string,
- * tvShows: Array,
- * onTvShowSelect: Function,
+ * emptyGridPlaceholderText: string,
+ * items: Array,
+ * onSelect: Function,
  * onSearchStringChange: Function,
  * onSearch: Function,
  * onBack: Function,
@@ -56,15 +56,15 @@ function Search(props) {
         <Box>
             <SearchBar placeholder={props.searchText}
                        value={props.searchString}
-                       autoFocus={props.tvShows.length === 0 || props.selected === undefined}
+                       autoFocus={props.items.length === 0 || props.selected === undefined}
                        onValueChange={props.onSearchStringChange}
                        onSearch={props.onSearch}
                        onBack={props.onBack}/>
             <Content maxWidth={false}>
-                <TvShowGrid selected={props.selected}
-                            tvShows={props.tvShows}
-                            noTvShowsFoundText={props.noTvShowsFoundText}
-                            onSelect={props.onTvShowSelect}/>
+                <CardGrid selected={props.selected}
+                          items={props.items}
+                          emptyGridPlaceholderText={props.emptyGridPlaceholderText}
+                          onSelect={props.onSelect}/>
             </Content>
         </Box>
     );
@@ -74,9 +74,9 @@ export default function create(data, sendEvent) {
     return <Search searchText={data.searchText}
                    searchString={data.searchString}
                    selected={data.selected}
-                   tvShows={data.tvShows}
-                   noTvShowsFoundText={data.noTvShowsFoundText}
-                   onTvShowSelect={sendEvent}
+                   items={data.items}
+                   emptyGridPlaceholderText={data.emptyGridPlaceholderText}
+                   onSelect={sendEvent}
                    onSearchStringChange={v => sendEvent(Object.assign({searchString: v}, data.searchStringChangeEvent))}
                    onSearch={() => sendEvent(data.searchEvent)}
                    onBack={() => sendEvent(data.backEvent)}/>;

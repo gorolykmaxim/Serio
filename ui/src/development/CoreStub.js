@@ -102,7 +102,7 @@ const baseSearchEvent = {
     searchText: "Search",
     searchString: "",
     selected: 0,
-    noTvShowsFoundText: "No TV Shows Found :(",
+    emptyGridPlaceholderText: "No TV Shows Found :(",
     searchStringChangeEvent: {
         event: "search-string-change"
     },
@@ -114,21 +114,21 @@ const baseSearchEvent = {
     }
 };
 
-const searchEvent = Object.assign({tvShows: []}, baseSearchEvent);
+const searchEvent = Object.assign({items: []}, baseSearchEvent);
 
 const searchEventWithTvShows = Object.assign({
-    tvShows: Array(50).fill({
-        title: "Boruto very-very-very-very-very-very-very-very-very long title",
-        lastWatched: "2348723648723563278547132649124 days ago",
-        thumbnail: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
-        selectTvShowEvent: {
+    items: Array(50).fill({
+        primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
+        secondaryText: "2348723648723563278547132649124 days ago",
+        image: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
+        selectEvent: {
             event: "select-tv-show",
             id: "Boruto"
         }
     }).concat(Array(50).fill({
-        title: "Boruto very-very-very-very-very-very-very-very-very long title",
-        thumbnail: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
-        selectTvShowEvent: {
+        primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
+        image: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
+        selectEvent: {
             event: "select-tv-show",
             id: "Boruto"
         }
@@ -151,7 +151,7 @@ export class CoreStub {
     }
     start() {
         setTimeout(() => {
-            window.userInterface.displayView(settingsEvent);
+            window.userInterface.displayView(searchEvent);
         }, 1000);
     }
     sendEvent(event) {

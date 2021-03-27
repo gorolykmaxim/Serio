@@ -4,7 +4,7 @@ import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
 import {useRef} from "react";
 import {useAutoFocusWhenReady} from "../Focus";
 
-const noTvShowsPlaceholderStyles = makeStyles(() => ({
+const emptyGridPlaceholderStyles = makeStyles(() => ({
     root: {
         height: "300px"
     }
@@ -15,16 +15,16 @@ const noTvShowsPlaceholderStyles = makeStyles(() => ({
  * @returns {JSX.Element}
  * @constructor
  */
-function NoTvShowsPlaceholder(props) {
+function EmptyGridPlaceholder(props) {
     return (
-        <Grid container classes={noTvShowsPlaceholderStyles()} justify="center" alignItems="center">
+        <Grid container classes={emptyGridPlaceholderStyles()} justify="center" alignItems="center">
             <Text variant="h6">{props.placeholderText}</Text>
         </Grid>
     );
 }
 
 
-const tvShowCardStyles = makeStyles(theme => ({
+const cardStyles = makeStyles(theme => ({
     root: {
         height: "200px",
         backgroundPosition: "center",
@@ -41,13 +41,13 @@ const tvShowCardStyles = makeStyles(theme => ({
 }));
 
 /**
- * @param {{autoFocus: boolean, title: string, lastWatched: string, thumbnail: string, onClick: Function}} props
+ * @param {{autoFocus: boolean, primaryText: string, secondaryText: string, image: string, onClick: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
-function TvShowCard(props) {
+function Card(props) {
     const ripple = useRef(null);
-    const styles = tvShowCardStyles();
+    const styles = cardStyles();
     const onFocus = (e) => {
         if (window.matchMedia("(hover: none) and (pointer: none)").matches) {
             const offset = e.target.offsetTop - window.innerHeight / 2 + e.target.offsetHeight / 2;
@@ -60,7 +60,7 @@ function TvShowCard(props) {
         <Grid item xs={6} sm={4} md={2}>
             <Paper className={styles.root}
                    tabIndex={0}
-                   style={{backgroundImage: `url(${props.thumbnail})`, position: "relative"}}
+                   style={{backgroundImage: `url(${props.image})`, position: "relative"}}
                    ref={useAutoFocusWhenReady(props.autoFocus)}
                    onClick={props.onClick}
                    onFocus={onFocus}
@@ -70,10 +70,10 @@ function TvShowCard(props) {
                       justify="flex-end"
                       className={styles.textContainer}>
                     <Grid item className={styles.textItem}>
-                        <Text variant="subtitle1" noWrap={true}>{props.title}</Text>
+                        <Text variant="subtitle1" noWrap={true}>{props.primaryText}</Text>
                     </Grid>
                     <Grid item className={styles.textItem}>
-                        <Text variant="subtitle2" noWrap={true}>{props.lastWatched}</Text>
+                        <Text variant="subtitle2" noWrap={true}>{props.secondaryText}</Text>
                     </Grid>
                 </Grid>
                 <TouchRipple ref={ripple}/>
@@ -83,26 +83,26 @@ function TvShowCard(props) {
 }
 
 /**
- * @param {{selected: number, tvShows: Array, noTvShowsFoundText: string, onSelect: Function}} props
+ * @param {{selected: number, items: Array, emptyGridPlaceholderText: string, onSelect: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
-export default function TvShowGrid(props) {
+export default function CardGrid(props) {
     const cards = [];
-    for (let i = 0; i < props.tvShows.length; i++) {
-        const tvShow = props.tvShows[i];
+    for (let i = 0; i < props.items.length; i++) {
+        const item = props.items[i];
         cards.push(
-            <TvShowCard key={i}
-                        autoFocus={i === props.selected}
-                        title={tvShow.title}
-                        lastWatched={tvShow.lastWatched}
-                        thumbnail={tvShow.thumbnail}
-                        onClick={() => props.onSelect(tvShow.selectTvShowEvent)}/>
+            <Card key={i}
+                  autoFocus={i === props.selected}
+                  primaryText={item.primaryText}
+                  secondaryText={item.secondaryText}
+                  image={item.image}
+                  onClick={() => props.onSelect(item.selectEvent)}/>
         );
     }
     if (cards.length === 0) {
         cards.push(
-            <NoTvShowsPlaceholder placeholderText={props.noTvShowsFoundText}/>
+            <EmptyGridPlaceholder placeholderText={props.emptyGridPlaceholderText}/>
         );
     }
     return (
