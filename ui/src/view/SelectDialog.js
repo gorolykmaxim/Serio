@@ -8,7 +8,7 @@ import Content from "../common/Content";
  * @returns {JSX.Element}
  * @constructor
  */
-function SelectDialog(props) {
+export default function SelectDialog(props) {
     return (
         <Box>
             <ChildAppBar {...props}/>
@@ -17,8 +17,4 @@ function SelectDialog(props) {
             </Content>
         </Box>
     );
-}
-
-export default function create(data, sendEvent) {
-    return <SelectDialog sendEvent={sendEvent} {...data}/>;
 }

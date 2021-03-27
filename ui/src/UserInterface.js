@@ -1,4 +1,4 @@
-import {StrictMode, Component} from "react";
+import {StrictMode, Component, createElement} from "react";
 import {CssBaseline, ThemeProvider} from "@material-ui/core";
 import theme from "./Theme";
 
@@ -33,13 +33,13 @@ class RootView extends Component {
 }
 
 export default class UserInterface {
-    constructor(sendEvent, fallbackViewFactoryMethod) {
+    constructor(sendEvent, fallbackView) {
         this.sendEvent = sendEvent;
-        this.viewIdToFactoryMethod = {};
-        this.fallbackViewFactoryMethod = fallbackViewFactoryMethod;
+        this.idToView = {};
+        this.fallbackView = fallbackView;
     }
-    registerView(viewId, factoryMethod) {
-        this.viewIdToFactoryMethod[viewId] = factoryMethod;
+    registerView(id, view) {
+        this.idToView[id] = view;
     }
     displayView(viewInformation) {
         const event = new CustomEvent(EVENT_TYPE, {detail: viewInformation});
@@ -50,12 +50,8 @@ export default class UserInterface {
             <RootView userInterface={this}/>
         );
     }
-    _createView(viewId, data) {
-        const factoryMethod = this.viewIdToFactoryMethod[viewId];
-        if (!factoryMethod) {
-            return this.fallbackViewFactoryMethod(data, this.sendEvent);
-        } else {
-            return factoryMethod(data, this.sendEvent);
-        }
+    _createView(id, data) {
+        const view = this.idToView[id] || this.fallbackView;
+        return createElement(view, Object.assign(data, {sendEvent: this.sendEvent}));
     }
 }

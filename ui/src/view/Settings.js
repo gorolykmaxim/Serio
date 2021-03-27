@@ -8,7 +8,7 @@ import Content from "../common/Content";
  * @returns {JSX.Element}
  * @constructor
  */
-function Settings(props) {
+export default function Settings(props) {
     return (
         <Box>
             <ChildAppBar {...props}/>
@@ -19,8 +19,4 @@ function Settings(props) {
             </Content>
         </Box>
     );
-}
-
-export default function create(data, sendEvent) {
-    return <Settings sendEvent={sendEvent} {...data}/>;
 }

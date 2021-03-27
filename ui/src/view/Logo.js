@@ -9,7 +9,7 @@ const logoStyle = makeStyles(() => ({
     }
 }));
 
-function Logo() {
+export default function Logo() {
     return (
         <Fade in timeout={useTheme().transitions.duration.complex}>
             <CenteredView>
@@ -17,8 +17,4 @@ function Logo() {
             </CenteredView>
         </Fade>
     );
-}
-
-export default function create() {
-    return <Logo/>;
 }

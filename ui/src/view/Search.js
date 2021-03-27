@@ -45,7 +45,7 @@ function SearchBar(props) {
  * @returns {JSX.Element}
  * @constructor
  */
-function Search(props) {
+export default function Search(props) {
     const {items, selected} = props.cardGrid;
     return (
         <Box>
@@ -55,8 +55,4 @@ function Search(props) {
             </Content>
         </Box>
     );
-}
-
-export default function create(data, sendEvent) {
-    return <Search sendEvent={sendEvent} {...data}/>;
 }
