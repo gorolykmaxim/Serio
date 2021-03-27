@@ -6,5 +6,5 @@ import EditText from "../common/EditText";
  * @returns {JSX.Element}
  */
 export default function EditTextDialog(props) {
-    return <Dialog {...props}><EditText {...props}/></Dialog>;
+    return <Dialog autoFocus={false} {...props}><EditText {...props}/></Dialog>;
 }

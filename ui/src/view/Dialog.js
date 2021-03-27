@@ -4,7 +4,7 @@ import Text from "../common/Text";
 import {Button} from "@material-ui/core";
 
 /**
- * @param {{dialog: Object, sendEvent: Function, children: Array<JSX.Element>}} props
+ * @param {{dialog: Object, sendEvent: Function, autoFocus: boolean, children: Array<JSX.Element>}} props
  * @returns {JSX.Element}
  * @constructor
  */
@@ -24,7 +24,7 @@ export default function Dialog(props) {
                     onClick={() => props.sendEvent(confirmEvent)}
                     classes={margin}>{confirmText}</Button>
             <Button fullWidth
-                    autoFocus
+                    autoFocus={props.autoFocus !== false}
                     onClick={() => props.sendEvent(cancelEvent)}>{cancelText}</Button>
         </CenteredView>
     );
