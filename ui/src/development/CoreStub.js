@@ -1,19 +1,26 @@
 const setCrawlerConfigUrlEvent = {
     viewId: 1,
-    title: "Crawler config URL",
-    description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
-    label: "Crawler config URL",
-    value: "https://github.com/gorolykmaxim/content.json",
-    cancelText: "Cancel",
-    confirmText: "Save",
-    valueChangeEvent: {
-        event: "crawler-config-url-changed"
+    dialog: {
+        title: "Crawler config URL",
+        description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
+        cancelText: "Cancel",
+        confirmText: "Save",
+        cancelEvent: {
+            event: "back-to-settings"
+        },
+        confirmEvent: {
+            event: "crawler-config-url-save"
+        }
     },
-    cancelEvent: {
-        event: "back-to-settings"
-    },
-    confirmEvent: {
-        event: "crawler-config-url-save"
+    editText: {
+        value: "https://github.com/gorolykmaxim/content.json",
+        label: "Crawler config URL",
+        valueChangeEvent: {
+            event: "crawler-config-url-changed"
+        },
+        saveValueEvent: {
+            event: "crawler-config-url-save"
+        }
     }
 };
 const settingsEvent = {
@@ -135,8 +142,8 @@ export class CoreStub {
         this.incomingToOutgoing[settingsEvent.list.items[1].selectEvent.event] = selectLanguageEvent;
         this.incomingToOutgoing[settingsEvent.list.items[2].selectEvent.event] = clearCacheEvent;
         this.incomingToOutgoing[settingsEvent.appBar.backEvent.event] = searchEvent;
-        this.incomingToOutgoing[setCrawlerConfigUrlEvent.confirmEvent.event] = settingsEvent;
-        this.incomingToOutgoing[setCrawlerConfigUrlEvent.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
+        this.incomingToOutgoing[setCrawlerConfigUrlEvent.dialog.confirmEvent.event] = settingsEvent;
+        this.incomingToOutgoing[setCrawlerConfigUrlEvent.editText.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = settingsEvent;
         this.incomingToOutgoing[clearCacheEvent.dialog.confirmEvent.event] = settingsEvent;
         this.incomingToOutgoing[searchEvent.searchEvent.event] = searchEventWithTvShows;
