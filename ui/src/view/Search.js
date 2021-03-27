@@ -41,35 +41,22 @@ function SearchBar(props) {
 }
 
 /**
- * @param {{
- * searchBar: Object,
- * sendEvent: Function,
- * items: Array,
- * onSelect: Function,
- * selected: number
- * }} props
+ * @param {{searchBar: Object, cardGrid: Object, sendEvent: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
 function Search(props) {
+    const {items, selected} = props.cardGrid;
     return (
         <Box>
-            <SearchBar autoFocus={props.items.length === 0 || props.selected === undefined} {...props}/>
+            <SearchBar autoFocus={items.length === 0 || selected === undefined} {...props}/>
             <Content maxWidth={false}>
-                <CardGrid selected={props.selected}
-                          items={props.items}
-                          emptyGridPlaceholderText={props.emptyGridPlaceholderText}
-                          onSelect={props.onSelect}/>
+                <CardGrid {...props}/>
             </Content>
         </Box>
     );
 }
 
 export default function create(data, sendEvent) {
-    return <Search searchBar={data.searchBar}
-                   sendEvent={sendEvent}
-                   selected={data.selected}
-                   items={data.items}
-                   emptyGridPlaceholderText={data.emptyGridPlaceholderText}
-                   onSelect={sendEvent}/>;
+    return <Search sendEvent={sendEvent} {...data}/>;
 }

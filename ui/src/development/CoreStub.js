@@ -96,29 +96,25 @@ const selectLanguageEvent = {
         ]
     }
 };
-
-const baseSearchEvent = {
-    viewId: 5,
-    searchBar: {
-        placeholder: "Search",
-        initialValue: "",
-        valueChangeEvent: {
-            event: "search-string-change"
-        },
-        searchEvent: {
-            event: "search"
-        },
-        backEvent: {
-            event: "back-to-settings"
-        }
+const searchBar = {
+    placeholder: "Search",
+    initialValue: "",
+    valueChangeEvent: {
+        event: "search-string-change"
     },
-    selected: 0,
-    emptyGridPlaceholderText: "No TV Shows Found :(",
+    searchEvent: {
+        event: "search"
+    },
+    backEvent: {
+        event: "back-to-settings"
+    }
 };
-
-const searchEvent = Object.assign({items: []}, baseSearchEvent);
-
-const searchEventWithTvShows = Object.assign({
+const emptyCardGrid = {
+    items: [],
+    selected: 0,
+    emptyGridPlaceholderText: "No TV Shows Found :("
+};
+const cardGrid = {
     items: Array(50).fill({
         primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
         secondaryText: "2348723648723563278547132649124 days ago",
@@ -135,7 +131,11 @@ const searchEventWithTvShows = Object.assign({
             id: "Boruto"
         }
     })),
-}, baseSearchEvent);
+    selected: 0,
+    emptyGridPlaceholderText: "No TV Shows Found :("
+};
+const searchEvent = {viewId: 5, searchBar, cardGrid: emptyCardGrid};
+const searchEventWithTvShows = {viewId: 5, searchBar, cardGrid};
 
 export class CoreStub {
     constructor() {
