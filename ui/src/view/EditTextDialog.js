@@ -1,4 +1,4 @@
-import Dialog from "../common/Dialog";
+import Dialog from "./Dialog";
 import EditText from "../common/EditText";
 
 /**

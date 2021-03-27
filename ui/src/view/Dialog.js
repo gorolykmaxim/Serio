@@ -1,6 +1,6 @@
 import {marginBottom} from "../Styles";
-import CenteredView from "./CenteredView";
-import Text from "./Text";
+import CenteredView from "../common/CenteredView";
+import Text from "../common/Text";
 import {Button} from "@material-ui/core";
 
 /**

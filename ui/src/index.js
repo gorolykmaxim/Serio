@@ -3,7 +3,7 @@ import "./index.css";
 import UserInterface from "./UserInterface";
 import Logo from "./view/Logo";
 import Settings from "./view/Settings";
-import Dialog from "./common/Dialog";
+import Dialog from "./view/Dialog";
 import EditTextDialog from "./view/EditTextDialog";
 import SelectDialog from "./view/SelectDialog";
 import Search from "./view/Search";
