@@ -99,19 +99,21 @@ const selectLanguageEvent = {
 
 const baseSearchEvent = {
     viewId: 5,
-    searchText: "Search",
-    searchString: "",
+    searchBar: {
+        placeholder: "Search",
+        initialValue: "",
+        valueChangeEvent: {
+            event: "search-string-change"
+        },
+        searchEvent: {
+            event: "search"
+        },
+        backEvent: {
+            event: "back-to-settings"
+        }
+    },
     selected: 0,
     emptyGridPlaceholderText: "No TV Shows Found :(",
-    searchStringChangeEvent: {
-        event: "search-string-change"
-    },
-    searchEvent: {
-        event: "search"
-    },
-    backEvent: {
-        event: "back-to-settings"
-    }
 };
 
 const searchEvent = Object.assign({items: []}, baseSearchEvent);
@@ -146,8 +148,8 @@ export class CoreStub {
         this.incomingToOutgoing[setCrawlerConfigUrlEvent.editText.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
         this.incomingToOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = settingsEvent;
         this.incomingToOutgoing[clearCacheEvent.dialog.confirmEvent.event] = settingsEvent;
-        this.incomingToOutgoing[searchEvent.searchEvent.event] = searchEventWithTvShows;
-        this.incomingToOutgoing[searchEvent.backEvent.event] = settingsEvent;
+        this.incomingToOutgoing[searchEvent.searchBar.searchEvent.event] = searchEventWithTvShows;
+        this.incomingToOutgoing[searchEvent.searchBar.backEvent.event] = settingsEvent;
     }
     start() {
         setTimeout(() => {

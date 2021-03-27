@@ -1,7 +1,7 @@
-import {useState} from "react";
 import {callOnEnter} from "./BrowserEvents";
 import {TextField} from "@material-ui/core";
 import {marginBottom} from "../Styles";
+import {useValue} from "../ValueState";
 
 /**
  * @param {{editText: Object, sendEvent: Function}} props
@@ -10,12 +10,7 @@ import {marginBottom} from "../Styles";
  */
 export default function EditText(props) {
     const {label, valueChangeEvent, saveValueEvent} = props.editText;
-    const [value, setValue] = useState(props.editText.value || "");
-    const onValueChanged = e => {
-        const v = e.target.value;
-        setValue(v);
-        props.sendEvent(Object.assign({value: v}, valueChangeEvent));
-    };
+    const [value, onValueChanged] = useValue(props.editText.value, valueChangeEvent, props.sendEvent);
     return (
         <TextField autoFocus
                    fullWidth

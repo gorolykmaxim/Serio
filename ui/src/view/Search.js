@@ -4,6 +4,7 @@ import ChildAppBar from "../common/ChildAppBar";
 import {callOnEnter} from "../common/BrowserEvents";
 import Content from "../common/Content";
 import CardGrid from "../common/CardGrid";
+import {useValue} from "../ValueState";
 
 const searchBarStyles = makeStyles(theme => ({
     root: {
@@ -13,22 +14,25 @@ const searchBarStyles = makeStyles(theme => ({
 }));
 
 /**
- * @param {{placeholder: string, value: string, autoFocus: boolean, onValueChange: Function, onSearch: Function, onBack: Function}} props
+ * @param {{searchBar: Object, sendEvent: Function}} props
  * @returns {JSX.Element}
  * @constructor
  */
 function SearchBar(props) {
+    const {placeholder, initialValue, valueChangeEvent, searchEvent, backEvent} = props.searchBar;
+    const styles = searchBarStyles();
+    const [value, onValueChanged] = useValue(initialValue, valueChangeEvent, props.sendEvent);
     return (
-        <ChildAppBar appBar={{}} sendEvent={props.onBack}>
+        <ChildAppBar appBar={{backEvent}} sendEvent={props.sendEvent}>
             <Grid container justify="center">
                 <Paper>
-                    <SearchIcon classes={searchBarStyles()}/>
-                    <FormControl classes={searchBarStyles()}>
+                    <SearchIcon classes={styles}/>
+                    <FormControl classes={styles}>
                         <InputBase autoFocus={props.autoFocus}
-                                   placeholder={props.placeholder}
-                                   onKeyDown={callOnEnter(props.onSearch)}
-                                   onChange={e => props.onValueChange(e.target.value)}
-                                   value={props.value}/>
+                                   placeholder={placeholder}
+                                   onKeyDown={callOnEnter(() => props.sendEvent(searchEvent))}
+                                   onChange={onValueChanged}
+                                   value={value}/>
                     </FormControl>
                 </Paper>
             </Grid>
@@ -38,14 +42,10 @@ function SearchBar(props) {
 
 /**
  * @param {{
- * searchText: string,
- * searchString: string,
- * emptyGridPlaceholderText: string,
+ * searchBar: Object,
+ * sendEvent: Function,
  * items: Array,
  * onSelect: Function,
- * onSearchStringChange: Function,
- * onSearch: Function,
- * onBack: Function,
  * selected: number
  * }} props
  * @returns {JSX.Element}
@@ -54,12 +54,7 @@ function SearchBar(props) {
 function Search(props) {
     return (
         <Box>
-            <SearchBar placeholder={props.searchText}
-                       value={props.searchString}
-                       autoFocus={props.items.length === 0 || props.selected === undefined}
-                       onValueChange={props.onSearchStringChange}
-                       onSearch={props.onSearch}
-                       onBack={props.onBack}/>
+            <SearchBar autoFocus={props.items.length === 0 || props.selected === undefined} {...props}/>
             <Content maxWidth={false}>
                 <CardGrid selected={props.selected}
                           items={props.items}
@@ -71,13 +66,10 @@ function Search(props) {
 }
 
 export default function create(data, sendEvent) {
-    return <Search searchText={data.searchText}
-                   searchString={data.searchString}
+    return <Search searchBar={data.searchBar}
+                   sendEvent={sendEvent}
                    selected={data.selected}
                    items={data.items}
                    emptyGridPlaceholderText={data.emptyGridPlaceholderText}
-                   onSelect={sendEvent}
-                   onSearchStringChange={v => sendEvent(Object.assign({searchString: v}, data.searchStringChangeEvent))}
-                   onSearch={() => sendEvent(data.searchEvent)}
-                   onBack={() => sendEvent(data.backEvent)}/>;
+                   onSelect={sendEvent}/>;
 }
