@@ -23,8 +23,13 @@ UserInterface::UserInterface(QHttpClient& httpClient, core::TvShowCrawlerEditor 
       crawlerStepEditorViewModel(tvShowCrawlerEditor, stack),
       tvShowViewModel(100, 2, viewer, dialog, background, snackbar, stack),
       tvShowPlayerViewModel(tvShowPlayer, dialog, stack) {
+    useWmfVideoPlayerBackend();
     httpClient.assignTo(engine);
     loadFonts();
+}
+
+void UserInterface::useWmfVideoPlayerBackend() const {
+    qputenv("QT_MULTIMEDIA_PREFERRED_PLUGINS", "windowsmediafoundation");
 }
 
 void UserInterface::loadFonts() const {

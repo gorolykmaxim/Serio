@@ -6,6 +6,7 @@ import '../widgets'
 import '../animations'
 
 View {
+    property bool hasSeekedInitialOffset: false
     onCreated: {
         controls.onBackPressed.connect(() => actionRouter.trigger(ActionType.BACK, []))
         controls.onUserInteraction.connect(displayControls)
@@ -16,19 +17,10 @@ View {
         controls.onPlayPreviousEpisodePressed.connect(() => actionRouter.trigger(ActionType.PLAY_PREVIOUS_EPISODE, []))
         controls.onPlayNextEpisodePressed.connect(() => actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, []))
         watchProgressSavingTimer.onTriggered.connect(() => actionRouter.trigger(ActionType.SET_PLAYING_EPISODE_PROGRESS, [video.position, video.duration]))
-        video.onSeekableChanged.connect(() => video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100))
-        video.onStatusChanged.connect(() => video.status === MediaPlayer.EndOfMedia && actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, []))
+        video.onStatusChanged.connect(onVideoStatusChange)
         video.onErrorChanged.connect(() => actionRouter.trigger(ActionType.DISPLAY_ERROR, ["Failed to play " + tvShowPlayerViewModel.episodeName + " of " + tvShowPlayerViewModel.tvShowName + ": " + (video.errorString || "Unknown error"), true]))
     }
     onDisplayed: displayControls()
-    function displayControls() {
-        controls.opacity = 1
-        hideControlsTimer.restart()
-    }
-    function hideControlsIfPlaying() {
-        if (video.playbackState === MediaPlayer.PlayingState)
-            controls.opacity = 0
-    }
     Timer {
         id: watchProgressSavingTimer
         interval: 5000
@@ -66,5 +58,21 @@ View {
     NonDeterministicCircularProgressBar {
         anchors.centerIn: parent
         visible: video.status === MediaPlayer.Buffering || video.status === MediaPlayer.Loading
+    }
+    function displayControls() {
+        controls.opacity = 1
+        hideControlsTimer.restart()
+    }
+    function hideControlsIfPlaying() {
+        if (video.playbackState === MediaPlayer.PlayingState)
+            controls.opacity = 0
+    }
+    function onVideoStatusChange() {
+        if (video.status === MediaPlayer.EndOfMedia) {
+            actionRouter.trigger(ActionType.PLAY_NEXT_EPISODE, [])
+        } else if (video.status === MediaPlayer.Buffered && !hasSeekedInitialOffset) {
+            video.seek(video.duration * tvShowPlayerViewModel.offsetPercentage / 100)
+            hasSeekedInitialOffset = true;
+        }
     }
 }

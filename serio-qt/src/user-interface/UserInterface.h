@@ -40,6 +40,7 @@ private:
     TvShowViewModel tvShowViewModel;
     TvShowPlayerViewModel tvShowPlayerViewModel;
     QQmlApplicationEngine engine;
+    void useWmfVideoPlayerBackend() const;
     void loadFonts() const;
     void exitOnUiLoadFailure(const QUrl &url) const;
 };
