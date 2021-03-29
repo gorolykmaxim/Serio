@@ -31,11 +31,6 @@ When you run the Release version of the CMake build - a redistributable .dmg fil
 build directory.
 
 ### Windows
-In order to make video playback work:
-- build Serio target
-- execute install-codecs.bat inside <cmake-build-directory>/serio-qt as administrator (you can revert this action by
-executing uninstall-codecs.bat as administrator in the same directory)
-
 In order to build a release version you would need:
 - NSIS installed
 - NSIS_PATH env variable should be set pointing to the NSIS's installation folder
