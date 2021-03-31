@@ -4,7 +4,7 @@ Name "Serio"
 Outfile "$%NSIS_OUTPUT_DIR%\install.exe"
 Unicode True
 
-InstallDir "$PROGRAMFILES64\Serio"
+InstallDir "$APPDATA\Serio"
 
 !define MUI_ABORTWARNING
 !define MUI_FINISHPAGE_RUN "$INSTDIR\Serio.exe"
@@ -28,17 +28,11 @@ Section
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Serio" "DisplayName" "Serio"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Serio" "DisplayIcon" "$INSTDIR\icon.ico"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Serio" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-    ExecWait "regsvr32.exe /s LAVVideo.ax"
-    ExecWait "regsvr32.exe /s LAVSplitter.ax"
-    ExecWait "regsvr32.exe /s LAVVideo.ax"
     ExecWait "$INSTDIR\vc_redist.x64.exe"
 SectionEnd
 
 Section "Uninstall"
     SetOutPath $INSTDIR
-    ExecWait "regsvr32.exe /s /u LAVVideo.ax"
-    ExecWait "regsvr32.exe /s /u LAVSplitter.ax"
-    ExecWait "regsvr32.exe /s /u LAVVideo.ax"
     Delete "$INSTDIR\uninstall.exe"
     Delete "$DESKTOP\Serio.lnk"
     RMDir /r "$INSTDIR"
