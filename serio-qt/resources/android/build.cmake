@@ -1,0 +1,5 @@
+function(BuildSerio resources)
+    set(ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources/android CACHE INTERNAL "")
+    include(${ANDROID_SDK}/android_openssl/CMakeLists.txt)
+    add_library(Serio SHARED ${resources} src/main.cpp)
+endfunction()

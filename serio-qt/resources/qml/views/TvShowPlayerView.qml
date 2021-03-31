@@ -57,7 +57,7 @@ View {
     }
     NonDeterministicCircularProgressBar {
         anchors.centerIn: parent
-        visible: video.status === MediaPlayer.Buffering || video.status === MediaPlayer.Loading
+        visible: video.status === MediaPlayer.Loading
     }
     function displayControls() {
         controls.opacity = 1
