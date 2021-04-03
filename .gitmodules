@@ -7,3 +7,9 @@
 [submodule "serio-qt/resources/lib/qml-material-icons"]
 	path = serio-qt/resources/lib/qml-material-icons
 	url = https://github.com/eckertj/qml-material-icons.git
+[submodule "serio-qt/resources/lib/qt-android-cmake"]
+	path = serio-qt/resources/lib/qt-android-cmake
+	url = https://github.com/LaurentGomila/qt-android-cmake.git
+[submodule "serio-qt/resources/lib/android_openssl"]
+	path = serio-qt/resources/lib/android_openssl
+	url = https://github.com/KDAB/android_openssl.git

@@ -1,5 +1,6 @@
 function(BuildSerio resources)
-    set(ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources/android CACHE INTERNAL "")
-    include(${ANDROID_SDK}/android_openssl/CMakeLists.txt)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/resources/lib/android_openssl)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/resources/lib/qt-android-cmake)
     add_library(Serio SHARED ${resources} src/main.cpp)
+    add_qt_android_apk(SerioApk Serio DEPENDS ${ANDROID_EXTRA_LIBS})
 endfunction()

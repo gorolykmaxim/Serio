@@ -41,3 +41,21 @@ directory. That output directory will contain the executable and all the necessa
 In case NSIS_PATH env variable has been set before running the build - the output directory will also have an executable 
 installer generated. NSIS_PATH is not mandatory to build the release version: if it is not set - the installer won't be
 created but the executable and dlls will be.
+
+### Android
+In order to build you need following environment variables:
+- ANDROID_NDK
+- JAVA_HOME
+- ANDROID_SDK
+
+and following CMake properties set in the command line:
+- ANDROID_NATIVE_API_LEVEL=28
+- ANDROID_NDK
+- CMAKE_TOOLCHAIN_FILE
+- ANDROID_ABI
+- ANDROID_STL=c++_shared
+- CMAKE_FIND_ROOT_PATH=path to QT
+
+Target to build .apk - SerioApk
+
+At this point you can only generate a single .apk per ABI.
