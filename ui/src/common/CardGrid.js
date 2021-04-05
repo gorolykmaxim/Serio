@@ -1,9 +1,10 @@
 import {Grid, makeStyles, Paper, useMediaQuery} from "@material-ui/core";
 import Text from "./Text";
 import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
-import {useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useAutoFocusWhenReady} from "../Focus";
 import {grey} from "@material-ui/core/colors";
+import {useEvent} from "./BrowserEvents";
 
 const CARD_WIDTH_XS = 6;
 const CARD_WIDTH_SM = 4;
@@ -133,8 +134,20 @@ function CardPlaceholders() {
     return placeholders;
 }
 
+function useLoadMoreWhenNearBottom(externalState, items, loadMoreEvent, sendEvent) {
+    const [state, setState] = useState(externalState);
+    useEffect(() => setState(externalState), [externalState, items]);
+    useEvent("scroll", () => {
+        if (state === "loaded" && window.scrollY + window.innerHeight > document.body.scrollHeight - CARD_HEIGHT) {
+            sendEvent(loadMoreEvent);
+            setState("loading");
+        }
+    });
+}
+
 function CardList(props) {
-    const {selected, items} = props.cardGrid;
+    const {selected, items, state, loadMoreEvent} = props.cardGrid;
+    useLoadMoreWhenNearBottom(state, items, loadMoreEvent, props.sendEvent);
     const cards = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];

@@ -112,34 +112,45 @@ const searchBar = {
 const emptyCardGrid = {
     items: [],
     selected: 0,
-    state: "loaded",
+    state: "loaded all",
     emptyGridPlaceholderText: "No TV Shows Found :("
 };
+const watchedTvShow = {
+    primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
+    secondaryText: "2348723648723563278547132649124 days ago",
+    image: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
+    selectEvent: {
+        event: "select-tv-show",
+        id: "Boruto"
+    }
+};
+const notWatchedTvShow = {
+    primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
+    image: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
+    selectEvent: {
+        event: "select-tv-show",
+        id: "Boruto"
+    }
+};
 const cardGrid = {
-    items: Array(50).fill({
-        primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
-        secondaryText: "2348723648723563278547132649124 days ago",
-        image: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
-        selectEvent: {
-            event: "select-tv-show",
-            id: "Boruto"
-        }
-    }).concat(Array(50).fill({
-        primaryText: "Boruto very-very-very-very-very-very-very-very-very long title",
-        image: "https://thumbs.filmix.ac/posters/orig/boruto-2017_117605_0.jpg",
-        selectEvent: {
-            event: "select-tv-show",
-            id: "Boruto"
-        }
-    })),
+    items: Array(50).fill(watchedTvShow).concat(Array(50).fill(notWatchedTvShow)),
     selected: 0,
     state: "loaded",
+    loadMoreEvent: {event: "search-load-more"},
     emptyGridPlaceholderText: "No TV Shows Found :("
+};
+const completeCardGrid = {
+    items: cardGrid.items.concat(Array(50).fill(watchedTvShow)).concat(Array(50).fill(notWatchedTvShow)),
+    selected: cardGrid.selected,
+    state: "loaded all",
+    loadMoreEvent: cardGrid.loadMoreEvent,
+    emptyGridPlaceholderText: cardGrid.emptyGridPlaceholderText
 };
 const preSearchEvent = {viewId: 5, searchBar, cardGrid: {}};
 const loadingSearchEvent = {viewId: 5, searchBar, cardGrid: {state: "loading"}};
 const searchEvent = {viewId: 5, searchBar, cardGrid: emptyCardGrid};
 const searchEventWithTvShows = {viewId: 5, searchBar, cardGrid};
+const searchEventWithAllTvShows = {viewId: 5, searchBar, cardGrid: completeCardGrid};
 
 export class CoreStub {
     constructor() {
@@ -153,6 +164,7 @@ export class CoreStub {
         this.incomingToSendOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = this._sendSequence(settingsEvent);
         this.incomingToSendOutgoing[clearCacheEvent.dialog.confirmEvent.event] = this._sendSequence(settingsEvent);
         this.incomingToSendOutgoing[searchEvent.searchBar.searchEvent.event] = this._sendSequence(searchEvent, loadingSearchEvent, searchEventWithTvShows);
+        this.incomingToSendOutgoing[searchEventWithTvShows.cardGrid.loadMoreEvent.event] = this._sendSequence(null, searchEventWithAllTvShows);
         this.incomingToSendOutgoing[searchEvent.searchBar.backEvent.event] = this._sendSequence(settingsEvent);
     }
     start() {
@@ -170,7 +182,9 @@ export class CoreStub {
     _sendSequence() {
         return () => {
             for (let i = 0; i < arguments.length; i++) {
-                setTimeout(() => window.userInterface.displayView(arguments[i]), i * 1000);
+                if (arguments[i] !== null) {
+                    setTimeout(() => window.userInterface.displayView(arguments[i]), i * 1000);
+                }
             }
         };
     }
