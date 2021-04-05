@@ -137,6 +137,7 @@ const cardGrid = {
     emptyGridPlaceholderText: "No TV Shows Found :("
 };
 const preSearchEvent = {viewId: 5, searchBar, cardGrid: {}};
+const loadingSearchEvent = {viewId: 5, searchBar, cardGrid: {state: "loading"}};
 const searchEvent = {viewId: 5, searchBar, cardGrid: emptyCardGrid};
 const searchEventWithTvShows = {viewId: 5, searchBar, cardGrid};
 
@@ -151,7 +152,7 @@ export class CoreStub {
         this.incomingToSendOutgoing[setCrawlerConfigUrlEvent.editText.valueChangeEvent.event] = this._sendSequence(setCrawlerConfigUrlEvent);
         this.incomingToSendOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = this._sendSequence(settingsEvent);
         this.incomingToSendOutgoing[clearCacheEvent.dialog.confirmEvent.event] = this._sendSequence(settingsEvent);
-        this.incomingToSendOutgoing[searchEvent.searchBar.searchEvent.event] = this._sendSequence(searchEvent,  searchEventWithTvShows);
+        this.incomingToSendOutgoing[searchEvent.searchBar.searchEvent.event] = this._sendSequence(searchEvent, loadingSearchEvent, searchEventWithTvShows);
         this.incomingToSendOutgoing[searchEvent.searchBar.backEvent.event] = this._sendSequence(settingsEvent);
     }
     start() {

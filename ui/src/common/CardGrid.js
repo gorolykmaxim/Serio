@@ -1,8 +1,14 @@
-import {Grid, makeStyles, Paper} from "@material-ui/core";
+import {Grid, makeStyles, Paper, useMediaQuery} from "@material-ui/core";
 import Text from "./Text";
 import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
 import {useRef} from "react";
 import {useAutoFocusWhenReady} from "../Focus";
+import {grey} from "@material-ui/core/colors";
+
+const CARD_WIDTH_XS = 6;
+const CARD_WIDTH_SM = 4;
+const CARD_WIDTH_MD = 2;
+const CARD_HEIGHT = 200;
 
 const emptyGridPlaceholderStyles = makeStyles(() => ({
     root: {
@@ -26,7 +32,7 @@ function EmptyGridPlaceholder(props) {
 
 const cardStyles = makeStyles(theme => ({
     root: {
-        height: "200px",
+        height: `${CARD_HEIGHT}px`,
         backgroundPosition: "center",
         backgroundSize: "cover"
     },
@@ -57,7 +63,7 @@ function Card(props) {
     }
     const onBlur = (e) => ripple.current?.stop(e);
     return (
-        <Grid item xs={6} sm={4} md={2}>
+        <Grid item xs={CARD_WIDTH_XS} sm={CARD_WIDTH_SM} md={CARD_WIDTH_MD}>
             <Paper className={styles.root}
                    tabIndex={0}
                    style={{backgroundImage: `url(${props.image})`, position: "relative"}}
@@ -82,7 +88,52 @@ function Card(props) {
     );
 }
 
-function renderCards(props) {
+const placeholderStyles = makeStyles(() => ({
+    root: {
+        height: `${CARD_HEIGHT}px`,
+        background: grey["900"],
+        backgroundImage: `linear-gradient(to right, ${grey["900"]} 0%, ${grey["800"]} 20%, ${grey["900"]} 40%, ${grey["900"]} 100%)`,
+        backgroundRepeat: "no-repeat",
+        animation: `$shimmer 1s linear 0s infinite`,
+    },
+    "@keyframes shimmer": {
+        "0%": {
+            backgroundPosition: `-${CARD_HEIGHT}px 0`
+        },
+        "100%": {
+            backgroundPosition: `${CARD_HEIGHT}px 0`
+        }
+    }
+}));
+
+function CardPlaceholder() {
+    return (
+        <Grid item xs={CARD_WIDTH_XS} sm={CARD_WIDTH_SM} md={CARD_WIDTH_MD}>
+            <Paper classes={placeholderStyles()}/>
+        </Grid>
+    );
+}
+
+function CardPlaceholders() {
+    const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up('md'));
+    const greaterThanSm = useMediaQuery(theme => theme.breakpoints.up('sm'));
+    let cardWidth;
+    if (greaterThanMd) {
+        cardWidth = CARD_WIDTH_MD;
+    } else if (greaterThanSm) {
+        cardWidth = CARD_WIDTH_SM;
+    } else {
+        cardWidth = CARD_WIDTH_XS;
+    }
+    const placeholdersToDisplay = 12 / cardWidth * 4;
+    const placeholders = [];
+    for (let i = 0; i < placeholdersToDisplay; i++) {
+        placeholders.push(<CardPlaceholder key={i}/>);
+    }
+    return placeholders;
+}
+
+function CardList(props) {
     const {selected, items} = props.cardGrid;
     const cards = [];
     for (let i = 0; i < items.length; i++) {
@@ -109,10 +160,12 @@ export default function CardGrid(props) {
     let result;
     if (!state) {
         result = null;
+    } else if (state === "loading") {
+        result = <CardPlaceholders/>;
     } else if (items.length === 0) {
         result = <EmptyGridPlaceholder placeholderText={props.cardGrid.emptyGridPlaceholderText}/>;
     } else {
-        result = renderCards(props);
+        result = <CardList {...props}/>;
     }
     return (
         <Grid container
