@@ -36,7 +36,7 @@ public:
 private:
     Config& config;
     std::map<std::string, std::unordered_map<TextId, std::vector<TranslationRule>>> languageToTextIdToTranslationRules;
-    std::unordered_map<TextId, std::vector<TranslationRule>>* textIdToTranslationRules;
+    std::atomic<std::unordered_map<TextId, std::vector<TranslationRule>>*> textIdToTranslationRules;
 
     [[nodiscard]] std::string getTextForParameter(TextId id, const std::string& parameter) const;
     void applyParameterToText(std::string& text, const std::string& parameter, TextId id) const;

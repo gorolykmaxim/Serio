@@ -66,7 +66,7 @@ std::vector<std::string> Localization::getLanguages() const {
 
 std::string Localization::getText(TextId id) const {
     try {
-        return textIdToTranslationRules->at(id).back().text;
+        return (*textIdToTranslationRules).at(id).back().text;
     } catch (std::out_of_range& e) {
         throw MissingLocalizationError(getCurrentLanguage(), id);
     }
@@ -83,7 +83,7 @@ std::string Localization::getText(TextId id, const std::string &parameter) const
 }
 
 std::string Localization::getTextForParameter(TextId id, const std::string &parameter) const {
-    const auto rules = textIdToTranslationRules->at(id);
+    const auto rules = (*textIdToTranslationRules).at(id);
     const auto it = std::find_if(rules.cbegin(), rules.cend(),
                                  [this, &parameter] (const TranslationRule& r) { return ruleAppliesToParameter(r.parameterRule, parameter); });
     if (it == rules.cend()) {
