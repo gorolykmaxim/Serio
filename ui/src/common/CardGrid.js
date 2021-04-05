@@ -82,13 +82,8 @@ function Card(props) {
     );
 }
 
-/**
- * @param {{cardGrid: Object, sendEvent: Function}} props
- * @returns {JSX.Element}
- * @constructor
- */
-export default function CardGrid(props) {
-    const {selected, items, emptyGridPlaceholderText} = props.cardGrid;
+function renderCards(props) {
+    const {selected, items} = props.cardGrid;
     const cards = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
@@ -101,15 +96,28 @@ export default function CardGrid(props) {
                   onClick={() => props.sendEvent(item.selectEvent)}/>
         );
     }
-    if (cards.length === 0) {
-        cards.push(
-            <EmptyGridPlaceholder placeholderText={emptyGridPlaceholderText}/>
-        );
+    return cards;
+}
+
+/**
+ * @param {{cardGrid: Object, sendEvent: Function}} props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function CardGrid(props) {
+    const {items, state} = props.cardGrid;
+    let result;
+    if (!state) {
+        result = null;
+    } else if (items.length === 0) {
+        result = <EmptyGridPlaceholder placeholderText={props.cardGrid.emptyGridPlaceholderText}/>;
+    } else {
+        result = renderCards(props);
     }
     return (
         <Grid container
               spacing={2}>
-            {cards}
+            {result}
         </Grid>
     );
 }

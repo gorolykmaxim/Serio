@@ -49,7 +49,7 @@ export default function Search(props) {
     const {items, selected} = props.cardGrid;
     return (
         <Box>
-            <SearchBar autoFocus={items.length === 0 || selected === undefined} {...props}/>
+            <SearchBar autoFocus={!items || selected === undefined} {...props}/>
             <Content maxWidth={false}>
                 <CardGrid {...props}/>
             </Content>

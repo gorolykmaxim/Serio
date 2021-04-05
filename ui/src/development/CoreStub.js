@@ -112,6 +112,7 @@ const searchBar = {
 const emptyCardGrid = {
     items: [],
     selected: 0,
+    state: "loaded",
     emptyGridPlaceholderText: "No TV Shows Found :("
 };
 const cardGrid = {
@@ -132,33 +133,44 @@ const cardGrid = {
         }
     })),
     selected: 0,
+    state: "loaded",
     emptyGridPlaceholderText: "No TV Shows Found :("
 };
+const preSearchEvent = {viewId: 5, searchBar, cardGrid: {}};
 const searchEvent = {viewId: 5, searchBar, cardGrid: emptyCardGrid};
 const searchEventWithTvShows = {viewId: 5, searchBar, cardGrid};
 
 export class CoreStub {
     constructor() {
-        this.incomingToOutgoing = {};
-        this.incomingToOutgoing[settingsEvent.list.items[0].selectEvent.event] = setCrawlerConfigUrlEvent;
-        this.incomingToOutgoing[settingsEvent.list.items[1].selectEvent.event] = selectLanguageEvent;
-        this.incomingToOutgoing[settingsEvent.list.items[2].selectEvent.event] = clearCacheEvent;
-        this.incomingToOutgoing[settingsEvent.appBar.backEvent.event] = searchEvent;
-        this.incomingToOutgoing[setCrawlerConfigUrlEvent.dialog.confirmEvent.event] = settingsEvent;
-        this.incomingToOutgoing[setCrawlerConfigUrlEvent.editText.valueChangeEvent.event] = setCrawlerConfigUrlEvent;
-        this.incomingToOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = settingsEvent;
-        this.incomingToOutgoing[clearCacheEvent.dialog.confirmEvent.event] = settingsEvent;
-        this.incomingToOutgoing[searchEvent.searchBar.searchEvent.event] = searchEventWithTvShows;
-        this.incomingToOutgoing[searchEvent.searchBar.backEvent.event] = settingsEvent;
+        this.incomingToSendOutgoing = {};
+        this.incomingToSendOutgoing[settingsEvent.list.items[0].selectEvent.event] = this._sendSequence(setCrawlerConfigUrlEvent);
+        this.incomingToSendOutgoing[settingsEvent.list.items[1].selectEvent.event] = this._sendSequence(selectLanguageEvent);
+        this.incomingToSendOutgoing[settingsEvent.list.items[2].selectEvent.event] = this._sendSequence(clearCacheEvent);
+        this.incomingToSendOutgoing[settingsEvent.appBar.backEvent.event] = this._sendSequence(preSearchEvent);
+        this.incomingToSendOutgoing[setCrawlerConfigUrlEvent.dialog.confirmEvent.event] = this._sendSequence(settingsEvent);
+        this.incomingToSendOutgoing[setCrawlerConfigUrlEvent.editText.valueChangeEvent.event] = this._sendSequence(setCrawlerConfigUrlEvent);
+        this.incomingToSendOutgoing[selectLanguageEvent.list.items[0].selectEvent.event] = this._sendSequence(settingsEvent);
+        this.incomingToSendOutgoing[clearCacheEvent.dialog.confirmEvent.event] = this._sendSequence(settingsEvent);
+        this.incomingToSendOutgoing[searchEvent.searchBar.searchEvent.event] = this._sendSequence(searchEvent,  searchEventWithTvShows);
+        this.incomingToSendOutgoing[searchEvent.searchBar.backEvent.event] = this._sendSequence(settingsEvent);
     }
     start() {
         setTimeout(() => {
-            window.userInterface.displayView(searchEvent);
+            window.userInterface.displayView(preSearchEvent);
         }, 1000);
     }
     sendEvent(event) {
         console.log(event);
-        event = this.incomingToOutgoing[event.event];
-        window.userInterface.displayView(event);
+        const sendOutgoing = this.incomingToSendOutgoing[event.event];
+        if (sendOutgoing) {
+            sendOutgoing();
+        }
+    }
+    _sendSequence() {
+        return () => {
+            for (let i = 0; i < arguments.length; i++) {
+                setTimeout(() => window.userInterface.displayView(arguments[i]), i * 1000);
+            }
+        };
     }
 }
