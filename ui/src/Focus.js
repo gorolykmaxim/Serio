@@ -6,6 +6,6 @@ export function useAutoFocusWhenReady(autoFocus) {
         if (autoFocus) {
             root.current?.focus();
         }
-    });
+    }, [autoFocus]);
     return root;
 }
