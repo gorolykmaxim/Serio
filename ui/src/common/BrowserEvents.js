@@ -10,6 +10,9 @@ export function callOnEnter(callback) {
 
 export function useEvent(event, callback) {
     useEffect(() => {
+        if (!callback) {
+            return;
+        }
         window.addEventListener(event, callback);
         return () => window.removeEventListener(event, callback);
     });

@@ -142,8 +142,7 @@ const cardGrid = {
 const completeCardGrid = {
     items: cardGrid.items.concat(Array(50).fill(watchedTvShow)).concat(Array(50).fill(notWatchedTvShow)),
     selected: cardGrid.selected,
-    state: "loaded all",
-    loadMoreEvent: cardGrid.loadMoreEvent,
+    state: "loaded",
     emptyGridPlaceholderText: cardGrid.emptyGridPlaceholderText
 };
 const preSearchEvent = {viewId: 5, searchBar, cardGrid: {}};

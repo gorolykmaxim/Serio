@@ -136,14 +136,22 @@ function CardPlaceholders() {
     return placeholders;
 }
 
+function useLoadMore(loadMoreEvent, sendEvent) {
+    let onScroll = null;
+    if (loadMoreEvent !== undefined) {
+        const loadMore = debounce(LOAD_MORE_DEBOUNCE_INTERVAL, true, () => sendEvent(loadMoreEvent));
+        onScroll = () => {
+            if (window.scrollY + window.innerHeight > document.body.scrollHeight - CARD_HEIGHT) {
+                loadMore();
+            }
+        };
+    }
+    useEvent("scroll", onScroll);
+}
+
 function CardList(props) {
-    const {selected, items, state, loadMoreEvent} = props.cardGrid;
-    const loadMore = debounce(LOAD_MORE_DEBOUNCE_INTERVAL, true, () => props.sendEvent(loadMoreEvent));
-    useEvent("scroll", () => {
-        if (state === "loaded" && window.scrollY + window.innerHeight > document.body.scrollHeight - CARD_HEIGHT) {
-            loadMore();
-        }
-    });
+    const {selected, items, loadMoreEvent} = props.cardGrid;
+    useLoadMore(loadMoreEvent, props.sendEvent);
     const cards = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
