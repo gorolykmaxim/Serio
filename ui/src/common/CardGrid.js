@@ -1,15 +1,17 @@
 import {Grid, makeStyles, Paper, useMediaQuery} from "@material-ui/core";
 import Text from "./Text";
 import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
-import {useEffect, useRef, useState} from "react";
+import {useRef} from "react";
 import {useAutoFocusWhenReady} from "../Focus";
 import {grey} from "@material-ui/core/colors";
 import {useEvent} from "./BrowserEvents";
+import {debounce} from "throttle-debounce";
 
 const CARD_WIDTH_XS = 6;
 const CARD_WIDTH_SM = 4;
 const CARD_WIDTH_MD = 2;
 const CARD_HEIGHT = 200;
+const LOAD_MORE_DEBOUNCE_INTERVAL = 1000;
 
 const emptyGridPlaceholderStyles = makeStyles(() => ({
     root: {
@@ -134,20 +136,14 @@ function CardPlaceholders() {
     return placeholders;
 }
 
-function useLoadMoreWhenNearBottom(externalState, items, loadMoreEvent, sendEvent) {
-    const [state, setState] = useState(externalState);
-    useEffect(() => setState(externalState), [externalState, items]);
-    useEvent("scroll", () => {
-        if (state === "loaded" && window.scrollY + window.innerHeight > document.body.scrollHeight - CARD_HEIGHT) {
-            sendEvent(loadMoreEvent);
-            setState("loading");
-        }
-    });
-}
-
 function CardList(props) {
     const {selected, items, state, loadMoreEvent} = props.cardGrid;
-    useLoadMoreWhenNearBottom(state, items, loadMoreEvent, props.sendEvent);
+    const loadMore = debounce(LOAD_MORE_DEBOUNCE_INTERVAL, true, () => props.sendEvent(loadMoreEvent));
+    useEvent("scroll", () => {
+        if (state === "loaded" && window.scrollY + window.innerHeight > document.body.scrollHeight - CARD_HEIGHT) {
+            loadMore();
+        }
+    });
     const cards = [];
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
