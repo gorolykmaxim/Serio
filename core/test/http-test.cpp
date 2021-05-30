@@ -64,11 +64,12 @@ public:
 
 class http_test : public ::testing::Test {
 protected:
+    id_seed seed;
     const std::string res_body = "http_response body";
     const std::string cyrillic_res_body = "Поиск по сайту";
     const std::chrono::hours cache_ttl = std::chrono::hours(24);
     const std::chrono::hours outdated_cache_ttl = std::chrono::hours(-24);
-    const http_request req{"url", "POST", "http_request body", {{"header 1", "value 1"}}};
+    const http_request req{create_id(seed), "url", "POST", "http_request body", {{"header 1", "value 1"}}};
     const task response_task{process_http_response};
 
     SQLite::Database database = SQLite::Database(":memory:", SQLite::OPEN_READWRITE);
@@ -101,7 +102,7 @@ TEST_F(http_test, should_send_multiple_requests) {
     ress.reserve(2);
     for (auto i = 0; i < 2; ++i) {
         const auto num = std::to_string(i + 1);
-        http_request req{"url " + num};
+        http_request req{create_id(seed), "url " + num};
         ress.push_back({req, "http_response " + num, nativeformat::http::StatusCodeOK});
         nf_client->mock_response(req, ress[i].body);
         client.requests_to_send.push_back(req);
@@ -154,10 +155,10 @@ TEST_F(http_test, should_cache_response_for_duration_specified_in_request) {
 
 TEST_F(http_test, should_not_use_same_cached_response_for_different_requests) {
     std::vector<http_request> reqs = {
-            {req.url},
-            {req.url, req.method},
-            {req.url, req.method, req.body},
-            {req.url, req.method, req.body, {{"header 1", "value 1"}, {"header 2", "value 2"}}}
+            {create_id(seed), req.url},
+            {create_id(seed), req.url, req.method},
+            {create_id(seed), req.url, req.method, req.body},
+            {create_id(seed), req.url, req.method, req.body, {{"header 1", "value 1"}, {"header 2", "value 2"}}}
     };
     EXPECT_CALL(*nf_client, performRequest(::testing::_, ::testing::_)).Times(reqs.size());
     for (auto& req: reqs) {
@@ -194,15 +195,24 @@ TEST_F(http_test, should_miss_cache_and_fail_network_request) {
 
 TEST_F(http_test, two_requests_should_not_be_equal) {
     http_request req1;
-    http_request req2{req.url};
-    http_request req3{req.url, req.method};
-    http_request req4{req.url, req.method, req.body};
-    http_request req5{req.url, req.method, req.body, req.headers, cache_ttl};
+    http_request req2{create_id(seed), req.url};
+    http_request req3{create_id(seed), req.url, req.method};
+    http_request req4{create_id(seed), req.url, req.method, req.body};
+    http_request req5{create_id(seed), req.url, req.method, req.body, req.headers, cache_ttl};
     EXPECT_NE(req, req1);
     EXPECT_NE(req, req2);
     EXPECT_NE(req, req3);
     EXPECT_NE(req, req4);
     EXPECT_NE(req, req5);
+}
+
+
+TEST_F(http_test, two_equal_requests_with_different_ids_should_be_equal) {
+    auto req1 = req;
+    req1.id = create_id(seed);
+    auto req2 = req;
+    req2.id = create_id(seed);
+    EXPECT_EQ(req1, req2);
 }
 
 TEST_F(http_test, two_responses_should_not_be_equal) {

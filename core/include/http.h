@@ -5,11 +5,13 @@
 #include <SQLiteCpp/Database.h>
 #include <task.h>
 #include <queue.h>
+#include "id.h"
 
 const std::string USER_AGENT_HTTP_HEADER = "User-Agent";
 const std::string CONTENT_TYPE_HTTP_HEADER = "Content-Type";
 
 struct http_request {
+    id id;
     std::string url;
     std::string method;
     std::string body;
