@@ -17,3 +17,6 @@
 [submodule "core/lib/iconv-lite"]
 	path = core/lib/iconv-lite
 	url = https://github.com/gorolykmaxim/iconv-lite.git
+[submodule "core/lib/concurrentqueue"]
+	path = core/lib/concurrentqueue
+	url = https://github.com/cameron314/concurrentqueue.git
