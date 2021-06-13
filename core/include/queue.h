@@ -13,6 +13,11 @@ public:
         T t;
         return q.try_dequeue(t) ? t : std::optional<T>();
     }
+    T dequeue() {
+        T t;
+        q.wait_dequeue(t);
+        return t;
+    }
 private:
     moodycamel::BlockingConcurrentQueue<T> q;
 };

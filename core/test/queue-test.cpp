@@ -12,3 +12,11 @@ TEST(queue_test, should_deque_previously_enqueued_value) {
     q.enqueue(value);
     EXPECT_EQ(value, *q.try_dequeue());
 }
+
+TEST(queue_test, should_dequeue_previously_enqueued_value_waiting_for_it) {
+    const auto value = 42;
+    queue<int> q;
+    std::thread t([&q, value] () {q.enqueue(value);});
+    EXPECT_EQ(value, q.dequeue());
+    t.join();
+}
