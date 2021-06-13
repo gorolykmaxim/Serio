@@ -43,7 +43,7 @@ public:
         if (!req.method.empty()) {
             nf_req->setMethod(req.method);
         }
-        nf_req->setData(reinterpret_cast<const unsigned char*>(req.body.c_str()), req.body.size() + 1);
+        nf_req->setData(reinterpret_cast<const unsigned char*>(req.body.c_str()), req.body.size());
         return nf_req;
     }
 
