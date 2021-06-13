@@ -52,7 +52,7 @@ public:
         auto nf_res = std::make_shared<nativeformat::http::ResponseImplementation>(
                 nf_req,
                 reinterpret_cast<const unsigned char*>(res.c_str()),
-                res.size() + 1,
+                res.size(),
                 code,
                 false);
         if (content_type) {

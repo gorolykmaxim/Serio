@@ -62,9 +62,10 @@ static std::string read_body_from(const std::shared_ptr<nativeformat::http::Resp
     if (size == 0) {
         return "";
     }
+    std::string data(raw_data, size);
     auto content_type = res->operator[](CONTENT_TYPE_HTTP_HEADER);
     std::transform(content_type.begin(), content_type.end(), content_type.begin(), [](unsigned char c) { return std::tolower(c); });
-    return content_type.rfind("windows-1251") != std::string::npos ? iconvlite::cp2utf(raw_data) : raw_data;
+    return content_type.rfind("windows-1251") != std::string::npos ? iconvlite::cp2utf(data) : data;
 }
 
 static void send_response(queue<http_response>& response_queue, queue<task>& task_queue, const http_response& res) {
