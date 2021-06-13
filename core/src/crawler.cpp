@@ -526,6 +526,8 @@ void execute_crawlers(crawler_runtime &runtime, std::vector<http_response>& inco
     init_result_fetching(runtime.crawlers);
     start_executions(runtime.crawlers, active_execs, failed_execs, errors);
     while (!active_execs.empty() || !processed_reqs.empty() || !failed_reqs.empty()) {
+        __profile_trace(logging_system, runtime);
+        log_resuming_executions(runtime.trace, processed_reqs);
         __profile_trace(js_system, runtime);
         process_failed_requests(failed_reqs, runtime.pending_execs, failed_execs);
         process_completed_requests(processed_reqs, active_execs, runtime.pending_execs);
@@ -536,8 +538,6 @@ void execute_crawlers(crawler_runtime &runtime, std::vector<http_response>& inco
         process_regex_requests(pending_reqs, processed_reqs, failed_reqs, errors);
         __profile_trace(http_system, runtime);
         send_http_requests(pending_reqs, failed_reqs, outgoing, runtime.http_configs, runtime.pending_http_reqs, id_seed, errors);
-        __profile_trace(logging_system, runtime);
-        log_resuming_executions(runtime.trace, processed_reqs);
     }
     __profile_trace(http_system, runtime);
     remove_http_configs_of_executions(failed_execs, runtime.http_configs);
