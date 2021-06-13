@@ -268,3 +268,18 @@ TEST_F(http_test, should_not_attempt_to_convert_response_if_content_type_is_unkn
     send_http_requests(client, database, task_queue);
     EXPECT_EQ(res, *client.response_queue.try_dequeue());
 }
+
+TEST_F(http_test, should_dequeue_last_received_response_from_queue) {
+    const std::vector<http_response> expected = {{req, res_body}};
+    std::vector<http_response> actual;
+    client.response_queue.enqueue(expected[0]);
+    read_http_responses(response_task, client.response_queue, actual);
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(http_test, should_not_attempt_to_dequeue_responses_from_queue_if_wrong_task) {
+    std::vector<http_response> actual;
+    client.response_queue.enqueue({req, res_body});
+    read_http_responses({init}, client.response_queue, actual);
+    EXPECT_TRUE(actual.empty());
+}

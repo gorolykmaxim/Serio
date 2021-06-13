@@ -2,7 +2,7 @@
 #define SERIO_TASK_H
 
 enum task_type {
-    process_http_response
+    process_http_response, init
 };
 
 struct task {
