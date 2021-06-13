@@ -40,7 +40,9 @@ public:
             headers[USER_AGENT_HTTP_HEADER] = *user_agent;
         }
         auto nf_req = nativeformat::http::createRequest(req.url, headers);
-        nf_req->setMethod(req.method);
+        if (!req.method.empty()) {
+            nf_req->setMethod(req.method);
+        }
         nf_req->setData(reinterpret_cast<const unsigned char*>(req.body.c_str()), req.body.size() + 1);
         return nf_req;
     }

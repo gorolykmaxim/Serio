@@ -51,7 +51,9 @@ static std::shared_ptr<nativeformat::http::Request> make_nf_request_for(const ht
         headers[USER_AGENT_HTTP_HEADER] = user_agents[std::rand() % user_agents.size()];
     }
     auto nf_req = nativeformat::http::createRequest(req.url, headers);
-    nf_req->setMethod(req.method);
+    if (!req.method.empty()) {
+        nf_req->setMethod(req.method);
+    }
     nf_req->setData(reinterpret_cast<const unsigned char*>(req.body.c_str()), req.body.size() + 1);
     return nf_req;
 }
