@@ -81,7 +81,7 @@ void send_http_requests(http_client &client, SQLite::Database &database, queue<t
         const auto cached_res = get_from_cache(database, req_cache_key);
         if (cached_res) {
             send_response(client.response_queue, task_queue, {req, *cached_res, nativeformat::http::StatusCodeOK});
-            return;
+            continue;
         }
         const auto nf_req = make_nf_request_for(req, client.user_agents);
         client.nf_client->performRequest(nf_req, [&client, &database, &task_queue, req, req_cache_key] (const auto& nf_res) {

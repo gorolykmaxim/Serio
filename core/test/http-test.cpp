@@ -99,19 +99,23 @@ TEST_F(http_test, should_clear_requests_to_send_upon_sending_them) {
     EXPECT_TRUE(client.requests_to_send.empty());
 }
 
-TEST_F(http_test, should_send_multiple_requests) {
+TEST_F(http_test, should_send_multiple_requests_and_get_responses_from_network_and_then_from_cache) {
     std::vector<http_response> ress;
-    ress.reserve(2);
+    std::vector<http_request> reqs;
     for (auto i = 0; i < 2; ++i) {
         const auto num = std::to_string(i + 1);
         http_request req{create_id(seed), "url " + num};
+        req.cache_ttl = cache_ttl;
         ress.push_back({req, "http_response " + num, nativeformat::http::StatusCodeOK});
         nf_client->mock_response(req, ress[i].body);
-        client.requests_to_send.push_back(req);
+        reqs.push_back(req);
     }
-    send_http_requests(client, database, task_queue);
     for (auto i = 0; i < 2; i++) {
-        EXPECT_EQ(ress[i], *client.response_queue.try_dequeue());
+        client.requests_to_send = reqs;
+        send_http_requests(client, database, task_queue);
+        for (auto j = 0; j < reqs.size(); j++) {
+            EXPECT_EQ(ress[j], *client.response_queue.try_dequeue());
+        }
     }
 }
 
