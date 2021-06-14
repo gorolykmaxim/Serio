@@ -501,7 +501,7 @@ static void trace(int system, crawler_runtime& runtime) {
     if (!runtime.trace) return;
     auto& stats = runtime.profiler_statistics;
     const auto now = std::chrono::system_clock::now();
-    if (stats.current_system_id > 0) {
+    if (stats.current_system_id >= 0) {
         stats.execution_times[stats.current_system_id] += now - stats.current_time;
     }
     stats.current_system_id = system;
