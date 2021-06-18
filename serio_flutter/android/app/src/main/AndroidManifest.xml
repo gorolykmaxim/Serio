@@ -38,5 +38,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Display proper background drawable while loading the title screen.-->
+        <meta-data
+            android:name="io.flutter.embedding.android.SplashScreenDrawable"
+            android:value="@drawable/launch_background"/>
     </application>
 </manifest>
