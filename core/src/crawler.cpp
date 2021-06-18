@@ -3,7 +3,17 @@
 #include <iostream>
 
 enum crawler_system {
-    js_system, regex_system, http_system, logging_system
+    js_system,
+    regex_system,
+    http_system,
+    logging_system
+};
+
+const std::vector<std::string> CRAWLER_SYSTEM_NAMES = {
+        "JavaScript system",
+        "RegExp system",
+        "HTTP system",
+        "Logging system"
 };
 
 enum crawler_request_type {
@@ -561,16 +571,7 @@ void display_profiler_statistics(const profiler_statistics &stats) {
     }
     std::cerr << "Profiler results:" << std::endl;
     for (auto i = 0; i < stats.execution_times.size(); i++) {
-        std::string system_name;
-        if (i == js_system) {
-            system_name = "JavaScript system";
-        } else if (i == regex_system) {
-            system_name = "RegExp system";
-        } else if (i == http_system) {
-            system_name = "HTTP system";
-        } else {
-            system_name = "Logging system";
-        }
+        const auto system_name = CRAWLER_SYSTEM_NAMES[i];
         const auto duration = stats.execution_times[i];
         const auto percentage = total.count() > 0 ? duration * 100.0 / total : 0;
         std::cerr << system_name << ": " << duration.count() / 1000.0 << "ms (" << percentage << "%)" << std::endl;
