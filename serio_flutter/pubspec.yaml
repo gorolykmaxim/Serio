@@ -14,3 +14,7 @@ dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: PassionOne
+      fonts:
+        - asset: fonts/PassionOne-Regular.ttf
