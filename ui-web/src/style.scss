@@ -1,0 +1,28 @@
+@use "@material/theme" with (
+  $primary: #FF9800,
+  $background: #000000,
+  $on-primary: #000000
+);
+
+@import "material-components-web/material-components-web";
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.not-selectable {
+  user-select: none;
+  cursor: default;
+}
+
+.serio-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Passion One";
+}
