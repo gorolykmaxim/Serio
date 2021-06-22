@@ -10,6 +10,7 @@ function createTitleScreen(ui) {
 
 function displayElement(ui) {
     if (!ui.displayNext) return;
+    ui.displayNext.classList.add("serio-animation", "serio-animation-entering");
     if (ui.currentView) {
         ui.root.replaceChild(ui.displayNext, ui.currentView);
     } else {
@@ -17,6 +18,9 @@ function displayElement(ui) {
     }
     ui.currentView = ui.displayNext;
     ui.displayNext = null;
+    setTimeout(() => {
+        ui.currentView.classList.replace("serio-animation-entering", "serio-animation-entered")
+    }, 0);
 }
 
 const ui = {

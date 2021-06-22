@@ -26,3 +26,15 @@ html, body {
   align-items: center;
   font-family: "Passion One";
 }
+
+.serio-animation {
+  transition: opacity 1s;
+}
+
+.serio-animation-entering {
+  opacity: 0;
+}
+
+.serio-animation-entered {
+  opacity: 1;
+}
