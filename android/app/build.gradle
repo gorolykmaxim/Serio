@@ -37,6 +37,22 @@ android {
     }
 }
 
+task buildUi(type: Exec) {
+    workingDir "../../ui-web"
+    commandLine "npm", "run", "build"
+}
+
+task clearUi(type: Delete, dependsOn: buildUi) {
+    delete "src/main/assets"
+}
+
+task copyUi(type: Copy, dependsOn: clearUi) {
+    from "../../ui-web/dist"
+    into "src/main/assets"
+}
+
+preBuild.dependsOn copyUi
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
 }

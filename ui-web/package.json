@@ -4,7 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "serve": "parcel src/index.html"
+    "serve": "parcel src/index.html",
+    "build": "parcel build src/index.html --public-url ./"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.5",
+    "parcel-plugin-nuke-dist": "^1.0.1",
     "sass": "^1.35.1"
   }
 }
