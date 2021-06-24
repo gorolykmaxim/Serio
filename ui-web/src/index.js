@@ -1,11 +1,19 @@
-import "./style.scss";
+import * as bootstrap from "bootstrap";
 import "typeface-passion-one";
+import "./style.scss";
+
+function create(tag, ...classes) {
+    const e = document.createElement(tag);
+    e.classList.add.apply(e.classList, classes);
+    return e;
+}
 
 function createTitleScreen(ui) {
-    const e = document.createElement("div");
-    e.classList.add("serio-title", "full-height", "not-selectable", "mdc-theme--primary", "mdc-typography--headline1");
-    e.innerText = "Serio";
-    ui.displayNext = e;
+    const root = create("div", "serio-title", "full-height");
+    const title = create("h1", "display-1", "not-selectable");
+    title.innerText = "Serio";
+    root.appendChild(title);
+    ui.displayNext = root;
 }
 
 function displayElement(ui) {

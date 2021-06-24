@@ -1,10 +1,7 @@
-@use "@material/theme" with (
-  $primary: #FF9800,
-  $background: #000000,
-  $on-primary: #000000
-);
+$body-bg: #000000;
+$headings-color: #FF9800;
 
-@import "material-components-web/material-components-web";
+@import "../node_modules/bootstrap/scss/bootstrap";
 
 html, body {
   margin: 0;
