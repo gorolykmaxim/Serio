@@ -27,7 +27,7 @@ function createTitleScreen(ui) {
 
 function createEditTextDialog(ui, content) {
     const root = create("div", "center-layout", "full-height");
-    const container = create("div", "center-content", "full-height", "smartphone-max-width");
+    const container = create("div", "center-content", "full-height", "smartphone-max-width", "p-4");
     const title = create("h3", "center-text", "not-selectable");
     title.innerText = content.dialog.title;
     container.appendChild(title);
