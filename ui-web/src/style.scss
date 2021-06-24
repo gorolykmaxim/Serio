@@ -1,7 +1,17 @@
+$primary: #FF9800;
 $body-bg: #000000;
-$headings-color: #FF9800;
+$body-color: #FFFFFF;
+$text-muted: #888888;
+$input-bg: $body-bg;
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+@mixin flex($justify, $align) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: column;
+}
 
 html, body {
   margin: 0;
@@ -18,10 +28,24 @@ html, body {
 }
 
 .serio-title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 90px;
   font-family: "Passion One";
+}
+
+.center-text {
+  text-align: center;
+}
+
+.center-layout {
+  @include flex(center, center);
+}
+
+.center-content {
+  @include flex(center, stretch);
+}
+
+.smartphone-max-width {
+  max-width: 400px;
 }
 
 .serio-animation {
