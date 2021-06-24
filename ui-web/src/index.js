@@ -56,7 +56,9 @@ function displayElement(ui) {
     } else {
         ui.root.appendChild(ui.displayNext);
     }
-    ui.toFocus.focus();
+    if (ui.toFocus) {
+        ui.toFocus.focus();
+    }
     ui.currentView = ui.displayNext;
     ui.displayNext = null;
     setTimeout(() => {
@@ -67,7 +69,8 @@ function displayElement(ui) {
 const ui = {
     root: document.getElementById("root"),
     currentView: null,
-    displayNext: null
+    displayNext: null,
+    toFocus: null,
 };
 createTitleScreen(ui);
 createEditTextDialog(ui, dummyContent);
