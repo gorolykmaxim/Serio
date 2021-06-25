@@ -10,7 +10,13 @@ const dummyContent = {
         confirmText: "Save",
         cancelEvent: {event: 1},
         confirmEvent: {event: 2},
-    }
+    },
+    editText: {
+        label: "Crawler config URL",
+        value: "https://github.com/gorolykmaxim/content.json",
+        valueChangedEvent: {event: 3},
+        saveValueEvent: {event: 4},
+    },
 };
 
 function create(tag, ...classes) {
@@ -24,6 +30,20 @@ function createButton(ui, text, event, isPrimary, marginTop) {
     btn.innerText = text;
     btn.onclick = () => ui.core.sendEvent(event);
     return btn;
+}
+
+function createEditText(ui, content) {
+    const {label, value, valueChangedEvent, saveValueEvent} = content;
+    const editText = create("input", "form-control");
+    editText.value = value || "";
+    editText.setAttribute("placeholder", label);
+    editText.oninput = () => ui.core.sendEvent(Object.assign({value: editText.value}, valueChangedEvent));
+    editText.onkeydown = (e) => {
+        if (e.key === "Enter") {
+            ui.core.sendEvent(saveValueEvent);
+        }
+    };
+    return editText;
 }
 
 function createTitleScreen(ui) {
@@ -44,14 +64,13 @@ function createEditTextDialog(ui, content) {
     const description = create("p", "text-muted", "not-selectable");
     description.innerText = content.dialog.description;
     container.appendChild(description);
-    const textField = create("input", "form-control");
-    textField.setAttribute("placeholder", "Crawler config URL");
-    container.appendChild(textField);
+    const editText = createEditText(ui, content.editText);
+    container.appendChild(editText);
     container.appendChild(createButton(ui, confirmText, confirmEvent, true, true));
     container.appendChild(createButton(ui, cancelText, cancelEvent, false, true));
     root.appendChild(container);
     ui.displayNext = root;
-    ui.toFocus = textField;
+    ui.toFocus = editText;
 }
 
 function displayElement(ui) {
