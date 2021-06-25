@@ -7,7 +7,9 @@ const dummyContent = {
         title: "Crawler config URL",
         description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
         cancelText: "Cancel",
-        confirmText: "Save"
+        confirmText: "Save",
+        cancelEvent: {event: 1},
+        confirmEvent: {event: 2},
     }
 };
 
@@ -15,6 +17,13 @@ function create(tag, ...classes) {
     const e = document.createElement(tag);
     e.classList.add.apply(e.classList, classes);
     return e;
+}
+
+function createButton(ui, text, event, isPrimary, marginTop) {
+    const btn = create("button", "btn", isPrimary ? "btn-primary" : "btn-dark", marginTop ? "mt-2" : "");
+    btn.innerText = text;
+    btn.onclick = () => ui.core.sendEvent(event);
+    return btn;
 }
 
 function createTitleScreen(ui) {
@@ -26,6 +35,7 @@ function createTitleScreen(ui) {
 }
 
 function createEditTextDialog(ui, content) {
+    const {confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
     const root = create("div", "center-layout", "full-height");
     const container = create("div", "center-content", "full-height", "smartphone-max-width", "p-4");
     const title = create("h3", "center-text", "not-selectable");
@@ -37,12 +47,8 @@ function createEditTextDialog(ui, content) {
     const textField = create("input", "form-control");
     textField.setAttribute("placeholder", "Crawler config URL");
     container.appendChild(textField);
-    const save = create("button", "btn", "btn-primary", "mt-2");
-    save.innerText = content.dialog.confirmText;
-    container.appendChild(save);
-    const cancel = create("button", "btn", "btn-dark", "mt-2");
-    cancel.innerText = content.dialog.cancelText;
-    container.appendChild(cancel);
+    container.appendChild(createButton(ui, confirmText, confirmEvent, true, true));
+    container.appendChild(createButton(ui, cancelText, cancelEvent, false, true));
     root.appendChild(container);
     ui.displayNext = root;
     ui.toFocus = textField;
@@ -68,6 +74,9 @@ function displayElement(ui) {
 
 const ui = {
     root: document.getElementById("root"),
+    core: {
+        sendEvent: (e) => console.log(e),
+    },
     currentView: null,
     displayNext: null,
     toFocus: null,
