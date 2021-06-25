@@ -25,22 +25,22 @@ function create(tag, ...classes) {
     return e;
 }
 
-function createButton(ui, text, event, isPrimary, marginTop) {
+function createButton(core, text, event, isPrimary, marginTop) {
     const btn = create("button", "btn", isPrimary ? "btn-primary" : "btn-dark", marginTop ? "mt-2" : "");
     btn.innerText = text;
-    btn.onclick = () => ui.core.sendEvent(event);
+    btn.onclick = () => core.sendEvent(event);
     return btn;
 }
 
-function createEditText(ui, content) {
+function createEditText(core, content) {
     const {label, value, valueChangedEvent, saveValueEvent} = content;
     const editText = create("input", "form-control");
     editText.value = value || "";
     editText.setAttribute("placeholder", label);
-    editText.oninput = () => ui.core.sendEvent(Object.assign({value: editText.value}, valueChangedEvent));
+    editText.oninput = () => core.sendEvent(Object.assign({value: editText.value}, valueChangedEvent));
     editText.onkeydown = (e) => {
         if (e.key === "Enter") {
-            ui.core.sendEvent(saveValueEvent);
+            core.sendEvent(saveValueEvent);
         }
     };
     return editText;
@@ -54,7 +54,7 @@ function createTitleScreen(ui) {
     ui.displayNext = root;
 }
 
-function createEditTextDialog(ui, content) {
+function createEditTextDialog(ui, core, content) {
     const {confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
     const root = create("div", "center-layout", "full-height");
     const container = create("div", "center-content", "full-height", "smartphone-max-width", "p-4");
@@ -64,10 +64,10 @@ function createEditTextDialog(ui, content) {
     const description = create("p", "text-muted", "not-selectable");
     description.innerText = content.dialog.description;
     container.appendChild(description);
-    const editText = createEditText(ui, content.editText);
+    const editText = createEditText(core, content.editText);
     container.appendChild(editText);
-    container.appendChild(createButton(ui, confirmText, confirmEvent, true, true));
-    container.appendChild(createButton(ui, cancelText, cancelEvent, false, true));
+    container.appendChild(createButton(core, confirmText, confirmEvent, true, true));
+    container.appendChild(createButton(core, cancelText, cancelEvent, false, true));
     root.appendChild(container);
     ui.displayNext = root;
     ui.toFocus = editText;
@@ -93,13 +93,13 @@ function displayElement(ui) {
 
 const ui = {
     root: document.getElementById("root"),
-    core: {
-        sendEvent: (e) => console.log(e),
-    },
     currentView: null,
     displayNext: null,
     toFocus: null,
 };
+const core = {
+    sendEvent: (e) => console.log(e),
+};
 createTitleScreen(ui);
-createEditTextDialog(ui, dummyContent);
+createEditTextDialog(ui, core, dummyContent);
 displayElement(ui);
