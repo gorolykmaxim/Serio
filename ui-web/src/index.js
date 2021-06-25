@@ -19,6 +19,15 @@ const dummyContent = {
     },
 };
 
+const dummyErrorContent = {
+    dialog: {
+        title: "Whoops...",
+        description: "Something went horribly wrong :(",
+        confirmText: "Understand",
+        confirmEvent: {event: 4},
+    }
+}
+
 function create(tag, ...classes) {
     const e = document.createElement(tag);
     e.classList.add.apply(e.classList, classes);
@@ -54,7 +63,15 @@ function createTitleScreen(ui) {
     ui.displayNext = root;
 }
 
-function createEditTextDialog(ui, core, content) {
+function createDialogButton(core, text, event, isPrimary, container, focusable) {
+    if (text) {
+        const btn = createButton(core, text, event, isPrimary, true);
+        focusable.push(btn);
+        container.appendChild(btn);
+    }
+}
+
+function createDialog(ui, core, content, innerElements) {
     const {confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
     const root = create("div", "center-layout", "full-height");
     const container = create("div", "center-content", "full-height", "smartphone-max-width", "p-4");
@@ -64,12 +81,22 @@ function createEditTextDialog(ui, core, content) {
     const description = create("p", "text-muted", "not-selectable");
     description.innerText = content.dialog.description;
     container.appendChild(description);
-    const editText = createEditText(core, content.editText);
-    container.appendChild(editText);
-    container.appendChild(createButton(core, confirmText, confirmEvent, true, true));
-    container.appendChild(createButton(core, cancelText, cancelEvent, false, true));
+    if (innerElements) {
+        innerElements.forEach(e => container.appendChild(e));
+    }
+    const focusable = [];
+    createDialogButton(core, confirmText, confirmEvent, true, container, focusable);
+    createDialogButton(core, cancelText, cancelEvent, false, container, focusable);
     root.appendChild(container);
+    if (focusable.length > 0) {
+        ui.toFocus = focusable[0];
+    }
     ui.displayNext = root;
+}
+
+function createEditTextDialog(ui, core, content) {
+    const editText = createEditText(core, content.editText);
+    createDialog(ui, core, content, [editText]);
     ui.toFocus = editText;
 }
 
@@ -102,4 +129,5 @@ const core = {
 };
 createTitleScreen(ui);
 createEditTextDialog(ui, core, dummyContent);
+createDialog(ui, core, dummyErrorContent);
 displayElement(ui);
