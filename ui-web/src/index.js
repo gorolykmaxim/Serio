@@ -94,12 +94,12 @@ function createDialogButton(core, text, event, isPrimary, elements, focusable) {
 }
 
 function createDialog(ui, core, content, innerElements) {
-    const {confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
+    const {title, description, confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
     const elements = [];
-    elements.push(createTitle(content.dialog.title));
-    const description = create("p", "text-muted", "not-selectable");
-    description.innerText = content.dialog.description;
-    elements.push(description);
+    elements.push(createTitle(title));
+    const desc = create("p", "text-muted", "not-selectable");
+    desc.innerText = description;
+    elements.push(desc);
     if (innerElements) {
         elements.push.apply(elements, innerElements);
     }
