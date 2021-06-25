@@ -28,6 +28,12 @@ const dummyErrorContent = {
     }
 }
 
+const dummyLoadingContent = {
+    loading: {
+        text: "Downloading crawler config..."
+    }
+};
+
 function create(tag, ...classes) {
     const e = document.createElement(tag);
     e.classList.add.apply(e.classList, classes);
@@ -55,6 +61,22 @@ function createEditText(core, content) {
     return editText;
 }
 
+function createTitle(text) {
+    const title = create("h3", "text-center", "not-selectable");
+    title.innerText = text;
+    return title;
+}
+
+function createCenteredLayout(elements) {
+    const root = create("div", "center-layout", "full-height");
+    const container = create("div", "center-content", "full-height", "smartphone-max-width", "p-4");
+    if (elements) {
+        elements.forEach(e => container.appendChild(e));
+    }
+    root.appendChild(container);
+    return root;
+}
+
 function createTitleScreen(ui) {
     const root = create("div", "center-layout", "full-height");
     const title = create("h1", "serio-title", "not-selectable", "text-primary");
@@ -63,41 +85,54 @@ function createTitleScreen(ui) {
     ui.displayNext = root;
 }
 
-function createDialogButton(core, text, event, isPrimary, container, focusable) {
+function createDialogButton(core, text, event, isPrimary, elements, focusable) {
     if (text) {
         const btn = createButton(core, text, event, isPrimary, true);
         focusable.push(btn);
-        container.appendChild(btn);
+        elements.push(btn);
     }
 }
 
 function createDialog(ui, core, content, innerElements) {
     const {confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
-    const root = create("div", "center-layout", "full-height");
-    const container = create("div", "center-content", "full-height", "smartphone-max-width", "p-4");
-    const title = create("h3", "center-text", "not-selectable");
-    title.innerText = content.dialog.title;
-    container.appendChild(title);
+    const elements = [];
+    elements.push(createTitle(content.dialog.title));
     const description = create("p", "text-muted", "not-selectable");
     description.innerText = content.dialog.description;
-    container.appendChild(description);
+    elements.push(description);
     if (innerElements) {
-        innerElements.forEach(e => container.appendChild(e));
+        elements.push.apply(elements, innerElements);
     }
     const focusable = [];
-    createDialogButton(core, confirmText, confirmEvent, true, container, focusable);
-    createDialogButton(core, cancelText, cancelEvent, false, container, focusable);
-    root.appendChild(container);
+    createDialogButton(core, confirmText, confirmEvent, true, elements, focusable);
+    createDialogButton(core, cancelText, cancelEvent, false, elements, focusable);
     if (focusable.length > 0) {
         ui.toFocus = focusable[0];
     }
-    ui.displayNext = root;
+    ui.displayNext = createCenteredLayout(elements);
 }
 
 function createEditTextDialog(ui, core, content) {
     const editText = createEditText(core, content.editText);
     createDialog(ui, core, content, [editText]);
     ui.toFocus = editText;
+}
+
+function createLoadingScreen(ui, content) {
+    const {text} = content.loading;
+    const elements = [];
+    const spinnerContainer = create("div", "text-center");
+    const spinner = create("div", "spinner-border", "text-primary", "mb-4");
+    spinner.style.width = "8rem";
+    spinner.style.height = "8rem";
+    spinner.style.borderWidth = "0.75rem";
+    const loading = create("span", "visually-hidden");
+    loading.innerText = "Loading...";
+    spinner.appendChild(loading);
+    spinnerContainer.appendChild(spinner);
+    elements.push(spinnerContainer);
+    elements.push(createTitle(text));
+    ui.displayNext = createCenteredLayout(elements);
 }
 
 function displayElement(ui) {
@@ -130,4 +165,5 @@ const core = {
 createTitleScreen(ui);
 createEditTextDialog(ui, core, dummyContent);
 createDialog(ui, core, dummyErrorContent);
+createLoadingScreen(ui, dummyLoadingContent);
 displayElement(ui);

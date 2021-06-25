@@ -32,10 +32,6 @@ html, body {
   font-family: "Passion One";
 }
 
-.center-text {
-  text-align: center;
-}
-
 .center-layout {
   @include flex(center, center);
 }
