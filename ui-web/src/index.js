@@ -2,7 +2,15 @@ import * as bootstrap from "bootstrap";
 import "typeface-passion-one";
 import "./style.scss";
 
-const dummyContent = {
+const TITLE_SCREEN = 0;
+const EDIT_TEXT_DIALOG = 1;
+const DIALOG = 2;
+const LOADING_SCREEN = 3;
+
+const titleScreenContent = {view: TITLE_SCREEN};
+
+const editTextDialogContent = {
+    view: EDIT_TEXT_DIALOG,
     dialog: {
         title: "Crawler config URL",
         description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
@@ -19,7 +27,8 @@ const dummyContent = {
     },
 };
 
-const dummyErrorContent = {
+const dialogContent = {
+    view: DIALOG,
     dialog: {
         title: "Whoops...",
         description: "Something went horribly wrong :(",
@@ -28,7 +37,8 @@ const dummyErrorContent = {
     }
 }
 
-const dummyLoadingContent = {
+const loadingScreenContent = {
+    view: LOADING_SCREEN,
     loading: {
         text: "Downloading crawler config..."
     }
@@ -77,7 +87,8 @@ function createCenteredLayout(elements) {
     return root;
 }
 
-function createTitleScreen(ui) {
+function createTitleScreen(ui, content) {
+    if (content.view !== TITLE_SCREEN) return;
     const root = create("div", "center-layout", "full-height");
     const title = create("h1", "serio-title", "not-selectable", "text-primary");
     title.innerText = "Serio";
@@ -94,6 +105,7 @@ function createDialogButton(core, text, event, isPrimary, elements, focusable) {
 }
 
 function createDialog(ui, core, content, innerElements) {
+    if (content.view !== DIALOG && !innerElements) return;
     const {title, description, confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
     const elements = [];
     elements.push(createTitle(title));
@@ -113,12 +125,14 @@ function createDialog(ui, core, content, innerElements) {
 }
 
 function createEditTextDialog(ui, core, content) {
+    if (content.view !== EDIT_TEXT_DIALOG) return;
     const editText = createEditText(core, content.editText);
     createDialog(ui, core, content, [editText]);
     ui.toFocus = editText;
 }
 
 function createLoadingScreen(ui, content) {
+    if (content.view !== LOADING_SCREEN) return;
     const {text} = content.loading;
     const elements = [];
     const spinnerContainer = create("div", "text-center");
@@ -153,17 +167,22 @@ function displayElement(ui) {
     }, 0);
 }
 
-const ui = {
+window.ui = {
     root: document.getElementById("root"),
     currentView: null,
     displayNext: null,
     toFocus: null,
 };
-const core = {
+window.core = {
     sendEvent: (e) => console.log(e),
 };
-createTitleScreen(ui);
-createEditTextDialog(ui, core, dummyContent);
-createDialog(ui, core, dummyErrorContent);
-createLoadingScreen(ui, dummyLoadingContent);
-displayElement(ui);
+
+window.displayView = function (content) {
+    createTitleScreen(ui, content);
+    createEditTextDialog(ui, core, content);
+    createDialog(ui, core, content);
+    createLoadingScreen(ui, content);
+    displayElement(ui);
+};
+
+displayView(titleScreenContent);
