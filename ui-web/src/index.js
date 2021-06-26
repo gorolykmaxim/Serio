@@ -7,7 +7,13 @@ const EDIT_TEXT_DIALOG = 1;
 const DIALOG = 2;
 const LOADING_SCREEN = 3;
 
-const titleScreenContent = {view: TITLE_SCREEN};
+const FAST_ANIMATION = 0;
+const SLOW_ANIMATION = 1;
+
+const titleScreenContent = {
+    view: TITLE_SCREEN,
+    animation: {speed: SLOW_ANIMATION},
+};
 
 const editTextDialogContent = {
     view: EDIT_TEXT_DIALOG,
@@ -151,7 +157,6 @@ function createLoadingScreen(ui, content) {
 
 function displayElement(ui) {
     if (!ui.displayNext) return;
-    ui.displayNext.classList.add("serio-animation", "serio-animation-entering");
     if (ui.currentView) {
         ui.root.replaceChild(ui.displayNext, ui.currentView);
     } else {
@@ -162,9 +167,13 @@ function displayElement(ui) {
     }
     ui.currentView = ui.displayNext;
     ui.displayNext = null;
-    setTimeout(() => {
-        ui.currentView.classList.replace("serio-animation-entering", "serio-animation-entered")
-    }, 0);
+}
+
+function animateElement(ui, content) {
+    if (!ui.displayNext) return;
+    const animationSpeed = content.animation?.speed === SLOW_ANIMATION ? "animation-slow" : "animation-fast";
+    ui.displayNext.classList.add(animationSpeed, "animation-entering");
+    setTimeout(() => ui.currentView.classList.replace("animation-entering", "animation-entered"), 0);
 }
 
 window.ui = {
@@ -182,7 +191,9 @@ window.displayView = function (content) {
     createEditTextDialog(ui, core, content);
     createDialog(ui, core, content);
     createLoadingScreen(ui, content);
+    animateElement(ui, content);
     displayElement(ui);
 };
 
 displayView(titleScreenContent);
+setTimeout(() => displayView(editTextDialogContent), 3000);
