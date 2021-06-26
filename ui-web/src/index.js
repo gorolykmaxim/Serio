@@ -12,7 +12,7 @@ const SLOW_ANIMATION = 1;
 
 const titleScreenContent = {
     view: TITLE_SCREEN,
-    animation: {speed: SLOW_ANIMATION},
+    animation: {speed: SLOW_ANIMATION, scale: false},
 };
 
 const editTextDialogContent = {
@@ -171,9 +171,18 @@ function displayElement(ui) {
 
 function animateElement(ui, content) {
     if (!ui.displayNext) return;
-    const animationSpeed = content.animation?.speed === SLOW_ANIMATION ? "animation-slow" : "animation-fast";
-    ui.displayNext.classList.add(animationSpeed, "animation-entering");
-    setTimeout(() => ui.currentView.classList.replace("animation-entering", "animation-entered"), 0);
+    const classList = ui.displayNext.classList;
+    const animation = content.animation || {};
+    classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
+    const classesToRemoveLater = [];
+    if (animation.fade !== false) {
+        classesToRemoveLater.push("a-fade");
+    }
+    if (animation.scale !== false) {
+        classesToRemoveLater.push("a-scale");
+    }
+    classesToRemoveLater.forEach(a => classList.add(a));
+    setTimeout(() => classesToRemoveLater.forEach(c => classList.remove(c)), 0);
 }
 
 window.ui = {
