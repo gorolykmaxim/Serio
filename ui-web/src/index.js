@@ -3,6 +3,7 @@ import "typeface-passion-one";
 import "./style.scss";
 
 const DISPLAY_VIEW_TASK = 0;
+const TRANSITION_INTO_NEW_VIEW_TASK = 1;
 
 const TITLE_SCREEN = 0;
 const EDIT_TEXT_DIALOG = 1;
@@ -51,6 +52,12 @@ const loadingScreenContent = {
         text: "Downloading crawler config..."
     }
 };
+
+function removeProperty(obj, name) {
+    const value = obj[name];
+    obj[name] = null;
+    return value;
+}
 
 function shouldDisplay(task, content, view) {
     return task === DISPLAY_VIEW_TASK && content.view === view;
@@ -175,35 +182,51 @@ function displayElement(ui) {
     ui.displayNext = null;
 }
 
-function animateElement(ui, content) {
-    if (!ui.displayNext) return;
-    const classList = ui.displayNext.classList;
-    const animation = content.animation || {};
-    classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
-    const classesToRemoveLater = [];
+function animationToCSSClasses(animation) {
+    const classes = [];
     if (animation.fade !== false) {
-        classesToRemoveLater.push("a-fade");
+        classes.push("a-fade");
     }
     if (animation.scale !== false) {
-        classesToRemoveLater.push("a-scale");
+        classes.push("a-scale");
     }
-    classesToRemoveLater.forEach(a => classList.add(a));
-    setTimeout(() => classesToRemoveLater.forEach(c => classList.remove(c)), 0);
+    return classes;
 }
 
-function readContent() {
-    const content = window.content;
-    delete window.content;
-    return content;
+function animateElement(ui, content, animationState) {
+    if (ui.displayNext) {
+        // New view is requested to be rendered.
+        const animation = animationState.currentViewAnimation || {};
+        animationState.currentViewAnimation = content.animation || {};
+        if (ui.currentView) {
+            const classesToApply = animationToCSSClasses(animation);
+            if (classesToApply.length > 0) {
+                classesToApply.forEach(c => ui.currentView.classList.add(c));
+                animationState.viewToDisplayAfterAnimation = removeProperty(ui, "displayNext");
+                setTimeout(() => executeTask(TRANSITION_INTO_NEW_VIEW_TASK), animation.speed === SLOW_ANIMATION ? 1000 : 125);
+            }
+        }
+    } else if (animationState.viewToDisplayAfterAnimation) {
+        // Transition-out animation for current view has finished.
+        ui.displayNext = removeProperty(animationState, "viewToDisplayAfterAnimation");
+    }
+    if (ui.displayNext) {
+        const animation = animationState.currentViewAnimation;
+        const classList = ui.displayNext.classList;
+        classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
+        const classesToRemoveLater = animationToCSSClasses(animation);
+        classesToRemoveLater.forEach(a => classList.add(a));
+        setTimeout(() => classesToRemoveLater.forEach(c => classList.remove(c)), 0);
+    }
 }
 
 function executeTask(task) {
-    const content = readContent();
+    const content = removeProperty(window, "content") || {};
     createTitleScreen(ui, content, task);
     createEditTextDialog(ui, core, content, task);
     createDialog(ui, core, content, task);
     createLoadingScreen(ui, content, task);
-    animateElement(ui, content);
+    animateElement(ui, content, animationState);
     displayElement(ui);
 }
 
@@ -215,6 +238,10 @@ window.ui = {
 };
 window.core = {
     sendEvent: (e) => console.log(e),
+};
+window.animationState = {
+    currentViewAnimation: null,
+    viewToDisplayAfterAnimation: null,
 };
 
 window.displayView = function (content) {
