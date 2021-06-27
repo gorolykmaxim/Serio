@@ -31,6 +31,7 @@ const editTextDialogContent = {
         valueChangedEvent: {event: 3},
         saveValueEvent: {event: 4},
     },
+    animation: {scale: false, fade: false},
 };
 
 const dialogContent = {
@@ -190,22 +191,22 @@ function animateElement(ui, content, animationState) {
     if (ui.displayNext) {
         // New view is requested to be rendered.
         const animation = animationState.currentViewAnimation || {};
-        animationState.currentViewAnimation = content.animation || {};
         const classesToApply = animationToCSSClasses(animation);
         if (classesToApply.length > 0 && ui.currentView) {
             // Don't trigger transition-out animation if it is already running, just replace the view, that needs
             // be displayed after it.
-            // Warning: if view A is being transitioned-out, view B was previously specified to replace it and we are
-            // now here (we have view C, that needs to replace view B) - "animation" and "classesToApply" belong to view
-            // B, not A, thus we SHOULD NOT use them, since they are invalid right now (we are still transitioning A out).
             if (!animationState.viewToDisplayAfterAnimation) {
                 classesToApply.forEach(c => ui.currentView.classList.add(c));
                 setTimeout(renderUI, animation.speed === SLOW_ANIMATION ? 1000 : 125);
             }
             animationState.viewToDisplayAfterAnimation = removeProperty(ui, "displayNext");
+            animationState.nextViewAnimation = content.animation || {};
+        } else {
+            animationState.currentViewAnimation = content.animation || {};
         }
     } else if (animationState.viewToDisplayAfterAnimation) {
         // Transition-out animation for current view has finished.
+        animationState.currentViewAnimation = removeProperty(animationState, "nextViewAnimation");
         ui.displayNext = removeProperty(animationState, "viewToDisplayAfterAnimation");
     }
     if (ui.displayNext) {
@@ -239,6 +240,7 @@ window.core = {
 };
 window.animationState = {
     currentViewAnimation: null,
+    nextViewAnimation: null,
     viewToDisplayAfterAnimation: null,
 };
 
@@ -250,4 +252,3 @@ window.displayView = function (content) {
 displayView(titleScreenContent);
 setTimeout(() => displayView(editTextDialogContent), 3000);
 setTimeout(() => displayView(loadingScreenContent), 3100);
-setTimeout(() => displayView(dialogContent), 3200);
