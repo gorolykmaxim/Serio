@@ -2,9 +2,6 @@ import * as bootstrap from "bootstrap";
 import "typeface-passion-one";
 import "./style.scss";
 
-const DISPLAY_VIEW_TASK = 0;
-const TRANSITION_INTO_NEW_VIEW_TASK = 1;
-
 const TITLE_SCREEN = 0;
 const EDIT_TEXT_DIALOG = 1;
 const DIALOG = 2;
@@ -59,10 +56,6 @@ function removeProperty(obj, name) {
     return value;
 }
 
-function shouldDisplay(task, content, view) {
-    return task === DISPLAY_VIEW_TASK && content.view === view;
-}
-
 function create(tag, ...classes) {
     const e = document.createElement(tag);
     e.classList.add.apply(e.classList, classes);
@@ -106,8 +99,8 @@ function createCenteredLayout(elements) {
     return root;
 }
 
-function createTitleScreen(ui, content, task) {
-    if (!shouldDisplay(task, content, TITLE_SCREEN)) return;
+function createTitleScreen(ui, content) {
+    if (content.view !== TITLE_SCREEN) return;
     const root = create("div", "center-layout", "full-height");
     const title = create("h1", "serio-title", "not-selectable", "text-primary");
     title.innerText = "Serio";
@@ -123,8 +116,8 @@ function createDialogButton(core, text, event, isPrimary, elements, focusable) {
     }
 }
 
-function createDialog(ui, core, content, task, innerElements) {
-    if (!shouldDisplay(task, content, DIALOG) && !innerElements) return;
+function createDialog(ui, core, content, innerElements) {
+    if (content.view !== DIALOG && !innerElements) return;
     const {title, description, confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
     const elements = [];
     elements.push(createTitle(title));
@@ -143,15 +136,15 @@ function createDialog(ui, core, content, task, innerElements) {
     ui.displayNext = createCenteredLayout(elements);
 }
 
-function createEditTextDialog(ui, core, content, task) {
-    if (!shouldDisplay(task, content, EDIT_TEXT_DIALOG)) return;
+function createEditTextDialog(ui, core, content) {
+    if (content.view !== EDIT_TEXT_DIALOG) return;
     const editText = createEditText(core, content.editText);
-    createDialog(ui, core, content, task, [editText]);
+    createDialog(ui, core, content, [editText]);
     ui.toFocus = editText;
 }
 
-function createLoadingScreen(ui, content, task) {
-    if (!shouldDisplay(task, content, LOADING_SCREEN)) return;
+function createLoadingScreen(ui, content) {
+    if (content.view !== LOADING_SCREEN) return;
     const {text} = content.loading;
     const elements = [];
     const spinnerContainer = create("div", "text-center");
@@ -203,7 +196,7 @@ function animateElement(ui, content, animationState) {
             if (classesToApply.length > 0) {
                 classesToApply.forEach(c => ui.currentView.classList.add(c));
                 animationState.viewToDisplayAfterAnimation = removeProperty(ui, "displayNext");
-                setTimeout(() => executeTask(TRANSITION_INTO_NEW_VIEW_TASK), animation.speed === SLOW_ANIMATION ? 1000 : 125);
+                setTimeout(renderUI, animation.speed === SLOW_ANIMATION ? 1000 : 125);
             }
         }
     } else if (animationState.viewToDisplayAfterAnimation) {
@@ -220,12 +213,12 @@ function animateElement(ui, content, animationState) {
     }
 }
 
-function executeTask(task) {
+function renderUI() {
     const content = removeProperty(window, "content") || {};
-    createTitleScreen(ui, content, task);
-    createEditTextDialog(ui, core, content, task);
-    createDialog(ui, core, content, task);
-    createLoadingScreen(ui, content, task);
+    createTitleScreen(ui, content);
+    createEditTextDialog(ui, core, content);
+    createDialog(ui, core, content);
+    createLoadingScreen(ui, content);
     animateElement(ui, content, animationState);
     displayElement(ui);
 }
@@ -246,7 +239,7 @@ window.animationState = {
 
 window.displayView = function (content) {
     window.content = content;
-    executeTask(DISPLAY_VIEW_TASK);
+    renderUI();
 };
 
 displayView(titleScreenContent);
