@@ -7,7 +7,7 @@ add_subdirectory(lib/concurrentqueue)
 add_library(mjs STATIC lib/mjs/mjs.c)
 target_include_directories(mjs PUBLIC lib/mjs)
 
-add_library(core SHARED
+add_library(core STATIC
         include/config.h
         include/http.h
         include/queue.h

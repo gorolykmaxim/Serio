@@ -15,14 +15,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                targets "core"
+                targets "serio-android"
             }
         }
     }
     externalNativeBuild {
         cmake {
             version "3.18.1"
-            path "../../CMakeLists.txt"
+            path "src/main/cpp/CMakeLists.txt"
         }
     }
     buildTypes {
