@@ -196,8 +196,9 @@ function animateElement(ui, content, animationState) {
             // Don't trigger transition-out animation if it is already running, just replace the view, that needs
             // be displayed after it.
             if (!animationState.viewToDisplayAfterAnimation) {
+                classesToApply.push("a-reverse");
                 classesToApply.forEach(c => ui.currentView.classList.add(c));
-                setTimeout(renderUI, animation.speed === SLOW_ANIMATION ? 1000 : 125);
+                ui.currentView.onanimationend = renderUI;
             }
             animationState.viewToDisplayAfterAnimation = removeProperty(ui, "displayNext");
             animationState.nextViewAnimation = content.animation || {};
@@ -215,7 +216,7 @@ function animateElement(ui, content, animationState) {
         classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
         const classesToRemoveLater = animationToCSSClasses(animation);
         classesToRemoveLater.forEach(a => classList.add(a));
-        setTimeout(() => classesToRemoveLater.forEach(c => classList.remove(c)), 0);
+        ui.displayNext.onanimationend = () => classList.remove.apply(classList, classesToRemoveLater);
     }
 }
 
