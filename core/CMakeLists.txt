@@ -20,7 +20,7 @@ add_library(core STATIC
         src/crawler.cpp
         src/id.cpp)
 target_include_directories(core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include PUBLIC lib/concurrentqueue)
-target_link_libraries(core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
+target_link_libraries(core PUBLIC SQLiteCpp PUBLIC NFHTTP PUBLIC nlohmann_json mjs iconvlite)
 
 add_executable(core-test
         test/config-test.cpp
