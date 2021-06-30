@@ -55,4 +55,5 @@ preBuild.dependsOn copyUi
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
 }

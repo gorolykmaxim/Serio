@@ -2,6 +2,7 @@
 #define SERIO_QUEUE_H
 
 #include <blockingconcurrentqueue.h>
+#include <optional>
 
 template<typename T>
 struct queue {

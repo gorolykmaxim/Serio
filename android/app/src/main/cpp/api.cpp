@@ -1,6 +1,8 @@
 #include <jni.h>
-#include <stdio.h>
+#include <queue.h>
 #include <string>
+
+queue<std::string> data_queue;
 
 extern "C" {
 static void receiveEvent(JNIEnv *env, jobject obj, const std::string& event) {
@@ -9,11 +11,16 @@ static void receiveEvent(JNIEnv *env, jobject obj, const std::string& event) {
     jmethodID mid = env->GetMethodID(cls, "receiveEvent", "(Ljava/lang/String;)V");
     env->CallVoidMethod(obj, mid, outgoing);
 }
+JNIEXPORT void JNICALL Java_org_serio_Core_runNative(JNIEnv* env, jobject obj) {
+    while (true) {
+        const auto data = data_queue.dequeue();
+        receiveEvent(env, obj, "Updated by C++ in LOOP: " + data);
+    }
+}
 
 JNIEXPORT void JNICALL Java_org_serio_Core_sendEvent(JNIEnv *env, jobject obj, jstring event) {
     const char* raw_event = env->GetStringUTFChars(event, nullptr);
-    std::string data = std::string("Updated by C++: ") + std::string(raw_event);
-    receiveEvent(env, obj, data);
+    data_queue.enqueue(raw_event);
     env->ReleaseStringUTFChars(event, raw_event);
 }
 }
