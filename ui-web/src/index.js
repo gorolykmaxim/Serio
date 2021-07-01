@@ -51,6 +51,10 @@ const loadingScreenContent = {
     }
 };
 
+function sendEvent(core, event) {
+    core.sendEvent(JSON.stringify(event));
+}
+
 function removeProperty(obj, name) {
     const value = obj[name];
     obj[name] = null;
@@ -66,7 +70,7 @@ function create(tag, ...classes) {
 function createButton(core, text, event, isPrimary, marginTop) {
     const btn = create("button", "btn", isPrimary ? "btn-primary" : "btn-dark", marginTop ? "mt-2" : "");
     btn.innerText = text;
-    btn.onclick = () => core.sendEvent(event);
+    btn.onclick = () => sendEvent(core, event);
     return btn;
 }
 
@@ -75,10 +79,10 @@ function createEditText(core, content) {
     const editText = create("input", "form-control");
     editText.value = value || "";
     editText.setAttribute("placeholder", label);
-    editText.oninput = () => core.sendEvent(Object.assign({value: editText.value}, valueChangedEvent));
+    editText.oninput = () => sendEvent(core, Object.assign({value: editText.value}, valueChangedEvent));
     editText.onkeydown = (e) => {
         if (e.key === "Enter") {
-            core.sendEvent(saveValueEvent);
+            sendEvent(core, saveValueEvent);
         }
     };
     return editText;
@@ -235,9 +239,6 @@ window.ui = {
     currentView: null,
     displayNext: null,
     toFocus: null,
-};
-window.core = {
-    sendEvent: (e) => console.log(e),
 };
 window.animationState = {
     currentViewAnimation: null,

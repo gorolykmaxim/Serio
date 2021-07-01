@@ -1,5 +1,7 @@
 package org.serio;
 
+import android.webkit.JavascriptInterface;
+
 import androidx.lifecycle.MutableLiveData;
 
 public class Core extends Thread {
@@ -21,6 +23,7 @@ public class Core extends Thread {
 
     public native void runNative(String databasePath);
 
+    @JavascriptInterface
     public native void sendEvent(String event);
 
     public void receiveEvent(String event) {

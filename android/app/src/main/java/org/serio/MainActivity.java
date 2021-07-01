@@ -12,11 +12,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SerioApplication app = (SerioApplication) getApplication();
-        app.core.sendEvent("{event: 15}");
         app.core.outgoing.observe(this, System.out::println);
         setContentView(R.layout.activity_main);
         WebView webView = findViewById(R.id.rootWebView);
         webView.setBackgroundColor(Color.TRANSPARENT);
+        webView.addJavascriptInterface(app.core, "core");
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAllowFileAccess(true);
