@@ -2,6 +2,17 @@
 #include <nlohmann/json.hpp>
 #include "core.h"
 
+static std::string create_title_screen() {
+    nlohmann::json res = {
+            {"view", 0},
+            {"animation", {
+                {"speed", 1},
+                {"scale", false},
+            }},
+    };
+    return res.dump();
+}
+
 static std::string create_edit_text_view_task() {
     nlohmann::json res = {
             {"view", 1},
@@ -37,8 +48,9 @@ static std::string create_error_view_task() {
 }
 
 void core_main(const std::string &database_path, queue<std::string>& task_queue, const render_view& render_view) {
+    render_view(create_title_screen());
     SQLite::Database database(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     auto a = false;
     while (true) {
         render_view(a ? create_error_view_task() : create_edit_text_view_task());

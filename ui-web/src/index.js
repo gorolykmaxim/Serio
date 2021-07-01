@@ -10,12 +10,13 @@ const LOADING_SCREEN = 3;
 const FAST_ANIMATION = 0;
 const SLOW_ANIMATION = 1;
 
+/* Examples:
+TODO: remove me once structures on C++ side are created for this views.
 const titleScreenContent = {
     view: TITLE_SCREEN,
     animation: {speed: SLOW_ANIMATION, scale: false},
 };
 
-/* Examples:
 const editTextDialogContent = {
     view: EDIT_TEXT_DIALOG,
     dialog: {
@@ -257,5 +258,3 @@ window.displayView = function (content) {
     window.content = content;
     renderUI();
 };
-
-displayView(titleScreenContent);

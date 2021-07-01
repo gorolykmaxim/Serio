@@ -4,8 +4,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -16,6 +18,16 @@ public class MainActivity extends AppCompatActivity {
         WebView webView = findViewById(R.id.rootWebView);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.addJavascriptInterface(app.core, "core");
+        LifecycleOwner lifecycleOwner = this;
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                app.core.outgoing.observe(lifecycleOwner, (e) -> {
+                    webView.loadUrl("javascript:displayView(" + e + ")");
+                });
+            }
+        });
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAllowFileAccess(true);
@@ -23,8 +35,5 @@ public class MainActivity extends AppCompatActivity {
         settings.setAllowFileAccessFromFileURLs(true);
         settings.setAllowUniversalAccessFromFileURLs(true);
         webView.loadUrl("file:///android_asset/index.html");
-        app.core.outgoing.observe(this, (e) -> {
-            webView.loadUrl("javascript:displayView(" + e + ")");
-        });
     }
 }
