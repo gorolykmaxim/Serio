@@ -2,6 +2,7 @@
 #include <queue.h>
 #include <string>
 #include <core.h>
+#include <nlohmann/json.hpp>
 
 queue<std::string> task_queue;
 
@@ -26,5 +27,16 @@ JNIEXPORT void JNICALL Java_org_serio_Core_runNative(JNIEnv* env, jobject obj, j
 
 JNIEXPORT void JNICALL Java_org_serio_Core_sendEvent(JNIEnv *env, jobject obj, jstring event) {
     task_queue.enqueue(to_string(env, event));
+}
+
+JNIEXPORT jboolean JNICALL Java_org_serio_Core_sendBackEventOfView(JNIEnv* env, jobject obj, jstring event) {
+    const auto e = nlohmann::json::parse(to_string(env, event));
+    const auto back_event = e.find("backEvent");
+    if (back_event != e.end()) {
+        task_queue.enqueue(back_event->dump());
+        return JNI_TRUE;
+    } else {
+        return JNI_FALSE;
+    }
 }
 }

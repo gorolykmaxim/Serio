@@ -36,4 +36,14 @@ public class MainActivity extends AppCompatActivity {
         settings.setAllowUniversalAccessFromFileURLs(true);
         webView.loadUrl("file:///android_asset/index.html");
     }
+
+    @Override
+    public void onBackPressed() {
+        SerioApplication app = (SerioApplication) getApplication();
+        // If current view has "backEvent" specified - send it to core.
+        // If it does not - exit application.
+        if (!app.core.sendBackEventOfView(app.core.outgoing.getValue())) {
+            super.onBackPressed();
+        }
+    }
 }

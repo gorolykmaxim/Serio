@@ -23,6 +23,8 @@ public class Core extends Thread {
 
     public native void runNative(String databasePath);
 
+    public native boolean sendBackEventOfView(String event);
+
     @JavascriptInterface
     public native void sendEvent(String event);
 
