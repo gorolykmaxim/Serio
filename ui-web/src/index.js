@@ -22,7 +22,6 @@ const editTextDialogContent = {
         description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
         cancelText: "Cancel",
         confirmText: "Save",
-        cancelEvent: {event: 1},
         confirmEvent: {event: 2},
     },
     editText: {
@@ -31,6 +30,7 @@ const editTextDialogContent = {
         valueChangedEvent: {event: 3},
         saveValueEvent: {event: 4},
     },
+    backEvent: {event: 1},
     animation: {scale: false, fade: false},
 };
 
@@ -130,7 +130,7 @@ function createDialog(ui, core, content, innerElements) {
     }
     const focusable = [];
     createDialogButton(core, confirmText, confirmEvent, true, elements, focusable);
-    createDialogButton(core, cancelText, cancelEvent, false, elements, focusable);
+    createDialogButton(core, cancelText, content.backEvent, false, elements, focusable);
     if (focusable.length > 0) {
         ui.toFocus = focusable[0];
     }
@@ -252,4 +252,3 @@ window.displayView = function (content) {
 
 displayView(titleScreenContent);
 setTimeout(() => displayView(editTextDialogContent), 3000);
-setTimeout(() => displayView(loadingScreenContent), 3100);
