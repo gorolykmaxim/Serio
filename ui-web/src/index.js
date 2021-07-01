@@ -39,9 +39,9 @@ const dialogContent = {
     dialog: {
         title: "Whoops...",
         description: "Something went horribly wrong :(",
-        confirmText: "Understand",
-        confirmEvent: {event: 4},
-    }
+        cancelText: "Understand",
+    },
+    backEvent: {event: 1},
 }
 
 const loadingScreenContent = {
@@ -109,17 +109,16 @@ function createTitleScreen(ui, content) {
     ui.displayNext = root;
 }
 
-function createDialogButton(core, text, event, isPrimary, elements, focusable) {
-    if (text) {
-        const btn = createButton(core, text, event, isPrimary, true);
-        focusable.push(btn);
-        elements.push(btn);
+function createDialogButton(core, text, event, buttons) {
+    if (event) {
+        const btn = createButton(core, text, event, buttons.length === 0, true);
+        buttons.push(btn);
     }
 }
 
 function createDialog(ui, core, content, innerElements) {
     if (content.view !== DIALOG && !innerElements) return;
-    const {title, description, confirmText, confirmEvent, cancelText, cancelEvent} = content.dialog;
+    const {title, description, confirmText, confirmEvent, cancelText} = content.dialog;
     const elements = [];
     elements.push(createTitle(title));
     const desc = create("p", "text-muted", "not-selectable");
@@ -128,11 +127,12 @@ function createDialog(ui, core, content, innerElements) {
     if (innerElements) {
         elements.push.apply(elements, innerElements);
     }
-    const focusable = [];
-    createDialogButton(core, confirmText, confirmEvent, true, elements, focusable);
-    createDialogButton(core, cancelText, content.backEvent, false, elements, focusable);
-    if (focusable.length > 0) {
-        ui.toFocus = focusable[0];
+    const buttons = [];
+    createDialogButton(core, confirmText, confirmEvent, buttons);
+    createDialogButton(core, cancelText, content.backEvent, buttons);
+    elements.push.apply(elements, buttons);
+    if (buttons.length > 0) {
+        ui.toFocus = buttons[0];
     }
     ui.displayNext = createCenteredLayout(elements);
 }
@@ -252,3 +252,4 @@ window.displayView = function (content) {
 
 displayView(titleScreenContent);
 setTimeout(() => displayView(editTextDialogContent), 3000);
+setTimeout(() => displayView(dialogContent), 6000);
