@@ -15,6 +15,7 @@ const titleScreenContent = {
     animation: {speed: SLOW_ANIMATION, scale: false},
 };
 
+/* Examples:
 const editTextDialogContent = {
     view: EDIT_TEXT_DIALOG,
     dialog: {
@@ -50,6 +51,7 @@ const loadingScreenContent = {
         text: "Downloading crawler config..."
     }
 };
+*/
 
 function sendEvent(core, event) {
     core.sendEvent(JSON.stringify(event));
@@ -245,12 +247,15 @@ window.animationState = {
     nextViewAnimation: null,
     viewToDisplayAfterAnimation: null,
 };
-
+if (!window.core) {
+    // In case we are not running inside WebView but in standalone browser - create dummy core to make UI not fail.
+    window.core = {
+        sendEvent: console.log,
+    };
+}
 window.displayView = function (content) {
     window.content = content;
     renderUI();
 };
 
 displayView(titleScreenContent);
-setTimeout(() => displayView(editTextDialogContent), 3000);
-setTimeout(() => displayView(dialogContent), 6000);

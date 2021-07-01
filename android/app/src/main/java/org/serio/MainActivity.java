@@ -12,7 +12,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SerioApplication app = (SerioApplication) getApplication();
-        app.core.outgoing.observe(this, System.out::println);
         setContentView(R.layout.activity_main);
         WebView webView = findViewById(R.id.rootWebView);
         webView.setBackgroundColor(Color.TRANSPARENT);
@@ -24,5 +23,8 @@ public class MainActivity extends AppCompatActivity {
         settings.setAllowFileAccessFromFileURLs(true);
         settings.setAllowUniversalAccessFromFileURLs(true);
         webView.loadUrl("file:///android_asset/index.html");
+        app.core.outgoing.observe(this, (e) -> {
+            webView.loadUrl("javascript:displayView(" + e + ")");
+        });
     }
 }
