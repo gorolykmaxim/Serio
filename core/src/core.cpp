@@ -1,4 +1,5 @@
 #include <SQLiteCpp/Database.h>
+#include <error.h>
 #include "core.h"
 
 static void display_title_screen(ui_data& ui_data, const task& task) {
@@ -26,14 +27,14 @@ static void display_edit_text_dialog(ui_data& ui_data, const task& task) {
     ui_data.edit_text = {
             "Crawler config URL",
             "https://github.com/gorolykmaxim/content.json",
-            {error},
-            {error},
+            {process_http_response},
+            {process_http_response},
     };
-    ui_data.back_event = {error};
+    ui_data.back_event = {process_http_response};
 }
 
 static void display_error_dialog(ui_data& ui_data, const task& task) {
-    if (task.type != error) return;
+    if (task.type != process_http_response) return;
     ui_data = {view_id::dialog};
     ui_data.dialog = {
             "Whoops...",
@@ -50,6 +51,7 @@ void core_main(const std::string &database_path, queue<task>& task_queue, const 
     task_queue.enqueue({init});
     while (true) {
         const auto task = task_queue.dequeue();
+        trigger_fatal_error(task);
         display_title_screen(ui_data, task);
         display_edit_text_dialog(ui_data, task);
         display_error_dialog(ui_data, task);

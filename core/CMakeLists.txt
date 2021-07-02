@@ -16,13 +16,15 @@ add_library(core STATIC
         include/id.h
         include/core.h
         include/ui.h
+        include/error.h
         src/config.cpp
         src/http.cpp
         src/task.cpp
         src/crawler.cpp
         src/id.cpp
         src/core.cpp
-        src/ui.cpp)
+        src/ui.cpp
+        src/error.cpp)
 target_include_directories(core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include PUBLIC lib/concurrentqueue)
 target_link_libraries(core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
@@ -33,6 +35,7 @@ add_executable(core-test
         test/task-test.cpp
         test/crawler-test.cpp
         test/id-test.cpp
-        test/ui-test.cpp)
+        test/ui-test.cpp
+        test/error-test.cpp)
 target_include_directories(core-test PRIVATE test/mocks)
 target_link_libraries(core-test core gtest gmock gtest_main)
