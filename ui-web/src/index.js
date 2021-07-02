@@ -10,50 +10,6 @@ const LOADING_SCREEN = 3;
 const FAST_ANIMATION = 0;
 const SLOW_ANIMATION = 1;
 
-/* Examples:
-TODO: remove me once structures on C++ side are created for this views.
-const titleScreenContent = {
-    view: TITLE_SCREEN,
-    animation: {speed: SLOW_ANIMATION, scale: false},
-};
-
-const editTextDialogContent = {
-    view: EDIT_TEXT_DIALOG,
-    dialog: {
-        title: "Crawler config URL",
-        description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
-        cancelText: "Cancel",
-        confirmText: "Save",
-        confirmEvent: {event: 2},
-    },
-    editText: {
-        label: "Crawler config URL",
-        value: "https://github.com/gorolykmaxim/content.json",
-        valueChangedEvent: {event: 3},
-        saveValueEvent: {event: 4},
-    },
-    backEvent: {event: 1},
-    animation: {scale: false, fade: false},
-};
-
-const dialogContent = {
-    view: DIALOG,
-    dialog: {
-        title: "Whoops...",
-        description: "Something went horribly wrong :(",
-        cancelText: "Understand",
-    },
-    backEvent: {event: 1},
-}
-
-const loadingScreenContent = {
-    view: LOADING_SCREEN,
-    loading: {
-        text: "Downloading crawler config..."
-    }
-};
-*/
-
 function sendEvent(core, event) {
     core.sendEvent(JSON.stringify(event));
 }
