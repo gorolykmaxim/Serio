@@ -1,5 +1,4 @@
 #include <SQLiteCpp/Database.h>
-#include <ui.h>
 #include "core.h"
 
 static void display_title_screen(ui_data& ui_data, const task& task) {
