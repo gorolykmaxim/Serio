@@ -2,6 +2,8 @@ import * as bootstrap from "bootstrap";
 import "typeface-passion-one";
 import "./style.scss";
 
+const ERROR_EVENT = 0;
+
 const TITLE_SCREEN = 0;
 const EDIT_TEXT_DIALOG = 1;
 const DIALOG = 2;
@@ -214,3 +216,6 @@ window.displayView = function (content) {
     window.content = content;
     renderUI();
 };
+window.onerror = function (msg) {
+    sendEvent(core, {event: ERROR_EVENT, args: [`web-ui: ${msg}`]});
+}
