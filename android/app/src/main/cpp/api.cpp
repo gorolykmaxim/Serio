@@ -2,9 +2,10 @@
 #include <queue.h>
 #include <string>
 #include <core.h>
+#include <task.h>
 #include <nlohmann/json.hpp>
 
-queue<std::string> task_queue;
+queue<task> task_queue;
 
 extern "C" {
 static std::string to_string(JNIEnv* env, jstring value) {
@@ -26,14 +27,19 @@ JNIEXPORT void JNICALL Java_org_serio_Core_runNative(JNIEnv* env, jobject obj, j
 }
 
 JNIEXPORT void JNICALL Java_org_serio_Core_sendEvent(JNIEnv *env, jobject obj, jstring event) {
-    task_queue.enqueue(to_string(env, event));
+    const auto task_string = to_string(env, event);
+    const auto task_json = nlohmann::json::parse(task_string);
+    const auto task = parse_task(task_json);
+    task_queue.enqueue(task);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_serio_Core_sendBackEventOfView(JNIEnv* env, jobject obj, jstring event) {
-    const auto e = nlohmann::json::parse(to_string(env, event));
-    const auto back_event = e.find("backEvent");
-    if (back_event != e.end()) {
-        task_queue.enqueue(back_event->dump());
+    const auto event_string = to_string(env, event);
+    const auto event_json = nlohmann::json::parse(event_string);
+    const auto back_event = event_json.find("backEvent");
+    if (back_event != event_json.end()) {
+        const auto task = parse_task(*back_event);
+        task_queue.enqueue(task);
         return JNI_TRUE;
     } else {
         return JNI_FALSE;
