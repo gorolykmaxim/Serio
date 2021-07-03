@@ -40,11 +40,3 @@ void serialize_ui_data(const ui_data &ui_data, std::string& result) {
     serialize_task(ui_data.back_task, json_res, "backTask");
     result = json_res.dump();
 }
-
-void display_fatal_error(const std::string &error, const render_view &render_view) {
-    ui_data ui_data{view_id::dialog};
-    ui_data.dialog = {"Fatal error :(", "Tell developer and restart the application: " + error};
-    std::string view;
-    serialize_ui_data(ui_data, view);
-    render_view(view);
-}

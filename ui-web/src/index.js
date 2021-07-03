@@ -2,8 +2,6 @@ import * as bootstrap from "bootstrap";
 import "typeface-passion-one";
 import "./style.scss";
 
-const ERROR_TASK = 0;
-
 const TITLE_SCREEN = 0;
 const EDIT_TEXT_DIALOG = 1;
 const DIALOG = 2;
@@ -219,6 +217,3 @@ window.displayView = function (content) {
     window.content = content;
     renderUI();
 };
-window.onerror = function (msg) {
-    sendTask(core, {taskId: ERROR_TASK, args: [`web-ui: ${msg}`]});
-}

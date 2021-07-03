@@ -94,19 +94,3 @@ TEST_F(ui_test, should_have_correct_view_ids) {
     EXPECT_EQ(2, view_id::dialog);
     EXPECT_EQ(3, view_id::loading_screen);
 }
-
-TEST_F(ui_test, should_display_fatal_error_view) {
-    std::string actual;
-    const std::string error_msg = "Really helpful and informative error message";
-    const nlohmann::json expected = {
-        {"viewId", view_id::dialog},
-        {"dialog", {
-            {"title", "Fatal error :("},
-            {"description", "Tell developer and restart the application: " + error_msg},
-            {"cancelText", ""},
-            {"confirmText", ""}}
-        },
-    };
-    display_fatal_error(error_msg, [&actual] (const std::string& view) { actual = view; });
-    EXPECT_EQ(expected.dump(), actual);
-}

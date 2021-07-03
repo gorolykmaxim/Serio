@@ -44,6 +44,5 @@ struct ui_data {
 };
 
 void serialize_ui_data(const ui_data& ui_data, std::string& result);
-void display_fatal_error(const std::string& error, const render_view& render_view);
 
 #endif //SERIO_UI_H
