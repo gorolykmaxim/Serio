@@ -15,7 +15,7 @@ TEST(task_test, two_tasks_should_not_be_equal) {
 
 TEST(task_test, should_parse_task_with_args) {
     const task expected{process_http_response, {"a", 1, true}};
-    const nlohmann::json raw_task = {{"event", process_http_response}, {"args", expected.args}};
+    const nlohmann::json raw_task = {{"taskId", process_http_response}, {"args", expected.args}};
     const auto actual = parse_task(raw_task);
     EXPECT_EQ(expected, actual);
 }

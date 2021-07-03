@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                app.core.outgoing.observe(lifecycleOwner, (e) -> {
-                    webView.loadUrl("javascript:displayView(" + e + ")");
+                app.core.outgoing.observe(lifecycleOwner, (t) -> {
+                    webView.loadUrl("javascript:displayView(" + t + ")");
                 });
             }
         });
@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         SerioApplication app = (SerioApplication) getApplication();
-        // If current view has "backEvent" specified - send it to core.
+        // If current view has "backTask" specified - send it to core.
         // If it does not - exit application.
-        if (!app.core.sendBackEventOfView(app.core.outgoing.getValue())) {
+        if (!app.core.sendBackTaskFromRenderTask(app.core.outgoing.getValue())) {
             super.onBackPressed();
         }
     }

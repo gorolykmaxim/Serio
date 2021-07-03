@@ -25,22 +25,22 @@ struct dialog {
     std::string description;
     std::string cancel_text;
     std::string confirm_text;
-    std::optional<task> confirm_event;
+    std::optional<task> confirm_task;
 };
 
 struct edit_text {
     std::string label;
     std::string value;
-    task value_changed_event;
-    task save_value_event;
+    task value_changed_task;
+    task save_value_task;
 };
 
 struct ui_data {
-    view_id view;
+    view_id view_id;
     std::optional<struct dialog> dialog;
     std::optional<edit_text> edit_text;
     std::optional<animation> animation;
-    std::optional<task> back_event;
+    std::optional<task> back_task;
 };
 
 void serialize_ui_data(const ui_data& ui_data, std::string& result);

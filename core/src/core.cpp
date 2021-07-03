@@ -3,19 +3,19 @@
 #include "core.h"
 
 static void display_title_screen(ui_data& ui_data, const task& task) {
-    if (task.type != init) return;
+    if (task.id != init) return;
     ui_data = {view_id::title_screen};
     ui_data.animation = {animation_speed::slow, true, false};
 }
 
 static void hide_title_screen_after_delay(queue<task>& task_queue, const task& task) {
-    if (task.type != init) return;
+    if (task.id != init) return;
     std::this_thread::sleep_for(std::chrono::seconds(3));
     task_queue.enqueue({edit_crawler_config_url});
 }
 
 static void display_edit_text_dialog(ui_data& ui_data, const task& task) {
-    if (task.type != edit_crawler_config_url) return;
+    if (task.id != edit_crawler_config_url) return;
     ui_data = {view_id::edit_text_dialog};
     ui_data.dialog = {
             "Crawler config URL",
@@ -30,18 +30,18 @@ static void display_edit_text_dialog(ui_data& ui_data, const task& task) {
             {process_http_response},
             {process_http_response},
     };
-    ui_data.back_event = {process_http_response};
+    ui_data.back_task = {process_http_response};
 }
 
 static void display_error_dialog(ui_data& ui_data, const task& task) {
-    if (task.type != process_http_response) return;
+    if (task.id != process_http_response) return;
     ui_data = {view_id::dialog};
     ui_data.dialog = {
             "Whoops...",
             "Something went horribly wrong :(",
             "Understand"
     };
-    ui_data.back_event = {edit_crawler_config_url};
+    ui_data.back_task = {edit_crawler_config_url};
 }
 
 void core_main(const std::string &database_path, queue<task>& task_queue, const render_view& render_view) {

@@ -4,12 +4,12 @@
 #include <nlohmann/json.hpp>
 #include <queue.h>
 
-enum task_type {
+enum task_id {
     error, init, process_http_response, edit_crawler_config_url
 };
 
 struct task {
-    task_type type;
+    task_id id;
     std::vector<nlohmann::json> args;
 
     bool operator==(const task &rhs) const;

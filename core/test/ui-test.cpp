@@ -14,14 +14,14 @@ static std::string to_string(const nlohmann::json& json) {
 }
 
 TEST_F(ui_test, should_serialize_view) {
-    const auto expected = to_string({{"view", view_id::dialog}});
-    ui_data.view = view_id::dialog;
+    const auto expected = to_string({{"viewId", view_id::dialog}});
+    ui_data.view_id = view_id::dialog;
     serialize_ui_data(ui_data, actual);
     EXPECT_EQ(expected, actual);
 }
 
 TEST_F(ui_test, should_serialize_animation) {
-    const auto expected = to_string({{"view", 0}, {"animation", {{"speed", animation_speed::slow}, {"fade", true}, {"scale", false}}}});
+    const auto expected = to_string({{"viewId", 0}, {"animation", {{"speed", animation_speed::slow}, {"fade", true}, {"scale", false}}}});
     ui_data.animation = {animation_speed::slow, true, false};
     serialize_ui_data(ui_data, actual);
     EXPECT_EQ(expected, actual);
@@ -35,23 +35,23 @@ TEST_F(ui_test, should_have_correct_animation_speeds) {
 TEST_F(ui_test, should_serialize_dialog) {
     ui_data.dialog = {"title", "description", "cancel", "confirm", task};
     const auto expected = to_string({
-        {"view", 0},
+        {"viewId", 0},
         {"dialog", {
             {"title", ui_data.dialog->title},
             {"description", ui_data.dialog->description},
             {"cancelText", ui_data.dialog->cancel_text},
             {"confirmText", ui_data.dialog->confirm_text},
-            {"confirmEvent", {{"event", task.type}, {"args", task.args}}}}
+            {"confirmTask", {{"taskId", task.id}, {"args", task.args}}}}
         }
     });
     serialize_ui_data(ui_data, actual);
     EXPECT_EQ(expected, actual);
 }
 
-TEST_F(ui_test, should_serialize_dialog_without_confirm_event) {
+TEST_F(ui_test, should_serialize_dialog_without_confirm_task) {
     ui_data.dialog = {"title", "description", "cancel", "confirm"};
     const auto expected = to_string({
-        {"view", 0},
+        {"viewId", 0},
         {"dialog", {
             {"title", ui_data.dialog->title},
             {"description", ui_data.dialog->description},
@@ -63,11 +63,11 @@ TEST_F(ui_test, should_serialize_dialog_without_confirm_event) {
     EXPECT_EQ(expected, actual);
 }
 
-TEST_F(ui_test, should_serialize_back_event) {
-    ui_data.back_event = task;
+TEST_F(ui_test, should_serialize_back_task) {
+    ui_data.back_task = task;
     const auto expected = to_string({
-        {"view", 0},
-        {"backEvent", {{"event", task.type}, {"args", task.args},}},
+        {"viewId", 0},
+        {"backTask", {{"taskId", task.id}, {"args", task.args},}},
     });
     serialize_ui_data(ui_data, actual);
     EXPECT_EQ(expected, actual);
@@ -76,12 +76,12 @@ TEST_F(ui_test, should_serialize_back_event) {
 TEST_F(ui_test, should_serialize_edit_text) {
     ui_data.edit_text = {"label", "value", task, task};
     const auto expected = to_string({
-        {"view", 0},
+        {"viewId", 0},
         {"editText", {
             {"label", ui_data.edit_text->label},
             {"value", ui_data.edit_text->value},
-            {"valueChangedEvent", {{"event", task.type}, {"args", task.args}}},
-            {"saveValueEvent", {{"event", task.type}, {"args", task.args}}},
+            {"valueChangedTask", {{"taskId", task.id}, {"args", task.args}}},
+            {"saveValueTask", {{"taskId", task.id}, {"args", task.args}}},
         }},
     });
     serialize_ui_data(ui_data, actual);
@@ -99,7 +99,7 @@ TEST_F(ui_test, should_display_fatal_error_view) {
     std::string actual;
     const std::string error_msg = "Really helpful and informative error message";
     const nlohmann::json expected = {
-        {"view", view_id::dialog},
+        {"viewId", view_id::dialog},
         {"dialog", {
             {"title", "Fatal error :("},
             {"description", "Tell developer and restart the application: " + error_msg},

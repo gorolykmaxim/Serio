@@ -8,7 +8,7 @@ TEST(error_test, should_ignore_non_error_tasks) {
 
 TEST(error_test, should_throw_exception_with_message_specified_in_error_task) {
     const std::string error = "Error message";
-    const task task{task_type::error, {error}};
+    const task task{task_id::error, {error}};
     try {
         trigger_fatal_error(task);
         FAIL() << "Should throw exception with specified message";

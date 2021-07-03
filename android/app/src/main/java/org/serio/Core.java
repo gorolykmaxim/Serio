@@ -23,12 +23,12 @@ public class Core extends Thread {
 
     public native void runNative(String databasePath);
 
-    public native boolean sendBackEventOfView(String event);
+    public native boolean sendBackTaskFromRenderTask(String renderTask);
 
     @JavascriptInterface
-    public native void sendEvent(String event);
+    public native void sendTask(String task);
 
-    public void receiveEvent(String event) {
-        outgoing.postValue(event);
+    public void receiveRenderTask(String task) {
+        outgoing.postValue(task);
     }
 }

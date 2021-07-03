@@ -2,7 +2,7 @@ import * as bootstrap from "bootstrap";
 import "typeface-passion-one";
 import "./style.scss";
 
-const ERROR_EVENT = 0;
+const ERROR_TASK = 0;
 
 const TITLE_SCREEN = 0;
 const EDIT_TEXT_DIALOG = 1;
@@ -12,8 +12,8 @@ const LOADING_SCREEN = 3;
 const FAST_ANIMATION = 0;
 const SLOW_ANIMATION = 1;
 
-function sendEvent(core, event) {
-    core.sendEvent(JSON.stringify(event));
+function sendTask(core, task) {
+    core.sendTask(JSON.stringify(task));
 }
 
 function removeProperty(obj, name) {
@@ -28,22 +28,22 @@ function create(tag, ...classes) {
     return e;
 }
 
-function createButton(core, text, event, isPrimary, marginTop) {
+function createButton(core, text, task, isPrimary, marginTop) {
     const btn = create("button", "btn", isPrimary ? "btn-primary" : "btn-dark", marginTop ? "mt-2" : "");
     btn.innerText = text;
-    btn.onclick = () => sendEvent(core, event);
+    btn.onclick = () => sendTask(core, task);
     return btn;
 }
 
 function createEditText(core, content) {
-    const {label, value, valueChangedEvent, saveValueEvent} = content;
+    const {label, value, valueChangedTask, saveValueTask} = content;
     const editText = create("input", "form-control");
     editText.value = value || "";
     editText.setAttribute("placeholder", label);
-    editText.oninput = () => sendEvent(core, Object.assign({value: editText.value}, valueChangedEvent));
+    editText.oninput = () => sendTask(core, Object.assign({value: editText.value}, valueChangedTask));
     editText.onkeydown = (e) => {
         if (e.key === "Enter") {
-            sendEvent(core, saveValueEvent);
+            sendTask(core, saveValueTask);
         }
     };
     return editText;
@@ -66,7 +66,7 @@ function createCenteredLayout(elements) {
 }
 
 function createTitleScreen(ui, content) {
-    if (content.view !== TITLE_SCREEN) return;
+    if (content.viewId !== TITLE_SCREEN) return;
     const root = create("div", "center-layout", "full-height");
     const title = create("h1", "serio-title", "not-selectable", "text-primary");
     title.innerText = "Serio";
@@ -74,16 +74,16 @@ function createTitleScreen(ui, content) {
     ui.displayNext = root;
 }
 
-function createDialogButton(core, text, event, buttons) {
-    if (event) {
-        const btn = createButton(core, text, event, buttons.length === 0, true);
+function createDialogButton(core, text, task, buttons) {
+    if (task) {
+        const btn = createButton(core, text, task, buttons.length === 0, true);
         buttons.push(btn);
     }
 }
 
 function createDialog(ui, core, content, innerElements) {
-    if (content.view !== DIALOG && !innerElements) return;
-    const {title, description, confirmText, confirmEvent, cancelText} = content.dialog;
+    if (content.viewId !== DIALOG && !innerElements) return;
+    const {title, description, confirmText, confirmTask, cancelText} = content.dialog;
     const elements = [];
     elements.push(createTitle(title));
     const desc = create("p", "text-muted", "not-selectable");
@@ -93,8 +93,8 @@ function createDialog(ui, core, content, innerElements) {
         elements.push.apply(elements, innerElements);
     }
     const buttons = [];
-    createDialogButton(core, confirmText, confirmEvent, buttons);
-    createDialogButton(core, cancelText, content.backEvent, buttons);
+    createDialogButton(core, confirmText, confirmTask, buttons);
+    createDialogButton(core, cancelText, content.backTask, buttons);
     elements.push.apply(elements, buttons);
     if (buttons.length > 0) {
         ui.toFocus = buttons[0];
@@ -103,14 +103,14 @@ function createDialog(ui, core, content, innerElements) {
 }
 
 function createEditTextDialog(ui, core, content) {
-    if (content.view !== EDIT_TEXT_DIALOG) return;
+    if (content.viewId !== EDIT_TEXT_DIALOG) return;
     const editText = createEditText(core, content.editText);
     createDialog(ui, core, content, [editText]);
     ui.toFocus = editText;
 }
 
 function createLoadingScreen(ui, content) {
-    if (content.view !== LOADING_SCREEN) return;
+    if (content.viewId !== LOADING_SCREEN) return;
     const {text} = content.loading;
     const elements = [];
     const spinnerContainer = create("div", "text-center");
@@ -209,7 +209,7 @@ window.animationState = {
 if (!window.core) {
     // In case we are not running inside WebView but in standalone browser - create dummy core to make UI not fail.
     window.core = {
-        sendEvent: console.log,
+        sendTask: console.log,
     };
 }
 window.displayView = function (content) {
@@ -217,5 +217,5 @@ window.displayView = function (content) {
     renderUI();
 };
 window.onerror = function (msg) {
-    sendEvent(core, {event: ERROR_EVENT, args: [`web-ui: ${msg}`]});
+    sendTask(core, {taskId: ERROR_TASK, args: [`web-ui: ${msg}`]});
 }

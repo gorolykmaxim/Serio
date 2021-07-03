@@ -16,15 +16,15 @@ static std::string to_string(JNIEnv* env, jstring value) {
     return result;
 }
 
-static void receive_event(JNIEnv *env, jobject obj, const std::string& event) {
-    jstring outgoing = env->NewStringUTF(event.c_str());
+static void receive_render_task(JNIEnv *env, jobject obj, const std::string& render_task) {
+    jstring outgoing = env->NewStringUTF(render_task.c_str());
     jclass cls = env->GetObjectClass(obj);
-    jmethodID mid = env->GetMethodID(cls, "receiveEvent", "(Ljava/lang/String;)V");
+    jmethodID mid = env->GetMethodID(cls, "receiveRenderTask", "(Ljava/lang/String;)V");
     env->CallVoidMethod(obj, mid, outgoing);
 }
 
 static render_view create_platform_render_callback(JNIEnv* env, jobject obj) {
-    return [env, obj] (const std::string& view_data) {receive_event(env, obj, view_data);};
+    return [env, obj] (const std::string& view_data) {receive_render_task(env, obj, view_data);};
 }
 
 JNIEXPORT void JNICALL Java_org_serio_Core_runNative(JNIEnv* env, jobject obj, jstring db_path) {
@@ -36,9 +36,9 @@ JNIEXPORT void JNICALL Java_org_serio_Core_runNative(JNIEnv* env, jobject obj, j
     }
 }
 
-JNIEXPORT void JNICALL Java_org_serio_Core_sendEvent(JNIEnv *env, jobject obj, jstring event) {
+JNIEXPORT void JNICALL Java_org_serio_Core_sendTask(JNIEnv *env, jobject obj, jstring task) {
     try {
-        const auto task_string = to_string(env, event);
+        const auto task_string = to_string(env, task);
         const auto task_json = nlohmann::json::parse(task_string);
         const auto task = parse_task(task_json);
         task_queue.enqueue(task);
@@ -47,13 +47,13 @@ JNIEXPORT void JNICALL Java_org_serio_Core_sendEvent(JNIEnv *env, jobject obj, j
     }
 }
 
-JNIEXPORT jboolean JNICALL Java_org_serio_Core_sendBackEventOfView(JNIEnv* env, jobject obj, jstring event) {
+JNIEXPORT jboolean JNICALL Java_org_serio_Core_sendBackTaskFromRenderTask(JNIEnv* env, jobject obj, jstring render_task) {
     try {
-        const auto event_string = to_string(env, event);
-        const auto event_json = nlohmann::json::parse(event_string);
-        const auto back_event = event_json.find("backEvent");
-        if (back_event != event_json.end()) {
-            const auto task = parse_task(*back_event);
+        const auto render_task_string = to_string(env, render_task);
+        const auto render_task_json = nlohmann::json::parse(render_task_string);
+        const auto back_task = render_task_json.find("backTask");
+        if (back_task != render_task_json.end()) {
+            const auto task = parse_task(*back_task);
             task_queue.enqueue(task);
             return JNI_TRUE;
         } else {

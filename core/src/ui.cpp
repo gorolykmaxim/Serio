@@ -3,16 +3,16 @@
 
 static void serialize_task(const std::optional<task>& task, nlohmann::json& task_container, const std::string& task_name) {
     if (task) {
-        nlohmann::json event;
-        event["event"] = task->type;
-        event["args"] = task->args;
-        task_container[task_name] = event;
+        nlohmann::json json_task;
+        json_task["taskId"] = task->id;
+        json_task["args"] = task->args;
+        task_container[task_name] = json_task;
     }
 }
 
 void serialize_ui_data(const ui_data &ui_data, std::string& result) {
     nlohmann::json json_res;
-    json_res["view"] = ui_data.view;
+    json_res["viewId"] = ui_data.view_id;
     if (ui_data.animation) {
         nlohmann::json anim;
         anim["speed"] = ui_data.animation->speed;
@@ -26,18 +26,18 @@ void serialize_ui_data(const ui_data &ui_data, std::string& result) {
         dialog["description"] = ui_data.dialog->description;
         dialog["cancelText"] = ui_data.dialog->cancel_text;
         dialog["confirmText"] = ui_data.dialog->confirm_text;
-        serialize_task(ui_data.dialog->confirm_event, dialog, "confirmEvent");
+        serialize_task(ui_data.dialog->confirm_task, dialog, "confirmTask");
         json_res["dialog"] = dialog;
     }
     if (ui_data.edit_text) {
         nlohmann::json edit_text;
         edit_text["label"] = ui_data.edit_text->label;
         edit_text["value"] = ui_data.edit_text->value;
-        serialize_task(ui_data.edit_text->value_changed_event, edit_text, "valueChangedEvent");
-        serialize_task(ui_data.edit_text->save_value_event, edit_text, "saveValueEvent");
+        serialize_task(ui_data.edit_text->value_changed_task, edit_text, "valueChangedTask");
+        serialize_task(ui_data.edit_text->save_value_task, edit_text, "saveValueTask");
         json_res["editText"] = edit_text;
     }
-    serialize_task(ui_data.back_event, json_res, "backEvent");
+    serialize_task(ui_data.back_task, json_res, "backTask");
     result = json_res.dump();
 }
 

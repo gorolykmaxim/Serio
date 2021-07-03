@@ -102,7 +102,7 @@ void send_http_requests(http_client &client, SQLite::Database &database, queue<t
 }
 
 void read_http_responses(const task &task, queue<http_response> &response_queue, std::vector<http_response>& responses) {
-    if (task.type != process_http_response) return;
+    if (task.id != process_http_response) return;
     responses.push_back(response_queue.dequeue());
 }
 
