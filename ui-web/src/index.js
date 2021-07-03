@@ -40,7 +40,10 @@ function createEditText(core, content) {
     const editText = create("input", "form-control");
     editText.value = value || "";
     editText.setAttribute("placeholder", label);
-    editText.oninput = () => sendTask(core, Object.assign({value: editText.value}, valueChangedTask));
+    editText.oninput = () => {
+        const args = [editText.value].concat(valueChangedTask.args);
+        sendTask(core, {taskId: valueChangedTask.taskId, args: args});
+    };
     editText.onkeydown = (e) => {
         if (e.key === "Enter") {
             sendTask(core, saveValueTask);
