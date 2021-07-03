@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-./gradlew installDebug && adb shell am start -n "org.serio/org.serio.MainActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
+set -e
+./gradlew installDebug
+adb shell am start -n "org.serio/org.serio.MainActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
+adb logcat -s org.serio:V
