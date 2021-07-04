@@ -1,4 +1,4 @@
-#include <SQLiteCpp/Database.h>
+#include <utility>
 #include "core.h"
 
 static void display_title_screen(ui_data& ui_data, const task& task) {
@@ -43,18 +43,36 @@ static void display_error_dialog(ui_data& ui_data, const task& task) {
     ui_data.back_task = {edit_crawler_config_url};
 }
 
-void core_main(const std::string &database_path, queue<task>& task_queue, const render_view& render_view) {
-    SQLite::Database database(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    ui_data ui_data{};
-    std::string serialized_ui_data;
-    task_queue.enqueue({init});
-    while (true) {
-        const auto task = task_queue.dequeue();
-        display_title_screen(ui_data, task);
-        display_edit_text_dialog(ui_data, task);
-        display_error_dialog(ui_data, task);
-        serialize_ui_data(ui_data, serialized_ui_data);
-        render_view(serialized_ui_data);
-        hide_title_screen_after_delay(task_queue, task);
+void init_core(core& core, const std::string &database_path, render_view render_view) {
+    core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+    core.render_view = std::move(render_view);
+    core.task_queue.enqueue({init});
+}
+
+void enqueue_core_task(const std::string &raw_task, queue<task>& task_queue) {
+    const auto json_task = nlohmann::json::parse(raw_task);
+    const auto task = parse_task(json_task);
+    task_queue.enqueue(task);
+}
+
+bool enqueue_back_task_from_render_task(const std::string &raw_render_task, queue<task> &task_queue) {
+    const auto render_task_json = nlohmann::json::parse(raw_render_task);
+    const auto back_task = render_task_json.find("backTask");
+    if (back_task != render_task_json.end()) {
+        const auto task = parse_task(*back_task);
+        task_queue.enqueue(task);
+        return true;
+    } else {
+        return false;
     }
+}
+
+void execute_core_task(core &core) {
+    const auto task = core.task_queue.dequeue();
+    display_title_screen(core.ui_data, task);
+    display_edit_text_dialog(core.ui_data, task);
+    display_error_dialog(core.ui_data, task);
+    serialize_ui_data(core.ui_data, core.serialized_ui_data);
+    core.render_view(core.serialized_ui_data);
+    hide_title_screen_after_delay(core.task_queue, task);
 }
