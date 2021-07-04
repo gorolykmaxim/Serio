@@ -72,7 +72,6 @@ void execute_core_task(core &core) {
     display_title_screen(core.ui_data, task);
     display_edit_text_dialog(core.ui_data, task);
     display_error_dialog(core.ui_data, task);
-    serialize_ui_data(core.ui_data, core.serialized_ui_data);
-    core.render_view(core.serialized_ui_data);
+    render_ui(core.ui_data, core.render_view);
     hide_title_screen_after_delay(core.task_queue, task);
 }

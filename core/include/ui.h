@@ -43,6 +43,6 @@ struct ui_data {
     std::optional<task> back_task;
 };
 
-void serialize_ui_data(const ui_data& ui_data, std::string& result);
+void render_ui(const ui_data& ui_data, const render_view& render_view);
 
 #endif //SERIO_UI_H

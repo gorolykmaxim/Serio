@@ -32,7 +32,6 @@ add_executable(core-test
         test/queue-test.cpp
         test/task-test.cpp
         test/crawler-test.cpp
-        test/id-test.cpp
-        test/ui-test.cpp)
+        test/id-test.cpp)
 target_include_directories(core-test PRIVATE test/mocks)
 target_link_libraries(core-test core gtest gmock gtest_main)
