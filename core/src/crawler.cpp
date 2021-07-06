@@ -507,62 +507,64 @@ static void log_resuming_executions(bool trace, const std::vector<crawler_reques
     }
 }
 
-static void trace(int system, crawler_runtime& runtime) {
-    if (!runtime.trace) return;
-    auto& stats = runtime.profiler_statistics;
+static void trace_system(int system_id, bool trace, crawler_profiler_statistics& stats) {
+    if (!trace) return;
     const auto now = std::chrono::system_clock::now();
     if (stats.current_system_id >= 0) {
         stats.execution_times[stats.current_system_id] += now - stats.current_time;
     }
-    stats.current_system_id = system;
+    stats.current_system_id = system_id;
     stats.current_time = now;
 }
 
-void execute_crawlers(crawler_runtime &runtime, std::vector<http_response>& incoming,
-                      std::vector<http_request> &outgoing, id_seed& id_seed) {
+void execute_crawlers(std::vector<crawler>& crawlers, std::vector<crawler_execution>& pending_execs,
+                      std::vector<crawler_http_request>& pending_http_reqs,
+                      std::vector<crawler_http_config>& http_configs, std::vector<crawler_result>& results,
+                      crawler_profiler_statistics& profiler_statistics, bool trace,
+                      std::vector<http_response>& incoming, std::vector<http_request> &outgoing, id_seed& id_seed) {
     std::vector<crawler_execution> active_execs, failed_execs, finished_execs;
     std::vector<crawler_request> pending_reqs, processed_reqs, failed_reqs;
     std::vector<crawler_error> errors;
-    trace(js_system, runtime);
-    init_executions(runtime.crawlers, active_execs);
-    init_arguments(runtime.crawlers, active_execs, failed_execs, errors);
-    trace(regex_system, runtime);
-    init_regex(runtime.crawlers);
-    trace(http_system, runtime);
-    init_http(runtime.crawlers, runtime.http_configs);
-    assign_http_responses_to_crawler_requests(incoming, runtime.pending_http_reqs);
-    deliver_http_responses_to_executions(runtime.pending_http_reqs, processed_reqs, failed_reqs, errors);
-    trace(js_system, runtime);
-    init_result_fetching(runtime.crawlers);
-    start_executions(runtime.crawlers, active_execs, failed_execs, errors);
+    trace_system(js_system, trace, profiler_statistics);
+    init_executions(crawlers, active_execs);
+    init_arguments(crawlers, active_execs, failed_execs, errors);
+    trace_system(regex_system, trace, profiler_statistics);
+    init_regex(crawlers);
+    trace_system(http_system, trace, profiler_statistics);
+    init_http(crawlers, http_configs);
+    assign_http_responses_to_crawler_requests(incoming, pending_http_reqs);
+    deliver_http_responses_to_executions(pending_http_reqs, processed_reqs, failed_reqs, errors);
+    trace_system(js_system, trace, profiler_statistics);
+    init_result_fetching(crawlers);
+    start_executions(crawlers, active_execs, failed_execs, errors);
     while (!active_execs.empty() || !processed_reqs.empty() || !failed_reqs.empty()) {
-        trace(logging_system, runtime);
-        log_resuming_executions(runtime.trace, processed_reqs);
-        trace(js_system, runtime);
-        process_failed_requests(failed_reqs, runtime.pending_execs, failed_execs);
-        process_completed_requests(processed_reqs, active_execs, runtime.pending_execs);
-        run_executions(active_execs, runtime.pending_execs, failed_execs, finished_execs, pending_reqs, errors);
-        trace(logging_system, runtime);
-        log_pending_executions(runtime.trace, pending_reqs);
-        trace(regex_system, runtime);
+        trace_system(logging_system, trace, profiler_statistics);
+        log_resuming_executions(trace, processed_reqs);
+        trace_system(js_system, trace, profiler_statistics);
+        process_failed_requests(failed_reqs, pending_execs, failed_execs);
+        process_completed_requests(processed_reqs, active_execs, pending_execs);
+        run_executions(active_execs, pending_execs, failed_execs, finished_execs, pending_reqs, errors);
+        trace_system(logging_system, trace, profiler_statistics);
+        log_pending_executions(trace, pending_reqs);
+        trace_system(regex_system, trace, profiler_statistics);
         process_regex_requests(pending_reqs, processed_reqs, failed_reqs, errors);
-        trace(http_system, runtime);
-        send_http_requests(pending_reqs, failed_reqs, outgoing, runtime.http_configs, runtime.pending_http_reqs, id_seed, errors);
+        trace_system(http_system, trace, profiler_statistics);
+        send_http_requests(pending_reqs, failed_reqs, outgoing, http_configs, pending_http_reqs, id_seed, errors);
     }
-    trace(http_system, runtime);
-    remove_http_configs_of_executions(failed_execs, runtime.http_configs);
-    remove_http_configs_of_executions(finished_execs, runtime.http_configs);
-    trace(logging_system, runtime);
-    log_failed_executions(runtime.trace, failed_execs, errors);
-    log_finished_executions(runtime.trace, finished_execs);
-    trace(js_system, runtime);
-    fetch_results(finished_execs, runtime.results);
+    trace_system(http_system, trace, profiler_statistics);
+    remove_http_configs_of_executions(failed_execs, http_configs);
+    remove_http_configs_of_executions(finished_execs, http_configs);
+    trace_system(logging_system, trace, profiler_statistics);
+    log_failed_executions(trace, failed_execs, errors);
+    log_finished_executions(trace, finished_execs);
+    trace_system(js_system, trace, profiler_statistics);
+    fetch_results(finished_execs, results);
     finalize_executions(failed_execs);
     finalize_executions(finished_execs);
-    trace(!runtime.pending_http_reqs.empty() ? http_system : -1, runtime);
+    trace_system(!pending_http_reqs.empty() ? http_system : -1, trace, profiler_statistics);
 }
 
-void display_profiler_statistics(const profiler_statistics &stats) {
+void display_profiler_statistics(const crawler_profiler_statistics &stats) {
     const auto old_precision = std::cerr.precision();
     std::cerr << std::fixed << std::setprecision(2);
     std::chrono::microseconds total(0);

@@ -42,24 +42,17 @@ struct crawler_result {
     bool operator!=(const crawler_result &rhs) const;
 };
 
-struct profiler_statistics {
+struct crawler_profiler_statistics {
     std::vector<std::chrono::microseconds> execution_times = std::vector<std::chrono::microseconds>(4);
     std::chrono::system_clock::time_point current_time;
     int current_system_id = -1;
 };
 
-struct crawler_runtime {
-    std::vector<crawler> crawlers;
-    std::vector<crawler_execution> pending_execs;
-    std::vector<crawler_http_request> pending_http_reqs;
-    std::vector<crawler_http_config> http_configs;
-    std::vector<crawler_result> results;
-    profiler_statistics profiler_statistics;
-    bool trace;
-};
-
-void execute_crawlers(crawler_runtime &runtime, std::vector<http_response>& incoming,
-                      std::vector<http_request> &outgoing, id_seed& id_seed);
-void display_profiler_statistics(const profiler_statistics& stats);
+void execute_crawlers(std::vector<crawler>& crawlers, std::vector<crawler_execution>& pending_execs,
+                      std::vector<crawler_http_request>& pending_http_reqs,
+                      std::vector<crawler_http_config>& http_configs, std::vector<crawler_result>& results,
+                      crawler_profiler_statistics& profiler_statistics, bool trace,
+                      std::vector<http_response>& incoming, std::vector<http_request> &outgoing, id_seed& id_seed);
+void display_profiler_statistics(const crawler_profiler_statistics& stats);
 
 #endif //SERIO_CRAWLER_H

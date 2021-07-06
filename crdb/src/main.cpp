@@ -67,11 +67,15 @@ int main(int argc, char** argv) {
     std::vector<http_request> requests_to_send;
     queue<http_response> response_queue;
     std::vector<std::string> user_agents;
-    crawler_runtime runtime;
-    runtime.trace = true;
+    std::vector<crawler> crawlers;
+    std::vector<crawler_execution> pending_crawler_execs;
+    std::vector<crawler_http_request> pending_crawler_http_reqs;
+    std::vector<crawler_http_config> crawler_http_configs;
+    std::vector<crawler_result> crawler_results;
+    crawler_profiler_statistics crawler_profiler_statistics;
     auto options = create_options();
     std::string err_msg;
-    const auto error = read_args(argc, argv, options, runtime.crawlers, user_agents, seed, err_msg);
+    const auto error = read_args(argc, argv, options, crawlers, user_agents, seed, err_msg);
     if (error == wrong_args) {
         std::cout << options.help() << std::endl;
         return 1;
@@ -81,15 +85,18 @@ int main(int argc, char** argv) {
     }
     init_http_client_cache(cache_db);
     task_queue.enqueue({init_task});
-    std::vector<http_response> ress;
+    std::vector<http_response> responses;
     do {
         const auto task = task_queue.dequeue();
-        read_http_responses(task, response_queue, ress);
-        execute_crawlers(runtime, ress, requests_to_send, seed);
-        send_http_requests(*nf_client, requests_to_send, response_queue, user_agents, cache_db, task_queue, seed);
-    } while (!runtime.pending_execs.empty());
-    display_profiler_statistics(runtime.profiler_statistics);
-    for (const auto& result: runtime.results) {
+        read_http_responses(task, response_queue, responses);
+        execute_crawlers(crawlers, pending_crawler_execs, pending_crawler_http_reqs, crawler_http_configs,
+                         crawler_results, crawler_profiler_statistics, true, responses,
+                         requests_to_send, seed);
+        send_http_requests(*nf_client, requests_to_send, response_queue, user_agents, cache_db,
+                           task_queue, seed);
+    } while (!pending_crawler_execs.empty());
+    display_profiler_statistics(crawler_profiler_statistics);
+    for (const auto& result: crawler_results) {
         std::cout << result.data.dump(2) << std::endl;
     }
     return 0;
