@@ -27,8 +27,6 @@ target_include_directories(core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBL
 target_link_libraries(core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
 add_executable(core-test
-        test/config-test.cpp
-        test/http-test.cpp
         test/queue-test.cpp
         test/task-test.cpp
         test/crawler-test.cpp
