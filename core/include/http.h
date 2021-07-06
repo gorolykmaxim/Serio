@@ -31,15 +31,11 @@ struct http_response {
     bool operator!=(const http_response &rhs) const;
 };
 
-struct http_client {
-    std::shared_ptr<nativeformat::http::Client> nf_client;
-    std::vector<http_request> requests_to_send;
-    queue<http_response> response_queue;
-    std::vector<std::string> user_agents;
-};
-
 void init_http_client_cache(SQLite::Database& database);
-void send_http_requests(http_client& client, SQLite::Database& database, queue<task>& task_queue, id_seed& id_seed);
+void send_http_requests(nativeformat::http::Client& nf_client,
+                        std::vector<http_request>& requests_to_send, queue<http_response>& response_queue,
+                        const std::vector<std::string>& user_agents, SQLite::Database& database, queue<task>& task_queue,
+                        id_seed& id_seed);
 void read_http_responses(const task& task, queue<http_response>& response_queue, std::vector<http_response>& responses);
 
 #endif //SERIO_HTTP_H

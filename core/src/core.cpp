@@ -10,7 +10,7 @@ static void display_title_screen(ui_data& ui_data, const task& task) {
 
 void init_core(core& core, const std::string &database_path) {
     core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    core.http_client.nf_client = nativeformat::http::createClient("", "");
+    core.nf_client = nativeformat::http::createClient("", "");
     init_config(*core.database);
     init_http_client_cache(*core.database);
     core.task_queue.enqueue({init_task});
@@ -37,11 +37,11 @@ bool enqueue_back_task_from_render_task(const std::string &raw_render_task, queu
 void execute_core_task(core &core) {
     std::vector<http_response> http_responses;
     const auto task = core.task_queue.dequeue();
-    read_http_responses(task, core.http_client.response_queue, http_responses);
+    read_http_responses(task, core.response_queue, http_responses);
     fetch_crawler_config(*core.database, core.ui_data, core.crawler_config_url, core.id_seed,
-                         core.http_client.requests_to_send, http_responses, core.active_task,
-                         core.task_queue, task);
+                         core.requests_to_send, http_responses, core.active_task,core.task_queue, task);
     display_title_screen(core.ui_data, task);
-    send_http_requests(core.http_client, *core.database, core.task_queue, core.id_seed);
+    send_http_requests(*core.nf_client, core.requests_to_send,core.response_queue, core.user_agents,
+                       *core.database, core.task_queue, core.id_seed);
     render_ui(core.ui_data, core.render_task_queue);
 }

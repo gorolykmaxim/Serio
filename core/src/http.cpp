@@ -75,16 +75,19 @@ static void send_response(queue<http_response>& response_queue, queue<task>& tas
     task_queue.enqueue({create_id(id_seed), process_http_response_task});
 }
 
-void send_http_requests(http_client &client, SQLite::Database &database, queue<task>& task_queue, id_seed& id_seed) {
-    for (const auto& req: client.requests_to_send) {
+void send_http_requests(nativeformat::http::Client& nf_client,
+                        std::vector<http_request>& requests_to_send, queue<http_response>& response_queue,
+                        const std::vector<std::string>& user_agents, SQLite::Database& database, queue<task>& task_queue,
+                        id_seed& id_seed) {
+    for (const auto& req: requests_to_send) {
         const auto req_cache_key = make_cache_key_for(req);
         const auto cached_res = get_from_cache(database, req_cache_key);
         if (cached_res) {
-            send_response(client.response_queue, task_queue, id_seed, {req, *cached_res, nativeformat::http::StatusCodeOK});
+            send_response(response_queue, task_queue, id_seed, {req, *cached_res, nativeformat::http::StatusCodeOK});
             continue;
         }
-        const auto nf_req = make_nf_request_for(req, client.user_agents);
-        client.nf_client->performRequest(nf_req, [&client, &database, &task_queue, &id_seed, req, req_cache_key] (const auto& nf_res) {
+        const auto nf_req = make_nf_request_for(req, user_agents);
+        nf_client.performRequest(nf_req, [&response_queue, &database, &task_queue, &id_seed, req, req_cache_key] (const auto& nf_res) {
             http_response res{req, read_body_from(nf_res), nf_res->statusCode()};
             if (res.code == nativeformat::http::StatusCodeInvalid) {
                 res.code = 600;
@@ -98,10 +101,10 @@ void send_http_requests(http_client &client, SQLite::Database &database, queue<t
             } else {
                 put_in_cache(database, req_cache_key, res.body, req.cache_ttl);
             }
-            send_response(client.response_queue, task_queue, id_seed, res);
+            send_response(response_queue, task_queue, id_seed, res);
         });
     }
-    client.requests_to_send.clear();
+    requests_to_send.clear();
 }
 
 void read_http_responses(const task &task, queue<http_response> &response_queue, std::vector<http_response>& responses) {

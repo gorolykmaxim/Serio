@@ -63,12 +63,15 @@ int main(int argc, char** argv) {
     id_seed seed;
     queue<task> task_queue;
     SQLite::Database cache_db(":memory:", SQLite::OPEN_READWRITE);
-    http_client client{nativeformat::http::createClient("", "")};
+    const auto nf_client = nativeformat::http::createClient("", "");
+    std::vector<http_request> requests_to_send;
+    queue<http_response> response_queue;
+    std::vector<std::string> user_agents;
     crawler_runtime runtime;
     runtime.trace = true;
     auto options = create_options();
     std::string err_msg;
-    const auto error = read_args(argc, argv, options, runtime.crawlers, client.user_agents, seed, err_msg);
+    const auto error = read_args(argc, argv, options, runtime.crawlers, user_agents, seed, err_msg);
     if (error == wrong_args) {
         std::cout << options.help() << std::endl;
         return 1;
@@ -81,9 +84,9 @@ int main(int argc, char** argv) {
     std::vector<http_response> ress;
     do {
         const auto task = task_queue.dequeue();
-        read_http_responses(task, client.response_queue, ress);
-        execute_crawlers(runtime, ress, client.requests_to_send, seed);
-        send_http_requests(client, cache_db, task_queue, seed);
+        read_http_responses(task, response_queue, ress);
+        execute_crawlers(runtime, ress, requests_to_send, seed);
+        send_http_requests(*nf_client, requests_to_send, response_queue, user_agents, cache_db, task_queue, seed);
     } while (!runtime.pending_execs.empty());
     display_profiler_statistics(runtime.profiler_statistics);
     for (const auto& result: runtime.results) {

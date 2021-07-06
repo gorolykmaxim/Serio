@@ -13,7 +13,10 @@ struct core {
     queue<task> task_queue;
     queue<std::string> render_task_queue;
     std::unique_ptr<SQLite::Database> database;
-    http_client http_client;
+    std::shared_ptr<nativeformat::http::Client> nf_client;
+    std::vector<http_request> requests_to_send;
+    queue<http_response> response_queue;
+    std::vector<std::string> user_agents;
     std::string crawler_config_url;
     std::optional<task> active_task;
     ui_data ui_data;
