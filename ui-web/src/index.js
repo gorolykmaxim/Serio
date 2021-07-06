@@ -88,7 +88,7 @@ function createDialog(ui, core, content, innerElements) {
     const {title, description, confirmText, confirmTask, cancelText} = content.dialog;
     const elements = [];
     elements.push(createTitle(title));
-    const desc = create("p", "text-muted", "not-selectable");
+    const desc = create("p", "text-muted", "not-selectable", "word-break");
     desc.innerText = description;
     elements.push(desc);
     if (innerElements) {
