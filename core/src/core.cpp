@@ -39,7 +39,8 @@ void execute_core_task(core &core) {
     const auto task = core.task_queue.dequeue();
     read_http_responses(task, core.http_client.response_queue, http_responses);
     fetch_crawler_config(*core.database, core.ui_data, core.crawler_config_url, core.id_seed,
-                         core.http_client.requests_to_send, http_responses, core.task_queue, task);
+                         core.http_client.requests_to_send, http_responses, core.active_task,
+                         core.task_queue, task);
     display_title_screen(core.ui_data, task);
     send_http_requests(core.http_client, *core.database, core.task_queue, core.id_seed);
     render_ui(core.ui_data, core.render_task_queue);

@@ -15,6 +15,7 @@ struct core {
     std::unique_ptr<SQLite::Database> database;
     http_client http_client;
     std::string crawler_config_url;
+    std::optional<task> active_task;
     ui_data ui_data;
 };
 

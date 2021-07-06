@@ -10,6 +10,6 @@
 void init_config(SQLite::Database& database);
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
                           std::vector<http_request>& requests_to_send, std::vector<http_response>& responses,
-                          queue<task>& task_queue, const task& task);
+                          std::optional<task>& active_task, queue<task>& task_queue, const task& task);
 
 #endif //SERIO_CONFIG_H

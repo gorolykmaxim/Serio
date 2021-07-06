@@ -41,37 +41,42 @@ static void display_crawler_config_url_edit_dialog(ui_data& ui_data, const std::
 }
 
 static void download_config(std::vector<http_request>& requests_to_send, id_seed& seed,
-                            const std::string& crawler_config_url, ui_data& ui_data) {
-    http_request req{create_id(seed), crawler_config_url};
+                            const std::string& crawler_config_url, ui_data& ui_data, std::optional<task>& active_task,
+                            const task& task) {
+    http_request req{task.id, crawler_config_url};
     req.cache_ttl = std::chrono::milliseconds(0);
     requests_to_send.push_back(std::move(req));
     ui_data = {view_id::loading_screen_view};
     ui_data.loading = {"Downloading crawler config..."};
+    active_task = task;
 }
 
 static void save_downloaded_config(SQLite::Database& database, const std::vector<http_response>& responses,
                                    ui_data& ui_data, std::string& crawler_config_url, queue<task>& task_queue,
-                                   id_seed& id_seed) {
-    for (const auto& res: responses) {
-        if (res.code > 399) {
-            ui_data = {view_id::dialog_view};
-            ui_data.dialog = {
-                    "Failed to download crawler config",
-                    "Failed to download '" + crawler_config_url + "': " + res.body,
-                    "Change URL"
-            };
-            ui_data.back_task = {create_id(id_seed), init_task};
-        } else {
-            set_config_property(database, SOURCE_URL_PROPERTY, crawler_config_url);
-            crawler_config_url = "";
-            task_queue.enqueue({create_id(id_seed), display_title_screen_task});
-        }
+                                   id_seed& id_seed, std::optional<task>& active_task) {
+    const auto res = std::find_if(responses.cbegin(), responses.cend(),
+                                  [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
+    if (res == responses.cend()) return;
+    if (res->code > 399) {
+        ui_data = {view_id::dialog_view};
+        ui_data.dialog = {
+                "Failed to download crawler config",
+                "Failed to download '" + crawler_config_url + "': " + res->body,
+                "Change URL"
+        };
+        ui_data.back_task = {create_id(id_seed), init_task};
+        active_task.reset();
+    } else {
+        set_config_property(database, SOURCE_URL_PROPERTY, crawler_config_url);
+        crawler_config_url = "";
+        task_queue.enqueue({create_id(id_seed), display_title_screen_task});
+        active_task.reset();
     }
 }
 
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
                           std::vector<http_request>& requests_to_send, std::vector<http_response>& responses,
-                          queue<task>& task_queue, const task& task) {
+                          std::optional<task>& active_task, queue<task>& task_queue, const task& task) {
     if (task.type == init_task) {
         if (!get_config_property(database, SOURCE_URL_PROPERTY)) {
             display_crawler_config_url_edit_dialog(ui_data, crawler_config_url, seed);
@@ -81,8 +86,8 @@ void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::str
     } else if (task.type == set_crawler_config_url_task) {
         crawler_config_url = task.args[0].get<std::string>();
     } else if (task.type == download_config_task) {
-        download_config(requests_to_send, seed, crawler_config_url, ui_data);
-    } else if (task.type == process_http_response_task) {
-        save_downloaded_config(database, responses, ui_data, crawler_config_url, task_queue, seed);
+        download_config(requests_to_send, seed, crawler_config_url, ui_data, active_task, task);
+    } else if (task.type == process_http_response_task && active_task && active_task->type == download_config_task) {
+        save_downloaded_config(database, responses, ui_data, crawler_config_url, task_queue, seed, active_task);
     }
 }
