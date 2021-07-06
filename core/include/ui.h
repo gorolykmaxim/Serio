@@ -4,8 +4,6 @@
 #include <string>
 #include "task.h"
 
-typedef std::function<void(const std::string&)> render_view;
-
 enum view_id {
     title_screen, edit_text_dialog, dialog, loading_screen
 };
@@ -43,6 +41,6 @@ struct ui_data {
     std::optional<task> back_task;
 };
 
-void render_ui(const ui_data& ui_data, const render_view& render_view);
+void render_ui(const ui_data& ui_data, queue<std::string>& render_task_queue);
 
 #endif //SERIO_UI_H

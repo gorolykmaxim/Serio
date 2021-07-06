@@ -22,15 +22,15 @@ static void receive_render_task(JNIEnv *env, jobject obj, const std::string& ren
     env->CallVoidMethod(obj, mid, outgoing);
 }
 
-static render_view create_platform_render_callback(JNIEnv* env, jobject obj) {
-    return [env, obj] (const std::string& view_data) {receive_render_task(env, obj, view_data);};
-}
-
 JNIEXPORT void JNICALL Java_org_serio_Core_runNative(JNIEnv* env, jobject obj, jstring db_path) {
     const auto path = to_string(env, db_path);
-    init_core(core, path, create_platform_render_callback(env, obj));
+    init_core(core, path);
     while (true) {
         execute_core_task(core);
+        const auto render_task = core.render_task_queue.try_dequeue();
+        if (render_task) {
+            receive_render_task(env, obj, *render_task);
+        }
     }
 }
 

@@ -43,9 +43,8 @@ static void display_error_dialog(ui_data& ui_data, const task& task) {
     ui_data.back_task = {edit_crawler_config_url};
 }
 
-void init_core(core& core, const std::string &database_path, render_view render_view) {
+void init_core(core& core, const std::string &database_path) {
     core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    core.render_view = std::move(render_view);
     core.task_queue.enqueue({init});
 }
 
@@ -72,6 +71,6 @@ void execute_core_task(core &core) {
     display_title_screen(core.ui_data, task);
     display_edit_text_dialog(core.ui_data, task);
     display_error_dialog(core.ui_data, task);
-    render_ui(core.ui_data, core.render_view);
+    render_ui(core.ui_data, core.render_task_queue);
     hide_title_screen_after_delay(core.task_queue, task);
 }
