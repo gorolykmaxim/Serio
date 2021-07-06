@@ -5,7 +5,11 @@
 #include <queue.h>
 
 enum task_id {
-    init, process_http_response, edit_crawler_config_url
+    init_task,
+    process_http_response_task,
+    set_crawler_config_url_task,
+    download_config_task,
+    display_title_screen_task,
 };
 
 struct task {

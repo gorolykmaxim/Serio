@@ -5,7 +5,10 @@
 #include "task.h"
 
 enum view_id {
-    title_screen, edit_text_dialog, dialog, loading_screen
+    title_screen_view,
+    edit_text_dialog_view,
+    dialog_view,
+    loading_screen_view
 };
 
 enum animation_speed {
@@ -33,14 +36,20 @@ struct edit_text {
     task save_value_task;
 };
 
-struct ui_data {
-    view_id view_id;
-    std::optional<struct dialog> dialog;
-    std::optional<edit_text> edit_text;
-    std::optional<animation> animation;
-    std::optional<task> back_task;
+struct loading {
+    std::string text;
 };
 
-void render_ui(const ui_data& ui_data, queue<std::string>& render_task_queue);
+struct ui_data {
+    view_id view_id;
+    std::optional<dialog> dialog;
+    std::optional<edit_text> edit_text;
+    std::optional<loading> loading;
+    std::optional<animation> animation;
+    std::optional<task> back_task;
+    bool rendered = false;
+};
+
+void render_ui(ui_data& ui_data, queue<std::string>& render_task_queue);
 
 #endif //SERIO_UI_H

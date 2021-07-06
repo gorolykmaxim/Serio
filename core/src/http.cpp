@@ -72,7 +72,7 @@ static std::string read_body_from(const std::shared_ptr<nativeformat::http::Resp
 
 static void send_response(queue<http_response>& response_queue, queue<task>& task_queue, const http_response& res) {
     response_queue.enqueue(res);
-    task_queue.enqueue({process_http_response});
+    task_queue.enqueue({process_http_response_task});
 }
 
 void send_http_requests(http_client &client, SQLite::Database &database, queue<task>& task_queue) {
@@ -86,7 +86,10 @@ void send_http_requests(http_client &client, SQLite::Database &database, queue<t
         const auto nf_req = make_nf_request_for(req, client.user_agents);
         client.nf_client->performRequest(nf_req, [&client, &database, &task_queue, req, req_cache_key] (const auto& nf_res) {
             http_response res{req, read_body_from(nf_res), nf_res->statusCode()};
-            if (res.code >= nativeformat::http::StatusCodeBadRequest) {
+            if (res.code == nativeformat::http::StatusCodeInvalid) {
+                res.code = 600;
+                res.body = "Failed to send request";
+            } else if (res.code >= nativeformat::http::StatusCodeBadRequest) {
                 const auto outdated_cached_res = get_from_cache(database, req_cache_key, true);
                 if (outdated_cached_res) {
                     res.body = *outdated_cached_res;
@@ -102,7 +105,7 @@ void send_http_requests(http_client &client, SQLite::Database &database, queue<t
 }
 
 void read_http_responses(const task &task, queue<http_response> &response_queue, std::vector<http_response>& responses) {
-    if (task.id != process_http_response) return;
+    if (task.id != process_http_response_task) return;
     responses.push_back(response_queue.dequeue());
 }
 

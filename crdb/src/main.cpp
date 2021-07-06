@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     init_http_client_cache(cache_db);
-    task_queue.enqueue({init});
+    task_queue.enqueue({init_task});
     std::vector<http_response> ress;
     do {
         const auto task = task_queue.dequeue();

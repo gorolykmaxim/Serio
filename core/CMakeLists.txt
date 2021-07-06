@@ -28,7 +28,6 @@ target_link_libraries(core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
 add_executable(core-test
         test/queue-test.cpp
-        test/task-test.cpp
         test/crawler-test.cpp
         test/id-test.cpp)
 target_include_directories(core-test PRIVATE test/mocks)

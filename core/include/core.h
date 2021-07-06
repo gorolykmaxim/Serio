@@ -5,12 +5,16 @@
 #include <task.h>
 #include <string>
 #include <queue.h>
+#include <http.h>
 #include <SQLiteCpp/Database.h>
 
 struct core {
+    id_seed id_seed;
     queue<task> task_queue;
     queue<std::string> render_task_queue;
     std::unique_ptr<SQLite::Database> database;
+    http_client http_client;
+    std::string crawler_config_url;
     ui_data ui_data;
 };
 

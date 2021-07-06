@@ -10,7 +10,8 @@ static void serialize_task(const std::optional<task>& task, nlohmann::json& task
     }
 }
 
-void render_ui(const ui_data &ui_data, queue<std::string>& render_task_queue) {
+void render_ui(ui_data &ui_data, queue<std::string>& render_task_queue) {
+    if (ui_data.rendered) return;
     nlohmann::json render_task;
     render_task["viewId"] = ui_data.view_id;
     if (ui_data.animation) {
@@ -37,6 +38,12 @@ void render_ui(const ui_data &ui_data, queue<std::string>& render_task_queue) {
         serialize_task(ui_data.edit_text->save_value_task, edit_text, "saveValueTask");
         render_task["editText"] = edit_text;
     }
+    if (ui_data.loading) {
+        nlohmann::json loading;
+        loading["text"] = ui_data.loading->text;
+        render_task["loading"] = loading;
+    }
     serialize_task(ui_data.back_task, render_task, "backTask");
     render_task_queue.enqueue(render_task.dump());
+    ui_data.rendered = true;
 }
