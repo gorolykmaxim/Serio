@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
         const auto task = task_queue.dequeue();
         read_http_responses(task, client.response_queue, ress);
         execute_crawlers(runtime, ress, client.requests_to_send, seed);
-        send_http_requests(client, cache_db, task_queue);
+        send_http_requests(client, cache_db, task_queue, seed);
     } while (!runtime.pending_execs.empty());
     display_profiler_statistics(runtime.profiler_statistics);
     for (const auto& result: runtime.results) {

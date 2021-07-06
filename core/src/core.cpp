@@ -3,7 +3,7 @@
 #include "core.h"
 
 static void display_title_screen(ui_data& ui_data, const task& task) {
-    if (task.id != display_title_screen_task) return;
+    if (task.type != display_title_screen_task) return;
     ui_data = {view_id::title_screen_view};
     ui_data.animation = {animation_speed::slow, true, false};
 }
@@ -41,6 +41,6 @@ void execute_core_task(core &core) {
     fetch_crawler_config(*core.database, core.ui_data, core.crawler_config_url, core.id_seed,
                          core.http_client.requests_to_send, http_responses, core.task_queue, task);
     display_title_screen(core.ui_data, task);
-    send_http_requests(core.http_client, *core.database, core.task_queue);
+    send_http_requests(core.http_client, *core.database, core.task_queue, core.id_seed);
     render_ui(core.ui_data, core.render_task_queue);
 }

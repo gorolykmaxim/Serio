@@ -39,8 +39,9 @@ function createEditText(core, content) {
     editText.value = value || "";
     editText.setAttribute("placeholder", label);
     editText.oninput = () => {
-        const args = [editText.value].concat(valueChangedTask.args);
-        sendTask(core, {taskId: valueChangedTask.taskId, args: args});
+        const event = Object.assign({}, valueChangedTask);
+        event.args = [editText.value].concat(valueChangedTask.args);
+        sendTask(core, event);
     };
     editText.onkeydown = (e) => {
         if (e.key === "Enter") {

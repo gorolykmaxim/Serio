@@ -39,7 +39,7 @@ struct http_client {
 };
 
 void init_http_client_cache(SQLite::Database& database);
-void send_http_requests(http_client& client, SQLite::Database& database, queue<task>& task_queue);
+void send_http_requests(http_client& client, SQLite::Database& database, queue<task>& task_queue, id_seed& id_seed);
 void read_http_responses(const task& task, queue<http_response>& response_queue, std::vector<http_response>& responses);
 
 #endif //SERIO_HTTP_H

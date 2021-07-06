@@ -3,8 +3,9 @@
 
 #include <nlohmann/json.hpp>
 #include <queue.h>
+#include "id.h"
 
-enum task_id {
+enum task_type {
     init_task,
     process_http_response_task,
     set_crawler_config_url_task,
@@ -13,7 +14,8 @@ enum task_id {
 };
 
 struct task {
-    task_id id;
+    id id;
+    task_type type;
     std::vector<nlohmann::json> args;
 
     bool operator==(const task &rhs) const;

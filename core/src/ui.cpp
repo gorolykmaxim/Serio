@@ -4,7 +4,8 @@
 static void serialize_task(const std::optional<task>& task, nlohmann::json& task_container, const std::string& task_name) {
     if (task) {
         nlohmann::json json_task;
-        json_task["taskId"] = task->id;
+        json_task["id"] = task->id;
+        json_task["type"] = task->type;
         json_task["args"] = task->args;
         task_container[task_name] = json_task;
     }
