@@ -48,6 +48,10 @@ static bool find_response_to_task(http_response& res, std::vector<http_response>
     return true;
 }
 
+static std::string trim_response_body(const std::string& body) {
+    return body.size() > 200 ? body.substr(0, 200) + "..." : body;
+}
+
 static void display_edit_crawler_config_url_dialog(ui_data& ui_data, const std::string& crawler_config_url, id_seed& id_seed) {
     ui_data = {view_id::edit_text_dialog_view};
     ui_data.dialog = {
@@ -78,20 +82,28 @@ static void save_new_downloaded_config(SQLite::Database& database, std::vector<h
                                        std::optional<task>& active_task) {
     http_response res;
     if (!find_response_to_task(res, responses, download_new_config_task, active_task)) return;
+    std::string title, description;
     if (res.code > 399) {
-        ui_data = {view_id::dialog_view};
-        ui_data.dialog = {
-                "Failed to download crawler config",
-                "Failed to download '" + crawler_config_url + "': " + res.body,
-                "Change URL"
-        };
-        ui_data.back_task = {create_id(id_seed), init_task};
-        active_task.reset();
+        title = "Failed to download crawler config";
+        description = "Failed to download '" + crawler_config_url + "': " + trim_response_body(res.body);
     } else {
+        try {
+            nlohmann::json::parse(res.body);
+        } catch (const std::exception& e) {
+            title = "Failed to parse crawler config";
+            description = "Failed to parse " + trim_response_body(res.body) + " Reason: " + e.what();
+        }
+    }
+    if (title.empty() && description.empty()) {
         set_config_property(database, SOURCE_URL_PROPERTY, crawler_config_url);
         crawler_config_url = "";
         active_task.reset();
         display_title_screen(ui_data);
+    } else {
+        ui_data = {view_id::dialog_view};
+        ui_data.dialog = {title, description, "Change URL"};
+        ui_data.back_task = {create_id(id_seed), init_task};
+        active_task.reset();
     }
 }
 
@@ -99,6 +111,7 @@ static void save_downloaded_config(SQLite::Database& database, std::vector<http_
                                    id_seed& id_seed, std::optional<task>& active_task) {
     http_response res;
     if (!find_response_to_task(res, responses, init_task, active_task)) return;
+    nlohmann::json::parse(res.body);
 }
 
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
