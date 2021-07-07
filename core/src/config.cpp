@@ -3,6 +3,7 @@
 #include "config.h"
 
 const auto SOURCE_URL_PROPERTY = "source-url";
+const auto CONFIG_CACHE_TTL = std::chrono::hours(24);
 
 void init_config(SQLite::Database &database) {
     database.exec("CREATE TABLE IF NOT EXISTS CONFIG_ENTRY("
@@ -23,37 +24,58 @@ static std::optional<std::string> get_config_property(SQLite::Database &database
     return select.executeStep() ? select.getColumn(0).getString() : std::optional<std::string>();
 }
 
-static void display_crawler_config_url_edit_dialog(ui_data& ui_data, const std::string& crawler_config_url, id_seed& id_seed) {
-    ui_data = {view_id::edit_text_dialog_view};
-    ui_data.dialog = {
-            "Crawler config URL",
-            "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
-            "",
-            "Save",
-            {{create_id(id_seed), download_config_task}},
-    };
-    ui_data.edit_text = {
-            "Crawler config URL",
-            crawler_config_url,
-            {create_id(id_seed), set_crawler_config_url_task},
-            {create_id(id_seed), download_config_task},
-    };
+static void display_title_screen(ui_data& ui_data) {
+    ui_data = {view_id::title_screen_view};
+    ui_data.animation = {animation_speed::slow, true, false};
 }
 
-static void download_config(std::vector<http_request>& requests_to_send, id_seed& seed,
-                            const std::string& crawler_config_url, ui_data& ui_data, std::optional<task>& active_task,
-                            const task& task) {
-    http_request req{task.id, crawler_config_url};
-    req.cache_ttl = std::chrono::milliseconds(0);
+static void send_config_download_request(std::vector<http_request>& requests_to_send, const std::string& config_url,
+                                         std::optional<task>& active_task, const task& task) {
+    http_request req{task.id, config_url};
+    req.cache_ttl = CONFIG_CACHE_TTL;
     requests_to_send.push_back(std::move(req));
-    ui_data = {view_id::loading_screen_view};
-    ui_data.loading = {"Downloading crawler config..."};
     active_task = task;
 }
 
-static void save_downloaded_config(SQLite::Database& database, const std::vector<http_response>& responses,
-                                   ui_data& ui_data, std::string& crawler_config_url, queue<task>& task_queue,
-                                   id_seed& id_seed, std::optional<task>& active_task) {
+static void request_crawler_config_url_if_missing(SQLite::Database& database, ui_data& ui_data,
+                                                  std::string& crawler_config_url, id_seed& id_seed,
+                                                  std::vector<http_request>& requests_to_send,
+                                                  queue<task>& task_queue, std::optional<task>& active_task,
+                                                  const task& task) {
+    const auto existing_config_url = get_config_property(database, SOURCE_URL_PROPERTY);
+    if (!existing_config_url) {
+        ui_data = {view_id::edit_text_dialog_view};
+        ui_data.dialog = {
+                "Crawler config URL",
+                "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
+                "",
+                "Save",
+                {{create_id(id_seed), download_new_config_task}},
+        };
+        ui_data.edit_text = {
+                "Crawler config URL",
+                crawler_config_url,
+                {create_id(id_seed), set_crawler_config_url_task},
+                {create_id(id_seed), download_new_config_task},
+        };
+    } else {
+        send_config_download_request(requests_to_send, *existing_config_url, active_task, task);
+        display_title_screen(ui_data);
+    }
+}
+
+static void download_new_config(std::vector<http_request>& requests_to_send, id_seed& seed,
+                                const std::string& crawler_config_url, ui_data& ui_data, std::optional<task>& active_task,
+                                const task& task) {
+    send_config_download_request(requests_to_send, crawler_config_url, active_task, task);
+    ui_data = {view_id::loading_screen_view};
+    ui_data.loading = {"Downloading crawler config..."};
+}
+
+static void save_new_downloaded_config(SQLite::Database& database, const std::vector<http_response>& responses,
+                                       ui_data& ui_data, std::string& crawler_config_url, id_seed& id_seed,
+                                       std::optional<task>& active_task) {
+    if (!active_task || active_task->type != download_new_config_task) return;
     const auto res = std::find_if(responses.cbegin(), responses.cend(),
                                   [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
     if (res == responses.cend()) return;
@@ -69,25 +91,31 @@ static void save_downloaded_config(SQLite::Database& database, const std::vector
     } else {
         set_config_property(database, SOURCE_URL_PROPERTY, crawler_config_url);
         crawler_config_url = "";
-        task_queue.enqueue({create_id(id_seed), display_title_screen_task});
         active_task.reset();
+        display_title_screen(ui_data);
     }
+}
+
+static void save_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses, ui_data& ui_data,
+                                   id_seed& id_seed, std::optional<task>& active_task) {
+    if (!active_task || active_task->type != init_task) return;
+    const auto res = std::find_if(responses.cbegin(), responses.cend(),
+                                  [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
+    if (res == responses.cend()) return;
 }
 
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
                           std::vector<http_request>& requests_to_send, std::vector<http_response>& responses,
                           std::optional<task>& active_task, queue<task>& task_queue, const task& task) {
     if (task.type == init_task) {
-        if (!get_config_property(database, SOURCE_URL_PROPERTY)) {
-            display_crawler_config_url_edit_dialog(ui_data, crawler_config_url, seed);
-        } else {
-            task_queue.enqueue({create_id(seed), display_title_screen_task});
-        }
+        request_crawler_config_url_if_missing(database, ui_data, crawler_config_url, seed,
+                                              requests_to_send, task_queue, active_task, task);
     } else if (task.type == set_crawler_config_url_task) {
         crawler_config_url = task.args[0].get<std::string>();
-    } else if (task.type == download_config_task) {
-        download_config(requests_to_send, seed, crawler_config_url, ui_data, active_task, task);
-    } else if (task.type == process_http_response_task && active_task && active_task->type == download_config_task) {
-        save_downloaded_config(database, responses, ui_data, crawler_config_url, task_queue, seed, active_task);
+    } else if (task.type == download_new_config_task) {
+        download_new_config(requests_to_send, seed, crawler_config_url, ui_data, active_task, task);
+    } else if (task.type == process_http_response_task) {
+        save_new_downloaded_config(database, responses, ui_data, crawler_config_url, seed, active_task);
+        save_downloaded_config(database, responses, ui_data, seed, active_task);
     }
 }

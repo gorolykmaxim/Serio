@@ -92,7 +92,8 @@ void send_http_requests(nativeformat::http::Client& nf_client,
             if (res.code == nativeformat::http::StatusCodeInvalid) {
                 res.code = 600;
                 res.body = "Failed to send request";
-            } else if (res.code >= nativeformat::http::StatusCodeBadRequest) {
+            }
+            if (res.code >= nativeformat::http::StatusCodeBadRequest) {
                 const auto outdated_cached_res = get_from_cache(database, req_cache_key, true);
                 if (outdated_cached_res) {
                     res.body = *outdated_cached_res;

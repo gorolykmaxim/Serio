@@ -2,12 +2,6 @@
 #include <config.h>
 #include "core.h"
 
-static void display_title_screen(ui_data& ui_data, const task& task) {
-    if (task.type != display_title_screen_task) return;
-    ui_data = {view_id::title_screen_view};
-    ui_data.animation = {animation_speed::slow, true, false};
-}
-
 void init_core(core& core, const std::string &database_path) {
     core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
     core.nf_client = nativeformat::http::createClient("", "");
@@ -40,7 +34,6 @@ void execute_core_task(core &core) {
     read_http_responses(task, core.response_queue, http_responses);
     fetch_crawler_config(*core.database, core.ui_data, core.crawler_config_url, core.id_seed,
                          core.requests_to_send, http_responses, core.active_task,core.task_queue, task);
-    display_title_screen(core.ui_data, task);
     send_http_requests(*core.nf_client, core.requests_to_send,core.response_queue, core.user_agents,
                        *core.database, core.task_queue, core.id_seed);
     render_ui(core.ui_data, core.render_task_queue);

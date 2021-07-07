@@ -9,8 +9,7 @@ enum task_type {
     init_task,
     process_http_response_task,
     set_crawler_config_url_task,
-    download_config_task,
-    display_title_screen_task,
+    download_new_config_task,
 };
 
 struct task {
