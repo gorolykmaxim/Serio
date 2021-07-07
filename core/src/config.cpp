@@ -37,6 +37,16 @@ static void send_config_download_request(std::vector<http_request>& requests_to_
     active_task = task;
 }
 
+static bool find_response_to_task(http_response& res, const std::vector<http_response>& responses,
+                                  task_type expected_type, std::optional<task>& active_task) {
+    if (!active_task || active_task->type != expected_type) return false;
+    const auto it = std::find_if(responses.cbegin(), responses.cend(),
+                                  [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
+    if (it == responses.cend()) return false;
+    res = *it;
+    return true;
+}
+
 static void request_crawler_config_url_if_missing(SQLite::Database& database, ui_data& ui_data,
                                                   std::string& crawler_config_url, id_seed& id_seed,
                                                   std::vector<http_request>& requests_to_send,
@@ -75,15 +85,13 @@ static void download_new_config(std::vector<http_request>& requests_to_send, id_
 static void save_new_downloaded_config(SQLite::Database& database, const std::vector<http_response>& responses,
                                        ui_data& ui_data, std::string& crawler_config_url, id_seed& id_seed,
                                        std::optional<task>& active_task) {
-    if (!active_task || active_task->type != download_new_config_task) return;
-    const auto res = std::find_if(responses.cbegin(), responses.cend(),
-                                  [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
-    if (res == responses.cend()) return;
-    if (res->code > 399) {
+    http_response res;
+    if (!find_response_to_task(res, responses, download_new_config_task, active_task)) return;
+    if (res.code > 399) {
         ui_data = {view_id::dialog_view};
         ui_data.dialog = {
                 "Failed to download crawler config",
-                "Failed to download '" + crawler_config_url + "': " + res->body,
+                "Failed to download '" + crawler_config_url + "': " + res.body,
                 "Change URL"
         };
         ui_data.back_task = {create_id(id_seed), init_task};
@@ -98,10 +106,8 @@ static void save_new_downloaded_config(SQLite::Database& database, const std::ve
 
 static void save_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses, ui_data& ui_data,
                                    id_seed& id_seed, std::optional<task>& active_task) {
-    if (!active_task || active_task->type != init_task) return;
-    const auto res = std::find_if(responses.cbegin(), responses.cend(),
-                                  [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
-    if (res == responses.cend()) return;
+    http_response res;
+    if (!find_response_to_task(res, responses, init_task, active_task)) return;
 }
 
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
