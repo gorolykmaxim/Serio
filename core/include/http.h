@@ -37,5 +37,6 @@ void send_http_requests(nativeformat::http::Client& nf_client,
                         const std::vector<std::string>& user_agents, SQLite::Database& database, queue<task>& task_queue,
                         id_seed& id_seed);
 void read_http_responses(const task& task, queue<http_response>& response_queue, std::vector<http_response>& responses);
+std::optional<std::string> get_expired_response_from_cache(SQLite::Database& database, const http_request& req);
 
 #endif //SERIO_HTTP_H

@@ -111,7 +111,15 @@ static void save_downloaded_config(SQLite::Database& database, std::vector<http_
                                    id_seed& id_seed, std::optional<task>& active_task) {
     http_response res;
     if (!find_response_to_task(res, responses, init_task, active_task)) return;
-    nlohmann::json::parse(res.body);
+    try {
+        nlohmann::json::parse(res.body);
+    } catch (const std::exception& e) {
+        // A new version of the config has been published and it is broken (we can't even parse it).
+        // Get last working version from http cache (we are guaranteed to have it, since to get to this point
+        // we must have successfully downloaded and parsed a config at least once).
+        const auto expired_res_body = *get_expired_response_from_cache(database, res.request);
+        nlohmann::json::parse(expired_res_body);
+    }
 }
 
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,

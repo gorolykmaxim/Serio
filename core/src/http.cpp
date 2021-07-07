@@ -90,6 +90,7 @@ void send_http_requests(nativeformat::http::Client& nf_client,
         nf_client.performRequest(nf_req, [&response_queue, &database, &task_queue, &id_seed, req, req_cache_key] (const auto& nf_res) {
             http_response res{req, read_body_from(nf_res), nf_res->statusCode()};
             if (res.code == nativeformat::http::StatusCodeInvalid) {
+                // This can happen when there is no internet.
                 res.code = 600;
                 res.body = "Failed to send request";
             }
@@ -111,6 +112,10 @@ void send_http_requests(nativeformat::http::Client& nf_client,
 void read_http_responses(const task &task, queue<http_response> &response_queue, std::vector<http_response>& responses) {
     if (task.type != process_http_response_task) return;
     responses.push_back(response_queue.dequeue());
+}
+
+std::optional<std::string> get_expired_response_from_cache(SQLite::Database& database, const http_request &req) {
+    return get_from_cache(database, make_cache_key_for(req), true);
 }
 
 bool http_request::operator==(const http_request &rhs) const {
