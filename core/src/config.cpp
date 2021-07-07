@@ -37,14 +37,15 @@ static void send_config_download_request(std::vector<http_request>& requests_to_
     active_task = task;
 }
 
-static bool find_response_to_task(http_response& res, std::vector<http_response>& responses,
-                                  task_type expected_type, std::optional<task>& active_task) {
+static bool consume_response_to_task(http_response& res, std::vector<http_response>& responses,
+                                     task_type expected_type, std::optional<task>& active_task) {
     if (!active_task || active_task->type != expected_type) return false;
     const auto it = std::find_if(responses.cbegin(), responses.cend(),
                                   [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
     if (it == responses.cend()) return false;
     responses.erase(it);
     res = *it;
+    active_task.reset();
     return true;
 }
 
@@ -81,7 +82,7 @@ static void save_new_downloaded_config(SQLite::Database& database, std::vector<h
                                        ui_data& ui_data, std::string& crawler_config_url, id_seed& id_seed,
                                        std::optional<task>& active_task) {
     http_response res;
-    if (!find_response_to_task(res, responses, download_new_config_task, active_task)) return;
+    if (!consume_response_to_task(res, responses, download_new_config_task, active_task)) return;
     std::string title, description;
     if (res.code > 399) {
         title = "Failed to download crawler config";
@@ -97,20 +98,18 @@ static void save_new_downloaded_config(SQLite::Database& database, std::vector<h
     if (title.empty() && description.empty()) {
         set_config_property(database, SOURCE_URL_PROPERTY, crawler_config_url);
         crawler_config_url = "";
-        active_task.reset();
         display_title_screen(ui_data);
     } else {
         ui_data = {view_id::dialog_view};
         ui_data.dialog = {title, description, "Change URL"};
         ui_data.back_task = {create_id(id_seed), init_task};
-        active_task.reset();
     }
 }
 
 static void save_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses, ui_data& ui_data,
                                    id_seed& id_seed, std::optional<task>& active_task) {
     http_response res;
-    if (!find_response_to_task(res, responses, init_task, active_task)) return;
+    if (!consume_response_to_task(res, responses, init_task, active_task)) return;
     try {
         nlohmann::json::parse(res.body);
     } catch (const std::exception& e) {
