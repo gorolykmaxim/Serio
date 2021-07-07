@@ -37,12 +37,13 @@ static void send_config_download_request(std::vector<http_request>& requests_to_
     active_task = task;
 }
 
-static bool find_response_to_task(http_response& res, const std::vector<http_response>& responses,
+static bool find_response_to_task(http_response& res, std::vector<http_response>& responses,
                                   task_type expected_type, std::optional<task>& active_task) {
     if (!active_task || active_task->type != expected_type) return false;
     const auto it = std::find_if(responses.cbegin(), responses.cend(),
                                   [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
     if (it == responses.cend()) return false;
+    responses.erase(it);
     res = *it;
     return true;
 }
@@ -72,7 +73,7 @@ static void download_new_config(std::vector<http_request>& requests_to_send, id_
     ui_data.loading = {"Downloading crawler config..."};
 }
 
-static void save_new_downloaded_config(SQLite::Database& database, const std::vector<http_response>& responses,
+static void save_new_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses,
                                        ui_data& ui_data, std::string& crawler_config_url, id_seed& id_seed,
                                        std::optional<task>& active_task) {
     http_response res;
