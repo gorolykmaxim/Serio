@@ -12,6 +12,7 @@ public class Core extends Thread {
     private final String databasePath;
 
     public Core(String databasePath) {
+        super("serio-core");
         outgoing = new MutableLiveData<>();
         this.databasePath = databasePath;
     }
