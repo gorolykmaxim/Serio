@@ -16,13 +16,17 @@ add_library(core STATIC
         include/id.h
         include/core.h
         include/ui.h
+        include/localization.h
         src/config.cpp
         src/http.cpp
         src/task.cpp
         src/crawler.cpp
         src/id.cpp
         src/core.cpp
-        src/ui.cpp)
+        src/ui.cpp
+        src/localization/localization.cpp
+        src/localization/english.h
+        src/localization/russian.h)
 target_include_directories(core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBLIC lib/NFHTTP/include PUBLIC lib/concurrentqueue)
 target_link_libraries(core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 

@@ -7,6 +7,7 @@ void init_core(core& core, const std::string &database_path) {
     core.nf_client = nativeformat::http::createClient("", "");
     init_config(*core.database);
     init_http_client_cache(*core.database);
+    init_localization(core.languages, &core.current_language);
     core.task_queue.enqueue({init_task});
 }
 
@@ -33,7 +34,8 @@ void execute_core_task(core &core) {
     const auto task = core.task_queue.dequeue();
     read_http_responses(task, core.response_queue, http_responses);
     fetch_crawler_config(*core.database, core.ui_data, core.crawler_config_url, core.id_seed,
-                         core.requests_to_send, http_responses, core.active_task,core.task_queue, task);
+                         core.requests_to_send, http_responses, core.current_language->translations,
+                         core.active_task, core.task_queue, task);
     send_http_requests(*core.nf_client, core.requests_to_send,core.response_queue, core.user_agents,
                        *core.database, core.task_queue, core.id_seed);
     render_ui(core.ui_data, core.render_task_queue);

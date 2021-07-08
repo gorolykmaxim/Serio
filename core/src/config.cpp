@@ -41,7 +41,7 @@ static bool consume_response_to_task(http_response& res, std::vector<http_respon
                                      task_type expected_type, std::optional<task>& active_task) {
     if (!active_task || active_task->type != expected_type) return false;
     const auto it = std::find_if(responses.cbegin(), responses.cend(),
-                                  [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
+                                 [&active_task] (const http_response& res) { return res.request.id == active_task->id; });
     if (it == responses.cend()) return false;
     responses.erase(it);
     res = *it;
@@ -53,17 +53,18 @@ static std::string trim_response_body(const std::string& body) {
     return body.size() > 200 ? body.substr(0, 200) + "..." : body;
 }
 
-static void display_edit_crawler_config_url_dialog(ui_data& ui_data, const std::string& crawler_config_url, id_seed& id_seed) {
+static void display_edit_crawler_config_url_dialog(ui_data& ui_data, const std::vector<translation>& translations,
+                                                   const std::string& crawler_config_url, id_seed& id_seed) {
     ui_data = {view_id::edit_text_dialog_view};
     ui_data.dialog = {
-            "Crawler config URL",
-            "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
+            get_text(translations, edit_crawler_config_title),
+            get_text(translations, edit_crawler_config_description),
             "",
-            "Save",
+            get_text(translations, edit_crawler_config_save),
             {{create_id(id_seed), download_new_config_task}},
     };
     ui_data.edit_text = {
-            "Crawler config URL",
+            get_text(translations, edit_crawler_config_label),
             crawler_config_url,
             {create_id(id_seed), set_crawler_config_url_task},
             {create_id(id_seed), download_new_config_task},
@@ -71,28 +72,29 @@ static void display_edit_crawler_config_url_dialog(ui_data& ui_data, const std::
 }
 
 static void download_new_config(std::vector<http_request>& requests_to_send, id_seed& seed,
-                                const std::string& crawler_config_url, ui_data& ui_data, std::optional<task>& active_task,
-                                const task& task) {
+                                const std::vector<translation>& translations, const std::string& crawler_config_url,
+                                ui_data& ui_data, std::optional<task>& active_task, const task& task) {
     send_config_download_request(requests_to_send, crawler_config_url, active_task, task);
     ui_data = {view_id::loading_screen_view};
-    ui_data.loading = {"Downloading crawler config..."};
+    ui_data.loading = {get_text(translations, downloading_crawler_config)};
 }
 
 static void save_new_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses,
-                                       ui_data& ui_data, std::string& crawler_config_url, id_seed& id_seed,
+                                       const std::vector<translation>& translations, ui_data& ui_data,
+                                       std::string& crawler_config_url, id_seed& id_seed,
                                        std::optional<task>& active_task) {
     http_response res;
     if (!consume_response_to_task(res, responses, download_new_config_task, active_task)) return;
     std::string title, description;
     if (res.code > 399) {
-        title = "Failed to download crawler config";
-        description = "Failed to download '" + crawler_config_url + "': " + trim_response_body(res.body);
+        title = get_text(translations, failed_to_download_crawler_config_title);
+        description = get_text(translations, failed_to_download_crawler_config_description, crawler_config_url) + trim_response_body(res.body);
     } else {
         try {
             nlohmann::json::parse(res.body);
         } catch (const std::exception& e) {
-            title = "Failed to parse crawler config";
-            description = "Failed to parse " + trim_response_body(res.body) + " Reason: " + e.what();
+            title = get_text(translations, failed_to_parse_crawler_config_title);
+            description = get_text(translations, failed_to_parse_crawler_config_description, trim_response_body(res.body)) + e.what();
         }
     }
     if (title.empty() && description.empty()) {
@@ -101,7 +103,7 @@ static void save_new_downloaded_config(SQLite::Database& database, std::vector<h
         display_title_screen(ui_data);
     } else {
         ui_data = {view_id::dialog_view};
-        ui_data.dialog = {title, description, "Change URL"};
+        ui_data.dialog = {title, description, get_text(translations, failed_to_get_crawler_config_change_url)};
         ui_data.back_task = {create_id(id_seed), init_task};
     }
 }
@@ -123,21 +125,22 @@ static void save_downloaded_config(SQLite::Database& database, std::vector<http_
 
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
                           std::vector<http_request>& requests_to_send, std::vector<http_response>& responses,
-                          std::optional<task>& active_task, queue<task>& task_queue, const task& task) {
+                          const std::vector<translation>& translations, std::optional<task>& active_task,
+                          queue<task>& task_queue, const task& task) {
     if (task.type == init_task) {
         const auto existing_config_url = get_config_property(database, SOURCE_URL_PROPERTY);
         if (existing_config_url) {
             send_config_download_request(requests_to_send, *existing_config_url, active_task, task);
             display_title_screen(ui_data);
         } else {
-            display_edit_crawler_config_url_dialog(ui_data, crawler_config_url, seed);
+            display_edit_crawler_config_url_dialog(ui_data, translations, crawler_config_url, seed);
         }
     } else if (task.type == set_crawler_config_url_task) {
         crawler_config_url = task.args[0].get<std::string>();
     } else if (task.type == download_new_config_task) {
-        download_new_config(requests_to_send, seed, crawler_config_url, ui_data, active_task, task);
+        download_new_config(requests_to_send, seed, translations, crawler_config_url, ui_data, active_task, task);
     } else if (task.type == process_http_response_task) {
-        save_new_downloaded_config(database, responses, ui_data, crawler_config_url, seed, active_task);
+        save_new_downloaded_config(database, responses, translations, ui_data, crawler_config_url, seed, active_task);
         save_downloaded_config(database, responses, ui_data, seed, active_task);
     }
 }

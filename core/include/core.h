@@ -7,6 +7,7 @@
 #include <queue.h>
 #include <http.h>
 #include <SQLiteCpp/Database.h>
+#include "localization.h"
 
 struct core {
     id_seed id_seed;
@@ -19,6 +20,8 @@ struct core {
     std::vector<std::string> user_agents;
     std::string crawler_config_url;
     std::optional<task> active_task;
+    language const* current_language;
+    std::vector<const language*> languages;
     ui_data ui_data;
 };
 
