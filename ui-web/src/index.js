@@ -143,28 +143,28 @@ function displayElement(ui) {
     ui.displayNext = null;
 }
 
-function animationToCSSClasses(animation) {
-    const classes = [];
+function animationToKeyframesName(animation) {
+    const keyframes = [];
     if (animation.fade !== false) {
-        classes.push("a-fade");
+        keyframes.push("fade");
     }
     if (animation.scale !== false) {
-        classes.push("a-scale");
+        keyframes.push("scale");
     }
-    return classes;
+    return keyframes.join(", ");
 }
 
 function animateElement(ui, content, animationState) {
     if (ui.displayNext) {
         // New view is requested to be rendered.
         const animation = animationState.currentViewAnimation || {};
-        const classesToApply = animationToCSSClasses(animation);
-        if (classesToApply.length > 0 && ui.currentView) {
+        const keyframes = animationToKeyframesName(animation);
+        if (keyframes && ui.currentView) {
             // Don't trigger transition-out animation if it is already running, just replace the view, that needs
             // be displayed after it.
             if (!animationState.viewToDisplayAfterAnimation) {
-                classesToApply.push("a-reverse");
-                classesToApply.forEach(c => ui.currentView.classList.add(c));
+                ui.currentView.classList.add("a-reverse");
+                ui.currentView.style.animationName = keyframes;
                 ui.currentView.onanimationend = renderUI;
             }
             animationState.viewToDisplayAfterAnimation = removeProperty(ui, "displayNext");
@@ -179,11 +179,10 @@ function animateElement(ui, content, animationState) {
     }
     if (ui.displayNext) {
         const animation = animationState.currentViewAnimation;
-        const classList = ui.displayNext.classList;
-        classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
-        const classesToRemoveLater = animationToCSSClasses(animation);
-        classesToRemoveLater.forEach(a => classList.add(a));
-        ui.displayNext.onanimationend = () => classList.remove.apply(classList, classesToRemoveLater);
+        const element = ui.displayNext;
+        element.classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
+        element.style.animationName = animationToKeyframesName(animation);
+        element.onanimationend = () => element.style.animationName = "none";
     }
 }
 
