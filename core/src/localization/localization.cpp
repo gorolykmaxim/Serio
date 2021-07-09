@@ -2,9 +2,8 @@
 #include "english.h"
 #include "russian.h"
 
-void init_localization(std::vector<const language *> &languages, language const** current_language) {
+void init_localization(std::vector<const language *> &languages) {
     languages = {&ENGLISH, &RUSSIAN};
-    *current_language = &RUSSIAN;
 }
 
 std::string get_text(const std::vector<translation> &translations, text_id text_id) {

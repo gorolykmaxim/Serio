@@ -8,7 +8,8 @@
 #include "ui.h"
 #include "localization.h"
 
-void init_config(SQLite::Database& database);
+void init_config(SQLite::Database& database, const std::vector<const language*>& languages,
+                 language const** current_language);
 void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::string& crawler_config_url, id_seed& seed,
                           std::vector<http_request>& requests_to_send, std::vector<http_response>& responses,
                           const std::vector<translation>& translations, std::optional<task>& active_task,

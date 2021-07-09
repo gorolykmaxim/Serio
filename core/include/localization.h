@@ -28,7 +28,7 @@ struct language {
     std::vector<translation> translations;
 };
 
-void init_localization(std::vector<const language*>& languages, language const** current_language);
+void init_localization(std::vector<const language*>& languages);
 std::string get_text(const std::vector<translation>& translations, text_id text_id);
 std::string get_text(const std::vector<translation>& translations, text_id text_id, const std::string& parameter);
 

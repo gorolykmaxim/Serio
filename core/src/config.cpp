@@ -3,13 +3,8 @@
 #include "config.h"
 
 const auto SOURCE_URL_PROPERTY = "source-url";
+const auto CURRENT_LANGUAGE_PROPERTY = "current-language";
 const auto CONFIG_CACHE_TTL = std::chrono::hours(24);
-
-void init_config(SQLite::Database &database) {
-    database.exec("CREATE TABLE IF NOT EXISTS CONFIG_ENTRY("
-                  "NAME TEXT PRIMARY KEY,"
-                  "VALUE TEXT)");
-}
 
 static void set_config_property(SQLite::Database &database, const std::string &name, const std::string &value) {
     SQLite::Statement insert(database, "INSERT OR REPLACE INTO CONFIG_ENTRY VALUES(?, ?)");
@@ -22,6 +17,23 @@ static std::optional<std::string> get_config_property(SQLite::Database &database
     SQLite::Statement select(database, "SELECT VALUE FROM CONFIG_ENTRY WHERE NAME=?");
     select.bind(1, name);
     return select.executeStep() ? select.getColumn(0).getString() : std::optional<std::string>();
+}
+
+void init_config(SQLite::Database& database, const std::vector<const language*>& languages,
+                 language const** current_language) {
+    database.exec("CREATE TABLE IF NOT EXISTS CONFIG_ENTRY("
+                  "NAME TEXT PRIMARY KEY,"
+                  "VALUE TEXT)");
+    const auto possible_current_language_name = get_config_property(database, CURRENT_LANGUAGE_PROPERTY);
+    const auto current_language_name = possible_current_language_name ? *possible_current_language_name : "";
+    const auto current = std::find_if(languages.cbegin(), languages.cend(),
+                                      [&current_language_name] (const language* l) { return l->name == current_language_name; });
+    if (current != languages.cend()) {
+        *current_language = *current;
+    } else {
+        *current_language = languages[0];
+        set_config_property(database, CURRENT_LANGUAGE_PROPERTY, (*current_language)->name);
+    }
 }
 
 static void display_title_screen(ui_data& ui_data) {
