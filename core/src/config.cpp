@@ -146,14 +146,9 @@ static void save_downloaded_config(SQLite::Database& database, std::vector<http_
     std::string err_title, err_description;
     const auto existing_url = *get_config_property(database, SOURCE_URL_PROPERTY);
     if (!read_config_response(res, translations, existing_url, err_title, err_description)) {
-        const auto expired_res_body = get_expired_response_from_cache(database, res.request);
-        if (expired_res_body) {
-            nlohmann::json::parse(*expired_res_body);
-        } else {
-            crawler_config_url = existing_url;
-            remove_config_property(database, SOURCE_URL_PROPERTY);
-            display_config_download_error_dialog(ui_data, translations, err_title, err_description, id_seed);
-        }
+        crawler_config_url = existing_url;
+        remove_config_property(database, SOURCE_URL_PROPERTY);
+        display_config_download_error_dialog(ui_data, translations, err_title, err_description, id_seed);
     }
 }
 

@@ -114,10 +114,6 @@ void read_http_responses(const task &task, queue<http_response> &response_queue,
     responses.push_back(response_queue.dequeue());
 }
 
-std::optional<std::string> get_expired_response_from_cache(SQLite::Database& database, const http_request &req) {
-    return get_from_cache(database, make_cache_key_for(req), true);
-}
-
 bool http_request::operator==(const http_request &rhs) const {
     return url == rhs.url &&
            method == rhs.method &&
