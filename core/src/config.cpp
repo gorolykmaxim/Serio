@@ -19,6 +19,12 @@ static std::optional<std::string> get_config_property(SQLite::Database &database
     return select.executeStep() ? select.getColumn(0).getString() : std::optional<std::string>();
 }
 
+static void remove_config_property(SQLite::Database& database, const std::string& name) {
+    SQLite::Statement remove(database, "DELETE FROM CONFIG_ENTRY WHERE NAME=?");
+    remove.bind(1, name);
+    remove.exec();
+}
+
 void init_config(SQLite::Database& database, const std::vector<const language*>& languages,
                  language const** current_language) {
     database.exec("CREATE TABLE IF NOT EXISTS CONFIG_ENTRY("
@@ -91,47 +97,63 @@ static void download_new_config(std::vector<http_request>& requests_to_send, id_
     ui_data.loading = {get_text(translations, downloading_crawler_config)};
 }
 
+static bool read_config_response(const http_response& res, const std::vector<translation>& translations,
+                                 const std::string& crawler_config_url, std::string& error_title, std::string& error_description) {
+    if (res.code > 399) {
+        error_title = get_text(translations, failed_to_download_crawler_config_title);
+        error_description = get_text(translations, failed_to_download_crawler_config_description, crawler_config_url) + trim_response_body(res.body);
+        return false;
+    } else {
+        try {
+            nlohmann::json::parse(res.body);
+        } catch (const std::exception& e) {
+            error_title = get_text(translations, failed_to_parse_crawler_config_title);
+            error_description = get_text(translations, failed_to_parse_crawler_config_description, trim_response_body(res.body)) + e.what();
+            return false;
+        }
+    }
+    return true;
+}
+
+static void display_config_download_error_dialog(ui_data& ui_data, const std::vector<translation>& translations,
+                                                 const std::string& title, const std::string& description, id_seed& id_seed) {
+    ui_data = {view_id::dialog_view};
+    ui_data.dialog = {title, description, get_text(translations, failed_to_get_crawler_config_change_url)};
+    ui_data.back_task = {create_id(id_seed), init_task};
+}
+
 static void save_new_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses,
                                        const std::vector<translation>& translations, ui_data& ui_data,
                                        std::string& crawler_config_url, id_seed& id_seed,
                                        std::optional<task>& active_task) {
     http_response res;
     if (!consume_response_to_task(res, responses, download_new_config_task, active_task)) return;
-    std::string title, description;
-    if (res.code > 399) {
-        title = get_text(translations, failed_to_download_crawler_config_title);
-        description = get_text(translations, failed_to_download_crawler_config_description, crawler_config_url) + trim_response_body(res.body);
-    } else {
-        try {
-            nlohmann::json::parse(res.body);
-        } catch (const std::exception& e) {
-            title = get_text(translations, failed_to_parse_crawler_config_title);
-            description = get_text(translations, failed_to_parse_crawler_config_description, trim_response_body(res.body)) + e.what();
-        }
-    }
-    if (title.empty() && description.empty()) {
+    std::string err_title, err_description;
+    if (read_config_response(res, translations, crawler_config_url, err_title, err_description)) {
         set_config_property(database, SOURCE_URL_PROPERTY, crawler_config_url);
         crawler_config_url = "";
         display_title_screen(ui_data);
     } else {
-        ui_data = {view_id::dialog_view};
-        ui_data.dialog = {title, description, get_text(translations, failed_to_get_crawler_config_change_url)};
-        ui_data.back_task = {create_id(id_seed), init_task};
+        display_config_download_error_dialog(ui_data, translations, err_title, err_description, id_seed);
     }
 }
 
-static void save_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses, ui_data& ui_data,
-                                   id_seed& id_seed, std::optional<task>& active_task) {
+static void save_downloaded_config(SQLite::Database& database, std::vector<http_response>& responses,
+                                   const std::vector<translation>& translations, ui_data& ui_data,
+                                   std::string& crawler_config_url, id_seed& id_seed, std::optional<task>& active_task) {
     http_response res;
     if (!consume_response_to_task(res, responses, init_task, active_task)) return;
-    try {
-        nlohmann::json::parse(res.body);
-    } catch (const std::exception& e) {
-        // A new version of the config has been published and it is broken (we can't even parse it).
-        // Get last working version from http cache (we are guaranteed to have it, since to get to this point
-        // we must have successfully downloaded and parsed a config at least once).
-        const auto expired_res_body = *get_expired_response_from_cache(database, res.request);
-        nlohmann::json::parse(expired_res_body);
+    std::string err_title, err_description;
+    const auto existing_url = *get_config_property(database, SOURCE_URL_PROPERTY);
+    if (!read_config_response(res, translations, existing_url, err_title, err_description)) {
+        const auto expired_res_body = get_expired_response_from_cache(database, res.request);
+        if (expired_res_body) {
+            nlohmann::json::parse(*expired_res_body);
+        } else {
+            crawler_config_url = existing_url;
+            remove_config_property(database, SOURCE_URL_PROPERTY);
+            display_config_download_error_dialog(ui_data, translations, err_title, err_description, id_seed);
+        }
     }
 }
 
@@ -153,6 +175,6 @@ void fetch_crawler_config(SQLite::Database& database, ui_data& ui_data, std::str
         download_new_config(requests_to_send, seed, translations, crawler_config_url, ui_data, active_task, task);
     } else if (task.type == process_http_response_task) {
         save_new_downloaded_config(database, responses, translations, ui_data, crawler_config_url, seed, active_task);
-        save_downloaded_config(database, responses, ui_data, seed, active_task);
+        save_downloaded_config(database, responses, translations, ui_data, crawler_config_url, seed, active_task);
     }
 }
