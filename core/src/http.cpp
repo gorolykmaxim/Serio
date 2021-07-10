@@ -114,6 +114,13 @@ void read_http_responses(const task &task, queue<http_response> &response_queue,
     responses.push_back(response_queue.dequeue());
 }
 
+void clear_cached_response_to(SQLite::Database& database, const http_request& req) {
+    const auto cache_key = make_cache_key_for(req);
+    SQLite::Statement remove(database, "DELETE FROM CACHE_ENTRY WHERE KEY=?");
+    remove.bind(1, cache_key);
+    remove.exec();
+}
+
 bool http_request::operator==(const http_request &rhs) const {
     return url == rhs.url &&
            method == rhs.method &&

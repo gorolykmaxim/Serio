@@ -134,6 +134,7 @@ static void save_new_downloaded_config(SQLite::Database& database, std::vector<h
         crawler_config_url = "";
         display_title_screen(ui_data);
     } else {
+        clear_cached_response_to(database, res.request);
         display_config_download_error_dialog(ui_data, translations, err_title, err_description, id_seed);
     }
 }
@@ -148,6 +149,7 @@ static void save_downloaded_config(SQLite::Database& database, std::vector<http_
     if (!read_config_response(res, translations, existing_url, err_title, err_description)) {
         crawler_config_url = existing_url;
         remove_config_property(database, SOURCE_URL_PROPERTY);
+        clear_cached_response_to(database, res.request);
         display_config_download_error_dialog(ui_data, translations, err_title, err_description, id_seed);
     }
 }
