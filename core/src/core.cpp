@@ -4,7 +4,9 @@
 
 void init_core(core& core, const std::string &database_path) {
     core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    core.nf_client = nativeformat::http::createClient("", "");
+    if (!core.nf_client) {
+        core.nf_client = nativeformat::http::createClient("", "");
+    }
     init_localization(core.languages);
     init_config(*core.database, core.languages, &core.current_language);
     init_http_client_cache(*core.database);
