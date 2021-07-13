@@ -19,6 +19,13 @@ public:
         q.wait_dequeue(t);
         return t;
     }
+    bool empty() {
+        return q.size_approx() == 0;
+    }
+    void clear() {
+        T t;
+        while (q.try_dequeue(t));
+    }
 private:
     moodycamel::BlockingConcurrentQueue<T> q;
 };

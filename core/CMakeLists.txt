@@ -31,7 +31,13 @@ target_include_directories(core PUBLIC include PUBLIC lib/SQLiteCpp/include PUBL
 target_link_libraries(core SQLiteCpp NFHTTP nlohmann_json mjs iconvlite)
 
 add_executable(core-test
-        test/queue-test.cpp
-        test/id-test.cpp)
+        test/lib/test-lib.cpp
+        test/lib/test-lib.h
+        test/lib/test-data.h
+        test/lib/test-data-en.h
+        test/lib/test-data-ru.h
+        test/lib/http-mock.h
+        test/lib/serio-test.h
+        test/functional-test.cpp)
 target_include_directories(core-test PRIVATE test/mocks)
 target_link_libraries(core-test core gtest gmock gtest_main)

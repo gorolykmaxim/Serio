@@ -3,7 +3,9 @@
 #include "core.h"
 
 void init_core(core& core, const std::string &database_path) {
-    core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+    if (!core.database) {
+        core.database = std::make_unique<SQLite::Database>(database_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+    }
     if (!core.nf_client) {
         core.nf_client = nativeformat::http::createClient("", "");
     }
