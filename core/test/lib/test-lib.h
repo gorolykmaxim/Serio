@@ -25,6 +25,6 @@ void execute_all_core_tasks(core& core);
 void send_task(core& core, nlohmann::json task, std::vector<nlohmann::json> args = {});
 nlohmann::json get_render_task(core& core);
 void expect_equal(const nlohmann::json& e, const nlohmann::json& a);
-void pre_init_core_with_params(core& core, const std::string& language, const std::string& config_url);
+void pre_init_core_with_params(core& core, const std::string& config_url);
 
 #endif //SERIO_TEST_LIB_H

@@ -44,11 +44,8 @@ void expect_equal(const nlohmann::json& e, const nlohmann::json& a) {
     }
 }
 
-void pre_init_core_with_params(core& core, const std::string& language, const std::string& config_url) {
+void pre_init_core_with_params(core& core, const std::string& config_url) {
     init_core(core, DB_PATH);
-    SQLite::Statement insert(*core.database, "INSERT OR REPLACE INTO CONFIG_ENTRY VALUES('current-language', ?)");
-    insert.bind(1, language);
-    insert.exec();
     execute_all_core_tasks(core);
     const auto render_task = get_render_task(core);
     send_task(core, render_task["editText"]["valueChangedTask"], {config_url});
