@@ -7,6 +7,7 @@ const expected_render_tasks ENGLISH = {
         "English",
         "en",
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"title", "Crawler config URL"},
                         {"description", "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows."},
@@ -20,20 +21,22 @@ const expected_render_tasks ENGLISH = {
                 {"viewId", 1},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"loading", {
                         {"text", "Downloading crawler config..."},
                 }},
                 {"viewId", 3},
         },
         {
-                {"animation", {
+                {"animations", {{
                         {"fade", true},
                         {"scale", false},
                         {"speed", 1}
-                }},
+                }}},
                 {"viewId", 0},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"cancelText", "Change URL"},
                         {"confirmText", ""},
@@ -43,6 +46,7 @@ const expected_render_tasks ENGLISH = {
                 {"viewId", 2},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"cancelText", "Change URL"},
                         {"confirmText", ""},
@@ -52,6 +56,7 @@ const expected_render_tasks ENGLISH = {
                 {"viewId", 2},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"cancelText", "Change URL"},
                         {"confirmText", ""},

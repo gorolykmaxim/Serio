@@ -44,7 +44,7 @@ void init_config(SQLite::Database& database, const std::vector<const language*>&
 
 static void display_title_screen(ui_data& ui_data) {
     ui_data = {view_id::title_screen_view};
-    ui_data.animation = {animation_speed::slow, true, false};
+    ui_data.animations = {{view_container_id::body, animation_speed::slow, true, false}};
 }
 
 static void send_config_download_request(std::vector<http_request>& requests_to_send, const std::string& config_url,

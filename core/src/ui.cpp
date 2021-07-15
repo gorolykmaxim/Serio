@@ -15,13 +15,16 @@ void render_ui(ui_data &ui_data, queue<std::string>& render_task_queue) {
     if (ui_data.rendered) return;
     nlohmann::json render_task;
     render_task["viewId"] = ui_data.view_id;
-    if (ui_data.animation) {
+    nlohmann::json animations = nlohmann::json::array();
+    for (const auto& animation: ui_data.animations) {
         nlohmann::json anim;
-        anim["speed"] = ui_data.animation->speed;
-        anim["fade"] = ui_data.animation->fade;
-        anim["scale"] = ui_data.animation->scale;
-        render_task["animation"] = anim;
+        anim["id"] = animation.id;
+        anim["speed"] = animation.speed;
+        anim["fade"] = animation.fade;
+        anim["scale"] = animation.scale;
+        animations.push_back(anim);
     }
+    render_task["animations"] = animations;
     if (ui_data.dialog) {
         nlohmann::json dialog;
         dialog["title"] = ui_data.dialog->title;

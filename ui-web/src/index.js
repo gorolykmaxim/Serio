@@ -10,6 +10,40 @@ const LOADING_SCREEN = 3;
 const FAST_ANIMATION = 0;
 const SLOW_ANIMATION = 1;
 
+const BODY_ID = 0;
+
+function findById(arr, id) {
+    const result = arr.filter(a => a.id === id);
+    return result.length > 0 ? result[0] : null;
+}
+
+function replaceByIdOrPush(arr, id, item) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].id === id) {
+            arr[i] = item;
+            return;
+        }
+    }
+    arr.push(item);
+}
+
+function moveFromTo(id, arr1, arr2) {
+    let ind = -1;
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i].id === id) {
+            ind = i;
+            break;
+        }
+    }
+    if (ind === -1) return;
+    const item = arr1.splice(ind, 1)[0];
+    arr2.push(item);
+}
+
+function clear(arr) {
+    arr.splice(0, arr.length);
+}
+
 function sendTask(core, task) {
     core.sendTask(JSON.stringify(task));
 }
@@ -67,13 +101,13 @@ function createCenteredLayout(elements) {
     return root;
 }
 
-function createTitleScreen(ui, content) {
+function createTitleScreen(viewsToDisplay, content) {
     if (content.viewId !== TITLE_SCREEN) return;
     const root = create("div", "center-layout", "full-height");
     const title = create("h1", "serio-title", "not-selectable", "text-primary");
     title.innerText = "Serio";
     root.appendChild(title);
-    ui.displayNext = root;
+    viewsToDisplay.push({id: BODY_ID, element: root});
 }
 
 function createDialogButton(core, text, task, buttons) {
@@ -83,7 +117,7 @@ function createDialogButton(core, text, task, buttons) {
     }
 }
 
-function createDialog(ui, core, content, innerElements) {
+function createDialog(viewsToDisplay, core, content, innerElements) {
     if (content.viewId !== DIALOG && !innerElements) return;
     const {title, description, confirmText, confirmTask, cancelText} = content.dialog;
     const elements = [];
@@ -98,20 +132,24 @@ function createDialog(ui, core, content, innerElements) {
     createDialogButton(core, confirmText, confirmTask, buttons);
     createDialogButton(core, cancelText, content.backTask, buttons);
     elements.push.apply(elements, buttons);
+    const view = {id: BODY_ID, element: createCenteredLayout(elements)};
     if (buttons.length > 0) {
-        ui.toFocus = buttons[0];
+        view.toFocus = buttons[0];
     }
-    ui.displayNext = createCenteredLayout(elements);
+    viewsToDisplay.push(view);
 }
 
-function createEditTextDialog(ui, core, content) {
+function createEditTextDialog(viewsToDisplay, core, content) {
     if (content.viewId !== EDIT_TEXT_DIALOG) return;
     const editText = createEditText(core, content.editText);
-    createDialog(ui, core, content, [editText]);
-    ui.toFocus = editText;
+    const dialogView = [];
+    createDialog(dialogView, core, content, [editText]);
+    const dialog = dialogView[0];
+    dialog.toFocus = editText;
+    viewsToDisplay.push(dialog);
 }
 
-function createLoadingScreen(ui, content) {
+function createLoadingScreen(viewsToDisplay, content) {
     if (content.viewId !== LOADING_SCREEN) return;
     const {text} = content.loading;
     const elements = [];
@@ -126,21 +164,22 @@ function createLoadingScreen(ui, content) {
     spinnerContainer.appendChild(spinner);
     elements.push(spinnerContainer);
     elements.push(createTitle(text));
-    ui.displayNext = createCenteredLayout(elements);
+    viewsToDisplay.push({id: BODY_ID, element: createCenteredLayout(elements)});
 }
 
-function displayElement(ui) {
-    if (!ui.displayNext) return;
-    if (ui.currentView) {
-        ui.root.replaceChild(ui.displayNext, ui.currentView);
-    } else {
-        ui.root.appendChild(ui.displayNext);
+function displayElement(viewsToDisplay, containers) {
+    for (const view of viewsToDisplay) {
+        const container = containers[view.id];
+        if (container.children.length) {
+            container.replaceChild(view.element, container.children[0]);
+        } else {
+            container.appendChild(view.element);
+        }
+        if (view.toFocus) {
+            view.toFocus.focus();
+        }
     }
-    if (ui.toFocus) {
-        ui.toFocus.focus();
-    }
-    ui.currentView = ui.displayNext;
-    ui.displayNext = null;
+    clear(viewsToDisplay);
 }
 
 function animationToKeyframesName(animation) {
@@ -154,58 +193,63 @@ function animationToKeyframesName(animation) {
     return keyframes.join(", ");
 }
 
-function animateElement(ui, content, animationState) {
-    if (ui.displayNext) {
-        // New view is requested to be rendered.
-        const animation = animationState.currentViewAnimation || {};
-        const keyframes = animationToKeyframesName(animation);
-        if (keyframes && ui.currentView) {
-            // Don't trigger transition-out animation if it is already running, just replace the view, that needs
-            // be displayed after it.
-            if (!animationState.viewToDisplayAfterAnimation) {
-                ui.currentView.classList.add("a-reverse");
-                ui.currentView.style.animationName = keyframes;
-                ui.currentView.onanimationend = renderUI;
-            }
-            animationState.viewToDisplayAfterAnimation = removeProperty(ui, "displayNext");
-            animationState.nextViewAnimation = content.animation || {};
+function animate(viewsToDisplay, runningAnimations, finishedAnimations, animations, containers, content) {
+    // Animate existing views out.
+    for (const view of viewsToDisplay) {
+        const running = findById(runningAnimations, view.id);
+        if (running) {
+            running.viewToDisplay = view;
         } else {
-            animationState.currentViewAnimation = content.animation || {};
+            const animation = findById(animations, view.id) || {};
+            const keyframes = animationToKeyframesName(animation);
+            const container = containers[view.id];
+            if (keyframes && container.children.length > 0) {
+                const previousView = container.children[0];
+                previousView.classList.add("a-reverse");
+                previousView.style.animationName = keyframes;
+                previousView.onanimationend = () => {
+                    moveFromTo(view.id, runningAnimations, finishedAnimations);
+                    renderUI();
+                };
+                runningAnimations.push({id: view.id, viewToDisplay: view});
+            } else {
+                finishedAnimations.push({id: view.id, viewToDisplay: view});
+            }
         }
-    } else if (animationState.viewToDisplayAfterAnimation) {
-        // Transition-out animation for current view has finished.
-        animationState.currentViewAnimation = removeProperty(animationState, "nextViewAnimation");
-        ui.displayNext = removeProperty(animationState, "viewToDisplayAfterAnimation");
+        const animation = findById(content.animations || [], view.id) || {id: view.id};
+        replaceByIdOrPush(animations, view.id, animation);
     }
-    if (ui.displayNext) {
-        const animation = animationState.currentViewAnimation;
-        const element = ui.displayNext;
+    clear(viewsToDisplay);
+    // Animate new views in.
+    for (const finishedAnimation of finishedAnimations) {
+        const animation = findById(animations, finishedAnimation.id) || {};
+        const element = finishedAnimation.viewToDisplay.element;
         element.classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
         element.style.animationName = animationToKeyframesName(animation);
         element.onanimationend = () => element.style.animationName = "none";
+        viewsToDisplay.push(finishedAnimation.viewToDisplay);
     }
+    clear(finishedAnimations);
 }
 
 function renderUI() {
     const content = removeProperty(window, "content") || {};
-    createTitleScreen(ui, content);
-    createEditTextDialog(ui, core, content);
-    createDialog(ui, core, content);
-    createLoadingScreen(ui, content);
-    animateElement(ui, content, animationState);
-    displayElement(ui);
+    const viewsToDisplay = [];
+    createTitleScreen(viewsToDisplay, content);
+    createEditTextDialog(viewsToDisplay, core, content);
+    createDialog(viewsToDisplay, core, content);
+    createLoadingScreen(viewsToDisplay, content);
+    animate(viewsToDisplay, ui.runningAnimations, ui.finishedAnimations, ui.animations, ui.containers, content);
+    displayElement(viewsToDisplay, ui.containers);
 }
 
 window.ui = {
-    root: document.getElementById("root"),
-    currentView: null,
-    displayNext: null,
-    toFocus: null,
-};
-window.animationState = {
-    currentViewAnimation: null,
-    nextViewAnimation: null,
-    viewToDisplayAfterAnimation: null,
+    containers: [
+        document.getElementById("body")
+    ],
+    runningAnimations: [],
+    finishedAnimations: [],
+    animations: [],
 };
 if (!window.core) {
     // In case we are not running inside WebView but in standalone browser - create dummy core to make UI not fail.
@@ -217,3 +261,51 @@ window.displayView = function (content) {
     window.content = content;
     renderUI();
 };
+
+// Keeps this for testing it is too useful to delete
+// const titleScreenContent = {
+//     viewId: TITLE_SCREEN,
+//     animations: [{id: BODY_ID, speed: SLOW_ANIMATION, scale: false}],
+// };
+//
+// const editTextDialogContent = {
+//     viewId: EDIT_TEXT_DIALOG,
+//     dialog: {
+//         title: "Crawler config URL",
+//         description: "Specify URL to the file, that contains configuration of all the crawlers, responsible for crawling tv shows.",
+//         cancelText: "Cancel",
+//         confirmText: "Save",
+//         confirmTask: {id: 2},
+//     },
+//     editText: {
+//         label: "Crawler config URL",
+//         value: "https://github.com/gorolykmaxim/content.json",
+//         valueChangedTask: {id: 3},
+//         saveValueTask: {id: 4},
+//     },
+//     backTask: {id: 1},
+//     animations: [{id: BODY_ID, scale: false, fade: false}],
+// };
+//
+// const dialogContent = {
+//     viewId: DIALOG,
+//     dialog: {
+//         title: "Whoops...",
+//         description: "Something went horribly wrong :(",
+//         cancelText: "Understand",
+//     },
+//     backTask: {id: 1},
+// }
+//
+// const loadingScreenContent = {
+//     viewId: LOADING_SCREEN,
+//     loading: {
+//         text: "Downloading crawler config..."
+//     }
+// };
+//
+// displayView(dialogContent);
+// setTimeout(() => displayView(dialogContent), 3000);
+// setTimeout(() => displayView(editTextDialogContent), 3100);
+// setTimeout(() => displayView(loadingScreenContent), 6000);
+// setTimeout(() => displayView(titleScreenContent), 9000);

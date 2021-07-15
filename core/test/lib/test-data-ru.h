@@ -7,6 +7,7 @@ const expected_render_tasks RUSSIAN = {
         "Русский",
         "ru",
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"title", "Ссылка на конфигурацию"},
                         {"description", "Укажите ссылку к файлу, который содержит конфигурации кровлеров, ответственных за кровлинг сериалов."},
@@ -20,17 +21,18 @@ const expected_render_tasks RUSSIAN = {
                 {"viewId", 1},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"loading", {
                         {"text", "Загружаю конфигурацию кровлера..."},
                 }},
                 {"viewId", 3},
         },
         {
-                {"animation", {
+                {"animations", {{
                         {"fade", true},
                         {"scale", false},
                         {"speed", 1}
-                }},
+                }}},
                 {"viewId", 0},
         },
         {
@@ -43,6 +45,7 @@ const expected_render_tasks RUSSIAN = {
                 {"viewId", 2},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"cancelText", "Изменить ссылку"},
                         {"confirmText", ""},
@@ -52,6 +55,7 @@ const expected_render_tasks RUSSIAN = {
                 {"viewId", 2},
         },
         {
+                {"animations", nlohmann::json::array()},
                 {"dialog", {
                         {"cancelText", "Изменить ссылку"},
                         {"confirmText", ""},

@@ -4,6 +4,10 @@
 #include <string>
 #include "task.h"
 
+enum view_container_id {
+    body
+};
+
 enum view_id {
     title_screen_view,
     edit_text_dialog_view,
@@ -16,6 +20,7 @@ enum animation_speed {
 };
 
 struct animation {
+    view_container_id id;
     animation_speed speed;
     bool fade;
     bool scale;
@@ -45,7 +50,7 @@ struct ui_data {
     std::optional<dialog> dialog;
     std::optional<edit_text> edit_text;
     std::optional<loading> loading;
-    std::optional<animation> animation;
+    std::vector<animation> animations;
     std::optional<task> back_task;
     bool rendered = false;
 };
