@@ -28,16 +28,14 @@ function replaceByIdOrPush(arr, id, item) {
 }
 
 function moveFromTo(id, arr1, arr2) {
-    let ind = -1;
     for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i].id === id) {
-            ind = i;
-            break;
+        const e = arr1[i];
+        if (e.id === id) {
+            arr1.splice(i, 1);
+            arr2.push(e);
+            i--;
         }
     }
-    if (ind === -1) return;
-    const item = arr1.splice(ind, 1)[0];
-    arr2.push(item);
 }
 
 function clear(arr) {
