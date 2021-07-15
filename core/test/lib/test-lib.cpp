@@ -27,7 +27,9 @@ void send_task(core& core, nlohmann::json task, std::vector<nlohmann::json> args
 }
 
 nlohmann::json get_render_task(core& core) {
-    return nlohmann::json::parse(*core.render_task_queue.try_dequeue());
+    const auto render_task = core.render_task_queue.try_dequeue();
+    EXPECT_TRUE(render_task) << "No render task available";
+    return nlohmann::json::parse(*render_task);
 }
 
 void expect_equal(const nlohmann::json& e, const nlohmann::json& a) {

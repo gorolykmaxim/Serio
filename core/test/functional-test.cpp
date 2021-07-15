@@ -4,7 +4,7 @@
 TEST_F(functional_test, open_first_time_and_exit) {
     init_core(core, DB_PATH);
     execute_all_core_tasks(core);
-    const auto render_task = *core.render_task_queue.try_dequeue();
+    const auto render_task = get_render_task(core).dump();
     EXPECT_FALSE(enqueue_back_task_from_render_task(render_task, core.task_queue));
 }
 
@@ -75,7 +75,7 @@ TEST_F(functional_test, should_exit_app_on_pressing_back_while_being_on_title_sc
     pre_init_core_with_params(core, CONFIG_URL);
     init_core(core, DB_PATH);
     execute_all_core_tasks(core);
-    const auto render_task = *core.render_task_queue.try_dequeue();
+    const auto render_task = get_render_task(core).dump();
     EXPECT_FALSE(enqueue_back_task_from_render_task(render_task, core.task_queue));
 }
 // TODO: write additional tests for case when we start with config URL specified and request fails for all the possible
