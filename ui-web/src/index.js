@@ -17,16 +17,6 @@ function findById(arr, id) {
     return result.length > 0 ? result[0] : null;
 }
 
-function replaceByIdOrPush(arr, id, item) {
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].id === id) {
-            arr[i] = item;
-            return;
-        }
-    }
-    arr.push(item);
-}
-
 function moveFromTo(id, arr1, arr2) {
     for (let i = 0; i < arr1.length; i++) {
         const e = arr1[i];
@@ -198,7 +188,7 @@ function animate(viewsToDisplay, runningAnimations, finishedAnimations, animatio
         if (running) {
             running.viewToDisplay = view;
         } else {
-            const animation = findById(animations, view.id) || {};
+            const animation = animations[view.id];
             const keyframes = animationToKeyframesName(animation);
             const container = containers[view.id];
             if (keyframes && container.children.length > 0) {
@@ -214,13 +204,13 @@ function animate(viewsToDisplay, runningAnimations, finishedAnimations, animatio
                 finishedAnimations.push({id: view.id, viewToDisplay: view});
             }
         }
-        const animation = findById(content.animations || [], view.id) || {id: view.id};
-        replaceByIdOrPush(animations, view.id, animation);
+        const {id, ...animation} = findById(content.animations || [], view.id) || {};
+        animations[view.id] = animation;
     }
     clear(viewsToDisplay);
     // Animate new views in.
     for (const finishedAnimation of finishedAnimations) {
-        const animation = findById(animations, finishedAnimation.id) || {};
+        const animation = animations[finishedAnimation.id];
         const element = finishedAnimation.viewToDisplay.element;
         element.classList.add(animation.speed === SLOW_ANIMATION ? "a-slow" : "a-fast");
         element.style.animationName = animationToKeyframesName(animation);
@@ -245,9 +235,9 @@ window.ui = {
     containers: [
         document.getElementById("body")
     ],
+    animations: [{}],
     runningAnimations: [],
     finishedAnimations: [],
-    animations: [],
 };
 if (!window.core) {
     // In case we are not running inside WebView but in standalone browser - create dummy core to make UI not fail.
